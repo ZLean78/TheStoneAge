@@ -1,4 +1,4 @@
 Proyecto de juego RTS ambientado en la Edad de Piedra donde se debe guiar a un pueblo a convertirse en una de las primeras civilizaciones de la Historia.
 
-This is a project about an RTS game taking place in the Stone Age, where the player must guide a people on the process of becoming one of the first civilizations in History.
+This is a project about an RTS game taking place in the Stone Age, where the player must guide a people in the process of becoming one of the first civilizations in History.
 
