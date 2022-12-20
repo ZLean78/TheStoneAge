@@ -16,6 +16,10 @@ func _unhandled_input(event):
 func _decrease_energy():
 	if($Background.get_child(0).scale.x > 0):
 		$Background.get_child(0).scale.x -= 0.033
+		
+func _increase_energy():
+	if($Background.get_child(0).scale.x < 30):
+		$Background.get_child(0).scale.x += 0.033
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):

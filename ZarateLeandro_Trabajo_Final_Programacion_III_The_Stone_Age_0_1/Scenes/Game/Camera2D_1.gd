@@ -1,5 +1,6 @@
 extends Camera2D
 
+var its_raining = false
 
 const MAX_CAMERA_DISTANCE = 50.0
 const MAX_CAMERA_PERCENT = 0.1
@@ -14,18 +15,13 @@ onready var select_draw = get_tree().root.get_child(0).get_child(3)
 
 #export (NodePath) onready var camera = get_node(camera)
 
-
-
-
-
-func _unhandled_input(event):	
-	
-	
+func _unhandled_input(event):
 	
 	if event is InputEventMouseButton && event.button_index == BUTTON_LEFT:
 		if event.pressed:	
 			for unit in selected:
-				unit.collider.deselect()		
+				if(!is_instance_valid(unit)):
+					unit.collider.deselect()		
 			selected = []
 			dragging = true
 			drag_start = get_global_mouse_position()
@@ -44,7 +40,7 @@ func _unhandled_input(event):
 
 	if dragging:
 		if event is InputEventMouseMotion:
-			var drag_end=event.position
+			#var drag_end=event.position
 			select_draw.update_status(drag_start,get_global_mouse_position(),dragging)
 	
 	if event is InputEventKey && event.scancode == KEY_C:
@@ -53,8 +49,6 @@ func _unhandled_input(event):
 
 
 func _process(_delta):
-
-
 
 	var the_children = get_tree().root.get_child(0).get_children()
 	var unit
@@ -82,3 +76,15 @@ func _process(_delta):
 				camera_position = get_global_mouse_position()  + direction.normalized() * MAX_CAMERA_DISTANCE
 
 	global_position = lerp(global_position, camera_position, CAMERA_SPEED)
+	
+	
+func _set_its_raining(var _its_raining):
+	its_raining = _its_raining
+	
+	if(its_raining):
+		$AnimatedSprite.visible = true
+		if(!$AnimatedSprite.playing):
+			$AnimatedSprite.play("default")
+	else:
+		$AnimatedSprite.visible = false
+		$AnimatedSprite.stop()

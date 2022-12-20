@@ -1,19 +1,15 @@
 extends ColorRect
 
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
+var food_points = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
+	
+func _set_food_points(var _food_points):
+	food_points=_food_points	
+	_set_label_food_points(food_points)
 
-#func _process(delta):
-#	var screen_coord = get_viewport_transform() * (get_global_transform() * rect_scale)
+func _set_label_food_points(var _food_points):
+	$Label.text = "FOOD: " + str(_food_points)
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass

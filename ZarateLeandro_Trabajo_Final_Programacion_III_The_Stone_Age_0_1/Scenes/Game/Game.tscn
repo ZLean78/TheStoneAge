@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Sprites/game/tiles/grass/simple/grass.png" type="Texture" id=1]
 [ext_resource path="res://Scenes/Unit/Unit.tscn" type="PackedScene" id=2]
@@ -12,6 +12,8 @@
 [ext_resource path="res://Scenes/Game/rain1.png" type="Texture" id=10]
 [ext_resource path="res://Scenes/Game/rain2.png" type="Texture" id=11]
 [ext_resource path="res://Scenes/Game/rain3.png" type="Texture" id=12]
+[ext_resource path="res://Scenes/Game/The_Canvas.gd" type="Script" id=13]
+[ext_resource path="res://Scenes/Game/The_Control.gd" type="Script" id=14]
 
 [sub_resource type="TileSet" id=1]
 0/name = "grass.png 0"
@@ -42,6 +44,7 @@ script = ExtResource( 3 )
 Unit = ExtResource( 2 )
 
 [node name="TileMap" type="TileMap" parent="."]
+position = Vector2( 0, 1 )
 tile_set = SubResource( 1 )
 cell_size = Vector2( 32, 32 )
 format = 1
@@ -71,19 +74,19 @@ editor_draw_drag_margin = true
 script = ExtResource( 7 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="Camera2D_1"]
-visible = false
-position = Vector2( -1, 1 )
-scale = Vector2( 1.37692, 1.31081 )
+scale = Vector2( 3, 3 )
 frames = SubResource( 2 )
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="The_Canvas" type="CanvasLayer" parent="."]
+script = ExtResource( 13 )
 
-[node name="Control" type="Control" parent="CanvasLayer"]
+[node name="The_Control" type="Control" parent="The_Canvas"]
 margin_top = -4.0
 margin_right = 40.0
 margin_bottom = 36.0
+script = ExtResource( 14 )
 
-[node name="Rectangle" type="ColorRect" parent="CanvasLayer/Control"]
+[node name="Rectangle" type="ColorRect" parent="The_Canvas/The_Control"]
 show_behind_parent = true
 margin_top = 557.0
 margin_right = 1024.0
@@ -93,7 +96,7 @@ size_flags_vertical = 0
 color = Color( 0.396078, 0.388235, 0.388235, 1 )
 script = ExtResource( 9 )
 
-[node name="CreateCitizen" type="TextureButton" parent="CanvasLayer/Control/Rectangle"]
+[node name="CreateCitizen" type="TextureButton" parent="The_Canvas/The_Control/Rectangle"]
 margin_left = 976.0
 margin_top = 5.0
 margin_right = 1016.0
@@ -102,13 +105,22 @@ texture_normal = ExtResource( 5 )
 expand = true
 script = ExtResource( 6 )
 
-[node name="Label" type="Label" parent="CanvasLayer/Control/Rectangle"]
+[node name="Label" type="Label" parent="The_Canvas/The_Control/Rectangle"]
 margin_left = 14.0
 margin_top = 12.0
-margin_right = 86.0
+margin_right = 120.0
 margin_bottom = 43.0
 text = "FOOD:
 "
+
+[node name="Timer_Label" type="Label" parent="The_Canvas/The_Control"]
+margin_left = 878.0
+margin_top = 24.0
+margin_right = 979.0
+margin_bottom = 58.0
+text = "ENEMY ATTACK:
+000"
+align = 1
 
 [node name="fruit_tree2" parent="." instance=ExtResource( 8 )]
 position = Vector2( 533, 498 )
@@ -125,11 +137,17 @@ position = Vector2( 825, 183 )
 [node name="fruit_tree6" parent="." instance=ExtResource( 8 )]
 position = Vector2( 100, 123 )
 
+[node name="Rain_Timer" type="Timer" parent="."]
+wait_time = 10.0
+autostart = true
+
 [connection signal="timeout" from="food_timer" to="." method="_on_food_timer_timeout"]
 [connection signal="fruit_tree_entered" from="fruit_tree" to="Unit" method="_on_fruit_tree_fruit_tree_entered"]
-[connection signal="pressed" from="CanvasLayer/Control/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
+[connection signal="fruit_tree_exited" from="fruit_tree" to="Unit" method="_on_fruit_tree_fruit_tree_exited"]
+[connection signal="pressed" from="The_Canvas/The_Control/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
 [connection signal="fruit_tree_entered" from="fruit_tree2" to="Unit" method="_on_fruit_tree_fruit_tree_entered"]
 [connection signal="fruit_tree_entered" from="fruit_tree3" to="Unit" method="_on_fruit_tree_fruit_tree_entered"]
 [connection signal="fruit_tree_entered" from="fruit_tree4" to="Unit" method="_on_fruit_tree_fruit_tree_entered"]
 [connection signal="fruit_tree_entered" from="fruit_tree5" to="Unit" method="_on_fruit_tree_fruit_tree_entered"]
 [connection signal="fruit_tree_entered" from="fruit_tree6" to="Unit" method="_on_fruit_tree_fruit_tree_entered"]
+[connection signal="timeout" from="Rain_Timer" to="." method="_on_Rain_Timer_timeout"]

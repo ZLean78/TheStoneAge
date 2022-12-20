@@ -4,20 +4,24 @@ extends KinematicBody2D
 
 export (float) var SPEED = 0.0
 export (float) var MAX_HEALTH = 100.0
+onready var food_timer = get_tree().root.get_child(0).get_child(2)
 onready var health = MAX_HEALTH
 
 var food_points = 0
+var energy_points = 30
 var dragging = true
 
 var is_flipped = false
 var click_relative = 16
 var dead = false
+var is_dressed = false
 
 #Variables agregadas
 var device_number = 0
 var motion = Vector2()
 var velocity = Vector2()
 var touch_enabled = false
+var is_sheltered = false
 var is_girl = false
 
 
@@ -27,7 +31,7 @@ var can_add = false
 
 var can_add_multiple = false
 
-
+var its_raining = false
 
 signal health_change
 signal im_dead
@@ -36,6 +40,8 @@ signal food_points_change
 var selected = false
 
 var screensize = Vector2(ProjectSettings.get("display/window/size/width"),ProjectSettings.get("display/window/size/height"))
+
+onready var all_timer = $All_Timer
 
 func _ready():
 	
@@ -54,11 +60,11 @@ func _physics_process(_delta):
 	position.x = clamp(position.x,0,screensize.x)
 	position.y = clamp(position.y,0,screensize.y)	
 	
-	var food_timer = get_tree().root.get_child(0).get_child(2)
+	
 	# Orientar al player.
 	if velocity.x<0:
 		if(is_flipped==false):
-			scale.x = -1
+			scale.x = -1			
 			is_flipped = true
 	if velocity.x>0:
 		if(is_flipped==true):
@@ -77,8 +83,10 @@ func _physics_process(_delta):
 	else:
 		$sprite.stop()
 		
-		if(food_timer.is_stopped()):
-			food_timer.start()
+	if(food_timer.is_stopped()):
+		food_timer.start()
+		
+	_get_damage()
 	
 		
 
@@ -137,7 +145,7 @@ func _on_Target_Position_body_entered(body):
 		$sprite.animation = "female_idle1"
 
 
-func _on_Target_Position1_body_entered(body):
+func _on_Target_Position1_body_entered(_body):
 	velocity = Vector2(0,0)
 	if !is_girl:
 		$sprite.animation = "male_idle1"
@@ -233,15 +241,24 @@ func _animate():
 				$sprite.animation = "female_idle1"
 	
 
-
+func _get_damage():
+	if(its_raining && !is_sheltered):
+		if(energy_points>0):
+			energy_points-=1
+			$Bar._decrease_energy()
+		else:
+			deselect()
+			queue_free()
 
 func _on_fruit_tree_fruit_tree_entered():	
 	can_add = true	
+	is_sheltered = true
 	#get_tree().root.get_child(0)._collect_food()
 	
 	
 func _on_fruit_tree_fruit_tree_exited():
 	can_add = false
+	is_sheltered = false
 	
 
 
@@ -249,3 +266,11 @@ func _on_fruit_tree_fruit_tree_exited():
 func _on_player_mouse_entered():
 	if device_number == 2:
 		selected = true
+
+
+
+		
+
+
+func _on_All_Timer_timeout():
+	pass
