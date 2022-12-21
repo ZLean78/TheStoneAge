@@ -26,12 +26,14 @@ func _on_Area2D_body_entered(body):
 	if("Unit" in body.name):
 		is_touching = true
 		emit_signal("fruit_tree_entered")
+		body._set_fruit_tree_touching(true)
 
 
 func _on_Area2D_body_exited(body):
 	if("Unit" in body.name):
 		is_touching = false
 		emit_signal("fruit_tree_exited")
+		body._set_fruit_tree_touching(false)
 
 
 func _fruit_tree_animate():	

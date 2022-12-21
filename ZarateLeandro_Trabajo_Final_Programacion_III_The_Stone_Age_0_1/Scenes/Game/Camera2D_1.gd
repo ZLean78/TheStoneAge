@@ -20,7 +20,9 @@ func _unhandled_input(event):
 	if event is InputEventMouseButton && event.button_index == BUTTON_LEFT:
 		if event.pressed:	
 			for unit in selected:
-				if(!is_instance_valid(unit)):
+				if(is_instance_valid(unit)):
+					selected.erase(unit)
+				else:
 					unit.collider.deselect()		
 			selected = []
 			dragging = true

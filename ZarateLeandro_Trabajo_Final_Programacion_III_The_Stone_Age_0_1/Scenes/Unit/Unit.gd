@@ -41,6 +41,8 @@ var selected = false
 
 var screensize = Vector2(ProjectSettings.get("display/window/size/width"),ProjectSettings.get("display/window/size/height"))
 
+var fruit_tree_touching
+
 onready var all_timer = $All_Timer
 
 func _ready():
@@ -86,7 +88,7 @@ func _physics_process(_delta):
 	if(food_timer.is_stopped()):
 		food_timer.start()
 		
-	_get_damage()
+	
 	
 		
 
@@ -241,19 +243,25 @@ func _animate():
 				$sprite.animation = "female_idle1"
 	
 
-func _get_damage():
-	if(its_raining && !is_sheltered):
-		if(energy_points>0):
-			energy_points-=1
-			$Bar._decrease_energy()
-		else:
-			deselect()
-			queue_free()
+#func _get_damage():
+#	if(its_raining && !is_sheltered):
+#		if(energy_points>0):
+#			energy_points-=1
+#			$Bar._decrease_energy()
+#		else:
+#			deselect()
+#			queue_free()
+#	elif(its_raining && is_sheltered):
+#		if(energy_points<30):
+#			energy_points+=1
+#			$Bar._increase_energy()
+			
 
+		
+			
 func _on_fruit_tree_fruit_tree_entered():	
 	can_add = true	
 	is_sheltered = true
-	#get_tree().root.get_child(0)._collect_food()
 	
 	
 func _on_fruit_tree_fruit_tree_exited():
@@ -269,8 +277,27 @@ func _on_player_mouse_entered():
 
 
 
-		
+
+
+	
+func _set_fruit_tree_touching(var _fruit_tree):
+	fruit_tree_touching=_fruit_tree
+
+func _set_its_raining(var _its_raining):
+	its_raining = _its_raining
+	
+func _set_sheltered(var _is_sheltered):
+	_is_sheltered = true
+
+
+
+
 
 
 func _on_All_Timer_timeout():
 	pass
+	#_get_damage()
+
+
+func _on_food_timer_timeout():
+	pass # Replace with function body.

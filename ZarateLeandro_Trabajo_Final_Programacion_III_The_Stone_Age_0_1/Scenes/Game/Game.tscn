@@ -1,11 +1,10 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Sprites/game/tiles/grass/simple/grass.png" type="Texture" id=1]
 [ext_resource path="res://Scenes/Unit/Unit.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Scenes/Game/Game.gd" type="Script" id=3]
 [ext_resource path="res://Scenes/Game/SelectDraw.gd" type="Script" id=4]
 [ext_resource path="res://Scenes/Unit/male1.png" type="Texture" id=5]
-[ext_resource path="res://Scenes/Game/CreateCitizen.gd" type="Script" id=6]
 [ext_resource path="res://Scenes/Game/Camera2D_1.gd" type="Script" id=7]
 [ext_resource path="res://Scenes/fruit_tree/fruit_tree.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Scenes/Game/Rectangle.gd" type="Script" id=9]
@@ -103,7 +102,6 @@ margin_right = 1016.0
 margin_bottom = 45.0
 texture_normal = ExtResource( 5 )
 expand = true
-script = ExtResource( 6 )
 
 [node name="Label" type="Label" parent="The_Canvas/The_Control/Rectangle"]
 margin_left = 14.0
@@ -146,8 +144,13 @@ autostart = true
 [connection signal="fruit_tree_exited" from="fruit_tree" to="Unit" method="_on_fruit_tree_fruit_tree_exited"]
 [connection signal="pressed" from="The_Canvas/The_Control/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
 [connection signal="fruit_tree_entered" from="fruit_tree2" to="Unit" method="_on_fruit_tree_fruit_tree_entered"]
+[connection signal="fruit_tree_exited" from="fruit_tree2" to="Unit" method="_on_fruit_tree_fruit_tree_exited"]
 [connection signal="fruit_tree_entered" from="fruit_tree3" to="Unit" method="_on_fruit_tree_fruit_tree_entered"]
+[connection signal="fruit_tree_exited" from="fruit_tree3" to="Unit" method="_on_fruit_tree_fruit_tree_exited"]
 [connection signal="fruit_tree_entered" from="fruit_tree4" to="Unit" method="_on_fruit_tree_fruit_tree_entered"]
+[connection signal="fruit_tree_exited" from="fruit_tree4" to="Unit" method="_on_fruit_tree_fruit_tree_exited"]
 [connection signal="fruit_tree_entered" from="fruit_tree5" to="Unit" method="_on_fruit_tree_fruit_tree_entered"]
+[connection signal="fruit_tree_exited" from="fruit_tree5" to="Unit" method="_on_fruit_tree_fruit_tree_exited"]
 [connection signal="fruit_tree_entered" from="fruit_tree6" to="Unit" method="_on_fruit_tree_fruit_tree_entered"]
+[connection signal="fruit_tree_exited" from="fruit_tree6" to="Unit" method="_on_fruit_tree_fruit_tree_exited"]
 [connection signal="timeout" from="Rain_Timer" to="." method="_on_Rain_Timer_timeout"]

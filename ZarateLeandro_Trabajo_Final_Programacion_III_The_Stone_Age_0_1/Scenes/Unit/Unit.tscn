@@ -38,5 +38,6 @@ script = ExtResource( 4 )
 position = Vector2( -7, -19 )
 
 [node name="All_Timer" type="Timer" parent="."]
+autostart = true
 
 [connection signal="timeout" from="All_Timer" to="." method="_on_All_Timer_timeout"]
