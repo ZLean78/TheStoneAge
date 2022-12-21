@@ -112,21 +112,23 @@ margin_left = 14.0
 margin_top = 12.0
 margin_right = 120.0
 margin_bottom = 43.0
-text = "FOOD:
+text = "COMIDA:
 "
 
 [node name="Label2" type="Label" parent="The_Canvas/The_Control/Rectangle"]
-margin_left = 230.0
+margin_left = 137.0
 margin_top = 6.0
-margin_right = 668.0
-margin_bottom = 48.0
+margin_right = 679.0
+margin_bottom = 50.0
+text = "Recoge comida y crea unidades con el botón de la derecha. Debes conseguir refugiar
+12 en la cueva. Protege a tus unidades activas resguardándolas bajo los árboles."
 
 [node name="Timer_Label" type="Label" parent="The_Canvas/The_Control"]
 margin_left = 878.0
 margin_top = 24.0
 margin_right = 979.0
 margin_bottom = 58.0
-text = "ENEMY ATTACK:
+text = "ATAQUE ENEMIGO:
 000"
 align = 1
 

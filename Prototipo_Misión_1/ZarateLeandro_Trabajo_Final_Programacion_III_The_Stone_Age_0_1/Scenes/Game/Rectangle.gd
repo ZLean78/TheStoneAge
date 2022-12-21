@@ -12,7 +12,7 @@ func _set_food_points(var _food_points):
 	_set_label_food_points(food_points)
 
 func _set_label_food_points(var _food_points):
-	$Label.text = "FOOD: " + str(_food_points)
+	$Label.text = "COMIDA: " + str(_food_points)
 
 func _set_phrase(var _phrase):
 	phrase = _phrase
