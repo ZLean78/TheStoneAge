@@ -41,21 +41,16 @@ var selected = false
 
 var screensize = Vector2(ProjectSettings.get("display/window/size/width"),ProjectSettings.get("display/window/size/height"))
 
-var fruit_tree_touching
+var fruit_tree_touching = false
 
 onready var all_timer = $All_Timer
 
-func _ready():
-	
-	
+func _ready():	
 	emit_signal("health_change",health)
 	if !is_girl:
 		$sprite.animation = "male_idle1"
 	if is_girl:
 		$sprite.animation = "female_idle1"
-	
-	
-
 
 func _physics_process(_delta):	
 	
@@ -85,12 +80,11 @@ func _physics_process(_delta):
 	else:
 		$sprite.stop()
 		
+	#revisar si está tocando un árbol
+	_check_fruit_tree_touching()
+		
 	if(food_timer.is_stopped()):
 		food_timer.start()
-		
-	
-	
-		
 
 func _unhandled_input(event):	
 	#velocity = velocity.normalized()
@@ -105,12 +99,7 @@ func _unhandled_input(event):
 			device_number = 3
 		if event.scancode == KEY_4:
 			device_number = 4	
-		###############
-#		if event.scancode == KEY_I:
-#			if(!is_girl):
-#				is_girl = true
-#			else:
-#				is_girl = false
+	
 	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
 		device_number = 2
 
@@ -225,13 +214,8 @@ func _animate():
 #				$sprite.animation = "female_idle1"	
 		
 	if device_number == 2:
-		#if position.distance_to(get_node("Mouse_Device/Target_Position1").position) < 5:
 		target_position = get_viewport().get_mouse_position()		
-#		if position.distance_to(target_position) < 5:
-#			if(!is_girl):
-#				$sprite.animation = "male_idle1"
-#			else:
-#				$sprite.animation = "female_idle1"
+#		
 	
 	if device_number == 4:
 		#if position.distance_to(get_node("Single_Tap_Device/Target_Position").position) < 5:
@@ -243,22 +227,7 @@ func _animate():
 				$sprite.animation = "female_idle1"
 	
 
-#func _get_damage():
-#	if(its_raining && !is_sheltered):
-#		if(energy_points>0):
-#			energy_points-=1
-#			$Bar._decrease_energy()
-#		else:
-#			deselect()
-#			queue_free()
-#	elif(its_raining && is_sheltered):
-#		if(energy_points<30):
-#			energy_points+=1
-#			$Bar._increase_energy()
-			
 
-		
-			
 func _on_fruit_tree_fruit_tree_entered():	
 	can_add = true	
 	is_sheltered = true
@@ -267,17 +236,11 @@ func _on_fruit_tree_fruit_tree_entered():
 func _on_fruit_tree_fruit_tree_exited():
 	can_add = false
 	is_sheltered = false
-	
-
 
 
 func _on_player_mouse_entered():
 	if device_number == 2:
 		selected = true
-
-
-
-
 
 	
 func _set_fruit_tree_touching(var _fruit_tree):
@@ -286,14 +249,9 @@ func _set_fruit_tree_touching(var _fruit_tree):
 func _set_its_raining(var _its_raining):
 	its_raining = _its_raining
 	
-func _set_sheltered(var _is_sheltered):
-	_is_sheltered = true
-
-
-
-
-
-
+func _check_fruit_tree_touching():
+	_set_fruit_tree_touching(fruit_tree_touching)
+#	
 func _on_All_Timer_timeout():
 	pass
 	#_get_damage()

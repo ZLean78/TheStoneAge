@@ -6,13 +6,6 @@ signal fruit_tree_entered
 signal fruit_tree_exited
 var is_touching = false
 var is_empty = false
-#signal fruit_tree_loaded
-
-
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
 
 
 # Called when the node enters the scene tree for the first time.

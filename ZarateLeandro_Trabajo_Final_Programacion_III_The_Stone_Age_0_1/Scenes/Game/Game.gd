@@ -14,7 +14,7 @@ var all_trees=[]
 var sheltered=[]
 
 func _ready():
-	#all_trees.append($fruit_tree)
+	all_trees.append($fruit_tree)
 	all_trees.append($fruit_tree2)
 	all_trees.append($fruit_tree3)
 	all_trees.append($fruit_tree4)
@@ -44,37 +44,25 @@ func _create_unit():
 		tile_map.add_child(new_Unit)
 		food_points-=15	
 		all_units.append(new_Unit)
-		
-		
 
 func _collect_food():
 	for a_unit in all_units:		
 		for a_tree in all_trees:
-			if a_tree.is_touching && !a_tree.is_empty && a_unit.can_add:
+			if a_tree.is_touching && !a_tree.is_empty && a_unit.fruit_tree_touching:
 				var the_tree = all_trees[all_trees.find(a_tree,0)]
 				var the_unit = all_units[all_units.find(a_unit,0)]
-				the_unit.food_points +=1
-				the_tree.points-=1
-				if the_tree.points <= 0:
-					the_tree.is_empty = true
-					food_points+=the_unit.food_points
-					the_unit.food_points = 0
-	
-
-func _set_sheltered():
-	for a_unit in all_units:		
-		for a_tree in all_trees:
-			if a_tree.is_touching:
-				var the_unit = all_units[all_units.find(a_unit,0)]
-				the_unit._set_sheltered(true)
-			if !a_tree.is_touching:
-				var the_unit = all_units[all_units.find(a_unit,0)]
-				the_unit._set_sheltered(false)
+				if((abs(the_unit.position.x-the_tree.position.x)<5)&&
+				(abs(the_unit.position.y-the_tree.position.y)<5)):					
+					food_points +=1
+					the_tree.points-=1
+					if the_tree.points <= 0:
+						the_tree.is_empty = true
+						
 				
 func _get_damage():
 	for a_unit in all_units:		
 		for a_tree in all_trees:			
-			if(its_raining && a_unit.fruit_tree_touching==false):
+			if(its_raining && !a_unit.fruit_tree_touching):
 				var the_unit = all_units[all_units.find(a_unit,0)]
 				if(the_unit.energy_points>0):
 					the_unit.energy_points-=1
@@ -93,7 +81,7 @@ func _on_CreateCitizen_pressed():
 
 func _on_food_timer_timeout():
 	_collect_food()
-	_set_sheltered()
+	#_set_sheltered()
 	_get_damage()
 	
 
