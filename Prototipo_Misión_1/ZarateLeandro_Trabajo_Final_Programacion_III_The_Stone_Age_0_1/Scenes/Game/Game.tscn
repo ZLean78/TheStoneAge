@@ -55,6 +55,7 @@ position = Vector2( 928, 485 )
 
 [node name="Unit" parent="." instance=ExtResource( 2 )]
 position = Vector2( 270, 143 )
+collision_layer = 2
 
 [node name="food_timer" type="Timer" parent="."]
 
