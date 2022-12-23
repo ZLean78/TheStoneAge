@@ -90,30 +90,14 @@ func _process(_delta):
 	for a_unit in all_units:
 		
 		a_unit.position.x = clamp(a_unit.position.x,0,screensize.x)
-		a_unit.position.y = clamp(a_unit.position.y,0,screensize.y)	
+		a_unit.position.y = clamp(a_unit.position.y,0,screensize.y)
 	
 	
-		# Orientar al player.
-		if a_unit.velocity.x<0:
-			if(is_flipped==false):
-				a_unit.scale.x = -1			
-				is_flipped = true
-		if a_unit.velocity.x>0:
-			if(is_flipped==true):
-				a_unit.scale.x = -1
-				is_flipped = false
-		
-		
 		a_unit._set_its_raining(its_raining)
 	
-		a_unit._animate()
+#		
 		
-#		if a_unit.velocity.length() > 0:
-#			a_unit.velocity = a_unit.velocity.normalized() * a_unit.SPEED
-#			if(a_unit.get_node("sprite").is_playing()):
-#				a_unit.get_node("sprite").play()
-#			else:
-#				a_unit.get_node("sprite").stop()
+#		
 	
 
 func _create_unit():
