@@ -37,7 +37,7 @@ var its_raining = false
 
 signal health_change
 signal im_dead
-signal food_points_change
+#signal food_points_change
 
 var selected = false
 
@@ -128,7 +128,7 @@ func hurt(amount):
 	emit_signal("health_change",health)
 
 
-func _on_Target_Position_body_entered(body):
+func _on_Target_Position_body_entered(_body):
 	velocity = Vector2(0,0)
 	touch_enabled = false
 	#device_number = 0
@@ -216,12 +216,12 @@ func _animate():
 #				$sprite.animation = "female_idle1"	
 		
 	if device_number == 2:
-		target_position = get_viewport().get_mouse_position()		
-#		
+		target_position = get_global_mouse_position()		
+		
 	
 	if device_number == 4:
 		#if position.distance_to(get_node("Single_Tap_Device/Target_Position").position) < 5:
-		target_position = get_viewport().get_mouse_position()
+		target_position = get_global_mouse_position()
 		if position.distance_to(target_position) < 5:
 			if(!is_girl):
 				$sprite.animation = "male_idle1"
