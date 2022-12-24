@@ -6,7 +6,7 @@ var phrase = ""
 
 onready var game_screen = get_tree().root.get_child(0).get_node("GameScreen")
 onready var panel = get_tree().root.get_child(0).get_node("Panel")
-onready var timer_label = game_screen.get_node("Viewport/Camera2D_1/Timer_Label")
+onready var timer_label = game_screen.get_node("Viewport/Camera2D_1/CameraCanvas/Timer_Label")
 	
 func _process(_delta):
 	_set_Timer_Label_enemy_attack(enemy_attack)

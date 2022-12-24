@@ -95,11 +95,13 @@ script = ExtResource( 7 )
 scale = Vector2( 3, 3 )
 frames = SubResource( 2 )
 
-[node name="Timer_Label" type="Label" parent="GameScreen/Viewport/Camera2D_1"]
-margin_left = 876.0
-margin_top = 22.0
-margin_right = 999.0
-margin_bottom = 56.0
+[node name="CameraCanvas" type="CanvasLayer" parent="GameScreen/Viewport/Camera2D_1"]
+
+[node name="Timer_Label" type="Label" parent="GameScreen/Viewport/Camera2D_1/CameraCanvas"]
+margin_left = 878.0
+margin_top = 20.0
+margin_right = 1001.0
+margin_bottom = 54.0
 text = "ATAQUE ENEMIGO:
 000"
 align = 1
@@ -157,7 +159,6 @@ margin_top = 5.0
 margin_right = 1016.0
 margin_bottom = 45.0
 texture_normal = ExtResource( 5 )
-expand = true
 
 [node name="Label" type="Label" parent="Panel/Viewport/The_Canvas/The_Control/Rectangle"]
 margin_left = 14.0

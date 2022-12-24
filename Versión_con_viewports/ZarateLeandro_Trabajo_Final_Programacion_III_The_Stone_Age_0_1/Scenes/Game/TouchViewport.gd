@@ -49,10 +49,8 @@ func _input(event):
 
 	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
 		if event.is_pressed():
-			print("event is pressed")
 			for unit in selected:
 				if(unit.collider.selected):
-					print("unit_is_selected")
 					unit.collider.get_node("Mouse_Control").can_move = true
 					unit.collider.target_position = event.position
 					#print(str(unit.target_position.x))
@@ -61,23 +59,8 @@ func _input(event):
 					unit.collider.get_node("Mouse_Control").can_move = false
 
 
-#func _physics_process_(delta):
-#	for unit in selected:
-#		if(unit.collider.get_node("Mouse_Control").can_move):
-#		#target = get_parent().get_global_mouse_position()
-#		#$Target_Position1.position = target
-#
-#			if unit.collider.device_number == 2:
-#				unit.collider.get_node("Mouse_Control").velocity = unit.collider.position.direction_to(unit.collider.target_position) * unit.collider.get_node("Mouse_Control").speed
-#
-#
-#func _process(delta):
-#	for unit in selected:
-#
-#		unit.collider.target_position = $Camera2D_1.get_global_mouse_position()
-#		if unit.collider.position.distance_to(unit.collider.target_position) > 5:
-#			unit.collider.move_and_collide(unit.collider.get_node("Mouse_Control").velocity*delta)
-#			unit.collider.velocity = unit.collider.get_node("Mouse_Control").velocity*delta
-			
-		
+
+
+
+
 
