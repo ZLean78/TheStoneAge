@@ -30,7 +30,7 @@ texture = ExtResource( 2 )
 position = Vector2( 0, -1 )
 scale = Vector2( 1.58333, 1.25 )
 frames = ExtResource( 1 )
-animation = "female_idle3"
+animation = "male_idle3_d"
 
 [node name="Mouse_Control" type="Node" parent="."]
 script = ExtResource( 4 )
