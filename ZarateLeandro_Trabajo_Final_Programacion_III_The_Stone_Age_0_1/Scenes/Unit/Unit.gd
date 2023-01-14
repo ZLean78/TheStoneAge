@@ -53,10 +53,16 @@ onready var all_timer = $All_Timer
 
 func _ready():	
 	emit_signal("health_change",health)
-	if !is_girl:
-		$sprite.animation = "male_idle1"
-	if is_girl:
-		$sprite.animation = "female_idle1"
+	if(!is_dressed):
+		if !is_girl:
+			$sprite.animation = "male_idle1"
+		if is_girl:
+			$sprite.animation = "female_idle1"
+	else:
+		if !is_girl:
+			$sprite.animation = "male_idle1_d"
+		if is_girl:
+			$sprite.animation = "female_idle1_d"
 
 func _physics_process(_delta):	
 	

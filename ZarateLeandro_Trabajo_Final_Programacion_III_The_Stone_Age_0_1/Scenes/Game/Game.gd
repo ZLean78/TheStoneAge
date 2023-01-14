@@ -56,8 +56,8 @@ func _process(_delta):
 	the_canvas._set_food_points(int(food_points))
 	the_canvas._set_leaves_points(int(leaves_points))	
 	camera2d_1._set_its_raining(its_raining)
-	if(group_dressed):
-		_dress_units()
+	#if(group_dressed):
+	#	_dress_units()
 		
 	for a_unit in all_units:
 		
@@ -78,6 +78,8 @@ func _create_unit():
 			new_Unit.is_girl=true
 		else:
 			new_Unit.is_girl=false
+		if(group_dressed):
+			new_Unit.is_dressed=true		
 		tile_map.add_child(new_Unit)
 		food_points-=15	
 		all_units.append(new_Unit)
@@ -177,6 +179,7 @@ func _on_Rain_Timer_timeout():
 
 func _on_AddClothes_pressed():
 	if leaves_points >=70:
+		_dress_units()
 		group_dressed = true
 		add_clothes.visible = false
 	
