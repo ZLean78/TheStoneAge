@@ -15,7 +15,7 @@ var velocity = Vector2()
 
 var can_move = false
 
-func _unhandled_input(event):
+func _input(event):
 #	if event is InputEventMouseButton && event.button_index == BUTTON_LEFT:
 #		if event.is_pressed():
 #			for unit in selected:
