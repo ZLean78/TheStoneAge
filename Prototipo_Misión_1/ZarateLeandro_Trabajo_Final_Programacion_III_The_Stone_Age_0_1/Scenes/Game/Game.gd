@@ -56,9 +56,7 @@ func _process(_delta):
 	the_canvas._set_food_points(int(food_points))
 	the_canvas._set_leaves_points(int(leaves_points))	
 	camera2d_1._set_its_raining(its_raining)
-	#if(group_dressed):
-	#	_dress_units()
-		
+			
 	for a_unit in all_units:
 		
 		a_unit.position.x = clamp(a_unit.position.x,0,screensize.x)
@@ -88,6 +86,7 @@ func _dress_units():
 	for a_unit in all_units:
 		if(!a_unit.is_dressed):
 			a_unit.is_dressed = true;
+			leaves_points-=70
 			
 		
 
@@ -128,7 +127,9 @@ func _get_damage():
 						the_unit.energy_points-=3
 					else:
 						the_unit.energy_points-=1
-					the_unit.get_child(4)._decrease_energy()
+					#the_unit.get_child(4)._decrease_energy()
+					the_unit.get_child(4)._set_energy_points(the_unit.energy_points)
+					the_unit.get_child(4)._update_energy()
 				else:
 					the_unit.deselect()					
 					all_units.erase(the_unit)	
@@ -142,7 +143,9 @@ func _get_damage():
 				var the_unit = all_units[all_units.find(a_unit,0)]
 				if(the_unit.energy_points<100):
 					the_unit.energy_points+=1
-					the_unit.get_child(4)._increase_energy()
+					#the_unit.get_child(4)._increase_energy()
+					the_unit.get_child(4)._set_energy_points(the_unit.energy_points)
+					the_unit.get_child(4)._update_energy()
 	if(all_units.size()==0 && food_points<15):
 		the_canvas._set_phrase("Has sido derrotado.")	
 	if(cave.sheltered_units>=12):
