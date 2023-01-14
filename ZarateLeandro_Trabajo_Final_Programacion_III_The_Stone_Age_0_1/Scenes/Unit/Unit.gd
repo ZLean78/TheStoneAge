@@ -9,7 +9,7 @@ onready var food_timer = game_screen.get_node("Viewport/food_timer")
 onready var health = MAX_HEALTH
 
 var food_points = 0
-var energy_points = 30
+var energy_points = 100
 var dragging = true
 
 var is_flipped = false

@@ -4,6 +4,7 @@ var unit_count = 1
 var food_points = 15
 var leaves_points = 0;
 var its_raining = false
+var group_dressed = false
 
 onready var game_screen = $GameScreen
 onready var panel = $Panel
@@ -55,6 +56,9 @@ func _process(_delta):
 	the_canvas._set_food_points(int(food_points))
 	the_canvas._set_leaves_points(int(leaves_points))	
 	camera2d_1._set_its_raining(its_raining)
+	if(group_dressed):
+		_dress_units()
+		
 	for a_unit in all_units:
 		
 		a_unit.position.x = clamp(a_unit.position.x,0,screensize.x)
@@ -62,7 +66,7 @@ func _process(_delta):
 	
 	
 		a_unit._set_its_raining(its_raining)
-	
+		
 
 
 func _create_unit():
@@ -79,10 +83,10 @@ func _create_unit():
 		all_units.append(new_Unit)
 		
 func _dress_units():
-	if leaves_points >=60:
-		for a_unit in all_units:
-			if(!a_unit.is_dressed):
-				a_unit.is_dressed = true;
+	for a_unit in all_units:
+		if(!a_unit.is_dressed):
+			a_unit.is_dressed = true;
+			
 		
 
 func _collect_food():
@@ -118,7 +122,10 @@ func _get_damage():
 			if(its_raining && !a_unit.fruit_tree_touching && !all_units.size()==0):
 				var the_unit = all_units[all_units.find(a_unit,0)]
 				if(the_unit.energy_points>0):
-					the_unit.energy_points-=1
+					if(!the_unit.is_dressed):
+						the_unit.energy_points-=3
+					else:
+						the_unit.energy_points-=1
 					the_unit.get_child(4)._decrease_energy()
 				else:
 					the_unit.deselect()					
@@ -131,7 +138,7 @@ func _get_damage():
 					
 			elif(its_raining && a_unit.fruit_tree_touching):
 				var the_unit = all_units[all_units.find(a_unit,0)]
-				if(the_unit.energy_points<30):
+				if(the_unit.energy_points<100):
 					the_unit.energy_points+=1
 					the_unit.get_child(4)._increase_energy()
 	if(all_units.size()==0 && food_points<15):
@@ -169,5 +176,7 @@ func _on_Rain_Timer_timeout():
 
 
 func _on_AddClothes_pressed():
-	_dress_units()
-	add_clothes.visible = false
+	if leaves_points >=70:
+		group_dressed = true
+		add_clothes.visible = false
+	
