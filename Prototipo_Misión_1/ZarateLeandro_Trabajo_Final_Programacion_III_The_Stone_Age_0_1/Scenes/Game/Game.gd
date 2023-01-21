@@ -108,8 +108,12 @@ func _collect_food():
 				if((abs(the_unit.position.x-the_tree.position.x)<5)&&
 				(abs(the_unit.position.y-the_tree.position.y)<5)):
 					if(the_unit.has_bag):
-						food_points +=4
-						the_tree.points-=4
+						if(the_tree.points>=4):
+							food_points +=4
+							the_tree.points-=4
+						else:
+							food_points += the_tree.points
+							the_tree.points = 0
 					else:					
 						food_points +=1
 						the_tree.points-=1
@@ -125,8 +129,12 @@ func _collect_leaves():
 				if((abs(the_unit.position.x-the_plant.position.x)<5)&&
 				(abs(the_unit.position.y-the_plant.position.y)<5)):	
 					if(the_unit.has_bag):
-						leaves_points+=4
-						the_plant.points-=4
+						if(the_plant.points>=4):
+							leaves_points+=4
+							the_plant.points-=4
+						else:
+							leaves_points += the_plant.points
+							the_plant.points = 0
 					else:				
 						leaves_points +=1
 						the_plant.points-=1
@@ -179,7 +187,7 @@ func _on_food_timer_timeout():
 	
 
 func _rain_pour():
-	if(!its_raining):	
+	if(!its_raining):
 		its_raining=true
 	else:
 		its_raining=false
@@ -187,6 +195,10 @@ func _rain_pour():
 
 func _on_Rain_Timer_timeout():	
 	_rain_pour()
+	if(its_raining):
+		rain_timer.wait_time = 100
+	else:
+		rain_timer.wait_time = 30
 
 	
 	

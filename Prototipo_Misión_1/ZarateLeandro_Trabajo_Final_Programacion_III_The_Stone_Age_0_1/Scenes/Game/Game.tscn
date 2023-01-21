@@ -163,6 +163,9 @@ margin_left = 1060.0
 margin_top = 20.0
 margin_right = 1100.0
 margin_bottom = 45.0
+hint_tooltip = "Crear Ciudadano.
+Costo: 15 ptos.
+de comida."
 texture_normal = ExtResource( 5 )
 
 [node name="Label" type="Label" parent="Panel/Viewport/The_Canvas/The_Control/Rectangle"]
@@ -193,6 +196,11 @@ margin_left = 980.0
 margin_top = 20.0
 margin_right = 1040.0
 margin_bottom = 40.0
+hint_tooltip = "Ropa de hojas: reduce
+en un 1/3 el daño por
+la lluvia.
+Costo: 70 ptos.
+de hojas."
 texture_normal = ExtResource( 17 )
 
 [node name="AddBag" type="TextureButton" parent="Panel/Viewport/The_Canvas/The_Control/Rectangle"]
@@ -200,6 +208,12 @@ margin_left = 950.0
 margin_top = 20.0
 margin_right = 1000.0
 margin_bottom = 40.0
+hint_tooltip = "Cesta: multiplica
+por 4 la capacidad
+de recolección de 
+comida y hojas.
+Costo: 50 ptos.
+de hojas."
 texture_normal = ExtResource( 18 )
 
 [node name="Label4" type="Label" parent="Panel/Viewport/The_Canvas/The_Control/Rectangle"]
