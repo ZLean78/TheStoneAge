@@ -26,7 +26,7 @@ func _input(event):
 		elif dragging:
 			dragging = false
 			select_draw.update_status(drag_start,$Camera2D_1.get_global_mouse_position(),dragging)
-			var drag_end = $Camera2D_1.get_global_mouse_position()			
+			var drag_end = $Camera2D_1.get_global_mouse_position()	
 			select_rectangle.extents = (drag_end-drag_start)/2
 			var space = get_world_2d().get_direct_space_state()
 			var query = Physics2DShapeQueryParameters.new()
@@ -52,7 +52,7 @@ func _input(event):
 			for unit in selected:
 				if(unit.collider.selected):
 					unit.collider.get_node("Mouse_Control").can_move = true
-					unit.collider.target_position = event.position
+					unit.collider.target_position = $Camera2D_1.get_global_mouse_position()
 					#print(str(unit.target_position.x))
 					unit.collider.device_number = 2
 				else:

@@ -5,12 +5,14 @@ var food_points = 15
 var leaves_points = 0;
 var its_raining = false
 var group_dressed = false
+var group_has_bag = false
 
 onready var game_screen = $GameScreen
 onready var panel = $Panel
 onready var food_timer = game_screen.get_node("Viewport/food_timer")
 onready var the_canvas = $Panel.get_node("Viewport/The_Canvas")
 onready var add_clothes = $Panel.get_node("Viewport/The_Canvas/The_Control/Rectangle/AddClothes")
+onready var add_bag = $Panel.get_node("Viewport/The_Canvas/The_Control/Rectangle/AddBag")
 onready var camera2d_1 = $GameScreen.get_node("Viewport/Camera2D_1")
 onready var rain_timer = $GameScreen.get_node("Viewport/Rain_Timer")
 onready var tile_map
@@ -56,9 +58,7 @@ func _process(_delta):
 	the_canvas._set_food_points(int(food_points))
 	the_canvas._set_leaves_points(int(leaves_points))	
 	camera2d_1._set_its_raining(its_raining)
-	#if(group_dressed):
-	#	_dress_units()
-		
+			
 	for a_unit in all_units:
 		
 		a_unit.position.x = clamp(a_unit.position.x,0,screensize.x)
@@ -79,7 +79,10 @@ func _create_unit():
 		else:
 			new_Unit.is_girl=false
 		if(group_dressed):
-			new_Unit.is_dressed=true		
+			new_Unit.is_dressed=true	
+		if(group_has_bag):
+			new_Unit.has_bag=true	
+			new_Unit.get_child(3).visible = true
 		tile_map.add_child(new_Unit)
 		food_points-=15	
 		all_units.append(new_Unit)
@@ -87,9 +90,14 @@ func _create_unit():
 func _dress_units():
 	for a_unit in all_units:
 		if(!a_unit.is_dressed):
-			a_unit.is_dressed = true;
+			a_unit.is_dressed = true
 			
-		
+			
+func _add_bag():
+	for a_unit in all_units:
+		if(!a_unit.has_bag):
+			a_unit.has_bag = true	
+			a_unit.get_child(3).visible=true	
 
 func _collect_food():
 	for a_unit in all_units:		
@@ -98,9 +106,17 @@ func _collect_food():
 				var the_tree = all_trees[all_trees.find(a_tree,0)]
 				var the_unit = all_units[all_units.find(a_unit,0)]
 				if((abs(the_unit.position.x-the_tree.position.x)<5)&&
-				(abs(the_unit.position.y-the_tree.position.y)<5)):					
-					food_points +=1
-					the_tree.points-=1
+				(abs(the_unit.position.y-the_tree.position.y)<5)):
+					if(the_unit.has_bag):
+						if(the_tree.points>=4):
+							food_points +=4
+							the_tree.points-=4
+						else:
+							food_points += the_tree.points
+							the_tree.points = 0
+					else:					
+						food_points +=1
+						the_tree.points-=1
 					if the_tree.points <= 0:
 						the_tree.is_empty = true
 						
@@ -111,9 +127,17 @@ func _collect_leaves():
 				var the_plant = all_plants[all_plants.find(a_plant,0)]
 				var the_unit = all_units[all_units.find(a_unit,0)]
 				if((abs(the_unit.position.x-the_plant.position.x)<5)&&
-				(abs(the_unit.position.y-the_plant.position.y)<5)):					
-					leaves_points +=1
-					the_plant.points-=1
+				(abs(the_unit.position.y-the_plant.position.y)<5)):	
+					if(the_unit.has_bag):
+						if(the_plant.points>=4):
+							leaves_points+=4
+							the_plant.points-=4
+						else:
+							leaves_points += the_plant.points
+							the_plant.points = 0
+					else:				
+						leaves_points +=1
+						the_plant.points-=1
 					if the_plant.points <= 0:
 						the_plant.is_empty = true
 						
@@ -128,7 +152,9 @@ func _get_damage():
 						the_unit.energy_points-=3
 					else:
 						the_unit.energy_points-=1
-					the_unit.get_child(4)._decrease_energy()
+					#the_unit.get_child(4)._decrease_energy()
+					the_unit.get_child(5)._set_energy_points(the_unit.energy_points)
+					the_unit.get_child(5)._update_energy()
 				else:
 					the_unit.deselect()					
 					all_units.erase(the_unit)	
@@ -142,7 +168,9 @@ func _get_damage():
 				var the_unit = all_units[all_units.find(a_unit,0)]
 				if(the_unit.energy_points<100):
 					the_unit.energy_points+=1
-					the_unit.get_child(4)._increase_energy()
+					#the_unit.get_child(4)._increase_energy()
+					the_unit.get_child(5)._set_energy_points(the_unit.energy_points)
+					the_unit.get_child(5)._update_energy()
 	if(all_units.size()==0 && food_points<15):
 		the_canvas._set_phrase("Has sido derrotado.")	
 	if(cave.sheltered_units>=12):
@@ -159,7 +187,7 @@ func _on_food_timer_timeout():
 	
 
 func _rain_pour():
-	if(!its_raining):	
+	if(!its_raining):
 		its_raining=true
 	else:
 		its_raining=false
@@ -167,6 +195,10 @@ func _rain_pour():
 
 func _on_Rain_Timer_timeout():	
 	_rain_pour()
+	if(its_raining):
+		rain_timer.wait_time = 100
+	else:
+		rain_timer.wait_time = 30
 
 	
 	
@@ -179,7 +211,17 @@ func _on_Rain_Timer_timeout():
 
 func _on_AddClothes_pressed():
 	if leaves_points >=70:
+		leaves_points-=70
 		_dress_units()
 		group_dressed = true
 		add_clothes.visible = false
 	
+
+
+func _on_AddBag_pressed():
+	if leaves_points >=50:
+		leaves_points-=50
+		_add_bag()
+		group_has_bag = true
+		add_bag.visible = false
+		

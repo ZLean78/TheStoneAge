@@ -122,7 +122,7 @@ position = Vector2( 825, 183 )
 position = Vector2( 100, 123 )
 
 [node name="Rain_Timer" type="Timer" parent="GameScreen/Viewport"]
-wait_time = 100.0
+wait_time = 0.05
 autostart = true
 
 [node name="Plant" parent="GameScreen/Viewport" instance=ExtResource( 16 )]
