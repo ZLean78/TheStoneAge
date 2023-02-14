@@ -4,8 +4,8 @@ extends KinematicBody2D
 
 export (float) var SPEED = 0.0
 export (float) var MAX_HEALTH = 100.0
-onready var game_screen = get_tree().root.get_child(0).get_node("GameScreen")
-onready var food_timer = game_screen.get_node("Viewport/food_timer")
+
+onready var food_timer = get_tree().root.get_child(0).find_node("food_timer")
 onready var health = MAX_HEALTH
 
 var food_points = 0

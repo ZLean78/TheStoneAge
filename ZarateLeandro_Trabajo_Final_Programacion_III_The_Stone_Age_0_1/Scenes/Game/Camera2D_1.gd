@@ -8,8 +8,7 @@ const CAMERA_SPEED = 0.01
 
 
 
-onready var game_screen = get_tree().root.get_child(0).get_node("GameScreen")
-onready var select_draw = game_screen.find_node("Viewport/SelectDraw")
+onready var select_draw = get_tree().root.get_child(0).find_node("Viewport/SelectDraw")
 
 
 

@@ -6,10 +6,10 @@
 script = ExtResource( 1 )
 
 [node name="Start" type="Button" parent="."]
-margin_left = 598.0
-margin_top = 438.0
-margin_right = 650.0
-margin_bottom = 458.0
+margin_left = 576.0
+margin_top = 520.0
+margin_right = 628.0
+margin_bottom = 540.0
 rect_scale = Vector2( 3.59044, 3.09377 )
 text = "Iniciar"
 

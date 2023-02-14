@@ -7,16 +7,23 @@ var its_raining = false
 var group_dressed = false
 var group_has_bag = false
 
-onready var game_screen = $GameScreen
-onready var panel = $Panel
-onready var food_timer = game_screen.get_node("Viewport/food_timer")
-onready var the_canvas = $Panel.get_node("Viewport/The_Canvas")
-onready var add_clothes = $Panel.get_node("Viewport/The_Canvas/The_Control/Rectangle/AddClothes")
-onready var add_bag = $Panel.get_node("Viewport/The_Canvas/The_Control/Rectangle/AddBag")
-onready var camera2d_1 = $GameScreen.get_node("Viewport/Camera2D_1")
-onready var rain_timer = $GameScreen.get_node("Viewport/Rain_Timer")
+
+onready var tree = get_tree().root.get_child(0)
+onready var food_timer = tree.get_node("food_timer")
+onready var timer_label = tree.get_node("UI/Base/TimerLabel")
+onready var food_label = tree.get_node("UI/Base/Rectangle/FoodLabel")
+onready var prompts_label = tree.get_node("UI/Base/Rectangle/PromptsLabel")
+onready var leaves_label = tree.get_node("UI/Base/Rectangle/LeavesLabel")
+#onready var developments_label = tree.get_node("UI/Base/Rectangle/DevelopmentsLabel")
+onready var rectangle = tree.get_node("UI/Base/Rectangle")
+onready var add_clothes = tree.get_node("UI/Base/Rectangle/AddClothes")
+onready var add_bag = tree.get_node("UI/Base/Rectangle/AddBag")
+onready var camera = tree.get_node("Camera")
+onready var rain_timer = tree.get_node("Rain_Timer")
 onready var tile_map
+
 var cave
+
 export (PackedScene) var Unit
 
 var all_units=[]
@@ -30,34 +37,35 @@ var drag_start = Vector2.ZERO
 var select_rectangle = RectangleShape2D.new()
 
 
-onready var select_draw = game_screen.find_node("Viewport/SelectDraw")
+onready var select_draw = get_tree().root.find_node("SelectDraw")
 
 var is_flipped = false
 
 var screensize = Vector2(ProjectSettings.get("display/window/size/width"),ProjectSettings.get("display/window/size/height"))
 
 func _ready():
-	tile_map=$GameScreen.get_node("Viewport/TileMap")
+	tile_map=tree.find_node("TileMap")
 	cave=tile_map.get_node("Cave")
-	all_trees.append($GameScreen.get_node("Viewport/fruit_tree"))
-	all_trees.append($GameScreen.get_node("Viewport/fruit_tree2"))
-	all_trees.append($GameScreen.get_node("Viewport/fruit_tree3"))
-	all_trees.append($GameScreen.get_node("Viewport/fruit_tree4"))
-	all_trees.append($GameScreen.get_node("Viewport/fruit_tree5"))
-	all_trees.append($GameScreen.get_node("Viewport/fruit_tree6"))
-	all_plants.append($GameScreen.get_node("Viewport/Plant"));
-	all_plants.append($GameScreen.get_node("Viewport/Plant2"));
-	all_units.append($GameScreen.get_node("Viewport/Unit"))
+	all_trees.append(tree.find_node("fruit_tree"))
+	all_trees.append(tree.find_node("fruit_tree2"))
+	all_trees.append(tree.find_node("fruit_tree3"))
+	all_trees.append(tree.find_node("fruit_tree4"))
+	all_trees.append(tree.find_node("fruit_tree5"))
+	all_trees.append(tree.find_node("fruit_tree6"))
+	all_plants.append(tree.find_node("Plant"));
+	all_plants.append(tree.find_node("Plant2"));
+	all_units.append(tree.find_node("Unit"))
 	_create_unit();
-	all_units[all_units.size()-1].position = Vector2(camera2d_1.get_viewport().size.x/6,camera2d_1.get_viewport().size.y/4)
+	all_units[all_units.size()-1].position = Vector2(camera.get_viewport().size.x/6,camera.get_viewport().size.y/4)
 	
 
 
 func _process(_delta):
-	the_canvas._set_enemy_attack(int(rain_timer.time_left))
-	the_canvas._set_food_points(int(food_points))
-	the_canvas._set_leaves_points(int(leaves_points))	
-	camera2d_1._set_its_raining(its_raining)
+	
+	timer_label.text = "ATAQUE ENEMIGO: " + str(int(rain_timer.time_left))
+	food_label.text = "COMIDA: " + str(int(food_points))
+	leaves_label.text = "HOJAS: " + str(int(leaves_points))	
+	camera._set_its_raining(its_raining)
 			
 	for a_unit in all_units:
 		
@@ -73,7 +81,7 @@ func _create_unit():
 	if food_points >=15:
 		var new_Unit = Unit.instance()
 		unit_count+=1
-		new_Unit.position = Vector2(camera2d_1.get_viewport().size.x/2,camera2d_1.get_viewport().size.y/2)
+		new_Unit.position = Vector2(camera.get_viewport().size.x/2,camera.get_viewport().size.y/2)
 		if(unit_count%2==0):
 			new_Unit.is_girl=true
 		else:
@@ -172,9 +180,9 @@ func _get_damage():
 					the_unit.get_child(5)._set_energy_points(the_unit.energy_points)
 					the_unit.get_child(5)._update_energy()
 	if(all_units.size()==0 && food_points<15):
-		the_canvas._set_phrase("Has sido derrotado.")	
+		prompts_label.text = "Has sido derrotado."	
 	if(cave.sheltered_units>=12):
-		the_canvas._set_phrase("Has ganado.")	
+		prompts_label.text = "Has ganado."	
 	
 func _on_CreateCitizen_pressed():
 	_create_unit()
