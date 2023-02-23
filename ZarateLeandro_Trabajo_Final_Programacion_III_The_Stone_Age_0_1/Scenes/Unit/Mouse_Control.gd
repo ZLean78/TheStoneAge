@@ -15,7 +15,7 @@ var velocity = Vector2()
 
 var can_move = false
 
-func _input(event):
+#func _unhandled_input(event):
 #	if event is InputEventMouseButton && event.button_index == BUTTON_LEFT:
 #		if event.is_pressed():
 #			for unit in selected:
@@ -52,25 +52,31 @@ func _input(event):
 #		if event is InputEventMouseMotion:
 #			select_draw.update_status(drag_start,event.position,dragging)
 #
-	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
-		if event.is_pressed():
-			target = get_parent().get_global_mouse_position()
-		if get_parent().selected:		
-			can_move = true
-		else:
-			can_move = false
+#	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
+#		if event.is_pressed():
+#			target = get_parent().get_global_mouse_position()
+#		if get_parent().selected:		
+#			can_move = true
+#		else:
+#			can_move = false
+
+	
 		
 
-func _physics_process(delta):
-	if(can_move):
+#func _physics_process(delta):
+#	if(can_move):
+#
 		#target = get_parent().get_global_mouse_position()
 		#$Target_Position1.position = target
-		if get_parent().device_number == 2:
-			velocity = get_parent().position.direction_to(target) * speed
-				
-			if get_parent().position.distance_to(target) > 5:
-				get_parent().move_and_collide(velocity*delta)
-				get_parent().velocity = velocity*delta
+		
+		###############################################
+		##MÉTODO VIEJO
+		###############################################
+#		velocity = get_parent().position.direction_to(target) * speed
+#
+#		if get_parent().position.distance_to(target) > 5:
+#			get_parent().move_and_collide(velocity*delta)
+#			get_parent().velocity = velocity*delta
 		
 		
 			

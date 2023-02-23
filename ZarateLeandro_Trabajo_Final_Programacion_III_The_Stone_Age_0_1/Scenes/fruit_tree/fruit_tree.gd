@@ -34,3 +34,11 @@ func _fruit_tree_animate():
 		$AnimationPlayer.play("empty")
 	else:
 		$AnimationPlayer.play("full")
+
+
+func _on_Area2D_mouse_entered():
+	get_parent().emit_signal("is_basket")
+
+
+func _on_Area2D_mouse_exited():
+	get_parent().emit_signal("is_arrow")

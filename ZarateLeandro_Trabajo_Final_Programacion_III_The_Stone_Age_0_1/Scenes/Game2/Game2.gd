@@ -1,14 +1,12 @@
 extends Node2D
 
-var basket=load("res://Scenes/MouseIcons/basket.png")
-var arrow=load("res://Scenes/MouseIcons/arrow.png")
-
 var unit_count = 1
 var food_points = 15
 var leaves_points = 0;
-var its_raining = false
+var is_tiger = false
 var group_dressed = false
 var group_has_bag = false
+
 
 
 onready var tree = get_tree().root.get_child(0)
@@ -22,18 +20,20 @@ onready var rectangle = tree.get_node("UI/Base/Rectangle")
 onready var add_clothes = tree.get_node("UI/Base/Rectangle/AddClothes")
 onready var add_bag = tree.get_node("UI/Base/Rectangle/AddBag")
 onready var camera = tree.get_node("Camera")
-onready var rain_timer = tree.get_node("Rain_Timer")
+onready var tiger_timer = tree.get_node("tiger_timer")
 onready var tile_map
 
-onready var cave=tree.find_node("Cave")
+var cave
 
-export (PackedScene) var Unit
+export (PackedScene) var Unit2
 
 var selected_units=[]
 var all_units=[]
 var all_plants=[]
 var all_trees=[]
 var sheltered=[]
+var all_tigers=[]
+
 
 var dragging = false
 var selected = []
@@ -41,19 +41,20 @@ var drag_start = Vector2.ZERO
 var select_rectangle = RectangleShape2D.new()
 
 
-onready var select_draw = get_tree().root.find_node("SelectDraw")
+onready var draw_rect = get_tree().root.find_node("draw_rect")
 
 var is_flipped = false
 
 var screensize = Vector2(ProjectSettings.get("display/window/size/width"),ProjectSettings.get("display/window/size/height"))
 
-signal is_basket
-signal is_arrow
+
 
 func _ready():
 	
-	tile_map=tree.find_node("TileMap")
 	
+	all_units=get_tree().get_nodes_in_group("units")
+	tile_map=tree.find_node("TileMap")
+	cave=tile_map.get_node("Cave")
 	all_trees.append(tree.find_node("fruit_tree"))
 	all_trees.append(tree.find_node("fruit_tree2"))
 	all_trees.append(tree.find_node("fruit_tree3"))
@@ -62,37 +63,76 @@ func _ready():
 	all_trees.append(tree.find_node("fruit_tree6"))
 	all_plants.append(tree.find_node("Plant"));
 	all_plants.append(tree.find_node("Plant2"));
-	#all_units.append(tree.find_node("Unit"))
-	all_units = get_tree().get_nodes_in_group("units")
-	_create_unit();
+	#all_units.append(tree.find_node("Unit2"))
 	
-	all_units[all_units.size()-1].position = Vector2(camera.position.x+rand_range(50,100),camera.position.y+rand_range(50,100))
 	
-	Input.set_custom_mouse_cursor(arrow)
+	all_tigers.append(tree.find_node("Tiger1"))
+	all_tigers.append(tree.find_node("Tiger2"))
+	all_tigers.append(tree.find_node("Tiger3"))
 
+	
+	_create_unit();
+	for a_tiger in all_tigers:
+		#a_tiger.position=a_tiger.start_position
+		a_tiger.visible=false
+		#a_tiger.is_dead=true
+		
+	
+	
+	all_units[all_units.size()-1].position = Vector2(camera.get_viewport().size.x/6,camera.get_viewport().size.y/4)
+	
+	for a_tiger in all_tigers:
+		for a_unit in all_units:
+			a_tiger.units.append(a_unit)
 
 func _process(_delta):
 	
-	timer_label.text = "ATAQUE ENEMIGO: " + str(int(rain_timer.time_left))
+	timer_label.text = "ATAQUE ENEMIGO: " + str(int(tiger_timer.time_left))
 	food_label.text = "COMIDA: " + str(int(food_points))
 	leaves_label.text = "HOJAS: " + str(int(leaves_points))	
-	camera._set_its_raining(its_raining)
-			
+	#camera._set_its_raining(its_raining)
+
 	for a_unit in all_units:
-		
+
 		a_unit.position.x = clamp(a_unit.position.x,-1028,screensize.x)
 		a_unit.position.y = clamp(a_unit.position.y,-608,screensize.y)
+		
+		
+		
+	for a_tiger in all_tigers:
+		for a_unit in all_units:
+			if(a_tiger.position.distance_to(a_unit.position)<20):
+				a_tiger.path_to_unit=a_unit
+				
+	_get_damage()
 	
+#func _physics_process(delta):
 	
-		a_unit._set_its_raining(its_raining)
+	#for a_tiger in all_tigers:
+		#if a_tiger.is_dead:
+			#a_tiger.visible=false
+		#a_unit._set_its_raining(its_raining)
 		
 		#a_unit.move_unit(a_unit.target_position)
+		
+func select_unit(unit):
+	if not selected_units.has(unit):
+		selected_units.append(unit)
+	#print("selected %s" % unit.name)
+	#create_buttons()
+
+func deselect_unit(unit):
+	if selected_units.has(unit):
+		selected_units.erase(unit)
+	#print("deselected %s" % unit.name)
+	#create_buttons()
+
 
 func _create_unit():
 	if food_points >=15:
-		var new_Unit = Unit.instance()
+		var new_Unit = Unit2.instance()
 		unit_count+=1
-		new_Unit.position = Vector2(camera.position.x+rand_range(50,100),camera.position.y+rand_range(50,100))
+		new_Unit.position = Vector2(camera.get_viewport().size.x/2,camera.get_viewport().size.y/2)
 		if(unit_count%2==0):
 			new_Unit.is_girl=true
 		else:
@@ -163,8 +203,8 @@ func _collect_leaves():
 				
 func _get_damage():
 	for a_unit in all_units:		
-		for a_tree in all_trees:			
-			if(its_raining && !a_unit.fruit_tree_touching && !all_units.size()==0):
+		for a_tiger in all_tigers:			
+			if(a_unit.is_tiger_touching && !all_units.size()==0):
 				var the_unit = all_units[all_units.find(a_unit,0)]
 				if(the_unit.energy_points>0):
 					if(!the_unit.is_dressed):
@@ -175,27 +215,18 @@ func _get_damage():
 					the_unit.get_child(5)._set_energy_points(the_unit.energy_points)
 					the_unit.get_child(5)._update_energy()
 				else:
-					the_unit.visible=false
 					the_unit._set_selected(false)			
 					all_units.erase(the_unit)	
 					the_unit._set_erased(true)
-					
 #					else:
 #						the_unit.visible = false
 #						if(all_units.size()<=1 && food_points<15):
 #							$The_Canvas._set_phrase("Has sido derrotado.")				
 					
-			elif(its_raining && a_unit.fruit_tree_touching):
-				var the_unit = all_units[all_units.find(a_unit,0)]
-				if(the_unit.energy_points<100):
-					the_unit.energy_points+=1
-					#the_unit.get_child(4)._increase_energy()
-					the_unit.get_child(5)._set_energy_points(the_unit.energy_points)
-					the_unit.get_child(5)._update_energy()
+			
 	if(all_units.size()==0 && food_points<15):
 		prompts_label.text = "Has sido derrotado."	
-	if(cave.sheltered_units>=12):
-		prompts_label.text = "Has ganado."	
+		
 	
 func _on_CreateCitizen_pressed():
 	_create_unit()
@@ -204,30 +235,32 @@ func _on_food_timer_timeout():
 	if(all_units.size()>-1):
 		_collect_food()
 		_collect_leaves()
-		_get_damage()
+	
 	
 
-func _rain_pour():
-	if(!its_raining):
-		its_raining=true
-	else:
-		its_raining=false
-	
-
-func _on_Rain_Timer_timeout():	
-	_rain_pour()
-	if(its_raining):
-		rain_timer.wait_time = 100
-	else:
-		rain_timer.wait_time = 30
-
-	
+func _tiger_attack():
+	for a_tiger in all_tigers:
+		for a_unit in all_units:
+			if a_tiger.position.distance_to(a_unit.position)<20:
+				var the_unit=a_unit
+				a_tiger.move_tiger(the_unit.position)
+				#emit_signal("start_move_tigers")
+			else:
+				a_tiger.move_tiger(cave.position)
+			
+				
 	
 
 
 
-
-
+func _on_tiger_timer_timeout():
+	is_tiger=true
+	for a_tiger in all_tigers:
+		#a_tiger.is_dead=false
+		a_tiger.visible=true
+		#a_tiger.position=a_tiger.start_position	
+		
+			
 
 
 func _on_AddClothes_pressed():
@@ -256,7 +289,6 @@ func was_pressed(obj):
 			unit._set_selected(false)
 			break
 		
-		
 func get_units_in_area(area):
 	var u=[]
 	for unit in all_units:
@@ -265,12 +297,6 @@ func get_units_in_area(area):
 				u.append(unit)
 	return u
 		
-func start_move_selection(obj):
-	for un in all_units:
-		if un.selected:
-			un.move_unit(obj.move_to_point)
-		
-
 func area_selected(obj):
 	var start=obj.start
 	var end=obj.end
@@ -284,25 +310,13 @@ func area_selected(obj):
 		u.selected = not u.selected
 		
 
-func select_unit(unit):
-	if not selected_units.has(unit):
-		selected_units.append(unit)
-	#print("selected %s" % unit.name)
-	
-
-func deselect_unit(unit):
-	if selected_units.has(unit):
-		selected_units.erase(unit)
-	#print("deselected %s" % unit.name)
-	
-	
+		
+func start_move_selection(obj):
+	for un in all_units:
+		if un.selected:
+			un.move_unit(obj.move_to_point)
+		
 
 
 
 
-func _on_Game_is_basket():
-	Input.set_custom_mouse_cursor(basket)
-
-
-func _on_Game_is_arrow():
-	Input.set_custom_mouse_cursor(arrow)

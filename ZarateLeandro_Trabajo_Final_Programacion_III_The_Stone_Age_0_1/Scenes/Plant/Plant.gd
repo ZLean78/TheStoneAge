@@ -37,3 +37,11 @@ func _on_Area2D_body_exited(body):
 		is_touching = false
 		emit_signal("plant_exited")
 		body._set_plant_touching(false)
+
+
+func _on_Area2D_mouse_entered():
+	get_parent().emit_signal("is_basket")
+
+
+func _on_Area2D_mouse_exited():
+	get_parent().emit_signal("is_arrow")

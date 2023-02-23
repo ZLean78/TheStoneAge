@@ -78,10 +78,11 @@ var can_add_leaves = false
 #Indica si está lloviendo para la unidad.
 var its_raining = false
 
-
-
 #Vector2 que indica el tamaño de la pantalla.
 var screensize = Vector2(ProjectSettings.get("display/window/size/width"),ProjectSettings.get("display/window/size/height"))
+
+#Indica si la unidad está tocando un tgre
+var is_tiger_touching=false
 
 #Indica si la unidad está tocando un árbol frutal.
 var fruit_tree_touching = false
@@ -118,8 +119,7 @@ func _ready():
 		if is_girl:
 			$sprite.animation = "female_idle1_d"
 	
-	#connect("was_selected",get_parent(),"select_unit")
-	#connect("was_deselected",get_parent(),"deselect_unit")
+	
 	box.visible = false
 	#label.visible = false
 	bar.visible = false
@@ -150,12 +150,12 @@ func _physics_process(delta):
 #	position.y = clamp(position.y,0,screensize.y)	
 	
 	if move_p:
-		path = get_viewport().get_node("Game/nav").get_simple_path(position,target_position)
+		path = get_tree().root.get_child(0).get_node("nav").get_simple_path(position,target_position)
 		velocity=(target_position-position)
 		initialPosition = position
 		move_p = false
 	if path.size()>0:
-		move_towards(initialPosition,path[0]+Vector2(rand_range(0,5),0),delta)
+		move_towards(initialPosition,path[0],delta)
 	else:
 		velocity=Vector2(0,0)	
 	
