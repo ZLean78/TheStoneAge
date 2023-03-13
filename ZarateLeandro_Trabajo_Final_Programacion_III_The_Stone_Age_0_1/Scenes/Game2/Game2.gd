@@ -1,9 +1,16 @@
 extends Node2D
 
+var basket=load("res://Scenes/MouseIcons/basket.png")
+var arrow=load("res://Scenes/MouseIcons/arrow.png")
+var pick_mattock=load("res://Scenes/MouseIcons/pick_mattock.png")
+
 var unit_count = 1
 var food_points = 15
-var leaves_points = 0;
-var is_tiger = false
+var leaves_points = 0
+var stone_points = 0
+var wood_points = 0
+var is_wheel_invented = false
+var is_stone_weapons_develped = false
 var group_dressed = false
 var group_has_bag = false
 
@@ -15,10 +22,14 @@ onready var timer_label = tree.get_node("UI/Base/TimerLabel")
 onready var food_label = tree.get_node("UI/Base/Rectangle/FoodLabel")
 onready var prompts_label = tree.get_node("UI/Base/Rectangle/PromptsLabel")
 onready var leaves_label = tree.get_node("UI/Base/Rectangle/LeavesLabel")
+onready var stone_label = tree.get_node("UI/Base/Rectangle/StoneLabel")
 #onready var developments_label = tree.get_node("UI/Base/Rectangle/DevelopmentsLabel")
 onready var rectangle = tree.get_node("UI/Base/Rectangle")
-onready var add_clothes = tree.get_node("UI/Base/Rectangle/AddClothes")
-onready var add_bag = tree.get_node("UI/Base/Rectangle/AddBag")
+onready var develop_stone_weapons = tree.get_node("UI/Base/Rectangle/DevelopStoneWeapons")
+onready var invent_wheel = tree.get_node("UI/Base/Rectangle/InventWheel")
+onready var discover_fire = tree.get_node("UI/Base/Rectangle/DiscoverFire")
+onready var make_claypot = tree.get_node("UI/Base/Rectangle/MakeClaypot")
+onready var develop_agriculture = tree.get_node("UI/Base/Rectangle/DevelopAgriculture")
 onready var camera = tree.get_node("Camera")
 onready var tiger_timer = tree.get_node("tiger_timer")
 onready var tile_map
@@ -31,6 +42,7 @@ var selected_units=[]
 var all_units=[]
 var all_plants=[]
 var all_trees=[]
+var all_quarries=[]
 var sheltered=[]
 var all_tigers=[]
 
@@ -47,7 +59,12 @@ var is_flipped = false
 
 var screensize = Vector2(ProjectSettings.get("display/window/size/width"),ProjectSettings.get("display/window/size/height"))
 
-
+signal is_basket
+signal is_arrow
+signal is_pick_mattock
+var basket_mode=false
+var arrow_mode=false
+var mattock_mode=false
 
 func _ready():
 	
@@ -70,26 +87,38 @@ func _ready():
 	all_tigers.append(tree.find_node("Tiger2"))
 	all_tigers.append(tree.find_node("Tiger3"))
 
+	all_quarries.append(tree.find_node("Quarry1"))
+	all_quarries.append(tree.find_node("Quarry2"))
 	
 	_create_unit();
-	for a_tiger in all_tigers:
-		#a_tiger.position=a_tiger.start_position
-		a_tiger.visible=false
-		#a_tiger.is_dead=true
+	
 		
 	
 	
 	all_units[all_units.size()-1].position = Vector2(camera.get_viewport().size.x/6,camera.get_viewport().size.y/4)
 	
-	for a_tiger in all_tigers:
-		for a_unit in all_units:
-			a_tiger.units.append(a_unit)
+	#Agregar ropa a todas las unidades
+	for a_unit in all_units:
+		if(!a_unit.is_dressed):
+			a_unit.is_dressed = true
+			group_dressed = true	
+		if(!a_unit.has_bag):
+			a_unit.has_bag = true	
+			a_unit.bag_sprite.visible=true	
+	
+#	for a_tiger in all_tigers:
+#		for a_unit in all_units:
+#			a_tiger.units.append(a_unit)
+
+	emit_signal("is_arrow")
+	arrow_mode=true
 
 func _process(_delta):
 	
 	timer_label.text = "ATAQUE ENEMIGO: " + str(int(tiger_timer.time_left))
 	food_label.text = "COMIDA: " + str(int(food_points))
 	leaves_label.text = "HOJAS: " + str(int(leaves_points))	
+	stone_label.text = "PIEDRA: " + str(int(stone_points))	
 	#camera._set_its_raining(its_raining)
 
 	for a_unit in all_units:
@@ -98,13 +127,12 @@ func _process(_delta):
 		a_unit.position.y = clamp(a_unit.position.y,-608,screensize.y)
 		
 		
-		
+	
 	for a_tiger in all_tigers:
-		for a_unit in all_units:
-			if(a_tiger.position.distance_to(a_unit.position)<20):
-				a_tiger.path_to_unit=a_unit
+		if a_tiger.visible:
+			_tiger_attack()
 				
-	_get_damage()
+	
 	
 #func _physics_process(delta):
 	
@@ -132,7 +160,7 @@ func _create_unit():
 	if food_points >=15:
 		var new_Unit = Unit2.instance()
 		unit_count+=1
-		new_Unit.position = Vector2(camera.get_viewport().size.x/2,camera.get_viewport().size.y/2)
+		new_Unit.position = Vector2(camera.position.x+rand_range(50,100),camera.position.y+rand_range(50,100))
 		if(unit_count%2==0):
 			new_Unit.is_girl=true
 		else:
@@ -146,7 +174,7 @@ func _create_unit():
 		food_points-=15	
 		all_units.append(new_Unit)
 		
-func _dress_units():
+func _develop_weapons():
 	for a_unit in all_units:
 		if(!a_unit.is_dressed):
 			a_unit.is_dressed = true
@@ -164,8 +192,8 @@ func _collect_food():
 			if a_tree.is_touching && !a_tree.is_empty && a_unit.fruit_tree_touching:
 				var the_tree = all_trees[all_trees.find(a_tree,0)]
 				var the_unit = all_units[all_units.find(a_unit,0)]
-				if((abs(the_unit.position.x-the_tree.position.x)<5)&&
-				(abs(the_unit.position.y-the_tree.position.y)<5)):
+				if((abs(the_unit.position.x-the_tree.position.x)<50)&&
+				(abs(the_unit.position.y-the_tree.position.y)<50)):
 					if(the_unit.has_bag):
 						if(the_tree.points>=4):
 							food_points +=4
@@ -185,8 +213,8 @@ func _collect_leaves():
 			if a_plant.is_touching && !a_plant.is_empty && a_unit.plant_touching:
 				var the_plant = all_plants[all_plants.find(a_plant,0)]
 				var the_unit = all_units[all_units.find(a_unit,0)]
-				if((abs(the_unit.position.x-the_plant.position.x)<5)&&
-				(abs(the_unit.position.y-the_plant.position.y)<5)):	
+				if((abs(the_unit.position.x-the_plant.position.x)<50)&&
+				(abs(the_unit.position.y-the_plant.position.y)<50)):	
 					if(the_unit.has_bag):
 						if(the_plant.points>=4):
 							leaves_points+=4
@@ -199,6 +227,27 @@ func _collect_leaves():
 						the_plant.points-=1
 					if the_plant.points <= 0:
 						the_plant.is_empty = true
+
+func _collect_stone():
+	for a_unit in all_units:		
+		for a_quarry in all_quarries:
+			if a_quarry.is_touching && !a_quarry.is_empty && a_unit.quarry_touching:
+				var the_quarry = all_quarries[all_quarries.find(a_quarry,0)]
+				var the_unit = all_units[all_units.find(a_unit,0)]
+				if((abs(the_unit.position.x-the_quarry.position.x)<50)&&
+				(abs(the_unit.position.y-the_quarry.position.y)<50)):
+					if(the_unit.has_bag):
+						if(the_quarry.points>=4):
+							stone_points +=4
+							the_quarry.points-=4
+						else:
+							stone_points += the_quarry.points
+							the_quarry.points = 0
+					else:					
+						stone_points +=1
+						the_quarry.points-=1
+					if the_quarry.points <= 0:
+						the_quarry.is_empty = true
 						
 				
 func _get_damage():
@@ -212,16 +261,13 @@ func _get_damage():
 					else:
 						the_unit.energy_points-=1
 					#the_unit.get_child(4)._decrease_energy()
-					the_unit.get_child(5)._set_energy_points(the_unit.energy_points)
-					the_unit.get_child(5)._update_energy()
+					the_unit.bar._set_energy_points(the_unit.energy_points)
+					the_unit.bar._update_energy()
 				else:
 					the_unit._set_selected(false)			
 					all_units.erase(the_unit)	
 					the_unit._set_erased(true)
-#					else:
-#						the_unit.visible = false
-#						if(all_units.size()<=1 && food_points<15):
-#							$The_Canvas._set_phrase("Has sido derrotado.")				
+#								
 					
 			
 	if(all_units.size()==0 && food_points<15):
@@ -235,18 +281,21 @@ func _on_food_timer_timeout():
 	if(all_units.size()>-1):
 		_collect_food()
 		_collect_leaves()
+		_collect_stone()
 	
 	
 
 func _tiger_attack():
-	for a_tiger in all_tigers:
-		for a_unit in all_units:
-			if a_tiger.position.distance_to(a_unit.position)<20:
-				var the_unit=a_unit
-				a_tiger.move_tiger(the_unit.position)
-				#emit_signal("start_move_tigers")
-			else:
-				a_tiger.move_tiger(cave.position)
+	for i in range(all_tigers.size()):
+		for j in range(all_units.size()):
+			if !all_tigers[i].is_chasing && all_tigers[i].visible:
+				var the_unit=all_units[j]
+				if !the_unit.is_chased && abs(the_unit.position.distance_to(all_tigers[i].position))<400:
+					var the_tiger=all_tigers[i]
+					the_tiger.unit=the_unit
+					the_unit.is_chased=true
+					the_tiger.is_chasing=true
+				
 			
 				
 	
@@ -254,30 +303,18 @@ func _tiger_attack():
 
 
 func _on_tiger_timer_timeout():
-	is_tiger=true
 	for a_tiger in all_tigers:
-		#a_tiger.is_dead=false
 		a_tiger.visible=true
-		#a_tiger.position=a_tiger.start_position	
+		
 		
 			
 
 
-func _on_AddClothes_pressed():
-	if leaves_points >=70:
-		leaves_points-=70
-		_dress_units()
-		group_dressed = true
-		add_clothes.visible = false
-	
 
 
-func _on_AddBag_pressed():
-	if leaves_points >=50:
-		leaves_points-=50
-		_add_bag()
-		group_has_bag = true
-		add_bag.visible = false
+
+
+
 		
 func deselect_all():
 	while selected_units.size()>0:
@@ -317,6 +354,53 @@ func start_move_selection(obj):
 			un.move_unit(obj.move_to_point)
 		
 
+
+
+
+
+
+func _on_Game2_is_arrow():
+	Input.set_custom_mouse_cursor(arrow)
+	arrow_mode=true
+	basket_mode=false
+	mattock_mode=false
+
+
+func _on_Game2_is_basket():
+	Input.set_custom_mouse_cursor(basket)
+	basket_mode=true
+	arrow_mode=false
+	mattock_mode=false
+	
+func _on_Game2_is_pick_mattock():
+	Input.set_custom_mouse_cursor(pick_mattock)
+	mattock_mode=true
+	basket_mode=false
+	arrow_mode=false
+	
+
+func _on_DevelopStoneWeapons_pressed():
+	if leaves_points >=70:
+		leaves_points-=70	
+		develop_stone_weapons.visible = false	
+		
+		
+
+
+func _on_InventWheel_pressed():
+	if leaves_points >=50:
+		leaves_points-=50
+		_add_bag()
+		group_has_bag = true
+		develop_stone_weapons.visible = false
+
+
+func _on_damage_timer_timeout():
+	_get_damage()
+
+
+func _on_DiscoverFire_pressed():
+	pass # Replace with function body.
 
 
 

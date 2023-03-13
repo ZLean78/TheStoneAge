@@ -8,10 +8,10 @@
 [ext_resource path="res://Scenes/Unit/bag_3.png" type="Texture" id=6]
 [ext_resource path="res://Scenes/Unit/bag_2.png" type="Texture" id=7]
 
+[sub_resource type="CanvasItemMaterial" id=2]
+
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 9.875, 12.5 )
-
-[sub_resource type="CanvasItemMaterial" id=2]
 
 [sub_resource type="SpriteFrames" id=3]
 animations = [ {
@@ -38,11 +38,8 @@ animations = [ {
 
 [node name="Unit" type="KinematicBody2D"]
 collision_layer = 2
+input_pickable = true
 script = ExtResource( 2 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 0.125, -0.5 )
-shape = SubResource( 1 )
 
 [node name="Selected" type="Sprite" parent="."]
 visible = false
@@ -51,16 +48,9 @@ position = Vector2( 0, 11 )
 scale = Vector2( 0.63281, 0.49219 )
 texture = ExtResource( 4 )
 
-[node name="sprite" type="AnimatedSprite" parent="."]
-position = Vector2( 0, -1 )
-scale = Vector2( 1.58333, 1.25 )
-frames = ExtResource( 3 )
-animation = "male_idle3_d"
-
-[node name="bag_sprite" type="AnimatedSprite" parent="."]
-visible = false
-frames = SubResource( 3 )
-animation = "bag_1"
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0.125, -0.5 )
+shape = SubResource( 1 )
 
 [node name="Mouse_Control" type="Node" parent="."]
 
@@ -70,7 +60,19 @@ position = Vector2( -7, -19 )
 [node name="All_Timer" type="Timer" parent="."]
 autostart = true
 
-[node name="shootPoint" type="Position2D" parent="."]
+[node name="scalable" type="Node2D" parent="."]
+
+[node name="sprite" type="AnimatedSprite" parent="scalable"]
+position = Vector2( 0, -1 )
+scale = Vector2( 1.58333, 1.25 )
+frames = ExtResource( 3 )
+animation = "male_idle3_d"
+
+[node name="bag_sprite" type="AnimatedSprite" parent="scalable"]
+frames = SubResource( 3 )
+animation = "bag_1"
+
+[node name="shootPoint" type="Position2D" parent="scalable"]
 position = Vector2( 12, 0 )
 
 [connection signal="input_event" from="." to="." method="_on_Unit_input_event"]

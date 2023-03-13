@@ -106,7 +106,7 @@ func _process(delta):
 
 
 	if(Input.is_action_just_pressed("ui_right_mouse_button")):
-		position=get_global_mouse_position()
+		#position=get_global_mouse_position()
 		position.x=lerp(position.x,position.x+speed*zoom.x,speed*delta)
 		position.y=lerp(position.y,position.y+speed*zoom.y,speed*delta)	
 

@@ -20,12 +20,12 @@ radius = 29.0
 height = 0.0
 
 [node name="Tiger" type="KinematicBody2D" groups=["tigers"]]
-collision_layer = 2
-collision_mask = 2
 script = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+light_mask = 0
 shape = SubResource( 2 )
+disabled = true
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 position = Vector2( 0, -1.19209e-07 )
@@ -33,6 +33,7 @@ scale = Vector2( 0.0397786, 0.040162 )
 frames = SubResource( 1 )
 
 [node name="Area2D" type="Area2D" parent="."]
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource( 3 )

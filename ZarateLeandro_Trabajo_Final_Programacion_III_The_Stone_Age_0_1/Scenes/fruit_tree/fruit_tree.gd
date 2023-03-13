@@ -8,6 +8,7 @@ var is_touching = false
 var is_empty = false
 
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
@@ -38,7 +39,9 @@ func _fruit_tree_animate():
 
 func _on_Area2D_mouse_entered():
 	get_parent().emit_signal("is_basket")
+	
 
 
 func _on_Area2D_mouse_exited():
 	get_parent().emit_signal("is_arrow")
+	
