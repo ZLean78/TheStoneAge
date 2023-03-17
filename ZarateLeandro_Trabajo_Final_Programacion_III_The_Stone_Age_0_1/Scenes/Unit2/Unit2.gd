@@ -98,6 +98,11 @@ var plant_touching = false
 #Indica si la unidad está tocando una cantera (para obtener piedra).
 var quarry_touching = false
 
+#Indica si la unidad está tocando un charco (para obtener lodo).
+var puddle_touching = false
+
+#Indica si la unidad está tocando un pino (para obtener madera).
+var pine_tree_touching = false
 
 
 
@@ -199,12 +204,13 @@ func _physics_process(delta):
 	#revisar si está tocando un árbol
 	_check_fruit_tree_touching()
 	_check_plant_touching()
+	_check_pine_tree_touching()
 	
-	if(Input.is_action_just_pressed("shoot") && selected):
-		bullet = bullet_scene.instance()
-		bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-		bullet.set_dir($scalable.scale.x)
-		get_parent().add_child(bullet)
+#	if(Input.is_action_just_pressed("shoot") && selected):
+#		bullet = bullet_scene.instance()
+#		bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+#		bullet.set_dir($scalable.scale.x)
+#		get_parent().add_child(bullet)
 		
 		
 	if(food_timer.is_stopped()):
@@ -226,6 +232,12 @@ func move_unit(point):
 func _unhandled_input(event):
 	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
 		target_position = get_global_mouse_position()
+		if get_tree().root.get_child(0).sword_mode:
+			bullet = bullet_scene.instance()
+			bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+			bullet.set_dir($scalable.scale.x)
+			get_parent().add_child(bullet)
+
 		
 	
 	
@@ -556,6 +568,12 @@ func _set_plant_touching(var _plant):
 func _set_quarry_touching(var _quarry):
 	quarry_touching=_quarry
 	
+func _set_puddle_touching(var _puddle):
+	puddle_touching=_puddle
+	
+func _set_pine_tree_touching(var _pine_tree):
+	pine_tree_touching=_pine_tree
+	
 
 func _set_its_raining(var _its_raining):
 	its_raining = _its_raining
@@ -571,6 +589,12 @@ func _check_plant_touching():
 
 func _check_quarry_touching():
 	_set_quarry_touching(quarry_touching)
+	
+func _check_puddle_touching():
+	_set_puddle_touching(puddle_touching)
+	
+func _check_pine_tree_touching():
+	_set_pine_tree_touching(pine_tree_touching)
 #	
 func _on_All_Timer_timeout():
 	pass

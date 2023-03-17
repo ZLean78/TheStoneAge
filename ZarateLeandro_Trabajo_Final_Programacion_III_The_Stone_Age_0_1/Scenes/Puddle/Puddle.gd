@@ -1,14 +1,9 @@
 extends Node2D
 
-export var points = 150
-signal quarry_entered
-signal quarry_exited
-var is_touching
-var is_empty
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+signal puddle_entered
+signal puddle_exited
+var is_touching
 
 
 # Called when the node enters the scene tree for the first time.
@@ -16,14 +11,13 @@ func _ready():
 	pass # Replace with function body.
 
 
-
-func _process(delta):
-	if is_empty:
-		visible=false
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
 
 
 func _on_Area2D_mouse_entered():
-	get_tree().root.get_child(0).emit_signal("is_pick_mattock")
+	get_tree().root.get_child(0).emit_signal("is_hand")
 
 
 func _on_Area2D_mouse_exited():
@@ -33,12 +27,12 @@ func _on_Area2D_mouse_exited():
 func _on_Area2D_body_entered(body):
 	if("Unit" in body.name):
 		is_touching = true
-		emit_signal("quarry_entered")
-		body._set_quarry_touching(true)
+		emit_signal("puddle_entered")
+		body._set_puddle_touching(true)
 
 
 func _on_Area2D_body_exited(body):
 	if("Unit" in body.name):
 		is_touching = false
-		emit_signal("quarry_exited")
-		body._set_quarry_touching(false)
+		emit_signal("puddle_exited")
+		body._set_puddle_touching(false)

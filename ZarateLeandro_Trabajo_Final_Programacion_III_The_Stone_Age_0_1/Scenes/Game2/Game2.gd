@@ -3,17 +3,28 @@ extends Node2D
 var basket=load("res://Scenes/MouseIcons/basket.png")
 var arrow=load("res://Scenes/MouseIcons/arrow.png")
 var pick_mattock=load("res://Scenes/MouseIcons/pick_mattock.png")
+var sword=load("res://Scenes/MouseIcons/sword.png")
+var claypot=load("res://Scenes/MouseIcons/claypot.png")
+var hand=load("res://Scenes/MouseIcons/hand.png")
+var axe=load("res://Scenes/MouseIcons/axe.png")
 
 var unit_count = 1
 var food_points = 15
 var leaves_points = 0
 var stone_points = 0
 var wood_points = 0
-var is_wheel_invented = false
-var is_stone_weapons_develped = false
+var clay_points = 0
+
+#Hitos anteriores ya cumplidos
 var group_dressed = false
 var group_has_bag = false
 
+#Variables de hitos
+var is_fire_discovered = false
+var is_wheel_invented = false
+var is_stone_weapons_develped = false
+var is_claypot_made = false
+var is_agriculture_developed = false
 
 
 onready var tree = get_tree().root.get_child(0)
@@ -23,6 +34,8 @@ onready var food_label = tree.get_node("UI/Base/Rectangle/FoodLabel")
 onready var prompts_label = tree.get_node("UI/Base/Rectangle/PromptsLabel")
 onready var leaves_label = tree.get_node("UI/Base/Rectangle/LeavesLabel")
 onready var stone_label = tree.get_node("UI/Base/Rectangle/StoneLabel")
+onready var clay_label = tree.get_node("UI/Base/Rectangle/ClayLabel")
+onready var wood_label = tree.get_node("UI/Base/Rectangle/WoodLabel")
 #onready var developments_label = tree.get_node("UI/Base/Rectangle/DevelopmentsLabel")
 onready var rectangle = tree.get_node("UI/Base/Rectangle")
 onready var develop_stone_weapons = tree.get_node("UI/Base/Rectangle/DevelopStoneWeapons")
@@ -32,7 +45,10 @@ onready var make_claypot = tree.get_node("UI/Base/Rectangle/MakeClaypot")
 onready var develop_agriculture = tree.get_node("UI/Base/Rectangle/DevelopAgriculture")
 onready var camera = tree.get_node("Camera")
 onready var tiger_timer = tree.get_node("tiger_timer")
-onready var tile_map
+onready var tile_map = tree.get_node("TileMap")
+onready var puddle = tree.get_node("TileMap/Puddle")
+onready var quarry1 = tree.get_node("TileMap/Quarry1")
+onready var quarry2 = tree.get_node("TileMap/Quarry2")
 
 var cave
 
@@ -42,6 +58,7 @@ var selected_units=[]
 var all_units=[]
 var all_plants=[]
 var all_trees=[]
+var all_pine_trees=[]
 var all_quarries=[]
 var sheltered=[]
 var all_tigers=[]
@@ -59,12 +76,27 @@ var is_flipped = false
 
 var screensize = Vector2(ProjectSettings.get("display/window/size/width"),ProjectSettings.get("display/window/size/height"))
 
-signal is_basket
+var is_tiger=false
+var is_tiger_coundown=false
+
+
 signal is_arrow
+signal is_basket
 signal is_pick_mattock
-var basket_mode=false
+signal is_sword
+signal is_claypot
+signal is_hand
+signal is_axe
 var arrow_mode=false
+var basket_mode=false
 var mattock_mode=false
+var sword_mode=false
+var claypot_mode=false
+var hand_mode=false
+var axe_mode=false
+
+
+
 
 func _ready():
 	
@@ -83,12 +115,20 @@ func _ready():
 	#all_units.append(tree.find_node("Unit2"))
 	
 	
+	all_pine_trees.append(tree.find_node("PineTree1"))
+	all_pine_trees.append(tree.find_node("PineTree2"))
+	all_pine_trees.append(tree.find_node("PineTree3"))
+	all_pine_trees.append(tree.find_node("PineTree4"))
+	all_pine_trees.append(tree.find_node("PineTree5"))
+	all_pine_trees.append(tree.find_node("PineTree6"))
+	
+	
 	all_tigers.append(tree.find_node("Tiger1"))
 	all_tigers.append(tree.find_node("Tiger2"))
 	all_tigers.append(tree.find_node("Tiger3"))
 
-	all_quarries.append(tree.find_node("Quarry1"))
-	all_quarries.append(tree.find_node("Quarry2"))
+	all_quarries.append(quarry1)
+	all_quarries.append(quarry2)
 	
 	_create_unit();
 	
@@ -112,13 +152,22 @@ func _ready():
 
 	emit_signal("is_arrow")
 	arrow_mode=true
+	basket_mode=false
+	mattock_mode=false
+	sword_mode=false
+	claypot_mode=false
+	hand_mode=false
+	axe_mode=false
+	
 
 func _process(_delta):
 	
 	timer_label.text = "ATAQUE ENEMIGO: " + str(int(tiger_timer.time_left))
-	food_label.text = "COMIDA: " + str(int(food_points))
-	leaves_label.text = "HOJAS: " + str(int(leaves_points))	
-	stone_label.text = "PIEDRA: " + str(int(stone_points))	
+	food_label.text = str(int(food_points))
+	leaves_label.text = str(int(leaves_points))	
+	stone_label.text = str(int(stone_points))	
+	clay_label.text = str(int(clay_points))
+	wood_label.text = str(int(wood_points))
 	#camera._set_its_raining(its_raining)
 
 	for a_unit in all_units:
@@ -126,7 +175,10 @@ func _process(_delta):
 		a_unit.position.x = clamp(a_unit.position.x,-1028,screensize.x)
 		a_unit.position.y = clamp(a_unit.position.y,-608,screensize.y)
 		
-		
+	if !is_tiger:
+		if !is_tiger_coundown:
+			tiger_timer.start()
+			is_tiger_coundown=true	
 	
 	for a_tiger in all_tigers:
 		if a_tiger.visible:
@@ -248,7 +300,35 @@ func _collect_stone():
 						the_quarry.points-=1
 					if the_quarry.points <= 0:
 						the_quarry.is_empty = true
-						
+
+func _collect_clay():	
+	for a_unit in all_units:
+		if puddle.is_touching && a_unit.puddle_touching:
+			var the_unit = all_units[all_units.find(a_unit,0)]	
+			if((abs(the_unit.position.x-puddle.position.x)<70)&&
+				(abs(the_unit.position.y-puddle.position.y)<70)):
+					clay_points+=4	
+					
+func _collect_wood():
+	for a_unit in all_units:
+		for a_pine_tree in all_pine_trees:
+			if a_pine_tree.is_touching && !a_pine_tree.is_empty && a_unit.pine_tree_touching:
+				var the_pine_tree = all_pine_trees[all_pine_trees.find(a_pine_tree,0)]	
+				var the_unit = all_units[all_units.find(a_unit,0)]	
+				if((abs(the_unit.position.x-the_pine_tree.position.x)<50)&&
+				(abs(the_unit.position.y-the_pine_tree.position.y)<50)):
+					if(is_stone_weapons_develped):
+						if(the_pine_tree.points>=4):
+							wood_points +=4
+							the_pine_tree.points-=4
+						else:
+							wood_points += the_pine_tree.points
+							the_pine_tree.points = 0
+					else:					
+						wood_points +=1
+						the_pine_tree.points-=1
+					if the_pine_tree.points <= 0:
+						the_pine_tree.is_empty = true	
 				
 func _get_damage():
 	for a_unit in all_units:		
@@ -282,6 +362,9 @@ func _on_food_timer_timeout():
 		_collect_food()
 		_collect_leaves()
 		_collect_stone()
+		_collect_clay()
+		_collect_wood()
+		
 	
 	
 
@@ -305,6 +388,7 @@ func _tiger_attack():
 func _on_tiger_timer_timeout():
 	for a_tiger in all_tigers:
 		a_tiger.visible=true
+		is_tiger=true
 		
 		
 			
@@ -358,25 +442,9 @@ func start_move_selection(obj):
 
 
 
+func _on_damage_timer_timeout():
+	_get_damage()
 
-func _on_Game2_is_arrow():
-	Input.set_custom_mouse_cursor(arrow)
-	arrow_mode=true
-	basket_mode=false
-	mattock_mode=false
-
-
-func _on_Game2_is_basket():
-	Input.set_custom_mouse_cursor(basket)
-	basket_mode=true
-	arrow_mode=false
-	mattock_mode=false
-	
-func _on_Game2_is_pick_mattock():
-	Input.set_custom_mouse_cursor(pick_mattock)
-	mattock_mode=true
-	basket_mode=false
-	arrow_mode=false
 	
 
 func _on_DevelopStoneWeapons_pressed():
@@ -395,12 +463,86 @@ func _on_InventWheel_pressed():
 		develop_stone_weapons.visible = false
 
 
-func _on_damage_timer_timeout():
-	_get_damage()
+
 
 
 func _on_DiscoverFire_pressed():
 	pass # Replace with function body.
 
 
+func _on_Game2_is_arrow():
+	Input.set_custom_mouse_cursor(arrow)
+	arrow_mode=true
+	basket_mode=false
+	mattock_mode=false
+	sword_mode=false
+	claypot_mode=false
+	hand_mode=false
+	axe_mode=false
 
+
+func _on_Game2_is_basket():
+	Input.set_custom_mouse_cursor(basket)
+	basket_mode=true
+	arrow_mode=false
+	mattock_mode=false
+	sword_mode=false
+	claypot_mode=false
+	hand_mode=false
+	axe_mode=false
+	
+func _on_Game2_is_pick_mattock():
+	Input.set_custom_mouse_cursor(pick_mattock)
+	mattock_mode=true
+	basket_mode=false
+	arrow_mode=false
+	sword_mode=false
+	claypot_mode=false
+	hand_mode=false
+	axe_mode=false
+
+
+func _on_Game2_is_sword():
+	Input.set_custom_mouse_cursor(sword)
+	sword_mode=true
+	mattock_mode=false
+	basket_mode=false
+	arrow_mode=false
+	claypot_mode=false
+	hand_mode=false
+	axe_mode=false
+	
+
+
+func _on_Game2_is_hand():
+	Input.set_custom_mouse_cursor(hand)
+	hand_mode=true
+	mattock_mode=false
+	basket_mode=false
+	arrow_mode=false
+	sword_mode=false
+	claypot_mode=false
+	axe_mode=false
+	
+
+
+func _on_Game2_is_claypot():
+	Input.set_custom_mouse_cursor(claypot)
+	claypot_mode=true
+	arrow_mode=false
+	basket_mode=false
+	mattock_mode=false
+	sword_mode=false
+	hand_mode=false
+	axe_mode=false
+
+
+func _on_Game2_is_axe():
+	Input.set_custom_mouse_cursor(axe)
+	axe_mode=true
+	arrow_mode=false
+	basket_mode=false
+	mattock_mode=false
+	sword_mode=false
+	claypot_mode=false
+	hand_mode=false

@@ -13,6 +13,7 @@ var is_chasing = false
 signal tiger_entered
 signal tiger_exited
 
+
 func _ready():
 	#unit = get_tree().root.get_child(0).find_node("Unit2")
 	#agent.set_target_location(unit.global_position)
@@ -84,3 +85,11 @@ func _on_Area2D_body_exited(body):
 		if body==unit:
 			body.is_tiger_touching=false
 			emit_signal("tiger_exited")
+
+
+func _on_Area2D_mouse_entered():
+	get_tree().root.get_child(0).emit_signal("is_sword")
+
+
+func _on_Area2D_mouse_exited():
+	get_tree().root.get_child(0).emit_signal("is_arrow")

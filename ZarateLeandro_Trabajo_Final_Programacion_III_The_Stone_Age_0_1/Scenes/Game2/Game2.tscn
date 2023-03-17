@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=28 format=2]
 
 [ext_resource path="res://Scenes/Cave/Cave.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Plant/Plant.tscn" type="PackedScene" id=2]
@@ -17,6 +17,14 @@
 [ext_resource path="res://Scenes/Game2/fire.png" type="Texture" id=15]
 [ext_resource path="res://Scenes/Game2/agro.png" type="Texture" id=16]
 [ext_resource path="res://Scenes/Quarry/Quarry.tscn" type="PackedScene" id=17]
+[ext_resource path="res://Scenes/Game2/food.png" type="Texture" id=18]
+[ext_resource path="res://Scenes/Game2/plant.png" type="Texture" id=19]
+[ext_resource path="res://Scenes/Game2/quarry.png" type="Texture" id=20]
+[ext_resource path="res://Scenes/Puddle/Puddle.tscn" type="PackedScene" id=21]
+[ext_resource path="res://Scenes/Game2/puddle.png" type="Texture" id=22]
+[ext_resource path="res://Scenes/PineTree/PineTree.tscn" type="PackedScene" id=23]
+[ext_resource path="res://Scenes/Game2/woodicon.png" type="Texture" id=24]
+[ext_resource path="res://Scenes/Lake/Lake.tscn" type="PackedScene" id=25]
 
 [sub_resource type="TileSet" id=1]
 0/name = "grass.png 0"
@@ -35,9 +43,9 @@
 0/z_index = 0
 
 [sub_resource type="NavigationPolygon" id=3]
-vertices = PoolVector2Array( 1023, -634, 1027, 601, -1015, 602, -1023, -634 )
-polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
-outlines = [ PoolVector2Array( -1023, -634, -1015, 602, 1027, 601, 1023, -634 ) ]
+vertices = PoolVector2Array( 1027, 601, -1015, 602, -67, 20, 1023, -634, -296, 23, -1023, -634, -299, -46, -71, -48 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ), PoolIntArray( 4, 2, 1 ), PoolIntArray( 4, 1, 5, 6 ), PoolIntArray( 6, 5, 3, 7 ), PoolIntArray( 7, 3, 2 ) ]
+outlines = [ PoolVector2Array( -1023, -634, -1015, 602, 1027, 601, 1023, -634 ), PoolVector2Array( -299, -46, -296, 23, -67, 20, -71, -48 ) ]
 
 [node name="Game2" type="Node2D"]
 script = ExtResource( 6 )
@@ -52,6 +60,18 @@ tile_data = PoolIntArray( -1245216, 0, 0, -1245215, 0, 0, -1245214, 0, 0, -12452
 
 [node name="Cave" parent="TileMap" instance=ExtResource( 1 )]
 position = Vector2( 928, 485 )
+
+[node name="Puddle" parent="TileMap" instance=ExtResource( 21 )]
+position = Vector2( 531, 429 )
+
+[node name="Quarry1" parent="TileMap" instance=ExtResource( 17 )]
+position = Vector2( -370, 521 )
+
+[node name="Quarry2" parent="TileMap" instance=ExtResource( 17 )]
+position = Vector2( 80, -531 )
+
+[node name="Lake" parent="TileMap" instance=ExtResource( 25 )]
+position = Vector2( -180, -2 )
 
 [node name="Camera" type="Camera2D" parent="."]
 position = Vector2( 2, -2 )
@@ -127,17 +147,29 @@ position = Vector2( 592, 53 )
 [node name="Plant2" parent="." instance=ExtResource( 2 )]
 position = Vector2( 167, 526 )
 
-[node name="Quarry1" parent="." instance=ExtResource( 17 )]
-position = Vector2( -370, 522 )
+[node name="PineTree1" parent="." instance=ExtResource( 23 )]
+position = Vector2( 824, 231 )
 
-[node name="Quarry2" parent="." instance=ExtResource( 17 )]
-position = Vector2( 80, -530 )
+[node name="PineTree2" parent="." instance=ExtResource( 23 )]
+position = Vector2( 956, -501 )
+
+[node name="PineTree3" parent="." instance=ExtResource( 23 )]
+position = Vector2( -833, 525 )
+
+[node name="PineTree4" parent="." instance=ExtResource( 23 )]
+position = Vector2( -844, 63 )
+
+[node name="PineTree5" parent="." instance=ExtResource( 23 )]
+position = Vector2( -159, -543 )
+
+[node name="PineTree6" parent="." instance=ExtResource( 23 )]
+position = Vector2( 250, -141 )
 
 [node name="food_timer" type="Timer" parent="."]
 
 [node name="tiger_timer" type="Timer" parent="."]
 wait_time = 180.0
-autostart = true
+one_shot = true
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -172,35 +204,88 @@ Costo: 15 ptos.
 de comida."
 texture_normal = ExtResource( 8 )
 
+[node name="PromptsLabel" type="Label" parent="UI/Base/Rectangle"]
+margin_left = 220.0
+margin_top = 6.00006
+margin_right = 662.0
+margin_bottom = 122.0
+text = "Recoge lodo, agua, alimentos, madera, piedra y hojas
+para cumplir con cada uno de los hitos
+marcados al seleccionar la
+entrada de la cueva. Escapa de los tigres dientes de sable
+o arrójales piedras haciendo
+clic derecho sobre ellos estandoa gran distancia.."
+
+[node name="FoodTexture" type="TextureRect" parent="UI/Base/Rectangle"]
+margin_left = 17.0
+margin_top = 5.0
+margin_right = 53.0
+margin_bottom = 34.0
+texture = ExtResource( 18 )
+
 [node name="FoodLabel" type="Label" parent="UI/Base/Rectangle"]
-margin_left = 14.0
-margin_top = 12.0
-margin_right = 120.0
-margin_bottom = 43.0
-text = "COMIDA:
+margin_left = 17.0
+margin_top = 5.00006
+margin_right = 36.0
+margin_bottom = 36.0001
+text = "0
 "
 
-[node name="PromptsLabel" type="Label" parent="UI/Base/Rectangle"]
-margin_left = 137.0
-margin_top = 6.0
-margin_right = 579.0
-margin_bottom = 50.0
-text = "Recoge comida y crea unidades con el botón de la derecha. Debes conseguir refugiar
-12 en la cueva. Protege a tus unidades activas resguardándolas bajo los árboles."
+[node name="LeavesTexture" type="TextureRect" parent="UI/Base/Rectangle"]
+margin_left = 17.0
+margin_top = 35.0
+margin_right = 53.0
+margin_bottom = 69.0
+texture = ExtResource( 19 )
 
 [node name="LeavesLabel" type="Label" parent="UI/Base/Rectangle"]
-margin_left = 14.0
-margin_top = 40.0
-margin_right = 72.0
-margin_bottom = 60.0
-text = "HOJAS: "
+margin_left = 18.0
+margin_top = 50.0001
+margin_right = 40.0
+margin_bottom = 72.0001
+text = "0"
+
+[node name="StoneTexture" type="TextureRect" parent="UI/Base/Rectangle"]
+margin_left = 17.0
+margin_top = 74.0001
+margin_right = 57.0
+margin_bottom = 114.0
+texture = ExtResource( 20 )
 
 [node name="StoneLabel" type="Label" parent="UI/Base/Rectangle"]
-margin_left = 15.0
-margin_top = 66.0
+margin_left = 17.0
+margin_top = 84.0
+margin_right = 35.0
+margin_bottom = 101.0
+text = "0"
+
+[node name="ClayTexture" type="TextureRect" parent="UI/Base/Rectangle"]
+margin_left = 76.0
+margin_top = 10.0
+margin_right = 116.0
+margin_bottom = 29.0
+texture = ExtResource( 22 )
+
+[node name="ClayLabel" type="Label" parent="UI/Base/Rectangle"]
+margin_left = 70.0
+margin_top = 3.00006
 margin_right = 110.0
-margin_bottom = 86.0
-text = "PIEDRA: "
+margin_bottom = 17.0001
+text = "0"
+
+[node name="WoodTexture" type="TextureRect" parent="UI/Base/Rectangle"]
+margin_left = 71.0
+margin_top = 35.0
+margin_right = 111.0
+margin_bottom = 77.0
+texture = ExtResource( 24 )
+
+[node name="WoodLabel" type="Label" parent="UI/Base/Rectangle"]
+margin_left = 72.0
+margin_top = 47.0001
+margin_right = 112.0
+margin_bottom = 61.0001
+text = "0"
 
 [node name="DevelopStoneWeapons" type="TextureButton" parent="UI/Base/Rectangle"]
 visible = false
@@ -280,8 +365,12 @@ color = Color( 0.0627451, 0.27451, 0.835294, 0.768627 )
 autostart = true
 
 [connection signal="is_arrow" from="." to="." method="_on_Game2_is_arrow"]
+[connection signal="is_axe" from="." to="." method="_on_Game2_is_axe"]
 [connection signal="is_basket" from="." to="." method="_on_Game2_is_basket"]
+[connection signal="is_claypot" from="." to="." method="_on_Game2_is_claypot"]
+[connection signal="is_hand" from="." to="." method="_on_Game2_is_hand"]
 [connection signal="is_pick_mattock" from="." to="." method="_on_Game2_is_pick_mattock"]
+[connection signal="is_sword" from="." to="." method="_on_Game2_is_sword"]
 [connection signal="timeout" from="food_timer" to="." method="_on_food_timer_timeout"]
 [connection signal="timeout" from="tiger_timer" to="." method="_on_tiger_timer_timeout"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
