@@ -166,6 +166,12 @@ position = Vector2( -159, -543 )
 [node name="PineTree6" parent="." instance=ExtResource( 23 )]
 position = Vector2( 250, -141 )
 
+[node name="PineTree7" parent="." instance=ExtResource( 23 )]
+position = Vector2( -573, -569 )
+
+[node name="PineTree8" parent="." instance=ExtResource( 23 )]
+position = Vector2( -541, -98 )
+
 [node name="food_timer" type="Timer" parent="."]
 
 [node name="tiger_timer" type="Timer" parent="."]
@@ -393,4 +399,5 @@ autostart = true
 [connection signal="pressed" from="UI/Base/Rectangle/InventWheel" to="." method="_on_InventWheel_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/DiscoverFire" to="." method="_on_DiscoverFire_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/MakeClaypot" to="." method="_on_MakeClaypot_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/DevelopAgriculture" to="." method="_on_DevelopAgriculture_pressed"]
 [connection signal="timeout" from="damage_timer" to="." method="_on_damage_timer_timeout"]

@@ -23,7 +23,7 @@ var group_has_bag = false
 #Variables de hitos
 var is_fire_discovered = false
 var is_wheel_invented = false
-var is_stone_weapons_develped = false
+var is_stone_weapons_developed = false
 var is_claypot_made = false
 var is_agriculture_developed = false
 
@@ -129,6 +129,8 @@ func _ready():
 	all_pine_trees.append(tree.find_node("PineTree4"))
 	all_pine_trees.append(tree.find_node("PineTree5"))
 	all_pine_trees.append(tree.find_node("PineTree6"))
+	all_pine_trees.append(tree.find_node("PineTree7"))
+	all_pine_trees.append(tree.find_node("PineTree8"))
 	
 	
 	all_tigers.append(tree.find_node("Tiger1"))
@@ -236,17 +238,21 @@ func _create_unit():
 		food_points-=15	
 		all_units.append(new_Unit)
 		
-func _develop_weapons():
-	for a_unit in all_units:
-		if(!a_unit.is_dressed):
-			a_unit.is_dressed = true
+#func _develop_weapons():
+#	for a_unit in all_units:
+#		if(!a_unit.is_dressed):
+#			a_unit.is_dressed = true
+#
+#
+#func _add_bag():
+#	for a_unit in all_units:
+#		if(!a_unit.has_bag):
+#			a_unit.has_bag = true	
+#			a_unit.get_child(3).visible=true	
 			
-			
-func _add_bag():
-	for a_unit in all_units:
-		if(!a_unit.has_bag):
-			a_unit.has_bag = true	
-			a_unit.get_child(3).visible=true	
+func _check_victory():
+	if is_fire_discovered && is_wheel_invented && is_stone_weapons_developed && is_claypot_made && is_agriculture_developed:
+		prompts_label.text = "¡Has ganado!"			
 
 func _collect_food():
 	for a_unit in all_units:		
@@ -338,7 +344,7 @@ func _collect_wood():
 				var the_unit = all_units[all_units.find(a_unit,0)]	
 				if((abs(the_unit.position.x-the_pine_tree.position.x)<50)&&
 				(abs(the_unit.position.y-the_pine_tree.position.y)<50)):
-					if(is_stone_weapons_develped):
+					if(is_stone_weapons_developed):
 						if(the_pine_tree.points>=4):
 							wood_points +=4
 							the_pine_tree.points-=4
@@ -386,6 +392,7 @@ func _on_food_timer_timeout():
 		_collect_clay()
 		_collect_wood()
 		_collect_water()
+		_check_victory()
 		
 	
 	
@@ -455,26 +462,29 @@ func _on_damage_timer_timeout():
 	
 
 func _on_DevelopStoneWeapons_pressed():
-	if leaves_points >=70:
-		leaves_points-=70	
+	if stone_points>=70 && wood_points>=70 && leaves_points >=50:
+		stone_points-=70
+		wood_points-=70
+		leaves_points-=50
+		is_stone_weapons_developed=true	
 		develop_stone_weapons.visible = false	
 		
 		
 
 
 func _on_InventWheel_pressed():
-	if leaves_points >=50:
-		leaves_points-=50
-		_add_bag()
-		group_has_bag = true
-		develop_stone_weapons.visible = false
-
-
-
-
+	if stone_points >=70 && wood_points>=40:
+		stone_points-=70
+		wood_points-=40
+		is_wheel_invented=true
+		invent_wheel.visible = false
 
 func _on_DiscoverFire_pressed():
-	pass # Replace with function body.
+	if wood_points >=60 && stone_points>=40:
+		wood_points-=60
+		stone_points-=40
+		is_fire_discovered=true
+		discover_fire.visible = false
 
 
 func _on_Game2_is_arrow():
@@ -556,7 +566,17 @@ func _on_Game2_is_axe():
 
 
 func _on_MakeClaypot_pressed():
-	if clay_points >=85:
+	if clay_points>=85:
 		clay_points-=85
 		is_claypot_made=true
 		make_claypot.visible=false
+
+
+func _on_DevelopAgriculture_pressed():
+	if food_points>=70 && leaves_points>=70 && water_points>=70:
+		food_points-=70
+		leaves_points-=70
+		water_points-=70
+		is_agriculture_developed=true
+		develop_agriculture.visible=false
+	
