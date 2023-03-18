@@ -14,6 +14,7 @@ var leaves_points = 0
 var stone_points = 0
 var wood_points = 0
 var clay_points = 0
+var water_points = 0
 
 #Hitos anteriores ya cumplidos
 var group_dressed = false
@@ -36,6 +37,7 @@ onready var leaves_label = tree.get_node("UI/Base/Rectangle/LeavesLabel")
 onready var stone_label = tree.get_node("UI/Base/Rectangle/StoneLabel")
 onready var clay_label = tree.get_node("UI/Base/Rectangle/ClayLabel")
 onready var wood_label = tree.get_node("UI/Base/Rectangle/WoodLabel")
+onready var water_label = tree.get_node("UI/Base/Rectangle/WaterLabel")
 #onready var developments_label = tree.get_node("UI/Base/Rectangle/DevelopmentsLabel")
 onready var rectangle = tree.get_node("UI/Base/Rectangle")
 onready var develop_stone_weapons = tree.get_node("UI/Base/Rectangle/DevelopStoneWeapons")
@@ -49,6 +51,7 @@ onready var tile_map = tree.get_node("TileMap")
 onready var puddle = tree.get_node("TileMap/Puddle")
 onready var quarry1 = tree.get_node("TileMap/Quarry1")
 onready var quarry2 = tree.get_node("TileMap/Quarry2")
+onready var lake = tree.get_node("TileMap/Lake")
 
 var cave
 
@@ -95,7 +98,12 @@ var claypot_mode=false
 var hand_mode=false
 var axe_mode=false
 
-
+var start_string = """Recoge lodo, agua, alimentos, madera, piedra y hojas
+para cumplir con cada uno de los hitos
+marcados al seleccionar la
+entrada de la cueva. Escapa de los tigres dientes de sable
+o arrójales piedras haciendo
+clic derecho sobre ellos estandoa gran distancia."""
 
 
 func _ready():
@@ -168,6 +176,8 @@ func _process(_delta):
 	stone_label.text = str(int(stone_points))	
 	clay_label.text = str(int(clay_points))
 	wood_label.text = str(int(wood_points))
+	water_label.text = str(int(water_points))
+	
 	#camera._set_its_raining(its_raining)
 
 	for a_unit in all_units:
@@ -308,6 +318,17 @@ func _collect_clay():
 			if((abs(the_unit.position.x-puddle.position.x)<70)&&
 				(abs(the_unit.position.y-puddle.position.y)<70)):
 					clay_points+=4	
+
+func _collect_water():
+	for a_unit in all_units:
+		if lake.is_touching && a_unit.lake_touching:
+			var the_unit = all_units[all_units.find(a_unit,0)]
+			if the_unit.lake_touching:
+				if is_claypot_made:
+					water_points+=4
+				else:
+					prompts_label.text="Debes desarrollar el cuenco de barro \n para poder transportar agua."
+		
 					
 func _collect_wood():
 	for a_unit in all_units:
@@ -364,6 +385,7 @@ func _on_food_timer_timeout():
 		_collect_stone()
 		_collect_clay()
 		_collect_wood()
+		_collect_water()
 		
 	
 	
@@ -378,26 +400,11 @@ func _tiger_attack():
 					the_tiger.unit=the_unit
 					the_unit.is_chased=true
 					the_tiger.is_chasing=true
-				
-			
-				
-	
-
-
 
 func _on_tiger_timer_timeout():
 	for a_tiger in all_tigers:
 		a_tiger.visible=true
 		is_tiger=true
-		
-		
-			
-
-
-
-
-
-
 
 		
 func deselect_all():
@@ -546,3 +553,10 @@ func _on_Game2_is_axe():
 	sword_mode=false
 	claypot_mode=false
 	hand_mode=false
+
+
+func _on_MakeClaypot_pressed():
+	if clay_points >=85:
+		clay_points-=85
+		is_claypot_made=true
+		make_claypot.visible=false

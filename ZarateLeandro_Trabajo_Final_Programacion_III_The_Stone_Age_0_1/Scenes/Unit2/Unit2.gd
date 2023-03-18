@@ -104,7 +104,8 @@ var puddle_touching = false
 #Indica si la unidad está tocando un pino (para obtener madera).
 var pine_tree_touching = false
 
-
+#Indica si la unidad está tocando el lago (para obtener agua).
+var lake_touching = false
 
 #var target_tree=null
 #var target_plant=null
@@ -573,6 +574,9 @@ func _set_puddle_touching(var _puddle):
 	
 func _set_pine_tree_touching(var _pine_tree):
 	pine_tree_touching=_pine_tree
+
+func _set_lake_touching(var _lake):
+	lake_touching=_lake
 	
 
 func _set_its_raining(var _its_raining):
