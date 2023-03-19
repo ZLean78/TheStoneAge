@@ -63,6 +63,7 @@ var all_plants=[]
 var all_trees=[]
 var all_pine_trees=[]
 var all_quarries=[]
+var all_pickables=[]
 var sheltered=[]
 var all_tigers=[]
 
@@ -252,12 +253,45 @@ func _create_unit():
 			
 func _check_victory():
 	if is_fire_discovered && is_wheel_invented && is_stone_weapons_developed && is_claypot_made && is_agriculture_developed:
-		prompts_label.text = "¡Has ganado!"			
+		prompts_label.text = "¡Has ganado!"		
+		
+func collect_pickable(var _pickable):
+	for a_unit in all_units:
+		if _pickable.touching && !_pickable.empty && a_unit.pickable_touching:
+			var the_unit = all_units[all_units.find(a_unit,0)]
+			if((abs(the_unit.position.x-_pickable.position.x)<50)&&
+			(abs(the_unit.position.y-_pickable.position.y)<50)):
+				if _pickable.type=="fruit_tree":
+					if(the_unit.has_bag):
+						if(_pickable.points>=4):
+							food_points +=4
+							_pickable.points-=4
+						else:
+							food_points += _pickable.points
+							_pickable.points = 0
+					else:					
+						food_points +=1
+						_pickable.points-=1
+					#if _pickable.points <= 0:
+					#	_pickable.empty = true
+				elif _pickable.type == "pine_tree":
+					if(is_stone_weapons_developed):
+						if(_pickable.points>=4):
+							wood_points +=4
+							_pickable.points-=4
+						else:
+							wood_points += _pickable.points
+							_pickable.points = 0
+					else:					
+						wood_points +=1
+						_pickable.points-=1
+			if _pickable.points <= 0:
+				_pickable.empty = true	
 
 func _collect_food():
 	for a_unit in all_units:		
 		for a_tree in all_trees:
-			if a_tree.is_touching && !a_tree.is_empty && a_unit.fruit_tree_touching:
+			if a_tree.touching && !a_tree.empty && a_unit.fruit_tree_touching:
 				var the_tree = all_trees[all_trees.find(a_tree,0)]
 				var the_unit = all_units[all_units.find(a_unit,0)]
 				if((abs(the_unit.position.x-the_tree.position.x)<50)&&
@@ -273,7 +307,7 @@ func _collect_food():
 						food_points +=1
 						the_tree.points-=1
 					if the_tree.points <= 0:
-						the_tree.is_empty = true
+						the_tree.empty = true
 						
 func _collect_leaves():
 	for a_unit in all_units:		
@@ -339,7 +373,7 @@ func _collect_water():
 func _collect_wood():
 	for a_unit in all_units:
 		for a_pine_tree in all_pine_trees:
-			if a_pine_tree.is_touching && !a_pine_tree.is_empty && a_unit.pine_tree_touching:
+			if a_pine_tree.touching && !a_pine_tree.empty && a_unit.pine_tree_touching:
 				var the_pine_tree = all_pine_trees[all_pine_trees.find(a_pine_tree,0)]	
 				var the_unit = all_units[all_units.find(a_unit,0)]	
 				if((abs(the_unit.position.x-the_pine_tree.position.x)<50)&&
@@ -355,7 +389,7 @@ func _collect_wood():
 						wood_points +=1
 						the_pine_tree.points-=1
 					if the_pine_tree.points <= 0:
-						the_pine_tree.is_empty = true	
+						the_pine_tree.empty = true	
 				
 func _get_damage():
 	for a_unit in all_units:		
@@ -386,11 +420,15 @@ func _on_CreateCitizen_pressed():
 
 func _on_food_timer_timeout():
 	if(all_units.size()>-1):
-		_collect_food()
+		#_collect_food()
+		for a_tree in all_trees:
+			collect_pickable(a_tree)
 		_collect_leaves()
 		_collect_stone()
 		_collect_clay()
-		_collect_wood()
+		#_collect_wood()
+		for a_pine_tree in all_pine_trees:
+			collect_pickable(a_pine_tree)
 		_collect_water()
 		_check_victory()
 		

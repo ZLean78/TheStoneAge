@@ -66,7 +66,7 @@ position = Vector2( 928, 485 )
 position = Vector2( 531, 429 )
 
 [node name="Quarry1" parent="TileMap" instance=ExtResource( 17 )]
-position = Vector2( -370, 521 )
+position = Vector2( -359, 425 )
 
 [node name="Quarry2" parent="TileMap" instance=ExtResource( 17 )]
 position = Vector2( 80, -531 )
@@ -146,7 +146,7 @@ position = Vector2( 100, 123 )
 position = Vector2( 592, 53 )
 
 [node name="Plant2" parent="." instance=ExtResource( 2 )]
-position = Vector2( 167, 526 )
+position = Vector2( 181, 469 )
 
 [node name="PineTree1" parent="." instance=ExtResource( 23 )]
 position = Vector2( 824, 231 )
@@ -155,7 +155,7 @@ position = Vector2( 824, 231 )
 position = Vector2( 956, -501 )
 
 [node name="PineTree3" parent="." instance=ExtResource( 23 )]
-position = Vector2( -833, 525 )
+position = Vector2( -826, 411 )
 
 [node name="PineTree4" parent="." instance=ExtResource( 23 )]
 position = Vector2( -844, 63 )

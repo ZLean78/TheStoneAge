@@ -107,6 +107,9 @@ var pine_tree_touching = false
 #Indica si la unidad está tocando el lago (para obtener agua).
 var lake_touching = false
 
+#Indica si la unidad está tocando un pickable (objecto para recoger).
+var pickable_touching = false
+
 #var target_tree=null
 #var target_plant=null
 
@@ -577,6 +580,9 @@ func _set_pine_tree_touching(var _pine_tree):
 
 func _set_lake_touching(var _lake):
 	lake_touching=_lake
+
+func _set_pickable_touching(var _pickable):
+	pickable_touching=_pickable
 	
 
 func _set_its_raining(var _its_raining):
