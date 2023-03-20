@@ -148,14 +148,12 @@ func _ready():
 	
 	all_units[all_units.size()-1].position = Vector2(camera.get_viewport().size.x/6,camera.get_viewport().size.y/4)
 	
-	#Agregar ropa a todas las unidades
+	#Agregar ropa y bolso a todas las unidades
 	for a_unit in all_units:
-		if(!a_unit.is_dressed):
-			a_unit.is_dressed = true
-			group_dressed = true	
-		if(!a_unit.has_bag):
-			a_unit.has_bag = true	
-			a_unit.bag_sprite.visible=true	
+		a_unit.is_dressed=true
+		a_unit.has_bag=true
+		group_dressed=true
+		group_has_bag=true
 	
 #	for a_tiger in all_tigers:
 #		for a_unit in all_units:
@@ -257,59 +255,71 @@ func _check_victory():
 		
 func collect_pickable(var _pickable):
 	for a_unit in all_units:
-		if _pickable.touching && !_pickable.empty && a_unit.pickable_touching:
-			var the_unit = all_units[all_units.find(a_unit,0)]
-			if((abs(the_unit.position.x-_pickable.position.x)<50)&&
-			(abs(the_unit.position.y-_pickable.position.y)<50)):
-				if _pickable.type=="fruit_tree":
-					if(the_unit.has_bag):
-						if(_pickable.points>=4):
-							food_points +=4
-							_pickable.points-=4
+		if _pickable.type == "fruit_tree" or _pickable.type == "pine_tree" or _pickable.type == "plant" or _pickable.type == "quarry":
+			if _pickable.touching && !_pickable.empty && a_unit.pickable_touching:
+				var the_unit = all_units[all_units.find(a_unit,0)]
+				if((abs(the_unit.position.x-_pickable.position.x)<50)&&
+				(abs(the_unit.position.y-_pickable.position.y)<50)):
+					if _pickable.type=="fruit_tree":
+						if(the_unit.has_bag):
+							if(_pickable.points>=4):
+								food_points +=4
+								_pickable.points-=4
+							else:
+								food_points += _pickable.points
+								_pickable.points = 0
+						else:					
+							food_points +=1
+							_pickable.points-=1
+						#if _pickable.points <= 0:
+						#_pickable.empty = true
+					elif _pickable.type == "pine_tree":
+						if(is_stone_weapons_developed):
+							if(_pickable.points>=4):
+								wood_points +=4
+								_pickable.points-=4
+							else:
+								wood_points += _pickable.points
+								_pickable.points = 0
+						else:					
+							wood_points +=1
+							_pickable.points-=1
+					elif _pickable.type == "plant":
+						if(the_unit.has_bag):
+							if(_pickable.points>=4):
+								leaves_points +=4
+								_pickable.points-=4
+							else:
+								leaves_points+=_pickable.points
+								_pickable.points=0
 						else:
-							food_points += _pickable.points
-							_pickable.points = 0
-					else:					
-						food_points +=1
-						_pickable.points-=1
-					#if _pickable.points <= 0:
-					#	_pickable.empty = true
-				elif _pickable.type == "pine_tree":
-					if(is_stone_weapons_developed):
-						if(_pickable.points>=4):
-							wood_points +=4
-							_pickable.points-=4
+							leaves_points+=1
+							_pickable.points-=1
+					elif _pickable.type == "quarry":
+						if(is_stone_weapons_developed):
+							if(_pickable.points>=4):
+								stone_points+=4
+								_pickable.points-=4
+							else:
+								stone_points+=_pickable.points
+								_pickable.points=0
 						else:
-							wood_points += _pickable.points
-							_pickable.points = 0
-					else:					
-						wood_points +=1
-						_pickable.points-=1
-				elif _pickable.type == "plant":
-					if(the_unit.has_bag):
-						if(_pickable.points>=4):
-							leaves_points +=4
-							_pickable.points-=4
-						else:
-							leaves_points+=_pickable.points
-							_pickable.points=0
-					else:
-						leaves_points+=1
-						_pickable.points-=1
-				elif _pickable.type == "quarry":
-					if(is_stone_weapons_developed):
-						if(_pickable.points>=4):
-							stone_points+=4
-							_pickable.points-=4
-						else:
-							stone_points+=_pickable.points
-							_pickable.points=0
-					else:
-						stone_points+=1
-						_pickable.points-=1
-			if _pickable.type == "fruit_tree" or _pickable.type == "pine_tree" or _pickable.type == "plant" or _pickable.type == "quarry":
+							stone_points+=1
+							_pickable.points-=1
 				if _pickable.points <= 0:
 					_pickable.empty = true	
+		else:
+			if _pickable.touching && a_unit.pickable_touching:
+				var the_unit = all_units[all_units.find(a_unit,0)]	
+				if _pickable.touching:
+					if _pickable.type == "puddle":
+						clay_points+=4
+					elif _pickable.type == "lake":
+						if is_claypot_made:
+							water_points+=4
+						else:
+							prompts_label.text="Debes desarrollar el cuenco de barro \n para poder transportar agua."
+				
 
 func _collect_food():
 	for a_unit in all_units:		
@@ -451,12 +461,15 @@ func _on_food_timer_timeout():
 			collect_pickable(a_plant)
 		#_collect_stone()
 		for a_quarry in all_quarries:
-			collect_pickable(a_quarry)
-		_collect_clay()
+			collect_pickable(a_quarry)		
 		#_collect_wood()
 		for a_pine_tree in all_pine_trees:
 			collect_pickable(a_pine_tree)
-		_collect_water()
+		#_collect_clay()
+		collect_pickable(puddle)
+		#_collect_water()
+		collect_pickable(lake)
+		
 		_check_victory()
 		
 	

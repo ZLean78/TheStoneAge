@@ -49,15 +49,21 @@ func _on_Area2D_mouse_entered():
 		get_parent().emit_signal("is_axe")
 	elif type == "quarry":
 		get_tree().root.get_child(0).emit_signal("is_pick_mattock")	
-	
+	elif type == "puddle":
+		get_tree().root.get_child(0).emit_signal("is_hand")	
+	elif type == "lake":
+		get_tree().root.get_child(0).emit_signal("is_claypot")	
 		
 
 
 func _on_Area2D_mouse_exited():
 	if type == "fruit_tree" or type == "plant" or type == "pine_tree":
 		get_parent().emit_signal("is_arrow")
-	elif type == "quarry":
-		get_tree().root.get_child(0).emit_signal("is_arrow")	
+	elif type == "quarry" or type == "puddle" or type == "lake":
+		get_tree().root.get_child(0).emit_signal("is_arrow")
+		if type=="lake":
+			get_tree().root.get_child(0).prompts_label.text = get_tree().root.get_child(0).start_string
+	
 
 
 
