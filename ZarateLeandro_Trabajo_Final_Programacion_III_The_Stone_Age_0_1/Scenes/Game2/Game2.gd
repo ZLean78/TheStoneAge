@@ -155,9 +155,7 @@ func _ready():
 		group_dressed=true
 		group_has_bag=true
 	
-#	for a_tiger in all_tigers:
-#		for a_unit in all_units:
-#			a_tiger.units.append(a_unit)
+#	
 
 	emit_signal("is_arrow")
 	arrow_mode=true
@@ -179,7 +177,6 @@ func _process(_delta):
 	wood_label.text = str(int(wood_points))
 	water_label.text = str(int(water_points))
 	
-	#camera._set_its_raining(its_raining)
 
 	for a_unit in all_units:
 
@@ -194,17 +191,7 @@ func _process(_delta):
 	for a_tiger in all_tigers:
 		if a_tiger.visible:
 			_tiger_attack()
-				
-	
-	
-#func _physics_process(delta):
-	
-	#for a_tiger in all_tigers:
-		#if a_tiger.is_dead:
-			#a_tiger.visible=false
-		#a_unit._set_its_raining(its_raining)
-		
-		#a_unit.move_unit(a_unit.target_position)
+
 		
 func select_unit(unit):
 	if not selected_units.has(unit):
@@ -215,8 +202,7 @@ func select_unit(unit):
 func deselect_unit(unit):
 	if selected_units.has(unit):
 		selected_units.erase(unit)
-	#print("deselected %s" % unit.name)
-	#create_buttons()
+	
 
 
 func _create_unit():
@@ -237,17 +223,7 @@ func _create_unit():
 		food_points-=15	
 		all_units.append(new_Unit)
 		
-#func _develop_weapons():
-#	for a_unit in all_units:
-#		if(!a_unit.is_dressed):
-#			a_unit.is_dressed = true
-#
-#
-#func _add_bag():
-#	for a_unit in all_units:
-#		if(!a_unit.has_bag):
-#			a_unit.has_bag = true	
-#			a_unit.get_child(3).visible=true	
+
 			
 func _check_victory():
 	if is_fire_discovered && is_wheel_invented && is_stone_weapons_developed && is_claypot_made && is_agriculture_developed:
@@ -311,7 +287,7 @@ func collect_pickable(var _pickable):
 		else:
 			if _pickable.touching && a_unit.pickable_touching:
 				var the_unit = all_units[all_units.find(a_unit,0)]	
-				if _pickable.touching:
+				if _pickable.touching && the_unit.pickable_touching:
 					if _pickable.type == "puddle":
 						clay_points+=4
 					elif _pickable.type == "lake":
@@ -321,108 +297,6 @@ func collect_pickable(var _pickable):
 							prompts_label.text="Debes desarrollar el cuenco de barro \n para poder transportar agua."
 				
 
-func _collect_food():
-	for a_unit in all_units:		
-		for a_tree in all_trees:
-			if a_tree.touching && !a_tree.empty && a_unit.fruit_tree_touching:
-				var the_tree = all_trees[all_trees.find(a_tree,0)]
-				var the_unit = all_units[all_units.find(a_unit,0)]
-				if((abs(the_unit.position.x-the_tree.position.x)<50)&&
-				(abs(the_unit.position.y-the_tree.position.y)<50)):
-					if(the_unit.has_bag):
-						if(the_tree.points>=4):
-							food_points +=4
-							the_tree.points-=4
-						else:
-							food_points += the_tree.points
-							the_tree.points = 0
-					else:					
-						food_points +=1
-						the_tree.points-=1
-					if the_tree.points <= 0:
-						the_tree.empty = true
-						
-func _collect_leaves():
-	for a_unit in all_units:		
-		for a_plant in all_plants:
-			if a_plant.is_touching && !a_plant.is_empty && a_unit.plant_touching:
-				var the_plant = all_plants[all_plants.find(a_plant,0)]
-				var the_unit = all_units[all_units.find(a_unit,0)]
-				if((abs(the_unit.position.x-the_plant.position.x)<50)&&
-				(abs(the_unit.position.y-the_plant.position.y)<50)):	
-					if(the_unit.has_bag):
-						if(the_plant.points>=4):
-							leaves_points+=4
-							the_plant.points-=4
-						else:
-							leaves_points += the_plant.points
-							the_plant.points = 0
-					else:				
-						leaves_points +=1
-						the_plant.points-=1
-					if the_plant.points <= 0:
-						the_plant.is_empty = true
-
-func _collect_stone():
-	for a_unit in all_units:		
-		for a_quarry in all_quarries:
-			if a_quarry.is_touching && !a_quarry.is_empty && a_unit.quarry_touching:
-				var the_quarry = all_quarries[all_quarries.find(a_quarry,0)]
-				var the_unit = all_units[all_units.find(a_unit,0)]
-				if((abs(the_unit.position.x-the_quarry.position.x)<50)&&
-				(abs(the_unit.position.y-the_quarry.position.y)<50)):
-					if(the_unit.has_bag):
-						if(the_quarry.points>=4):
-							stone_points +=4
-							the_quarry.points-=4
-						else:
-							stone_points += the_quarry.points
-							the_quarry.points = 0
-					else:					
-						stone_points +=1
-						the_quarry.points-=1
-					if the_quarry.points <= 0:
-						the_quarry.is_empty = true
-
-func _collect_clay():	
-	for a_unit in all_units:
-		if puddle.is_touching && a_unit.puddle_touching:
-			var the_unit = all_units[all_units.find(a_unit,0)]	
-			if((abs(the_unit.position.x-puddle.position.x)<70)&&
-				(abs(the_unit.position.y-puddle.position.y)<70)):
-					clay_points+=4	
-
-func _collect_water():
-	for a_unit in all_units:
-		if lake.is_touching && a_unit.lake_touching:
-			var the_unit = all_units[all_units.find(a_unit,0)]
-			if the_unit.lake_touching:
-				if is_claypot_made:
-					water_points+=4
-				else:
-					prompts_label.text="Debes desarrollar el cuenco de barro \n para poder transportar agua."
-		
-					
-func _collect_wood():
-	for a_unit in all_units:
-		for a_pine_tree in all_pine_trees:
-			if a_pine_tree.touching && !a_pine_tree.empty && a_unit.pine_tree_touching:
-				var the_pine_tree = all_pine_trees[all_pine_trees.find(a_pine_tree,0)]	
-				var the_unit = all_units[all_units.find(a_unit,0)]	
-				if((abs(the_unit.position.x-the_pine_tree.position.x)<50)&&
-				(abs(the_unit.position.y-the_pine_tree.position.y)<50)):
-					if(is_stone_weapons_developed):
-						if(the_pine_tree.points>=4):
-							wood_points +=4
-							the_pine_tree.points-=4
-						else:
-							wood_points += the_pine_tree.points
-							the_pine_tree.points = 0
-					else:					
-						wood_points +=1
-						the_pine_tree.points-=1
-					if the_pine_tree.points <= 0:
-						the_pine_tree.empty = true	
 				
 func _get_damage():
 	for a_unit in all_units:		
@@ -453,21 +327,21 @@ func _on_CreateCitizen_pressed():
 
 func _on_food_timer_timeout():
 	if(all_units.size()>-1):
-		#_collect_food()
+		
 		for a_tree in all_trees:
 			collect_pickable(a_tree)
-		#_collect_leaves()
+		
 		for a_plant in all_plants:
 			collect_pickable(a_plant)
-		#_collect_stone()
+		
 		for a_quarry in all_quarries:
 			collect_pickable(a_quarry)		
-		#_collect_wood()
+		
 		for a_pine_tree in all_pine_trees:
 			collect_pickable(a_pine_tree)
-		#_collect_clay()
+	
 		collect_pickable(puddle)
-		#_collect_water()
+		
 		collect_pickable(lake)
 		
 		_check_victory()
