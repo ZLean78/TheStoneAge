@@ -19,21 +19,22 @@ func _on_Area2D_body_entered(body):
 	if("Unit" in body.name):
 		touching = true
 		body._set_pickable_touching(true)
-#		if type=="fruit_tree":
-#			body._set_fruit_tree_touching(true)
-#		elif type=="pine_tree":
-#			body._set_pine_tree_touching(true)
-		
+		if type == "lake":
+			body._set_lake_touching(true)
+		elif type == "puddle":
+			body._set_puddle_touching(true)
+	
 
 
 func _on_Area2D_body_exited(body):
 	if("Unit" in body.name):
 		touching = false
 		body._set_pickable_touching(false)
-#		if type=="fruit_tree":
-#			body._set_fruit_tree_touching(false)
-#		elif type=="pine_tree":
-#			body._set_pine_tree_touching(false)	
+		if type == "lake":
+			body._set_lake_touching(false)
+		elif type == "puddle":
+			body._set_puddle_touching(false)
+		
 		
 
 

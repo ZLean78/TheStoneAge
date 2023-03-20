@@ -287,10 +287,11 @@ func collect_pickable(var _pickable):
 		else:
 			if _pickable.touching && a_unit.pickable_touching:
 				var the_unit = all_units[all_units.find(a_unit,0)]	
-				if _pickable.touching && the_unit.pickable_touching:
-					if _pickable.type == "puddle":
+				var the_pickable = _pickable
+				if the_pickable.touching:
+					if the_pickable.type == "puddle" && the_unit.puddle_touching:
 						clay_points+=4
-					elif _pickable.type == "lake":
+					elif the_pickable.type == "lake" && the_unit.lake_touching:
 						if is_claypot_made:
 							water_points+=4
 						else:
@@ -301,13 +302,13 @@ func collect_pickable(var _pickable):
 func _get_damage():
 	for a_unit in all_units:		
 		for a_tiger in all_tigers:			
-			if(a_unit.is_tiger_touching && !all_units.size()==0):
+			if(a_unit.is_chased && a_unit.is_tiger_touching && !all_units.size()==0):
 				var the_unit = all_units[all_units.find(a_unit,0)]
 				if(the_unit.energy_points>0):
 					if(!the_unit.is_dressed):
-						the_unit.energy_points-=3
+						the_unit.energy_points-=15
 					else:
-						the_unit.energy_points-=1
+						the_unit.energy_points-=10
 					#the_unit.get_child(4)._decrease_energy()
 					the_unit.bar._set_energy_points(the_unit.energy_points)
 					the_unit.bar._update_energy()
@@ -352,13 +353,14 @@ func _on_food_timer_timeout():
 func _tiger_attack():
 	for i in range(all_tigers.size()):
 		for j in range(all_units.size()):
-			if !all_tigers[i].is_chasing && all_tigers[i].visible:
+			if !all_tigers[i].is_chasing && all_tigers[i].visible && !all_tigers[i].is_dead:
 				var the_unit=all_units[j]
-				if !the_unit.is_chased && abs(the_unit.position.distance_to(all_tigers[i].position))<400:
-					var the_tiger=all_tigers[i]
+				var the_tiger=all_tigers[i]
+				if !the_unit.is_chased && abs(the_unit.position.distance_to(the_tiger.position))<400:
 					the_tiger.unit=the_unit
 					the_unit.is_chased=true
 					the_tiger.is_chasing=true
+				
 
 func _on_tiger_timer_timeout():
 	for a_tiger in all_tigers:
