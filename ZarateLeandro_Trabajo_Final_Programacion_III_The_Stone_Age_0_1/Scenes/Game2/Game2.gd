@@ -285,8 +285,31 @@ func collect_pickable(var _pickable):
 					else:					
 						wood_points +=1
 						_pickable.points-=1
-			if _pickable.points <= 0:
-				_pickable.empty = true	
+				elif _pickable.type == "plant":
+					if(the_unit.has_bag):
+						if(_pickable.points>=4):
+							leaves_points +=4
+							_pickable.points-=4
+						else:
+							leaves_points+=_pickable.points
+							_pickable.points=0
+					else:
+						leaves_points+=1
+						_pickable.points-=1
+				elif _pickable.type == "quarry":
+					if(is_stone_weapons_developed):
+						if(_pickable.points>=4):
+							stone_points+=4
+							_pickable.points-=4
+						else:
+							stone_points+=_pickable.points
+							_pickable.points=0
+					else:
+						stone_points+=1
+						_pickable.points-=1
+			if _pickable.type == "fruit_tree" or _pickable.type == "pine_tree" or _pickable.type == "plant" or _pickable.type == "quarry":
+				if _pickable.points <= 0:
+					_pickable.empty = true	
 
 func _collect_food():
 	for a_unit in all_units:		
@@ -423,8 +446,12 @@ func _on_food_timer_timeout():
 		#_collect_food()
 		for a_tree in all_trees:
 			collect_pickable(a_tree)
-		_collect_leaves()
-		_collect_stone()
+		#_collect_leaves()
+		for a_plant in all_plants:
+			collect_pickable(a_plant)
+		#_collect_stone()
+		for a_quarry in all_quarries:
+			collect_pickable(a_quarry)
 		_collect_clay()
 		#_collect_wood()
 		for a_pine_tree in all_pine_trees:
