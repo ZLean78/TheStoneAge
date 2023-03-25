@@ -215,10 +215,10 @@ func _collect_pickable(_pickable):
 			if timer_count==0:
 				if has_bag:
 					if _pickable.points>=4:
-						get_tree().node.get_child(0).food_points+=4
+						get_tree().root.get_child(0).food_points+=4
 						_pickable.points-=4
 					else:
-						get_tree().node.get_child(0).food_points+=_pickable.points
+						get_tree().root.get_child(0).food_points+=_pickable.points
 						_pickable.points=0
 				else:
 					get_tree().root.get_child(0).food_points+=1
@@ -230,10 +230,10 @@ func _collect_pickable(_pickable):
 			if timer_count==0:
 				if has_bag:
 					if _pickable.points>=4:
-						get_tree().node.get_child(0).leaves_points+=4
+						get_tree().root.get_child(0).leaves_points+=4
 						_pickable.points-=4
 					else:
-						get_tree().node.get_child(0).leaves_points+=_pickable.points
+						get_tree().root.get_child(0).leaves_points+=_pickable.points
 						_pickable.points=0
 				else:
 					get_tree().root.get_child(0).leaves_points+=1

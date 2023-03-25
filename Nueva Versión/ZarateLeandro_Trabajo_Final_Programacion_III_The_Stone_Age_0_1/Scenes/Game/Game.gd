@@ -1,18 +1,33 @@
 extends Node2D
 
+#Variables de íconos del mouse.
 var basket=load("res://Scenes/MouseIcons/basket.png")
 var arrow=load("res://Scenes/MouseIcons/arrow.png")
 
+#Conteo de unidades ciudadanos.
 var unit_count = 1
+
+#Puntos de recursos de la comunidad.
 var food_points = 15
-var leaves_points = 0;
+var leaves_points = 0
+
+#Condiciones que afectan a toda la comunidad
 var its_raining = false
 var group_dressed = false
 var group_has_bag = false
 
+#Variables de referencia a cada uno de los nodos del árbol con los que vamos
+#a trabajar en este script.
 
+#Nodos de escenario.
 onready var tree = get_tree().root.get_child(0)
 onready var food_timer = tree.get_node("food_timer")
+onready var camera = tree.get_node("Camera")
+onready var rain_timer = tree.get_node("Rain_Timer")
+onready var tile_map
+onready var cave=tree.find_node("Cave")
+
+#Nodos de interfaz UI
 onready var timer_label = tree.get_node("UI/Base/TimerLabel")
 onready var food_label = tree.get_node("UI/Base/Rectangle/FoodLabel")
 onready var prompts_label = tree.get_node("UI/Base/Rectangle/PromptsLabel")
@@ -21,39 +36,51 @@ onready var leaves_label = tree.get_node("UI/Base/Rectangle/LeavesLabel")
 onready var rectangle = tree.get_node("UI/Base/Rectangle")
 onready var add_clothes = tree.get_node("UI/Base/Rectangle/AddClothes")
 onready var add_bag = tree.get_node("UI/Base/Rectangle/AddBag")
-onready var camera = tree.get_node("Camera")
-onready var rain_timer = tree.get_node("Rain_Timer")
-onready var tile_map
 
-onready var cave=tree.find_node("Cave")
-
+#Variable unidad ciudadano original a partir de la cual se crean todas las demás.
 export (PackedScene) var Unit
 
-var selected_units=[]
+#Arreglos para las unidades en general, para las seleccionadas
+#y las que están a resguardo de la lluvia.
 var all_units=[]
-var all_plants=[]
-var all_trees=[]
+var selected_units=[]
 var sheltered=[]
 
-var dragging = false
-var selected = []
-var drag_start = Vector2.ZERO
-var select_rectangle = RectangleShape2D.new()
+#Arreglos para los tipos de objetos "pickable", que son aquellos
+#de los que se pueden recolectar recursos.
+var all_plants=[]
+var all_trees=[]
+
+#Variables a eliminar del sistema de selección anterior del programa
+#var dragging = false
+#var selected = []
+#var drag_start = Vector2.ZERO
+#var select_rectangle = RectangleShape2D.new()
 
 
 #onready var select_draw = get_tree().root.find_node("SelectDraw")
 
+#Variable booleana para conocer si el objeto en función está invertido en x o y (?).
 var is_flipped = false
 
+#Variable que controla el tamaño de la pantalla.
 var screensize = Vector2(ProjectSettings.get("display/window/size/width"),ProjectSettings.get("display/window/size/height"))
 
+#Señales para cambiar el aspecto del puntero según el destino o fuente
+#de recursos que esté tocando.
 signal is_basket
 signal is_arrow
 
+#/////////////////////////////////////////
+#FUNCIONES PRINCIPALES MAIN
+
+#Función _ready()
 func _ready():
 	
+	#Asignamos el nodo TileMap.
 	tile_map=tree.find_node("TileMap")
 	
+	#Asignamos los árboles frutales.
 	all_trees.append(tree.find_node("fruit_tree"))
 	all_trees.append(tree.find_node("fruit_tree2"))
 	all_trees.append(tree.find_node("fruit_tree3"))
@@ -64,18 +91,25 @@ func _ready():
 	all_plants.append(tree.find_node("Plant2"));
 	#all_units.append(tree.find_node("Unit"))
 	all_units = get_tree().get_nodes_in_group("units")
+	
+	#Creamos la segunda unidad (una mujer), aparte de la original (que es hombre).
 	_create_unit();
 	
+	#Lugar donde va a aparecer la nueva unidad
 	all_units[all_units.size()-1].position = Vector2(camera.position.x+rand_range(50,100),camera.position.y+rand_range(50,100))
 	
+	#Configuración por defecto del cursor del mouse a aspecto de flecha.
 	Input.set_custom_mouse_cursor(arrow)
 
-
+#Función _process(_delta)
 func _process(_delta):
 	
-	timer_label.text = "ATAQUE ENEMIGO: " + str(int(rain_timer.time_left))
-	food_label.text = "COMIDA: " + str(int(food_points))
-	leaves_label.text = "HOJAS: " + str(int(leaves_points))	
+	if(!its_raining):
+		timer_label.text = "PELIGRO EN: " + str(int(rain_timer.time_left))
+	else:
+		timer_label.text = "LA LLUVIA CESARÁ EN: " + str(int(rain_timer.time_left))
+	food_label.text = str(int(food_points))
+	leaves_label.text = str(int(leaves_points))	
 	camera._set_its_raining(its_raining)
 			
 	for a_unit in all_units:
@@ -88,6 +122,10 @@ func _process(_delta):
 		
 		#a_unit.move_unit(a_unit.target_position)
 
+#///////////////////////////////////////////////////////////////////////////
+#FUNCIONES DE CREACIÓN Y CONFIGURACIÓN DE UNIDADES
+
+#Crear unidad.
 func _create_unit():
 	if food_points >=15:
 		var new_Unit = Unit.instance()
@@ -105,166 +143,42 @@ func _create_unit():
 		tile_map.add_child(new_Unit)
 		food_points-=15	
 		all_units.append(new_Unit)
-		
+
+#Vestir las unidades.		
 func _dress_units():
 	for a_unit in all_units:
 		if(!a_unit.is_dressed):
 			a_unit.is_dressed = true
 			
-			
+#Agregar bolso de hojas para recolección a las unidades.			
 func _add_bag():
 	for a_unit in all_units:
 		if(!a_unit.has_bag):
 			a_unit.has_bag = true	
 			a_unit.get_child(3).visible=true	
-
-func _collect_food():
-	for a_unit in all_units:		
-		for a_tree in all_trees:
-			if a_tree.touching && !a_tree.empty && a_unit.pickable_touching:
-				var the_tree = all_trees[all_trees.find(a_tree,0)]
-				var the_unit = all_units[all_units.find(a_unit,0)]
-				if((abs(the_unit.position.x-the_tree.position.x)<50)&&
-				(abs(the_unit.position.y-the_tree.position.y)<50)):
-					if(the_unit.has_bag):
-						if(the_tree.points>=4):
-							food_points +=4
-							the_tree.points-=4
-						else:
-							food_points += the_tree.points
-							the_tree.points = 0
-					else:					
-						food_points +=1
-						the_tree.points-=1
-					if the_tree.points <= 0:
-						the_tree.empty = true
-						
-func _collect_leaves():
-	for a_unit in all_units:		
-		for a_plant in all_plants:
-			if a_plant.touching && !a_plant.empty && a_unit.pickable_touching:
-				var the_plant = all_plants[all_plants.find(a_plant,0)]
-				var the_unit = all_units[all_units.find(a_unit,0)]
-				if((abs(the_unit.position.x-the_plant.position.x)<50)&&
-				(abs(the_unit.position.y-the_plant.position.y)<50)):	
-					if(the_unit.has_bag):
-						if(the_plant.points>=4):
-							leaves_points+=4
-							the_plant.points-=4
-						else:
-							leaves_points += the_plant.points
-							the_plant.points = 0
-					else:				
-						leaves_points +=1
-						the_plant.points-=1
-					if the_plant.points <= 0:
-						the_plant.empty = true
-						
-				
-func _get_damage():
-	for a_unit in all_units:		
-		for a_tree in all_trees:			
-			if(its_raining && !a_unit.pickable_touching && !all_units.size()==0):
-				var the_unit = all_units[all_units.find(a_unit,0)]
-				if(the_unit.energy_points>0):
-					if(!the_unit.is_dressed):
-						the_unit.energy_points-=5
-					else:
-						the_unit.energy_points-=2
-					#the_unit.get_child(4)._decrease_energy()
-					the_unit.bar._set_energy_points(the_unit.energy_points)
-					the_unit.bar._update_energy()
-				else:
-					the_unit.visible=false
-					the_unit._set_selected(false)			
-					all_units.erase(the_unit)	
-					the_unit._set_erased(true)
-					
-#					else:
-#						the_unit.visible = false
-#						if(all_units.size()<=1 && food_points<15):
-#							$The_Canvas._set_phrase("Has sido derrotado.")				
-					
-			elif(its_raining && a_unit.pickable_touching):
-				var the_unit = all_units[all_units.find(a_unit,0)]
-				if(the_unit.energy_points<100):
-					the_unit.energy_points+=1
-					#the_unit.get_child(4)._increase_energy()
-					the_unit.bar._set_energy_points(the_unit.energy_points)
-					the_unit.bar._update_energy()
-	if(all_units.size()==0 && food_points<15):
-		prompts_label.text = "Has sido derrotado."	
-	if(cave.sheltered_units>=12):
-		prompts_label.text = "Has ganado."	
-	
-func _check_victory():
-	if(all_units.size()==0 && food_points<15):
-		prompts_label.text = "Has sido derrotado."	
-	if(cave.sheltered_units>=12):
-		prompts_label.text = "Has ganado."	
-	
-func _on_CreateCitizen_pressed():
-	_create_unit()
-
-func _on_food_timer_timeout():
-	if(all_units.size()>-1):
-		#_collect_food()
-		#_collect_leaves()
-		#_get_damage()
-		_check_victory()
-	
-	
-
-func _rain_pour():
-	if(!its_raining):
-		its_raining=true
-	else:
-		its_raining=false
-	
-
-func _on_Rain_Timer_timeout():	
-	_rain_pour()
-	if(its_raining):
-		rain_timer.wait_time = 100
-	else:
-		rain_timer.wait_time = 30
-
-	
-	
+			
 
 
 
-
-
-
-
-func _on_AddClothes_pressed():
-	if leaves_points >=70:
-		leaves_points-=70
-		_dress_units()
-		group_dressed = true
-		add_clothes.visible = false
-	
-
-
-func _on_AddBag_pressed():
-	if leaves_points >=50:
-		leaves_points-=50
-		_add_bag()
-		group_has_bag = true
-		add_bag.visible = false
-		
+#FUNCIÓN QUE DESSELECCIONA TODAS LAS UNIDADES.	
+#(Utiliza el arreglo 'selected units').	
 func deselect_all():
 	while selected_units.size()>0:
 		selected_units[0]._set_selected(false)
 		
+#FUNCIÓN PARA SELECCIONAR Y DESSELECCIONAR UNA UNIDAD CON UN CLICK.
+#(Debe ser mejorada, ya que selecciona o desselecciona todas las unidades superpuestas).
 func was_pressed(obj):
 	for unit in selected_units:
 		if unit.name == obj.name:
 			unit._set_selected(false)
 			break
 		
+
 		
+
+			
+#IDENTIFICAR LAS UNIDADES EN EL ÁREA DE SELECCIÓN DEL RECTÁNGULO.	
 func get_units_in_area(area):
 	var u=[]
 	for unit in all_units:
@@ -273,12 +187,7 @@ func get_units_in_area(area):
 				u.append(unit)
 	return u
 		
-func start_move_selection(obj):
-	for un in all_units:
-		if un.selected:
-			un.move_unit(obj.move_to_point)
-		
-
+#MARCAR LAS UNIDADES SELECCIONADAS.
 func area_selected(obj):
 	var start=obj.start
 	var end=obj.end
@@ -292,25 +201,94 @@ func area_selected(obj):
 		u.selected = not u.selected
 		
 
+		
+
+#FUNCIONES DE SELECCIONAR Y DESELECCIONAR UNIDADES.
+#(Son necesarias para no añadir nuestras nuevas unidades 
+#seleccionadas a las que ya estaban seleccionadas,
+#sino desseleccionar las seleccionadas y seleccionar las que 
+#estamos seleccionadndo).
 func select_unit(unit):
 	if not selected_units.has(unit):
 		selected_units.append(unit)
 	#print("selected %s" % unit.name)
-	
+
 
 func deselect_unit(unit):
 	if selected_units.has(unit):
 		selected_units.erase(unit)
-	#print("deselected %s" % unit.name)
+#	#print("deselected %s" % unit.name)
+
+
+##MOVER LA SELECCIÓN DE UNIDADES.
+func start_move_selection(obj):
+	for un in all_units:
+		if un.selected:
+			un.move_unit(obj.move_to_point)
+			
 	
+#FUNCIÓN 'RAIN POUR'. LLAMA A LA LLUVIA CUANDO SE CUMPLE EL TIEMPO DEL TEMPORIZADOR
+#'RAIN TIMER'. SI NO ESTÁ LLOVIENDO, HACE QUE LLUEVA Y VICEVERSA.
+func _rain_pour():
+	if(!its_raining):
+		its_raining=true
+	else:
+		its_raining=false
+			
+
+#SEÑAL DE TIEMPO TRANSCURRIDO PARA TEMPORIZADOR 'RAIN TIMER',
+#EL CUAL ESPERA 100 SEGUNDOS CUANDO NO LLUEVE Y TREINTA CUANDO ESTÄ LLOVIENDO.
+func _on_Rain_Timer_timeout():	
+	_rain_pour()
+	if(its_raining):
+		rain_timer.wait_time = 100
+	else:
+		rain_timer.wait_time = 30
+
+#Señal de que el botón de agregar ropa ha sido presionado.
+func _on_AddClothes_pressed():
+	if leaves_points >=70:
+		leaves_points-=70
+		_dress_units()
+		group_dressed = true
+		add_clothes.visible = false
 	
 
+#Señal de que el botón de agregar bolso de hojas ha sido presionado.
+func _on_AddBag_pressed():
+	if leaves_points >=50:
+		leaves_points-=50
+		_add_bag()
+		group_has_bag = true
+		add_bag.visible = false
 
 
-
+#SEÑALES PARA CAMBIAR EL ASPECTO DEL CURSOR DEL MOUSE.
+#A canasta...
 func _on_Game_is_basket():
 	Input.set_custom_mouse_cursor(basket)
 
-
+#A flecha...
 func _on_Game_is_arrow():
 	Input.set_custom_mouse_cursor(arrow)
+	
+#///////////////////////////////////////////////////////////////////
+#SEÑAL DE BOTÓN DE 'CREAR CIUDADANO' PRESIONADO.
+func _on_CreateCitizen_pressed():
+	_create_unit()
+
+#///////////////////////////////////////////////////////////////////
+#SEÑAL DE TIEMPO TRANSCURRIDO DE TEMPORIZADOR 'FOOD TIMER', LLAMADO ASÍ POR
+#ESTAR PENSADO PARA TEMPORIZAR LA RECOLECCIÖN DE COMIDA PERO USADO LUEGO
+#GENERALMENTE PARA LLAMAR A OTRAS FUNCIONES DE LAS QUE SÓLO QUEDA 'CHECK VICTORY'.
+func _on_food_timer_timeout():
+	if(all_units.size()>-1):
+		_check_victory()
+		
+#////////////////////////////////////////////////////////////////////////////////////
+#FUNCIÓN 'CHECK VICTORY' para evaluar condiciones de derrota o victoria.
+func _check_victory():
+	if(all_units.size()==0 && food_points<15):
+		prompts_label.text = "Has sido derrotado."	
+	if(cave.sheltered_units>=12):
+		prompts_label.text = "Has ganado."	
