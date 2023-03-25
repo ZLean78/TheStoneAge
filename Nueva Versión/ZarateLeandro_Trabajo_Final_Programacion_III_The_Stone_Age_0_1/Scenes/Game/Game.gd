@@ -36,6 +36,7 @@ onready var leaves_label = tree.get_node("UI/Base/Rectangle/LeavesLabel")
 onready var rectangle = tree.get_node("UI/Base/Rectangle")
 onready var add_clothes = tree.get_node("UI/Base/Rectangle/AddClothes")
 onready var add_bag = tree.get_node("UI/Base/Rectangle/AddBag")
+onready var next_scene_button = tree.get_node("UI/Base/NextSceneButton")
 
 #Variable unidad ciudadano original a partir de la cual se crean todas las demás.
 export (PackedScene) var Unit
@@ -80,7 +81,7 @@ func _ready():
 	#Asignamos el nodo TileMap.
 	tile_map=tree.find_node("TileMap")
 	
-	#Asignamos los árboles frutales.
+	#Asignamos los arboles frutales.
 	all_trees.append(tree.find_node("fruit_tree"))
 	all_trees.append(tree.find_node("fruit_tree2"))
 	all_trees.append(tree.find_node("fruit_tree3"))
@@ -291,4 +292,9 @@ func _check_victory():
 	if(all_units.size()==0 && food_points<15):
 		prompts_label.text = "Has sido derrotado."	
 	if(cave.sheltered_units>=12):
-		prompts_label.text = "Has ganado."	
+		prompts_label.text = "Has ganado."
+		next_scene_button.visible=true	
+
+
+func _on_NextSceneButton_pressed():
+	get_tree().change_scene("res://Scenes/Game2/Game2.tscn")

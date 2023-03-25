@@ -110,8 +110,9 @@ var lake_touching = false
 #Indica si la unidad está tocando un pickable (objecto para recoger).
 var pickable_touching = false
 
-#var target_tree=null
-#var target_plant=null
+
+#Variable que indica el pickable que la unidad está tocando
+var pickable = null
 
 #!!!!
 
@@ -584,6 +585,8 @@ func _set_lake_touching(var _lake):
 func _set_pickable_touching(var _pickable):
 	pickable_touching=_pickable
 	
+func _set_pickable(_pickable):
+	pickable=_pickable	
 
 func _set_its_raining(var _its_raining):
 	its_raining = _its_raining
