@@ -62,8 +62,9 @@ func update_pathfinding():
 
 func _on_Area2D_body_entered(body):
 	if is_chasing:
-		if body==unit:
+		if "Unit" in body.name:
 			body.is_tiger_touching=true 
+			body.tiger=self
 			emit_signal("tiger_entered")
 		elif "Bullet" in body.name:
 			body.visible=false

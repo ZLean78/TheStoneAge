@@ -36,7 +36,7 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[node name="Unit" type="KinematicBody2D"]
+[node name="Unit2" type="KinematicBody2D"]
 collision_layer = 2
 input_pickable = true
 script = ExtResource( 2 )
@@ -57,7 +57,7 @@ shape = SubResource( 1 )
 [node name="Bar" parent="." instance=ExtResource( 1 )]
 position = Vector2( -7, -19 )
 
-[node name="All_Timer" type="Timer" parent="."]
+[node name="all_timer" type="Timer" parent="."]
 autostart = true
 
 [node name="scalable" type="Node2D" parent="."]
@@ -76,4 +76,4 @@ animation = "bag_1"
 position = Vector2( 12, 0 )
 
 [connection signal="input_event" from="." to="." method="_on_Unit_input_event"]
-[connection signal="timeout" from="All_Timer" to="." method="_on_All_Timer_timeout"]
+[connection signal="timeout" from="all_timer" to="." method="_on_all_timer_timeout"]

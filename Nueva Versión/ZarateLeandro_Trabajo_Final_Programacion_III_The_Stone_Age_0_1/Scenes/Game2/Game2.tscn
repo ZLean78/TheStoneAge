@@ -175,7 +175,7 @@ position = Vector2( -541, -98 )
 [node name="food_timer" type="Timer" parent="."]
 
 [node name="tiger_timer" type="Timer" parent="."]
-wait_time = 180.0
+wait_time = 10.0
 one_shot = true
 
 [node name="UI" type="CanvasLayer" parent="."]
@@ -392,7 +392,6 @@ autostart = true
 [connection signal="is_hand" from="." to="." method="_on_Game2_is_hand"]
 [connection signal="is_pick_mattock" from="." to="." method="_on_Game2_is_pick_mattock"]
 [connection signal="is_sword" from="." to="." method="_on_Game2_is_sword"]
-[connection signal="timeout" from="food_timer" to="." method="_on_food_timer_timeout"]
 [connection signal="timeout" from="tiger_timer" to="." method="_on_tiger_timer_timeout"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/DevelopStoneWeapons" to="." method="_on_DevelopStoneWeapons_pressed"]
@@ -400,4 +399,3 @@ autostart = true
 [connection signal="pressed" from="UI/Base/Rectangle/DiscoverFire" to="." method="_on_DiscoverFire_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/MakeClaypot" to="." method="_on_MakeClaypot_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/DevelopAgriculture" to="." method="_on_DevelopAgriculture_pressed"]
-[connection signal="timeout" from="damage_timer" to="." method="_on_damage_timer_timeout"]

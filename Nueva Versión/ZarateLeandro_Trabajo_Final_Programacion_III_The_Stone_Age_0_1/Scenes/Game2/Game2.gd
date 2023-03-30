@@ -177,11 +177,11 @@ func _process(_delta):
 	wood_label.text = str(int(wood_points))
 	water_label.text = str(int(water_points))
 	
+	_check_units()
+	_check_victory()
+	#for a_unit in all_units:
 
-	for a_unit in all_units:
-
-		a_unit.position.x = clamp(a_unit.position.x,-1028,screensize.x)
-		a_unit.position.y = clamp(a_unit.position.y,-608,screensize.y)
+		
 		
 	if !is_tiger:
 		if !is_tiger_coundown:
@@ -227,127 +227,129 @@ func _create_unit():
 			
 func _check_victory():
 	if is_fire_discovered && is_wheel_invented && is_stone_weapons_developed && is_claypot_made && is_agriculture_developed:
-		prompts_label.text = "¡Has ganado!"		
+		prompts_label.text = "¡Has ganado!"	
 		
-func collect_pickable(var _pickable):
-	for a_unit in all_units:
-		if _pickable.type == "fruit_tree" or _pickable.type == "pine_tree" or _pickable.type == "plant" or _pickable.type == "quarry":
-			if _pickable.touching && !_pickable.empty && a_unit.pickable_touching:
-				var the_unit = all_units[all_units.find(a_unit,0)]
-				if((abs(the_unit.position.x-_pickable.position.x)<50)&&
-				(abs(the_unit.position.y-_pickable.position.y)<50)):
-					if _pickable.type=="fruit_tree":
-						if(the_unit.has_bag):
-							if(_pickable.points>=4):
-								food_points +=4
-								_pickable.points-=4
-							else:
-								food_points += _pickable.points
-								_pickable.points = 0
-						else:					
-							food_points +=1
-							_pickable.points-=1
-						#if _pickable.points <= 0:
-						#_pickable.empty = true
-					elif _pickable.type == "pine_tree":
-						if(is_stone_weapons_developed):
-							if(_pickable.points>=4):
-								wood_points +=4
-								_pickable.points-=4
-							else:
-								wood_points += _pickable.points
-								_pickable.points = 0
-						else:					
-							wood_points +=1
-							_pickable.points-=1
-					elif _pickable.type == "plant":
-						if(the_unit.has_bag):
-							if(_pickable.points>=4):
-								leaves_points +=4
-								_pickable.points-=4
-							else:
-								leaves_points+=_pickable.points
-								_pickable.points=0
-						else:
-							leaves_points+=1
-							_pickable.points-=1
-					elif _pickable.type == "quarry":
-						if(is_stone_weapons_developed):
-							if(_pickable.points>=4):
-								stone_points+=4
-								_pickable.points-=4
-							else:
-								stone_points+=_pickable.points
-								_pickable.points=0
-						else:
-							stone_points+=1
-							_pickable.points-=1
-				if _pickable.points <= 0:
-					_pickable.empty = true	
-		else:
-			if _pickable.touching && a_unit.pickable_touching:
-				var the_unit = all_units[all_units.find(a_unit,0)]	
-				var the_pickable = _pickable
-				if the_pickable.touching:
-					if the_pickable.type == "puddle" && the_unit.puddle_touching:
-						clay_points+=4
-					elif the_pickable.type == "lake" && the_unit.lake_touching:
-						if is_claypot_made:
-							water_points+=4
-						else:
-							prompts_label.text="Debes desarrollar el cuenco de barro \n para poder transportar agua."
-				
-
-				
-func _get_damage():
-	for a_unit in all_units:		
-		for a_tiger in all_tigers:			
-			if(a_unit.is_chased && a_unit.is_tiger_touching && !all_units.size()==0):
-				var the_unit = all_units[all_units.find(a_unit,0)]
-				var the_tiger = all_tigers[all_tigers.find(a_tiger,0)]
-				if(the_unit.energy_points>0):
-					if(!the_unit.is_dressed):
-						the_unit.energy_points-=15
-					else:
-						the_unit.energy_points-=10
-					#the_unit.get_child(4)._decrease_energy()
-					the_unit.bar._set_energy_points(the_unit.energy_points)
-					the_unit.bar._update_energy()
-				else:
-					the_tiger.unit = null
-					the_unit._set_selected(false)			
-					all_units.erase(the_unit)	
-					the_unit.queue_free()
-#								
-					
-			
-	if(all_units.size()==0 && food_points<15):
+	elif(all_units.size()==0 && food_points<15):
 		prompts_label.text = "Has sido derrotado."	
+		
+#func collect_pickable(var _pickable):
+#	for a_unit in all_units:
+#		if _pickable.type == "fruit_tree" or _pickable.type == "pine_tree" or _pickable.type == "plant" or _pickable.type == "quarry":
+#			if _pickable.touching && !_pickable.empty && a_unit.pickable_touching:
+#				var the_unit = all_units[all_units.find(a_unit,0)]
+#				if((abs(the_unit.position.x-_pickable.position.x)<50)&&
+#				(abs(the_unit.position.y-_pickable.position.y)<50)):
+#					if _pickable.type=="fruit_tree":
+#						if(the_unit.has_bag):
+#							if(_pickable.points>=4):
+#								food_points +=4
+#								_pickable.points-=4
+#							else:
+#								food_points += _pickable.points
+#								_pickable.points = 0
+#						else:					
+#							food_points +=1
+#							_pickable.points-=1
+#						#if _pickable.points <= 0:
+#						#_pickable.empty = true
+#					elif _pickable.type == "pine_tree":
+#						if(is_stone_weapons_developed):
+#							if(_pickable.points>=4):
+#								wood_points +=4
+#								_pickable.points-=4
+#							else:
+#								wood_points += _pickable.points
+#								_pickable.points = 0
+#						else:					
+#							wood_points +=1
+#							_pickable.points-=1
+#					elif _pickable.type == "plant":
+#						if(the_unit.has_bag):
+#							if(_pickable.points>=4):
+#								leaves_points +=4
+#								_pickable.points-=4
+#							else:
+#								leaves_points+=_pickable.points
+#								_pickable.points=0
+#						else:
+#							leaves_points+=1
+#							_pickable.points-=1
+#					elif _pickable.type == "quarry":
+#						if(is_stone_weapons_developed):
+#							if(_pickable.points>=4):
+#								stone_points+=4
+#								_pickable.points-=4
+#							else:
+#								stone_points+=_pickable.points
+#								_pickable.points=0
+#						else:
+#							stone_points+=1
+#							_pickable.points-=1
+#				if _pickable.points <= 0:
+#					_pickable.empty = true	
+#		else:
+#			if _pickable.touching && a_unit.pickable_touching:
+#				var the_unit = all_units[all_units.find(a_unit,0)]	
+#				var the_pickable = _pickable
+#				if the_pickable.touching:
+#					if the_pickable.type == "puddle" && the_unit.puddle_touching:
+#						clay_points+=4
+#					elif the_pickable.type == "lake" && the_unit.lake_touching:
+#						if is_claypot_made:
+#							water_points+=4
+#						else:
+#							prompts_label.text="Debes desarrollar el cuenco de barro \n para poder transportar agua."
+#
+
+#
+#func _get_damage():
+#	for a_unit in all_units:		
+#		for a_tiger in all_tigers:			
+#			if(a_unit.is_chased && a_unit.is_tiger_touching && !all_units.size()==0):
+#				var the_unit = all_units[all_units.find(a_unit,0)]
+#				var the_tiger = all_tigers[all_tigers.find(a_tiger,0)]
+#				if(the_unit.energy_points>0):
+#					if(!the_unit.is_dressed):
+#						the_unit.energy_points-=15
+#					else:
+#						the_unit.energy_points-=10
+#					#the_unit.get_child(4)._decrease_energy()
+#					the_unit.bar._set_energy_points(the_unit.energy_points)
+#					the_unit.bar._update_energy()
+#				else:
+#					the_tiger.unit = null
+#					the_unit._set_selected(false)			
+#					all_units.erase(the_unit)	
+#					the_unit.queue_free()
+##								
+#
+#
+#	if(all_units.size()==0 && food_points<15):
+#		prompts_label.text = "Has sido derrotado."	
 		
 	
 func _on_CreateCitizen_pressed():
 	_create_unit()
 
-func _on_food_timer_timeout():
-	if(all_units.size()>-1):
+
 		
-		for a_tree in all_trees:
-			collect_pickable(a_tree)
+#		for a_tree in all_trees:
+#			collect_pickable(a_tree)
+#
+#		for a_plant in all_plants:
+#			collect_pickable(a_plant)
+#
+#		for a_quarry in all_quarries:
+#			collect_pickable(a_quarry)		
+#
+#		for a_pine_tree in all_pine_trees:
+#			collect_pickable(a_pine_tree)
+#
+#		collect_pickable(puddle)
+#
+#		collect_pickable(lake)
 		
-		for a_plant in all_plants:
-			collect_pickable(a_plant)
 		
-		for a_quarry in all_quarries:
-			collect_pickable(a_quarry)		
-		
-		for a_pine_tree in all_pine_trees:
-			collect_pickable(a_pine_tree)
-	
-		collect_pickable(puddle)
-		
-		collect_pickable(lake)
-		
-		_check_victory()
 		
 	
 	
@@ -373,7 +375,7 @@ func _tiger_attack():
 			if !all_tigers[i].is_chasing && all_tigers[i].visible && !all_tigers[i].is_dead:
 				var the_unit=all_units[j]
 				var the_tiger=all_tigers[i]
-				if !the_unit.is_chased && abs(the_unit.position.distance_to(the_tiger.position))<400:
+				if the_unit!=null && !the_unit.is_chased && abs(the_unit.position.distance_to(the_tiger.position))<400:
 					the_tiger.unit=the_unit
 					the_unit.is_chased=true
 					the_tiger.is_chasing=true
@@ -428,8 +430,8 @@ func start_move_selection(obj):
 
 
 
-func _on_damage_timer_timeout():
-	_get_damage()
+#func _on_damage_timer_timeout():
+#	_get_damage()
 
 	
 
@@ -552,5 +554,14 @@ func _on_Game2_is_axe():
 	hand_mode=false
 
 
-
+func _check_units():
+	for a_unit in all_units:
+		if a_unit.is_deleted:
+			var the_unit=all_units[all_units.find(a_unit,0)]
+			all_units.remove(all_units.find(a_unit,0))
+			the_unit.queue_free()
 	
+	
+
+
+

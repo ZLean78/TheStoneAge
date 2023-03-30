@@ -9,8 +9,11 @@ export (float) var SPEED = 100.0
 #Máximo de Salud
 export (float) var MAX_HEALTH = 100.0
 
+#variable que indica el nodo raíz.
+onready var root=get_tree().root.get_child(0)
+
 #Temporizador de comida, agrega un punto de comida por segundo cuando la unidad toca un árbol frutal.
-onready var food_timer = get_tree().root.get_child(0).find_node("food_timer")
+onready var food_timer = root.find_node("food_timer")
 #Salud
 onready var health = MAX_HEALTH
 
@@ -21,7 +24,7 @@ onready var box = $Selected
 #onready var label = $label
 #Barra de Energía
 onready var bar = $Bar
-onready var all_timer = $All_Timer
+onready var all_timer = $all_timer
 onready var sprite = get_node("scalable/sprite")
 onready var bag_sprite = get_node("scalable/bag_sprite")
 onready var shoot_point = get_node("scalable/shootPoint")
@@ -89,6 +92,9 @@ var screensize = Vector2(ProjectSettings.get("display/window/size/width"),Projec
 #Indica si la unidad está tocando un tgre
 var is_tiger_touching=false
 
+#Tigre que la unidad está tocando
+var tiger = null
+
 #Indica si la unidad está tocando un árbol frutal.
 var fruit_tree_touching = false
 
@@ -116,7 +122,11 @@ var pickable = null
 
 #!!!!
 
+#Variable contador para diferenciar cuándo ha acabado el timer "all_timer".
+var timer_count=1
 
+#Para saber si la unidad ha sido eliminada.
+var is_deleted=false
 
 #Señal de cambio de salud (incremento o decremento).
 signal health_change
@@ -133,6 +143,8 @@ func _ready():
 	connect("was_selected",get_tree().root.get_child(0),"select_unit")
 	connect("was_deselected",get_tree().root.get_child(0),"deselect_unit")
 	emit_signal("health_change",health)
+	has_bag=true
+	is_dressed=true
 	if(!is_dressed):
 		if !is_girl:
 			sprite.animation = "male_idle1"
@@ -164,6 +176,11 @@ func _set_selected(value):
 			emit_signal("was_deselected",self)
 
 func _physics_process(delta):
+	
+	position.x = clamp(position.x,-1028,screensize.x)
+	position.y = clamp(position.y,-608,screensize.y)
+	
+	
 	if selected:
 		if box.visible == false:
 			box.visible = true
@@ -218,8 +235,93 @@ func _physics_process(delta):
 #		get_parent().add_child(bullet)
 		
 		
-	if(food_timer.is_stopped()):
-		food_timer.start()
+	if(all_timer.is_stopped()):
+		all_timer.start()
+		
+		
+func _collect_pickable(var _pickable):
+	if _pickable.type == "fruit_tree" or _pickable.type == "pine_tree" or _pickable.type == "plant" or _pickable.type == "quarry":
+		if _pickable.touching && !_pickable.empty && pickable_touching:
+			if((abs(position.x-_pickable.position.x)<50)&&
+			(abs(position.y-_pickable.position.y)<50)):
+				if _pickable.type=="fruit_tree":
+					if(has_bag):
+						if(_pickable.points>=4):
+							root.food_points +=4
+							_pickable.points-=4
+						else:
+							root.food_points += _pickable.points
+							_pickable.points = 0
+					else:					
+						root.food_points +=1
+						_pickable.points-=1
+						#if _pickable.points <= 0:
+						#_pickable.empty = true
+				elif _pickable.type == "pine_tree":
+					if(root.is_stone_weapons_developed):
+						if(_pickable.points>=4):
+							root.wood_points +=4
+							_pickable.points-=4
+						else:
+							root.wood_points += _pickable.points
+							_pickable.points = 0
+					else:					
+						root.wood_points +=1
+						_pickable.points-=1
+				elif _pickable.type == "plant":
+					if(has_bag):
+						if(_pickable.points>=4):
+							root.leaves_points +=4
+							_pickable.points-=4
+						else:
+							root.leaves_points+=_pickable.points
+							_pickable.points=0
+					else:
+						root.leaves_points+=1
+						_pickable.points-=1
+				elif _pickable.type == "quarry":
+					if(root.is_stone_weapons_developed):
+						if(_pickable.points>=4):
+							root.stone_points+=4
+							_pickable.points-=4
+						else:
+							root.stone_points+=_pickable.points
+							_pickable.points=0
+					else:
+						root.stone_points+=1
+						_pickable.points-=1
+			if _pickable.points <= 0:
+				_pickable.empty = true	
+	else:
+		if _pickable.touching && pickable_touching:
+			if _pickable.type == "puddle" && puddle_touching:
+				root.clay_points+=4
+			elif _pickable.type == "lake" && lake_touching:
+				if root.is_claypot_made:
+					root.water_points+=4
+				else:
+					root.prompts_label.text="Debes desarrollar el cuenco de barro \n para poder transportar agua."
+
+
+		
+func _get_damage(var the_tiger):
+	if is_chased && is_tiger_touching:
+		if(energy_points>0):
+			if(!is_dressed):
+				energy_points-=15
+			else:
+				energy_points-=10
+			bar._set_energy_points(energy_points)
+			bar._update_energy()
+		else:
+			the_tiger.unit = null
+			the_tiger.is_chasing = false
+			_set_selected(false)			
+			is_deleted=true
+#								
+
+
+	
 	
 func move_towards(pos,point,delta):
 	var v = (point-pos).normalized()
@@ -554,11 +656,11 @@ func _on_plant_plant_entered():
 func _on_plant_plant_exited():
 	can_add_leaves = false;
 
-#func _on_tiger_tiger_entered():
-#	is_tiger_touching=true
-#
-#func _on_tiger_tiger_exited():
-#	is_tiger_touching=false
+func _on_tiger_tiger_entered():
+	is_tiger_touching=true
+
+func _on_tiger_tiger_exited():
+	is_tiger_touching=false
 
 func _on_player_mouse_entered():
 	selected = true
@@ -609,12 +711,12 @@ func _check_puddle_touching():
 func _check_pine_tree_touching():
 	_set_pine_tree_touching(pine_tree_touching)
 #	
-func _on_All_Timer_timeout():
-	pass
-	#_get_damage()
+func _on_all_timer_timeout():
+	timer_count=0
+	if tiger!=null:
+		_get_damage(tiger)
+	if pickable!=null:
+		_collect_pickable(pickable)
 
-
-func _on_food_timer_timeout():
-	pass # Replace with function body.
 
 
