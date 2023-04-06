@@ -1,35 +1,35 @@
 [gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://Scenes/Cave/Cave.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Scenes/Plant/Plant.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Scenes/fruit_tree/fruit_tree.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Scenes/Game2/gray_texture.png" type="Texture" id=4]
-[ext_resource path="res://Scenes/Game/Camera.gd" type="Script" id=5]
-[ext_resource path="res://Scenes/Game2/Game2.gd" type="Script" id=6]
-[ext_resource path="res://Scenes/Game/SelectDraw.gd" type="Script" id=7]
-[ext_resource path="res://Scenes/Game2/male1_d.png" type="Texture" id=8]
-[ext_resource path="res://Sprites/game/tiles/grass/simple/grass.png" type="Texture" id=9]
-[ext_resource path="res://Scenes/Game2/axe.png" type="Texture" id=10]
-[ext_resource path="res://Scenes/Tiger/Tiger.tscn" type="PackedScene" id=11]
-[ext_resource path="res://Scenes/Unit2/Unit2.tscn" type="PackedScene" id=12]
-[ext_resource path="res://Scenes/Game2/wheel.png" type="Texture" id=13]
-[ext_resource path="res://Scenes/Game2/claypot.png" type="Texture" id=14]
-[ext_resource path="res://Scenes/Game2/fire.png" type="Texture" id=15]
-[ext_resource path="res://Scenes/Game2/agro.png" type="Texture" id=16]
-[ext_resource path="res://Scenes/Quarry/Quarry.tscn" type="PackedScene" id=17]
-[ext_resource path="res://Scenes/Game2/food.png" type="Texture" id=18]
-[ext_resource path="res://Scenes/Game2/plant.png" type="Texture" id=19]
-[ext_resource path="res://Scenes/Game2/quarry.png" type="Texture" id=20]
-[ext_resource path="res://Scenes/Puddle/Puddle.tscn" type="PackedScene" id=21]
-[ext_resource path="res://Scenes/Game2/puddle.png" type="Texture" id=22]
-[ext_resource path="res://Scenes/PineTree/PineTree.tscn" type="PackedScene" id=23]
-[ext_resource path="res://Scenes/Game2/woodicon.png" type="Texture" id=24]
-[ext_resource path="res://Scenes/Lake/Lake.tscn" type="PackedScene" id=25]
-[ext_resource path="res://Scenes/Game2/watericon.png" type="Texture" id=26]
+[ext_resource path="res://Scenes/Unit2/Unit2.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/Quarry/Quarry.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scenes/Tiger/Tiger.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Scenes/PineTree/PineTree.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Scenes/fruit_tree/fruit_tree.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Scenes/Plant/Plant.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Scenes/Puddle/Puddle.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Scenes/Lake/Lake.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Scenes/Game2/Game2.gd" type="Script" id=10]
+[ext_resource path="res://Scenes/Game/Camera.gd" type="Script" id=11]
+[ext_resource path="res://Scenes/Game/SelectDraw.gd" type="Script" id=12]
+[ext_resource path="res://Scenes/Game2/male1_d.png" type="Texture" id=13]
+[ext_resource path="res://Sprites/game/tiles/grass/simple/grass.png" type="Texture" id=14]
+[ext_resource path="res://Scenes/Game2/gray_texture.png" type="Texture" id=15]
+[ext_resource path="res://Scenes/Game2/axe.png" type="Texture" id=16]
+[ext_resource path="res://Scenes/Game2/watericon.png" type="Texture" id=17]
+[ext_resource path="res://Scenes/Game2/puddle.png" type="Texture" id=18]
+[ext_resource path="res://Scenes/Game2/fire.png" type="Texture" id=19]
+[ext_resource path="res://Scenes/Game2/claypot.png" type="Texture" id=20]
+[ext_resource path="res://Scenes/Game2/woodicon.png" type="Texture" id=21]
+[ext_resource path="res://Scenes/Game2/agro.png" type="Texture" id=22]
+[ext_resource path="res://Scenes/Game2/plant.png" type="Texture" id=23]
+[ext_resource path="res://Scenes/Game2/quarry.png" type="Texture" id=24]
+[ext_resource path="res://Scenes/Game2/food.png" type="Texture" id=25]
+[ext_resource path="res://Scenes/Game2/wheel.png" type="Texture" id=26]
 
 [sub_resource type="TileSet" id=1]
 0/name = "grass.png 0"
-0/texture = ExtResource( 9 )
+0/texture = ExtResource( 14 )
 0/tex_offset = Vector2( 0, 0 )
 0/modulate = Color( 1, 1, 1, 1 )
 0/region = Rect2( 0, 0, 32, 33 )
@@ -48,10 +48,10 @@ vertices = PoolVector2Array( 1027, 601, -1015, 602, -67, 20, 1023, -634, -296, 2
 polygons = [ PoolIntArray( 0, 1, 2, 3 ), PoolIntArray( 4, 2, 1 ), PoolIntArray( 4, 1, 5, 6 ), PoolIntArray( 6, 5, 3, 7 ), PoolIntArray( 7, 3, 2 ) ]
 outlines = [ PoolVector2Array( -1023, -634, -1015, 602, 1027, 601, 1023, -634 ), PoolVector2Array( -299, -46, -296, 23, -67, 20, -71, -48 ) ]
 
-[node name="Game2" type="Node2D"]
+[node name="Game3" type="Node2D"]
 position = Vector2( -4, -11 )
-script = ExtResource( 6 )
-Unit2 = ExtResource( 12 )
+script = ExtResource( 10 )
+Unit2 = ExtResource( 2 )
 
 [node name="TileMap" type="TileMap" parent="."]
 position = Vector2( 0, 1 )
@@ -63,16 +63,16 @@ tile_data = PoolIntArray( -1245216, 0, 0, -1245215, 0, 0, -1245214, 0, 0, -12452
 [node name="Cave" parent="TileMap" instance=ExtResource( 1 )]
 position = Vector2( 931, 329 )
 
-[node name="Puddle" parent="TileMap" instance=ExtResource( 21 )]
+[node name="Puddle" parent="TileMap" instance=ExtResource( 8 )]
 position = Vector2( 531, 429 )
 
-[node name="Quarry1" parent="TileMap" instance=ExtResource( 17 )]
+[node name="Quarry1" parent="TileMap" instance=ExtResource( 3 )]
 position = Vector2( -359, 425 )
 
-[node name="Quarry2" parent="TileMap" instance=ExtResource( 17 )]
+[node name="Quarry2" parent="TileMap" instance=ExtResource( 3 )]
 position = Vector2( 80, -531 )
 
-[node name="Lake" parent="TileMap" instance=ExtResource( 25 )]
+[node name="Lake" parent="TileMap" instance=ExtResource( 9 )]
 position = Vector2( -180, -2 )
 
 [node name="Camera" type="Camera2D" parent="."]
@@ -85,9 +85,9 @@ limit_right = 1024
 limit_bottom = 600
 editor_draw_limits = true
 editor_draw_drag_margin = true
-script = ExtResource( 5 )
+script = ExtResource( 11 )
 
-[node name="Unit2" parent="." groups=["units"] instance=ExtResource( 12 )]
+[node name="Unit2" parent="." groups=["units"] instance=ExtResource( 2 )]
 position = Vector2( 669, 347 )
 
 [node name="Position2D" type="Position2D" parent="."]
@@ -99,7 +99,7 @@ position = Vector2( 0, 600 )
 position = Vector2( 4, 2 )
 navpoly = SubResource( 3 )
 
-[node name="Tiger1" parent="nav" instance=ExtResource( 11 )]
+[node name="Tiger1" parent="nav" instance=ExtResource( 4 )]
 visible = false
 position = Vector2( -261, -181 )
 
@@ -107,7 +107,7 @@ position = Vector2( -261, -181 )
 target_desired_distance = 5.0
 path_max_distance = 20.0
 
-[node name="Tiger2" parent="nav" instance=ExtResource( 11 )]
+[node name="Tiger2" parent="nav" instance=ExtResource( 4 )]
 visible = false
 position = Vector2( -357, -83 )
 
@@ -115,7 +115,7 @@ position = Vector2( -357, -83 )
 target_desired_distance = 5.0
 path_max_distance = 20.0
 
-[node name="Tiger3" parent="nav" instance=ExtResource( 11 )]
+[node name="Tiger3" parent="nav" instance=ExtResource( 4 )]
 visible = false
 position = Vector2( -357, 59 )
 
@@ -124,60 +124,60 @@ target_desired_distance = 5.0
 path_max_distance = 20.0
 
 [node name="SelectDraw" type="Node2D" parent="."]
-script = ExtResource( 7 )
+script = ExtResource( 12 )
 
-[node name="fruit_tree" parent="." instance=ExtResource( 3 )]
+[node name="fruit_tree" parent="." instance=ExtResource( 6 )]
 position = Vector2( -530, -207 )
 
-[node name="fruit_tree2" parent="." instance=ExtResource( 3 )]
+[node name="fruit_tree2" parent="." instance=ExtResource( 6 )]
 position = Vector2( -354, 152 )
 
-[node name="fruit_tree3" parent="." instance=ExtResource( 3 )]
+[node name="fruit_tree3" parent="." instance=ExtResource( 6 )]
 position = Vector2( -596, 3 )
 
-[node name="fruit_tree4" parent="." instance=ExtResource( 3 )]
+[node name="fruit_tree4" parent="." instance=ExtResource( 6 )]
 position = Vector2( 782, -336 )
 
-[node name="fruit_tree5" parent="." instance=ExtResource( 3 )]
+[node name="fruit_tree5" parent="." instance=ExtResource( 6 )]
 position = Vector2( 643, 261 )
 
-[node name="fruit_tree6" parent="." instance=ExtResource( 3 )]
+[node name="fruit_tree6" parent="." instance=ExtResource( 6 )]
 position = Vector2( 100, 123 )
 
-[node name="Plant" parent="." instance=ExtResource( 2 )]
+[node name="Plant" parent="." instance=ExtResource( 7 )]
 position = Vector2( 592, 53 )
 
-[node name="Plant2" parent="." instance=ExtResource( 2 )]
+[node name="Plant2" parent="." instance=ExtResource( 7 )]
 position = Vector2( 181, 469 )
 
-[node name="PineTree1" parent="." instance=ExtResource( 23 )]
+[node name="PineTree1" parent="." instance=ExtResource( 5 )]
 position = Vector2( 824, 231 )
 
-[node name="PineTree2" parent="." instance=ExtResource( 23 )]
+[node name="PineTree2" parent="." instance=ExtResource( 5 )]
 position = Vector2( 956, -501 )
 
-[node name="PineTree3" parent="." instance=ExtResource( 23 )]
+[node name="PineTree3" parent="." instance=ExtResource( 5 )]
 position = Vector2( -826, 411 )
 
-[node name="PineTree4" parent="." instance=ExtResource( 23 )]
+[node name="PineTree4" parent="." instance=ExtResource( 5 )]
 position = Vector2( -844, 63 )
 
-[node name="PineTree5" parent="." instance=ExtResource( 23 )]
+[node name="PineTree5" parent="." instance=ExtResource( 5 )]
 position = Vector2( -159, -543 )
 
-[node name="PineTree6" parent="." instance=ExtResource( 23 )]
+[node name="PineTree6" parent="." instance=ExtResource( 5 )]
 position = Vector2( 250, -141 )
 
-[node name="PineTree7" parent="." instance=ExtResource( 23 )]
+[node name="PineTree7" parent="." instance=ExtResource( 5 )]
 position = Vector2( -573, -569 )
 
-[node name="PineTree8" parent="." instance=ExtResource( 23 )]
+[node name="PineTree8" parent="." instance=ExtResource( 5 )]
 position = Vector2( -541, -98 )
 
 [node name="food_timer" type="Timer" parent="."]
 
 [node name="tiger_timer" type="Timer" parent="."]
-wait_time = 25.0
+wait_time = 180.0
 one_shot = true
 
 [node name="UI" type="CanvasLayer" parent="."]
@@ -193,7 +193,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 2
 size_flags_vertical = 0
-texture = ExtResource( 4 )
+texture = ExtResource( 15 )
 
 [node name="draw_rect" type="ColorRect" parent="UI/Base/Rectangle"]
 show_behind_parent = true
@@ -218,7 +218,7 @@ margin_bottom = 43.0
 hint_tooltip = "Crear Ciudadano.
 Costo: 15 ptos.
 de comida."
-texture_normal = ExtResource( 8 )
+texture_normal = ExtResource( 13 )
 
 [node name="PromptsLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 220.0
@@ -237,7 +237,7 @@ margin_left = 17.0
 margin_top = 5.0
 margin_right = 53.0
 margin_bottom = 34.0
-texture = ExtResource( 18 )
+texture = ExtResource( 25 )
 
 [node name="FoodLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 17.0
@@ -252,7 +252,7 @@ margin_left = 17.0
 margin_top = 35.0
 margin_right = 53.0
 margin_bottom = 69.0
-texture = ExtResource( 19 )
+texture = ExtResource( 23 )
 
 [node name="LeavesLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 18.0
@@ -266,7 +266,7 @@ margin_left = 17.0
 margin_top = 74.0001
 margin_right = 57.0
 margin_bottom = 114.0
-texture = ExtResource( 20 )
+texture = ExtResource( 24 )
 
 [node name="StoneLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 17.0
@@ -280,7 +280,7 @@ margin_left = 76.0
 margin_top = 10.0
 margin_right = 116.0
 margin_bottom = 29.0
-texture = ExtResource( 22 )
+texture = ExtResource( 18 )
 
 [node name="ClayLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 70.0
@@ -294,7 +294,7 @@ margin_left = 71.0
 margin_top = 35.0
 margin_right = 111.0
 margin_bottom = 77.0
-texture = ExtResource( 24 )
+texture = ExtResource( 21 )
 
 [node name="WoodLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 72.0
@@ -308,7 +308,7 @@ margin_left = 76.0
 margin_top = 81.0001
 margin_right = 116.0
 margin_bottom = 121.0
-texture = ExtResource( 26 )
+texture = ExtResource( 17 )
 
 [node name="DevelopStoneWeapons" type="TextureButton" parent="UI/Base/Rectangle"]
 visible = false
@@ -317,7 +317,7 @@ margin_top = 31.0001
 margin_right = 937.0
 margin_bottom = 52.0001
 hint_tooltip = "Desarrollar armas de piedra, cuerda y madera: Crea armas que te servirán para combatir a las bestias. Costo: 70 ptos. piedra, 70 ptos. madera y 50 ptos. hojas"
-texture_normal = ExtResource( 10 )
+texture_normal = ExtResource( 16 )
 
 [node name="InventWheel" type="TextureButton" parent="UI/Base/Rectangle"]
 visible = false
@@ -326,7 +326,7 @@ margin_top = 26.0001
 margin_right = 896.0
 margin_bottom = 50.0001
 hint_tooltip = "Inventar la rueda: Uno de los avances tecnológicos más importantes de la época, no podrás crear vehículos más adelante sin él. Costo: 70 ptos piedra, 40 ptos. madera."
-texture_normal = ExtResource( 13 )
+texture_normal = ExtResource( 26 )
 
 [node name="DiscoverFire" type="TextureButton" parent="UI/Base/Rectangle"]
 visible = false
@@ -335,7 +335,7 @@ margin_top = 23.0001
 margin_right = 871.0
 margin_bottom = 47.0001
 hint_tooltip = "Descubrir el fuego: Avance tecnológico crucial para calefacción, cocina y en ocasiones uso armamentístico. Costo: 60 ptos. madera, 40 ptos. piedra."
-texture_normal = ExtResource( 15 )
+texture_normal = ExtResource( 19 )
 
 [node name="MakeClaypot" type="TextureButton" parent="UI/Base/Rectangle"]
 visible = false
@@ -344,7 +344,7 @@ margin_top = 25.0001
 margin_right = 959.0
 margin_bottom = 49.0001
 hint_tooltip = "Cuenco de barro: primer gran hito en alfarería. No podrás recolectar agua sin él. Costo: 85 ptos. lodo."
-texture_normal = ExtResource( 14 )
+texture_normal = ExtResource( 20 )
 
 [node name="DevelopAgriculture" type="TextureButton" parent="UI/Base/Rectangle"]
 visible = false
@@ -353,7 +353,7 @@ margin_top = 25.0001
 margin_right = 988.0
 margin_bottom = 49.0001
 hint_tooltip = "Desarrollar agricultura: Una forma constante y dinámica de proveer alimentos. Costo: 70 ptos. agua, 70 ptos alimentos, 70 ptos. hojas."
-texture_normal = ExtResource( 16 )
+texture_normal = ExtResource( 22 )
 
 [node name="DevelopmentsLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 850.0

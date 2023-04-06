@@ -9,7 +9,7 @@ var hand=load("res://Scenes/MouseIcons/hand.png")
 var axe=load("res://Scenes/MouseIcons/axe.png")
 
 var unit_count = 1
-var food_points = 15
+var food_points = 0
 var leaves_points = 0
 var stone_points = 0
 var wood_points = 0
@@ -71,7 +71,7 @@ var all_tigers=[]
 var dragging = false
 var selected = []
 var drag_start = Vector2.ZERO
-var select_rectangle = RectangleShape2D.new()
+#var select_rectangle = RectangleShape2D.new()
 
 
 onready var draw_rect = get_tree().root.find_node("draw_rect")
@@ -106,6 +106,8 @@ entrada de la cueva. Escapa de los tigres dientes de sable
 o arrójales piedras haciendo
 clic derecho sobre ellos estandoa gran distancia."""
 
+#Si el cursor está en forma de espada tocando un tigre, lo guardamos en esta variable.
+var touching_tiger
 
 func _ready():
 	
@@ -205,23 +207,22 @@ func deselect_unit(unit):
 	
 
 
-func _create_unit():
-	if food_points >=15:
-		var new_Unit = Unit2.instance()
-		unit_count+=1
-		new_Unit.position = Vector2(camera.position.x+rand_range(50,100),camera.position.y+rand_range(50,100))
-		if(unit_count%2==0):
-			new_Unit.is_girl=true
-		else:
-			new_Unit.is_girl=false
-		if(group_dressed):
-			new_Unit.is_dressed=true	
-		if(group_has_bag):
-			new_Unit.has_bag=true	
-			new_Unit.get_child(3).visible = true
-		tile_map.add_child(new_Unit)
-		food_points-=15	
-		all_units.append(new_Unit)
+func _create_unit(cost = 0):
+	var new_Unit = Unit2.instance()
+	unit_count+=1
+	new_Unit.position = Vector2(camera.position.x+rand_range(50,100),camera.position.y+rand_range(50,100))
+	if(unit_count%2==0):
+		new_Unit.is_girl=true
+	else:
+		new_Unit.is_girl=false
+	if(group_dressed):
+		new_Unit.is_dressed=true	
+	if(group_has_bag):
+		new_Unit.has_bag=true	
+		new_Unit.get_child(3).visible = true
+	food_points -= cost
+	tile_map.add_child(new_Unit)
+	all_units.append(new_Unit)
 		
 
 			
@@ -329,7 +330,9 @@ func _check_victory():
 		
 	
 func _on_CreateCitizen_pressed():
-	_create_unit()
+	if food_points>=15:
+		_create_unit(15)
+		
 
 
 		
@@ -392,11 +395,12 @@ func deselect_all():
 	while selected_units.size()>0:
 		selected_units[0]._set_selected(false)
 		
-func was_pressed(obj):
+func select_last():
 	for unit in selected_units:
-		if unit.name == obj.name:
+		if selected_units[selected_units.size()-1] == unit:
+			unit._set_selected(true)
+		else:
 			unit._set_selected(false)
-			break
 		
 func get_units_in_area(area):
 	var u=[]
@@ -559,7 +563,10 @@ func _check_units():
 		if a_unit.is_deleted:
 			var the_unit=all_units[all_units.find(a_unit,0)]
 			all_units.remove(all_units.find(a_unit,0))
-			the_unit.queue_free()
+			for a_tiger in all_tigers:
+				if a_tiger.unit == the_unit:
+					a_tiger.unit = null
+			the_unit._die()
 	
 	
 

@@ -27,7 +27,7 @@ onready var bar = $Bar
 onready var all_timer = $all_timer
 onready var sprite = get_node("scalable/sprite")
 onready var bag_sprite = get_node("scalable/bag_sprite")
-onready var shoot_point = get_node("scalable/shootPoint")
+onready var shoot_point = $shootPoint
 
 #Variable que indica si el jugador debe moverse.
 var move_p = false
@@ -338,12 +338,18 @@ func move_unit(point):
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
-		target_position = get_global_mouse_position()
+		target_position = get_global_mouse_position()		
 		if get_tree().root.get_child(0).sword_mode:
-			bullet = bullet_scene.instance()
-			bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-			bullet.set_dir($scalable.scale.x)
-			get_parent().add_child(bullet)
+			target_position = get_tree().root.get_child(0).touching_tiger.position
+			if selected:
+				shoot_point.look_at(target_position)
+				var angle = shoot_point.rotation
+				var forward = Vector2(cos(angle),sin(angle))
+				bullet = bullet_scene.instance()				
+				bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+				bullet.set_dir(forward)
+				get_parent().add_child(bullet)
+				
 
 		
 	
@@ -354,6 +360,8 @@ func _on_Unit_input_event(_viewport, event, _shape_idx):
 		if event.is_pressed():
 			if event.button_index == BUTTON_LEFT:
 				_set_selected(not selected)
+				root.select_last()
+				
 
 
 
@@ -718,5 +726,6 @@ func _on_all_timer_timeout():
 	if pickable!=null:
 		_collect_pickable(pickable)
 
-
+func _die():
+	queue_free()
 

@@ -4,7 +4,7 @@
 
 extends Camera2D
 
-export var panSpeed=10.0
+export var panSpeed=30.0
 
 export var speed=10.0
 
@@ -16,9 +16,9 @@ export var zoomMin=0.25
 
 export var zoomMax=1.0
 
-export var marginX=200.0
+export var marginX=50.0
 
-export var marginY=200.0
+export var marginY=50.0
 
 var mousePos=Vector2()
 
@@ -64,16 +64,16 @@ func _process(delta):
 	position.y=lerp(position.y,position.y+inpy*speed*zoom.y,speed*delta)
 
 	#movimiento de cámara con mouse
-	if Input.is_key_pressed(KEY_CONTROL):
-		#chequear posición del mouse
-		if mousePos.x < marginX:
-			position.x=lerp(position.x,position.x-abs(mousePos.x-marginX)/marginX*panSpeed*zoom.x,panSpeed*delta)
-		elif mousePos.x > OS.window_size.x - marginX:
-			position.x=lerp(position.x,position.x+abs(mousePos.x-OS.window_size.x+marginX)/marginX*panSpeed*zoom.x,panSpeed*delta)
-		if mousePos.y < marginY:
-			position.y=lerp(position.y,position.y-abs(mousePos.y-marginY)/marginY*panSpeed*zoom.y,panSpeed*delta)
-		elif mousePos.y > OS.window_size.y - marginY:
-			position.y=lerp(position.y,position.y+abs(mousePos.y-OS.window_size.y+marginY)/marginY*panSpeed*zoom.y,panSpeed*delta)
+	#if Input.is_key_pressed(KEY_CONTROL):
+	#chequear posición del mouse
+	if mousePos.x < marginX:
+		position.x=lerp(position.x,position.x-abs(mousePos.x-marginX)/marginX*panSpeed*zoom.x,panSpeed*delta)
+	elif mousePos.x > ProjectSettings.get("display/window/size/width") - marginX:
+		position.x=lerp(position.x,position.x+abs(mousePos.x-ProjectSettings.get("display/window/size/width")+marginX)/marginX*panSpeed*zoom.x,panSpeed*delta)
+	if mousePos.y < marginY:
+		position.y=lerp(position.y,position.y-abs(mousePos.y-marginY)/marginY*panSpeed*zoom.y,panSpeed*delta)
+	elif mousePos.y > ProjectSettings.get("display/window/size/height") - marginY:
+		position.y=lerp(position.y,position.y+abs(mousePos.y-ProjectSettings.get("display/window/size/height")+marginY)/marginY*panSpeed*zoom.y,panSpeed*delta)
 
 	if Input.is_action_just_pressed("ui_left_mouse_button"):
 		#rectd.visible=true		
@@ -84,7 +84,7 @@ func _process(delta):
 		end = mousePosGlobal
 		endV = mousePos
 		draw_area()
-	if Input.is_action_just_released("ui_left_mouse_button"):		
+	if Input.is_action_just_released("ui_left_mouse_button"):
 		if startV.distance_to(mousePos)>20:
 			end = mousePosGlobal
 			endV = mousePos
@@ -94,7 +94,17 @@ func _process(delta):
 		else:
 			end = start
 			is_dragging = false
-			draw_area(false)
+			draw_area(false)		
+#		if startV.distance_to(mousePos)>20:
+#			end = mousePosGlobal
+#			endV = mousePos
+#			is_dragging = false
+#			draw_area(false)
+#			emit_signal("area_selected")
+#		else:
+#			end = start
+#			is_dragging = false
+#			draw_area(false)
 
 	#zoom in
 	zoom.x = lerp(zoom.x,zoom.x*zoomFactor,zoomSpeed*delta)
@@ -125,19 +135,23 @@ func _process(delta):
 
 
 func draw_area(s = true):
-	#rectd.rect_size = Vector2(abs(startV.x-endV.x),abs(startV.y-endV.y))
 	rectd.rect_size = endV-startV
 
 	var pos = Vector2()
 	pos.x = min(startV.x,endV.x)
 	pos.y = min(startV.y,endV.y)
-	#pos.x = startV.x if(startV.x<endV.x) else endV.x
-	#pos.y = startV.y if(startV.y<endV.y) else endV.y
-	pos.y -= OS.window_size.y/1.3
+	
+	pos.x = clamp(pos.x,0,OS.window_size.x - rectd.rect_size.x)
+	pos.y = clamp(pos.y,0,OS.window_size.y - rectd.rect_size.y)
+	
+	#pos.y = min(startV.y,endV.y) - OS.window_size.y/1.25 - 18
+	pos.y = min(startV.y,endV.y) - OS.window_size.y/1.18	
+	
+	
 	rectd.rect_position = pos
 
 	rectd.rect_size *= int(s) # true = 1, false = 0	
-
+	
 
 func _input(event):
 

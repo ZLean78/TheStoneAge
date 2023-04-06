@@ -60,6 +60,9 @@ position = Vector2( -7, -19 )
 [node name="all_timer" type="Timer" parent="."]
 autostart = true
 
+[node name="shootPoint" type="Position2D" parent="."]
+position = Vector2( 12, 0 )
+
 [node name="scalable" type="Node2D" parent="."]
 
 [node name="sprite" type="AnimatedSprite" parent="scalable"]
@@ -71,9 +74,6 @@ animation = "male_idle3_d"
 [node name="bag_sprite" type="AnimatedSprite" parent="scalable"]
 frames = SubResource( 3 )
 animation = "bag_1"
-
-[node name="shootPoint" type="Position2D" parent="scalable"]
-position = Vector2( 12, 0 )
 
 [connection signal="input_event" from="." to="." method="_on_Unit_input_event"]
 [connection signal="timeout" from="all_timer" to="." method="_on_all_timer_timeout"]

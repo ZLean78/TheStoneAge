@@ -49,13 +49,14 @@ func _physics_process(delta):
 	
 func update_pathfinding():
 	if !is_dead:
-		if unit!=null && abs(position.distance_to(unit.global_position))<400:		
-			agent.set_target_location(unit.global_position)
-		elif unit!=null && abs(position.distance_to(unit.global_position))>400:
-			unit.is_chased=false
-			unit=null
-			is_chasing=false
-			agent.set_target_location(Vector2(-937,-520))
+		if unit!=null:
+			if abs(position.distance_to(unit.global_position))<400:		
+				agent.set_target_location(unit.global_position)
+			elif abs(position.distance_to(unit.global_position))>400:
+				unit.is_chased=false
+				unit=null
+				is_chasing=false
+				agent.set_target_location(Vector2(-937,-520))
 		
 
 
@@ -86,6 +87,7 @@ func _on_Area2D_body_exited(body):
 
 func _on_Area2D_mouse_entered():
 	get_tree().root.get_child(0).emit_signal("is_sword")
+	get_tree().root.get_child(0).touching_tiger=self
 
 
 func _on_Area2D_mouse_exited():
