@@ -41,7 +41,7 @@ var drag_start = Vector2.ZERO
 var select_rectangle = RectangleShape2D.new()
 
 
-onready var select_draw = get_tree().root.find_node("SelectDraw")
+#onready var select_draw = get_tree().root.find_node("SelectDraw")
 
 var is_flipped = false
 
@@ -172,8 +172,8 @@ func _get_damage():
 					else:
 						the_unit.energy_points-=1
 					#the_unit.get_child(4)._decrease_energy()
-					the_unit.get_child(5)._set_energy_points(the_unit.energy_points)
-					the_unit.get_child(5)._update_energy()
+					the_unit.bar._set_energy_points(the_unit.energy_points)
+					the_unit.bar._update_energy()
 				else:
 					the_unit.visible=false
 					the_unit._set_selected(false)			
@@ -190,8 +190,8 @@ func _get_damage():
 				if(the_unit.energy_points<100):
 					the_unit.energy_points+=1
 					#the_unit.get_child(4)._increase_energy()
-					the_unit.get_child(5)._set_energy_points(the_unit.energy_points)
-					the_unit.get_child(5)._update_energy()
+					the_unit.bar._set_energy_points(the_unit.energy_points)
+					the_unit.bar._update_energy()
 	if(all_units.size()==0 && food_points<15):
 		prompts_label.text = "Has sido derrotado."	
 	if(cave.sheltered_units>=12):

@@ -92,6 +92,12 @@ var plant_touching = false
 #!!!!
 onready var all_timer = $All_Timer
 
+onready var sprite = get_node("scalable/sprite")
+onready var bag_sprite = get_node("scalable/bag_sprite")
+onready var shoot_point = get_node("scalable/shootPoint")
+
+
+
 #Señal de cambio de salud (incremento o decremento).
 signal health_change
 #Señal de que la unidad ha muerto.
@@ -109,14 +115,14 @@ func _ready():
 	emit_signal("health_change",health)
 	if(!is_dressed):
 		if !is_girl:
-			$sprite.animation = "male_idle1"
+			sprite.animation = "male_idle1"
 		if is_girl:
-			$sprite.animation = "female_idle1"
+			sprite.animation = "female_idle1"
 	else:
 		if !is_girl:
-			$sprite.animation = "male_idle1_d"
+			sprite.animation = "male_idle1_d"
 		if is_girl:
-			$sprite.animation = "female_idle1_d"
+			sprite.animation = "female_idle1_d"
 	
 	#connect("was_selected",get_parent(),"select_unit")
 	#connect("was_deselected",get_parent(),"deselect_unit")
@@ -162,11 +168,11 @@ func _physics_process(delta):
 	# Orientar al player.
 	if velocity.x<0:
 		if(is_flipped==false):			
-			scale.x = -1
+			$scalable.scale.x = -1
 			is_flipped = true
 	if velocity.x>0:
 		if(is_flipped==true):			
-			scale.x = 1
+			$scalable.scale.x = 1
 			is_flipped = false
 	
 				
@@ -176,10 +182,10 @@ func _physics_process(delta):
 	#Cambiar los cuadros de animación del player.
 	if velocity.length() > 0:
 		velocity = velocity.normalized() * SPEED
-		if(!$sprite.is_playing()):
-			$sprite.play()
+		if(!sprite.is_playing()):
+			sprite.play()
 	else:
-		$sprite.stop()
+		sprite.stop()
 		
 	#revisar si está tocando un árbol
 	_check_fruit_tree_touching()
@@ -187,7 +193,7 @@ func _physics_process(delta):
 	
 	if(Input.is_action_just_pressed("shoot") && selected):
 		bullet = bullet_scene.instance()
-		bullet.position = Vector2($shootPoint.global_position.x,$shootPoint.global_position.y)
+		bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
 		bullet.set_dir(scale.x)
 		get_parent().add_child(bullet)
 		
@@ -244,17 +250,17 @@ func _on_Target_Position_body_entered(_body):
 	touch_enabled = false
 	#device_number = 0
 	if !is_girl:
-		$sprite.animation = "male_idle1"
+		sprite.animation = "male_idle1"
 	if is_girl:
-		$sprite.animation = "female_idle1"
+		sprite.animation = "female_idle1"
 
 
 func _on_Target_Position1_body_entered(_body):
 	velocity = Vector2(0,0)
 	if !is_girl:
-		$sprite.animation = "male_idle1"
+		sprite.animation = "male_idle1"
 	if is_girl:
-		$sprite.animation = "female_idle1"
+		sprite.animation = "female_idle1"
 		
 
 		
@@ -262,223 +268,223 @@ func _animate():
 	if(!is_dressed):
 		if(!is_girl):
 			if velocity == Vector2(0,0):
-				if $sprite.animation == "male_backwalk":
-					$sprite.animation = "male_idle2"
-					if($bag_sprite.visible):
-						$bag_sprite.animation = "bag_2"
-				elif $sprite.animation == "male_frontwalk":
-					$sprite.animation = "male_idle1"
-					if($bag_sprite.visible):
-						$bag_sprite.animation = "bag_1"
-				elif $sprite.animation == "male_sidewalk":
-					$sprite.animation = "male_idle3"
-					if($bag_sprite.visible):
-						$bag_sprite.animation = "bag_3"
+				if sprite.animation == "male_backwalk":
+					sprite.animation = "male_idle2"
+					if(bag_sprite.visible):
+						bag_sprite.animation = "bag_2"
+				elif sprite.animation == "male_frontwalk":
+					sprite.animation = "male_idle1"
+					if(bag_sprite.visible):
+						bag_sprite.animation = "bag_1"
+				elif sprite.animation == "male_sidewalk":
+					sprite.animation = "male_idle3"
+					if(bag_sprite.visible):
+						bag_sprite.animation = "bag_3"
 #				else:
 #					$sprite.animation = "male_idle1"
 			else:
 				if velocity.y < 0:
 					if abs(velocity.y) > abs(velocity.x):
-						$sprite.animation = "male_backwalk"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_2"
+						sprite.animation = "male_backwalk"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_2"
 					else:
-						$sprite.animation = "male_sidewalk"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_3"
+						sprite.animation = "male_sidewalk"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_3"
 				elif velocity.y > 0:
 					if abs(velocity.y) > abs(velocity.x):
-						$sprite.animation = "male_frontwalk"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_1"
+						sprite.animation = "male_frontwalk"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_1"
 					else:
-						$sprite.animation = "male_sidewalk"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_3"
+						sprite.animation = "male_sidewalk"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_3"
 				elif velocity.x < 0:
 					if abs(velocity.x) > abs(velocity.y):
-						$sprite.animation = "male_sidewalk"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_3"
+						sprite.animation = "male_sidewalk"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_3"
 					else:
-						$sprite.animation = "male_backwalk"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_2"
+						sprite.animation = "male_backwalk"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_2"
 				elif velocity.x > 0:
 					if abs(velocity.x) > abs(velocity.y):
-						$sprite.animation = "male_sidewalk"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_3"
+						sprite.animation = "male_sidewalk"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_3"
 					else:
-						$sprite.animation = "male_frontwalk"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_1"
+						sprite.animation = "male_frontwalk"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_1"
 #				else:
 #				$sprite.animation = "male_idle1"			
 		else:
 			if velocity == Vector2(0,0):
-				if $sprite.animation == "female_backwalk":
-					$sprite.animation = "female_idle2"
-					if($bag_sprite.visible):
-						$bag_sprite.animation = "bag_2"
-				elif $sprite.animation == "female_frontwalk":
-					$sprite.animation = "female_idle1"
-					if($bag_sprite.visible):
-						$bag_sprite.animation = "bag_1"
-				elif $sprite.animation == "female_sidewalk":
-					$sprite.animation = "female_idle3"	
-					if($bag_sprite.visible):
-						$bag_sprite.animation = "bag_3"	
+				if sprite.animation == "female_backwalk":
+					sprite.animation = "female_idle2"
+					if(bag_sprite.visible):
+						bag_sprite.animation = "bag_2"
+				elif sprite.animation == "female_frontwalk":
+					sprite.animation = "female_idle1"
+					if(bag_sprite.visible):
+						bag_sprite.animation = "bag_1"
+				elif sprite.animation == "female_sidewalk":
+					sprite.animation = "female_idle3"	
+					if(bag_sprite.visible):
+						bag_sprite.animation = "bag_3"	
 #				else:
 #					$sprite.animation = "female_idle1"
 			else:
 				if velocity.y < 0:
 					if abs(velocity.y) > abs(velocity.x):
-						$sprite.animation = "female_backwalk"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_2"
+						sprite.animation = "female_backwalk"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_2"
 					else:
-						$sprite.animation = "female_sidewalk"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_3"
+						sprite.animation = "female_sidewalk"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_3"
 				elif velocity.y > 0:
 					if abs(velocity.y) > abs(velocity.x):
-						$sprite.animation = "female_frontwalk"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_1"
+						sprite.animation = "female_frontwalk"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_1"
 					else:
-						$sprite.animation = "female_sidewalk"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_3"
+						sprite.animation = "female_sidewalk"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_3"
 				elif velocity.x < 0:
 					if abs(velocity.x) > abs(velocity.y):
-						$sprite.animation = "female_sidewalk"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_3"
+						sprite.animation = "female_sidewalk"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_3"
 					else:
-						$sprite.animation = "female_backwalk"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_2"
+						sprite.animation = "female_backwalk"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_2"
 				elif velocity.x > 0:
 					if abs(velocity.x) > abs(velocity.y):
-						$sprite.animation = "female_sidewalk"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_3"
+						sprite.animation = "female_sidewalk"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_3"
 					else:
-						$sprite.animation = "female_frontwalk"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_1"
+						sprite.animation = "female_frontwalk"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_1"
 #				else:
 #					$sprite.animation = "female_idle1"	
 	else:
 		if(!is_girl):
 			if velocity == Vector2(0,0):
-				if $sprite.animation == "male_backwalk_d":
-					$sprite.animation = "male_idle2_d"
-					if($bag_sprite.visible):
-						$bag_sprite.animation = "bag_2"
-				elif $sprite.animation == "male_frontwalk_d":
-					$sprite.animation = "male_idle1_d"
-					if($bag_sprite.visible):
-						$bag_sprite.animation = "bag_1"
-				elif $sprite.animation == "male_sidewalk_d":
-					$sprite.animation = "male_idle3_d"
-					if($bag_sprite.visible):
-						$bag_sprite.animation = "bag_3"
+				if sprite.animation == "male_backwalk_d":
+					sprite.animation = "male_idle2_d"
+					if(bag_sprite.visible):
+						bag_sprite.animation = "bag_2"
+				elif sprite.animation == "male_frontwalk_d":
+					sprite.animation = "male_idle1_d"
+					if(bag_sprite.visible):
+						bag_sprite.animation = "bag_1"
+				elif sprite.animation == "male_sidewalk_d":
+					sprite.animation = "male_idle3_d"
+					if(bag_sprite.visible):
+						bag_sprite.animation = "bag_3"
 #				else:
 #					$sprite.animation = "male_idle1"
 			else:
 				if velocity.y < 0:
 					if abs(velocity.y) > abs(velocity.x):
-						$sprite.animation = "male_backwalk_d"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_2"
+						sprite.animation = "male_backwalk_d"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_2"
 					else:
-						$sprite.animation = "male_sidewalk_d"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_3"
+						sprite.animation = "male_sidewalk_d"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_3"
 				elif velocity.y > 0:
 					if abs(velocity.y) > abs(velocity.x):
-						$sprite.animation = "male_frontwalk_d"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_1"
+						sprite.animation = "male_frontwalk_d"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_1"
 					else:
-						$sprite.animation = "male_sidewalk_d"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_3"
+						sprite.animation = "male_sidewalk_d"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_3"
 				elif velocity.x < 0:
 					if abs(velocity.x) > abs(velocity.y):
-						$sprite.animation = "male_sidewalk_d"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_3"
+						sprite.animation = "male_sidewalk_d"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_3"
 					else:
-						$sprite.animation = "male_backwalk_d"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_2"
+						sprite.animation = "male_backwalk_d"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_2"
 				elif velocity.x > 0:
 					if abs(velocity.x) > abs(velocity.y):
-						$sprite.animation = "male_sidewalk_d"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_3"
+						sprite.animation = "male_sidewalk_d"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_3"
 					else:
-						$sprite.animation = "male_frontwalk_d"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_1"
+						sprite.animation = "male_frontwalk_d"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_1"
 #				else:
 #				$sprite.animation = "male_idle1"			
 		else:
 			if velocity == Vector2(0,0):
-				if $sprite.animation == "female_backwalk_d":
-					$sprite.animation = "female_idle2_d"
-					if($bag_sprite.visible):
-						$bag_sprite.animation = "bag_2"
-				elif $sprite.animation == "female_frontwalk_d":
-					$sprite.animation = "female_idle1_d"
-					if($bag_sprite.visible):
-						$bag_sprite.animation = "bag_1"
-				elif $sprite.animation == "female_sidewalk_d":
-					$sprite.animation = "female_idle3_d"	
-					if($bag_sprite.visible):
-						$bag_sprite.animation = "bag_3"	
+				if sprite.animation == "female_backwalk_d":
+					sprite.animation = "female_idle2_d"
+					if(bag_sprite.visible):
+						bag_sprite.animation = "bag_2"
+				elif sprite.animation == "female_frontwalk_d":
+					sprite.animation = "female_idle1_d"
+					if(bag_sprite.visible):
+						bag_sprite.animation = "bag_1"
+				elif sprite.animation == "female_sidewalk_d":
+					sprite.animation = "female_idle3_d"	
+					if(bag_sprite.visible):
+						bag_sprite.animation = "bag_3"	
 #				else:
 #					$sprite.animation = "female_idle1"
 			else:
 				if velocity.y < 0:
 					if abs(velocity.y) > abs(velocity.x):
-						$sprite.animation = "female_backwalk_d"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_2"
+						sprite.animation = "female_backwalk_d"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_2"
 					else:
-						$sprite.animation = "female_sidewalk_d"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_3"
+						sprite.animation = "female_sidewalk_d"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_3"
 				elif velocity.y > 0:
 					if abs(velocity.y) > abs(velocity.x):
-						$sprite.animation = "female_frontwalk_d"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_1"
+						sprite.animation = "female_frontwalk_d"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_1"
 					else:
-						$sprite.animation = "female_sidewalk_d"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_3"
+						sprite.animation = "female_sidewalk_d"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_3"
 				elif velocity.x < 0:
 					if abs(velocity.x) > abs(velocity.y):
-						$sprite.animation = "female_sidewalk_d"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_3"
+						sprite.animation = "female_sidewalk_d"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_3"
 					else:
-						$sprite.animation = "female_backwalk_d"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_2"
+						sprite.animation = "female_backwalk_d"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_2"
 				elif velocity.x > 0:
 					if abs(velocity.x) > abs(velocity.y):
-						$sprite.animation = "female_sidewalk_d"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_3"
+						sprite.animation = "female_sidewalk_d"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_3"
 					else:
-						$sprite.animation = "female_frontwalk_d"
-						if($bag_sprite.visible):
-							$bag_sprite.animation = "bag_1"
+						sprite.animation = "female_frontwalk_d"
+						if(bag_sprite.visible):
+							bag_sprite.animation = "bag_1"
 #				else:
 #					$sprite.animation = "female_idle1"	
 		
@@ -493,16 +499,16 @@ func _animate():
 	if position.distance_to(target_position) < 5:
 		if(!is_dressed):
 			if(!is_girl):
-				$sprite.animation = "male_idle1"
+				sprite.animation = "male_idle1"
 			else:
-				$sprite.animation = "female_idle1"
+				sprite.animation = "female_idle1"
 		else:
 			if(!is_girl):
-				$sprite.animation = "male_idle1_d"
+				sprite.animation = "male_idle1_d"
 			else:
-				$sprite.animation = "female_idle1_d"
-		if($bag_sprite.visible):
-			$bag_sprite.animation = "bag_1"
+				sprite.animation = "female_idle1_d"
+		if(bag_sprite.visible):
+			bag_sprite.animation = "bag_1"
 	
 
 

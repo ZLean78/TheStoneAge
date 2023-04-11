@@ -1,9 +1,8 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://Sprites/game/tiles/grass/simple/grass.png" type="Texture" id=1]
 [ext_resource path="res://Scenes/Unit/Unit.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Scenes/Game/Game.gd" type="Script" id=3]
-[ext_resource path="res://Scenes/Game/SelectDraw.gd" type="Script" id=4]
 [ext_resource path="res://Scenes/Unit/male1.png" type="Texture" id=5]
 [ext_resource path="res://Scenes/Cave/Cave.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Scenes/Game/Camera.gd" type="Script" id=7]
@@ -61,6 +60,7 @@ position = Vector2( 928, 485 )
 
 [node name="Camera" type="Camera2D" parent="."]
 position = Vector2( -1024, -600 )
+anchor_mode = 0
 current = true
 zoom = Vector2( 0.5, 0.5 )
 limit_left = -1024
@@ -70,8 +70,6 @@ limit_bottom = 600
 editor_draw_limits = true
 editor_draw_drag_margin = true
 script = ExtResource( 7 )
-marginX = 0.0
-marginY = 0.0
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="Camera"]
 position = Vector2( 4.00006, 10 )
@@ -82,9 +80,6 @@ frames = SubResource( 2 )
 position = Vector2( -709, -442 )
 
 [node name="food_timer" type="Timer" parent="."]
-
-[node name="SelectDraw" type="Node2D" parent="."]
-script = ExtResource( 4 )
 
 [node name="fruit_tree" parent="." instance=ExtResource( 8 )]
 position = Vector2( -530, -207 )

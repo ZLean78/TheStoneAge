@@ -1,27 +1,29 @@
 extends KinematicBody2D
 
-
-export var path_to_unit=NodePath()
-
 var velocity = Vector2.ZERO
+
+export var life=100
 
 onready var agent: NavigationAgent2D = $tiger_agent
 var unit
 var units = []
+
 onready var move_timer = $move_timer
 
 var is_flipped = false
+var is_chasing = false
+var is_dead = false
+
+signal tiger_entered
+signal tiger_exited
+
+
+
 
 func _ready():
-	unit = get_tree().root.get_child(0).find_node("Unit2")
-	#agent.set_target_location(unit.global_position)
 	move_timer.connect("timeout",self,"update_pathfinding")
 	
-#	for a_unit in units:
-#		if(position.distance_to(a_unit)<20):
-#			agent.set_target_location(a_unit.global_position)
-#			move_timer.connect("timeout",self,"update_pathfinding")
-
+#	
 func _physics_process(delta):
 	if agent.is_navigation_finished():
 		return
@@ -34,31 +36,55 @@ func _physics_process(delta):
 	
 	velocity = move_and_slide(velocity)
 	
-	# Orientar al player.
+	# Orientar al tigre.
 	if velocity.x<0:
-		if(is_flipped==false):			
-			scale.x = -1
-			is_flipped = true
-	if velocity.x>0:
-		if(is_flipped==true):			
-			scale.x = 1
-			is_flipped = false
+		$AnimatedSprite.flip_h=true
+	else:
+		$AnimatedSprite.flip_h=false
+			
+	
+	if is_dead==true:
+		visible=false	
+			
 	
 func update_pathfinding():
-	#agent.set_target_location(unit.global_position)
-	
-	for a_unit in get_tree().root.get_child(0).all_units:
-		#if(abs(position.distance_to(a_unit.position))<20):
-		if a_unit:
-			agent.set_target_location(a_unit.global_position)
-			
+	if !is_dead:
+		if unit!=null && abs(position.distance_to(unit.global_position))<400:		
+			agent.set_target_location(unit.global_position)
+		elif unit!=null && abs(position.distance_to(unit.global_position))>400:
+			unit.is_chased=false
+			unit=null
+			is_chasing=false
+			agent.set_target_location(Vector2(-937,-520))
+		
+
 
 
 func _on_Area2D_body_entered(body):
-	if(body.name=="Unit2"):
-		body.is_tiger_touching=true
+	if is_chasing:
+		if body==unit:
+			body.is_tiger_touching=true 
+			emit_signal("tiger_entered")
+		elif "Bullet" in body.name:
+			body.visible=false
+			life-=5
+			if life <=0:
+				is_dead=true
+				is_chasing=false
+				unit.is_chased=false
+				unit = null
 
 
 func _on_Area2D_body_exited(body):
-	if(body.name=="Unit2"):
-		body.is_tiger_touching=false
+	if is_chasing:
+		if body==unit:
+			body.is_tiger_touching=false
+			emit_signal("tiger_exited")
+
+
+func _on_Area2D_mouse_entered():
+	get_tree().root.get_child(0).emit_signal("is_sword")
+
+
+func _on_Area2D_mouse_exited():
+	get_tree().root.get_child(0).emit_signal("is_arrow")
