@@ -338,7 +338,7 @@ func move_unit(point):
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
-		get_tree().root.get_child(0).move_group()	
+		target_position = get_global_mouse_position()		
 		if get_tree().root.get_child(0).sword_mode:
 			target_position = get_tree().root.get_child(0).touching_tiger.position
 			if selected:
