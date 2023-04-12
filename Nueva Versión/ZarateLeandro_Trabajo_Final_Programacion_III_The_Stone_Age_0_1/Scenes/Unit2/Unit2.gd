@@ -128,6 +128,10 @@ var timer_count=1
 #Para saber si la unidad ha sido eliminada.
 var is_deleted=false
 
+#Para saber si la unidad ha sido convertida en jefe guerrero.
+var is_warchief = false
+
+
 #Señal de cambio de salud (incremento o decremento).
 signal health_change
 #Señal de que la unidad ha muerto.
@@ -306,18 +310,32 @@ func _collect_pickable(var _pickable):
 		
 func _get_damage(var the_tiger):
 	if is_chased && is_tiger_touching:
-		if(energy_points>0):
-			if(!is_dressed):
-				energy_points-=15
+		if is_warchief:
+			if(energy_points>0):
+				if(!is_dressed):
+					energy_points-=10
+				else:
+					energy_points-=5
+				bar._set_energy_points(energy_points)
+				bar._update_energy()
 			else:
-				energy_points-=10
-			bar._set_energy_points(energy_points)
-			bar._update_energy()
+				the_tiger.unit = null
+				the_tiger.is_chasing = false
+				_set_selected(false)			
+				is_deleted=true				
 		else:
-			the_tiger.unit = null
-			the_tiger.is_chasing = false
-			_set_selected(false)			
-			is_deleted=true
+			if(energy_points>0):
+				if(!is_dressed):
+					energy_points-=15
+				else:
+					energy_points-=10
+				bar._set_energy_points(energy_points)
+				bar._update_energy()
+			else:
+				the_tiger.unit = null
+				the_tiger.is_chasing = false
+				_set_selected(false)			
+				is_deleted=true
 #								
 
 
@@ -338,7 +356,10 @@ func move_unit(point):
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
-		target_position = get_global_mouse_position()		
+		if get_tree().root.get_child(0).name == "Game2":
+			target_position = get_global_mouse_position()
+		elif get_tree().root.get_child(0).name == "Game3":
+			get_tree().root.get_child(0).move_group()
 		if get_tree().root.get_child(0).sword_mode:
 			target_position = get_tree().root.get_child(0).touching_tiger.position
 			if selected:

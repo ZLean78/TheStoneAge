@@ -9,7 +9,7 @@
 [ext_resource path="res://Scenes/Plant/Plant.tscn" type="PackedScene" id=7]
 [ext_resource path="res://Scenes/Puddle/Puddle.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Scenes/Lake/Lake.tscn" type="PackedScene" id=9]
-[ext_resource path="res://Scenes/Game2/Game2.gd" type="Script" id=10]
+[ext_resource path="res://Scenes/Game3/Game3.gd" type="Script" id=10]
 [ext_resource path="res://Scenes/Game/Camera.gd" type="Script" id=11]
 [ext_resource path="res://Scenes/Game/SelectDraw.gd" type="Script" id=12]
 [ext_resource path="res://Scenes/Game2/male1_d.png" type="Texture" id=13]
@@ -310,8 +310,7 @@ margin_right = 116.0
 margin_bottom = 121.0
 texture = ExtResource( 17 )
 
-[node name="DevelopStoneWeapons" type="TextureButton" parent="UI/Base/Rectangle"]
-visible = false
+[node name="MakeWarchief" type="TextureButton" parent="UI/Base/Rectangle"]
 margin_left = 910.0
 margin_top = 31.0001
 margin_right = 937.0
@@ -319,8 +318,7 @@ margin_bottom = 52.0001
 hint_tooltip = "Desarrollar armas de piedra, cuerda y madera: Crea armas que te servirán para combatir a las bestias. Costo: 70 ptos. piedra, 70 ptos. madera y 50 ptos. hojas"
 texture_normal = ExtResource( 16 )
 
-[node name="InventWheel" type="TextureButton" parent="UI/Base/Rectangle"]
-visible = false
+[node name="CreateWarriorUnit" type="TextureButton" parent="UI/Base/Rectangle"]
 margin_left = 883.0
 margin_top = 26.0001
 margin_right = 896.0
@@ -328,8 +326,7 @@ margin_bottom = 50.0001
 hint_tooltip = "Inventar la rueda: Uno de los avances tecnológicos más importantes de la época, no podrás crear vehículos más adelante sin él. Costo: 70 ptos piedra, 40 ptos. madera."
 texture_normal = ExtResource( 26 )
 
-[node name="DiscoverFire" type="TextureButton" parent="UI/Base/Rectangle"]
-visible = false
+[node name="CreateShack" type="TextureButton" parent="UI/Base/Rectangle"]
 margin_left = 858.0
 margin_top = 23.0001
 margin_right = 871.0
@@ -337,7 +334,7 @@ margin_bottom = 47.0001
 hint_tooltip = "Descubrir el fuego: Avance tecnológico crucial para calefacción, cocina y en ocasiones uso armamentístico. Costo: 60 ptos. madera, 40 ptos. piedra."
 texture_normal = ExtResource( 19 )
 
-[node name="MakeClaypot" type="TextureButton" parent="UI/Base/Rectangle"]
+[node name="GiveAttackOrder" type="TextureButton" parent="UI/Base/Rectangle"]
 visible = false
 margin_left = 946.0
 margin_top = 25.0001
@@ -390,8 +387,8 @@ autostart = true
 [connection signal="is_sword" from="." to="." method="_on_Game2_is_sword"]
 [connection signal="timeout" from="tiger_timer" to="." method="_on_tiger_timer_timeout"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/DevelopStoneWeapons" to="." method="_on_DevelopStoneWeapons_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/InventWheel" to="." method="_on_InventWheel_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/DiscoverFire" to="." method="_on_DiscoverFire_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/MakeClaypot" to="." method="_on_MakeClaypot_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/MakeWarchief" to="." method="_on_MakeWarchief_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/CreateWarriorUnit" to="." method="_on_CreateWarriorUnit_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/CreateShack" to="." method="_on_CreateShack_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/GiveAttackOrder" to="." method="_on_GiveAttackOrder_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/DevelopAgriculture" to="." method="_on_DevelopAgriculture_pressed"]

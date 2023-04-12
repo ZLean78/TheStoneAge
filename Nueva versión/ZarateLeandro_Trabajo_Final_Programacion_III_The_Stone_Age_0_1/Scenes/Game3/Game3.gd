@@ -40,10 +40,10 @@ onready var wood_label = tree.get_node("UI/Base/Rectangle/WoodLabel")
 onready var water_label = tree.get_node("UI/Base/Rectangle/WaterLabel")
 #onready var developments_label = tree.get_node("UI/Base/Rectangle/DevelopmentsLabel")
 onready var rectangle = tree.get_node("UI/Base/Rectangle")
-onready var develop_stone_weapons = tree.get_node("UI/Base/Rectangle/DevelopStoneWeapons")
-onready var invent_wheel = tree.get_node("UI/Base/Rectangle/InventWheel")
-onready var discover_fire = tree.get_node("UI/Base/Rectangle/DiscoverFire")
-onready var make_claypot = tree.get_node("UI/Base/Rectangle/MakeClaypot")
+onready var create_shack = tree.get_node("UI/Base/Rectangle/CreateShack")
+onready var give_attack_order = tree.get_node("UI/Base/Rectangle/GiveAttackOrder")
+onready var make_warchief = tree.get_node("UI/Base/Rectangle/MakeWarchief")
+#onready var make_claypot = tree.get_node("UI/Base/Rectangle/MakeClaypot")
 onready var develop_agriculture = tree.get_node("UI/Base/Rectangle/DevelopAgriculture")
 onready var camera = tree.get_node("Camera")
 onready var tiger_timer = tree.get_node("tiger_timer")
@@ -240,14 +240,32 @@ func _create_unit(cost = 0):
 	tile_map.add_child(new_Unit)
 	all_units.append(new_Unit)
 		
-
+func _create_warrior_unit(cost = 0):
+	var new_Unit = Unit2.instance()
+	unit_count+=1
+	new_Unit.position = Vector2(camera.position.x+rand_range(50,100),camera.position.y+rand_range(50,100))
+	if(unit_count%2==0):
+		new_Unit.is_girl=true
+	else:
+		new_Unit.is_girl=false
+	if(group_dressed):
+		new_Unit.is_dressed=true	
+	if(group_has_bag):
+		new_Unit.has_bag=true	
+		new_Unit.get_child(3).visible = true
+	food_points -= cost
+	tile_map.add_child(new_Unit)
+	all_units.append(new_Unit)
 			
 func _check_victory():
 	if is_fire_discovered && is_wheel_invented && is_stone_weapons_developed && is_claypot_made && is_agriculture_developed:
 		prompts_label.text = "¡Has ganado!"	
-		
 	elif(all_units.size()==0 && food_points<15):
-		prompts_label.text = "Has sido derrotado."	
+		prompts_label.text = "Has sido derrotado."
+	else:
+		for a_unit in all_units:
+			if a_unit.is_warchief && a_unit.is_deleted:
+				prompts_label.text = "Has sido derrotado. Tu jefe ha muerto."	
 		
 #func collect_pickable(var _pickable):
 #	for a_unit in all_units:
@@ -467,7 +485,7 @@ func _on_DevelopStoneWeapons_pressed():
 		wood_points-=70
 		leaves_points-=50
 		is_stone_weapons_developed=true	
-		develop_stone_weapons.visible = false	
+		#develop_stone_weapons.visible = false	
 		
 		
 
@@ -477,20 +495,20 @@ func _on_InventWheel_pressed():
 		stone_points-=70
 		wood_points-=40
 		is_wheel_invented=true
-		invent_wheel.visible = false
+		#invent_wheel.visible = false
 
 func _on_DiscoverFire_pressed():
 	if wood_points >=60 && stone_points>=40:
 		wood_points-=60
 		stone_points-=40
 		is_fire_discovered=true
-		discover_fire.visible = false
+		#discover_fire.visible = false
 		
 func _on_MakeClaypot_pressed():
 	if clay_points>=85:
 		clay_points-=85
 		is_claypot_made=true
-		make_claypot.visible=false
+		#make_claypot.visible=false
 
 
 func _on_DevelopAgriculture_pressed():
@@ -583,14 +601,40 @@ func _on_Game2_is_axe():
 func _check_units():
 	for a_unit in all_units:
 		if a_unit.is_deleted:
-			var the_unit=all_units[all_units.find(a_unit,0)]
-			all_units.remove(all_units.find(a_unit,0))
-			for a_tiger in all_tigers:
-				if a_tiger.unit == the_unit:
-					a_tiger.unit = null
-			the_unit._die()
+			if !a_unit.is_warchief:
+				var the_unit=all_units[all_units.find(a_unit,0)]
+				all_units.remove(all_units.find(a_unit,0))
+				for a_tiger in all_tigers:
+					if a_tiger.unit == the_unit:
+						a_tiger.unit = null
+						the_unit._die()
 	
 	
 
 
 
+
+
+func _on_MakeWarchief_pressed():
+	if selected_units.size()==1:
+		selected_units[0].is_warchief=true
+		prompts_label.text = "¡Ya tienes a tu jefe!"
+	elif selected_units.size()>1:
+		prompts_label.text = "Debes seleccionar una sola unidad."
+	elif selected_units.size()==0:
+		prompts_label.text = "Selecciona una sola unidad."
+
+
+func _on_CreateWarriorUnit_pressed():
+	pass # Replace with function body.
+
+
+func _on_CreateShack_pressed():
+	pass # Replace with function body.
+
+
+
+
+
+func _on_GiveAttackOrder_pressed():
+	pass # Replace with function body.

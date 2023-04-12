@@ -431,6 +431,17 @@ func start_move_selection(obj):
 		
 
 
+func move_group():
+	var pos_minus_one=0
+	for i in range (0,selected_units.size()):
+		if i==0:
+			selected_units[i].target_position = get_global_mouse_position()	
+		else:
+			if i%4==0:
+				selected_units[i].target_position =	Vector2(get_global_mouse_position().x,pos_minus_one.y+20)
+			else:
+				selected_units[i].target_position =	Vector2(pos_minus_one.x+20,pos_minus_one.y)
+		pos_minus_one=selected_units[i].target_position
 
 
 
