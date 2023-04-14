@@ -500,7 +500,20 @@ func move_group():
 				selected_units[i].target_position =	Vector2(pos_minus_one.x+20,pos_minus_one.y)
 		pos_minus_one=selected_units[i].target_position
 
-	
+func move_enemy_group():
+	var pos_minus_one=0
+	for i in range (0,all_enemy_units.size()):
+		if i==0:
+			for tree in all_trees:
+				if all_enemy_units[i].position.distance_to(tree.position)<170:
+					var the_tree = tree
+					all_enemy_units[i].target_position=the_tree.position
+		else:
+			if i%4==0:
+				all_enemy_units[i].target_position =	Vector2(all_enemy_units[0].target_position.x,pos_minus_one.y+20)
+			else:
+				all_enemy_units[i].target_position =	Vector2(pos_minus_one.x+20,pos_minus_one.y)
+		pos_minus_one=all_enemy_units[i].target_position	
 
 func _on_DevelopStoneWeapons_pressed():
 	if stone_points>=70 && wood_points>=70 && leaves_points >=50:

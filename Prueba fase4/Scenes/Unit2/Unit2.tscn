@@ -70,6 +70,7 @@ position = Vector2( 0, -1 )
 scale = Vector2( 1.58333, 1.25 )
 frames = ExtResource( 3 )
 animation = "female_idle1_d"
+playing = true
 
 [node name="bag_sprite" type="AnimatedSprite" parent="scalable"]
 frames = SubResource( 3 )

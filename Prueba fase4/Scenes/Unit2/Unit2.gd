@@ -222,27 +222,17 @@ func _physics_process(delta):
 	
 				
 	#animar al personaje	
-	#_animate()	
+	if faction_type==1:
+		_animate()	
 		
-#	#Cambiar los cuadros de animación del player.
-#	if velocity.length() > 0:
-#		velocity = velocity.normalized() * SPEED
-#		if(!sprite.is_playing()):
-#			sprite.play()
-#	else:
-#		sprite.stop()
+#
 		
 	#revisar si está tocando un árbol
 	_check_fruit_tree_touching()
 	_check_plant_touching()
 	_check_pine_tree_touching()
 	
-#	if(Input.is_action_just_pressed("shoot") && selected):
-#		bullet = bullet_scene.instance()
-#		bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-#		bullet.set_dir($scalable.scale.x)
-#		get_parent().add_child(bullet)
-		
+	
 		
 	if (all_timer.is_stopped()):
 		all_timer.start()
