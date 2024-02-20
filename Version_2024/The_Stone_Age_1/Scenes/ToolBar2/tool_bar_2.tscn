@@ -1,0 +1,116 @@
+[gd_scene load_steps=8 format=3 uid="uid://bof4pfuyt53m2"]
+
+[ext_resource type="Script" path="res://Scenes/ToolBar2/tool_bar_2.gd" id="1_7xngb"]
+[ext_resource type="Texture2D" uid="uid://bg1gfmtlgtvsa" path="res://Sprites/UI/PNG/blue_panel.png" id="1_i4m01"]
+[ext_resource type="Texture2D" uid="uid://clhtoj8mq31ml" path="res://Sprites/UI/PNG/blue_button06.png" id="2_4usxo"]
+[ext_resource type="Texture2D" uid="uid://bdd8vy47sd5fi" path="res://Sprites/UI/PNG/blue_button00.png" id="3_jef0f"]
+[ext_resource type="Texture2D" uid="uid://brgkw0qkor3mh" path="res://MouseIcons/man.png" id="4_ctohk"]
+[ext_resource type="Texture2D" uid="uid://ckvu5uled4w6f" path="res://Sprites/Structure/medievalStructure_09.png" id="6_yjs02"]
+[ext_resource type="Texture2D" uid="uid://bqsk1r7becgqf" path="res://MouseIcons/townHall.png" id="7_ootfs"]
+
+[node name="ToolBar2" type="Node2D"]
+y_sort_enabled = true
+script = ExtResource("1_7xngb")
+
+[node name="ActionPanel" type="Sprite2D" parent="."]
+position = Vector2(-0.00012207, -2.38419e-07)
+scale = Vector2(1.42, 1.685)
+texture = ExtResource("1_i4m01")
+centered = false
+
+[node name="MilestonePanel" type="Sprite2D" parent="."]
+position = Vector2(0, 170)
+scale = Vector2(1.42, 1.685)
+texture = ExtResource("1_i4m01")
+centered = false
+
+[node name="BuildingPanel" type="Sprite2D" parent="."]
+position = Vector2(0, 340)
+scale = Vector2(1.42, 1.685)
+texture = ExtResource("1_i4m01")
+centered = false
+
+[node name="ActionLabel" type="Label" parent="."]
+offset_left = 11.0
+offset_top = 6.0
+offset_right = 63.0
+offset_bottom = 24.0
+theme_override_font_sizes/font_size = 10
+text = "Acciones:"
+
+[node name="MilestoneLabel" type="Label" parent="."]
+offset_left = 14.0
+offset_top = 177.0
+offset_right = 66.0
+offset_bottom = 195.0
+theme_override_font_sizes/font_size = 10
+text = "Hitos:"
+
+[node name="BuildingLabel" type="Label" parent="."]
+offset_left = 14.0
+offset_top = 346.0
+offset_right = 91.0
+offset_bottom = 364.0
+theme_override_font_sizes/font_size = 10
+text = "Construcciones:"
+
+[node name="UnitButton" type="TextureButton" parent="."]
+offset_left = 11.0
+offset_top = 22.0
+offset_right = 30.0
+offset_bottom = 53.0
+scale = Vector2(1.72, 1)
+tooltip_text = "Crear
+Unidad"
+texture_normal = ExtResource("3_jef0f")
+texture_pressed = ExtResource("2_4usxo")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="UnitButton"]
+position = Vector2(8.72093, 15)
+scale = Vector2(0.452632, 0.622449)
+texture = ExtResource("4_ctohk")
+
+[node name="HouseButton" type="TextureButton" parent="."]
+offset_left = 12.0
+offset_top = 360.0
+offset_right = 44.0
+offset_bottom = 392.0
+tooltip_text = "Construir
+Casa"
+texture_normal = ExtResource("3_jef0f")
+texture_pressed = ExtResource("2_4usxo")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="HouseButton"]
+y_sort_enabled = true
+position = Vector2(15, 15)
+scale = Vector2(0.421875, 0.390625)
+texture = ExtResource("6_yjs02")
+
+[node name="TownHallButton" type="TextureButton" parent="."]
+offset_left = 46.0
+offset_top = 360.0
+offset_right = 78.0
+offset_bottom = 392.0
+tooltip_text = "Construir
+Centro
+Cívico"
+texture_normal = ExtResource("3_jef0f")
+texture_pressed = ExtResource("2_4usxo")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="TownHallButton"]
+position = Vector2(14.35, 15.1812)
+scale = Vector2(0.242857, 0.188152)
+texture = ExtResource("7_ootfs")
+
+[connection signal="mouse_entered" from="UnitButton" to="." method="_on_unit_button_mouse_entered"]
+[connection signal="pressed" from="UnitButton" to="." method="_on_unit_button_pressed"]
+[connection signal="mouse_entered" from="HouseButton" to="." method="_on_house_button_mouse_entered"]
+[connection signal="pressed" from="HouseButton" to="." method="_on_house_button_pressed"]
+[connection signal="mouse_entered" from="TownHallButton" to="." method="_on_town_hall_button_mouse_entered"]
+[connection signal="pressed" from="TownHallButton" to="." method="_on_town_hall_button_pressed"]

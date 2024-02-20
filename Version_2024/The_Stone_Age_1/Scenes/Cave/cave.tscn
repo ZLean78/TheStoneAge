@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://ce5yahc2pik8f"]
+
+[ext_resource type="Script" path="res://Scenes/Cave/cave.gd" id="1_fmnif"]
+[ext_resource type="Texture2D" uid="uid://dex0n1uvbmj8w" path="res://Sprites/Game_Sprites/cave.png" id="1_nbygn"]
+
+[node name="Cave" type="Node2D"]
+script = ExtResource("1_fmnif")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-2.00001, -5.00001)
+scale = Vector2(0.730098, 0.704633)
+texture = ExtResource("1_nbygn")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D"]
+polygon = PackedVector2Array(-202, 161, -183, 69, -143, -3, -60, -50, 33, -43, 64, 38, 57, 164)
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]
