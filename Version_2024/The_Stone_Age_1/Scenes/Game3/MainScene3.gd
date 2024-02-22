@@ -12,6 +12,8 @@ extends Node2D
 @onready var townhall = preload("res://Scenes/TownHall/town_hall.tscn")
 @onready var trees = get_tree().get_root().get_node("MainScene/SubViewportContainer/SubViewport/World/Trees")
 
+@onready var unit = preload("res://Scenes/Unit/Unit.tscn")
+
 var navigation_mesh: NavigationPolygon
 var region_rid: RID
 
@@ -43,6 +45,14 @@ func _unhandled_input(event):
 					new_house.position=unit.navi.target_position
 					houses.add_child(new_house)
 					Game.Wood-=30
+					
+	if tool_bar2.unit_button_down:
+		if Game.cursor_mode == "Man" && event.is_action_pressed("RightClick") && Game.Food>=15:
+			var new_unit = unit.instantiate()	
+			new_unit.position = get_global_mouse_position() + camera.position
+			unit_node.add_child(new_unit)
+			Game.Food-=15
+			world._get_units()				
 								
 					
 

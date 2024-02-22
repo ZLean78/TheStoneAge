@@ -29,7 +29,7 @@ func _process(_delta):
 				Input.set_custom_mouse_cursor(null)
 				Game.cursor_mode = "Default"
 			
-		if unit_button_down:
+		elif unit_button_down:
 			if Game.mouse_entered:
 				Input.set_custom_mouse_cursor(Game.greyBarbHouse)
 				Game.cursor_mode = "GreyMan"
@@ -40,13 +40,7 @@ func _process(_delta):
 			Input.set_custom_mouse_cursor(null)
 			Game.cursor_mode = "Default"
 			
-		"""if unit_button_down:
-		if Game.mouse_entered:
-			Input.set_custom_mouse_cursor(Game.man)
-			Game.cursor_mode = "Man"	
-		else:
-			Input.set_custom_mouse_cursor(null)
-			Game.cursor_mode = "Default"""
+		
 
 
 func _on_unit_button_pressed():
