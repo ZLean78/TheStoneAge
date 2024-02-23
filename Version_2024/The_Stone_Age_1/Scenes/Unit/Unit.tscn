@@ -4,18 +4,18 @@
 [ext_resource type="Script" path="res://Scenes/Unit/Unit.gd" id="1_e5n3a"]
 [ext_resource type="Texture2D" uid="uid://boluxvquio6ku" path="res://Sprites/Game_Sprites/selected.png" id="2_6eyxv"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_uugin"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_i6suk"]
 size = Vector2(27, 42)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_yofhb"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mbnc2"]
 size = Vector2(19, 9)
 
-[sub_resource type="Theme" id="Theme_obok4"]
+[sub_resource type="Theme" id="Theme_ow4a1"]
 
-[sub_resource type="CanvasTexture" id="CanvasTexture_mwgyc"]
+[sub_resource type="CanvasTexture" id="CanvasTexture_jgx7r"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_f2fim"]
-texture = SubResource("CanvasTexture_mwgyc")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dceio"]
+texture = SubResource("CanvasTexture_jgx7r")
 modulate_color = Color(0, 0, 1, 1)
 
 [node name="Unit" type="CharacterBody2D"]
@@ -31,7 +31,7 @@ position = Vector2(0, 0.5)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionShape2D"]
 y_sort_enabled = true
 position = Vector2(-0.5, 0.5)
-shape = SubResource("RectangleShape2D_uugin")
+shape = SubResource("RectangleShape2D_i6suk")
 
 [node name="Box" type="Sprite2D" parent="."]
 y_sort_enabled = true
@@ -47,7 +47,7 @@ texture = ExtResource("1_4s8ce")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
 position = Vector2(-0.5, 14)
-shape = SubResource("RectangleShape2D_yofhb")
+shape = SubResource("RectangleShape2D_mbnc2")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 avoidance_enabled = true
@@ -58,6 +58,6 @@ offset_top = -31.0
 offset_right = 85.0
 offset_bottom = -4.0
 scale = Vector2(0.3, 0.3)
-theme = SubResource("Theme_obok4")
-theme_override_styles/fill = SubResource("StyleBoxTexture_f2fim")
+theme = SubResource("Theme_ow4a1")
+theme_override_styles/fill = SubResource("StyleBoxTexture_dceio")
 value = 100.0

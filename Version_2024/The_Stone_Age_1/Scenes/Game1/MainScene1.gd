@@ -20,8 +20,8 @@ var region_rid: RID
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	tool_bar2.get_node("HouseButton").visible=true
-	tool_bar2.get_node("TownHallButton").visible=true
+	tool_bar2.get_node("HouseButton").visible=false
+	tool_bar2.get_node("TownHallButton").visible=false
 	for tree in trees.get_children():
 		tree.can_give_wood = false
 
