@@ -384,7 +384,7 @@ align = 1
 autostart = true
 
 [node name="SpawnPosition" type="Position2D" parent="."]
-position = Vector2( 603, 352 )
+position = Vector2( 713, 404 )
 
 [connection signal="is_arrow" from="." to="." method="_on_Game2_is_arrow"]
 [connection signal="is_axe" from="." to="." method="_on_Game2_is_axe"]

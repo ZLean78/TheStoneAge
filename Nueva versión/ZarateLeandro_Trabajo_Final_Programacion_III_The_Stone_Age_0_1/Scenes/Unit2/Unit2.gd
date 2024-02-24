@@ -54,6 +54,7 @@ var is_chased = false
 var dead = false
 
 
+
 #Variables agregadas
 #var device_number = 0
 #!!!!
@@ -132,6 +133,7 @@ var is_deleted=false
 #Para saber si la unidad ha sido convertida en jefe guerrero.
 var is_warchief = false
 
+var can_shoot = true
 
 #Señal de cambio de salud (incremento o decremento).
 signal health_change
@@ -363,7 +365,7 @@ func _unhandled_input(event):
 			get_tree().root.get_child(0).move_group()
 		if get_tree().root.get_child(0).sword_mode:
 			target_position = get_tree().root.get_child(0).touching_tiger.position
-			if selected:
+			if selected && can_shoot:
 				shoot_node.look_at(target_position)				
 				var angle = shoot_node.rotation
 				var forward = Vector2(cos(angle),sin(angle))
@@ -373,6 +375,7 @@ func _unhandled_input(event):
 				bullet.set_dir(forward)
 				bullet.rotation = angle		
 				get_parent().add_child(bullet)
+				can_shoot=false
 			
 
 func _on_Unit_input_event(_viewport, event, _shape_idx):
@@ -741,10 +744,12 @@ func _check_pine_tree_touching():
 #	
 func _on_all_timer_timeout():
 	timer_count=0
+	can_shoot=true
 	if tiger!=null:
 		_get_damage(tiger)
 	if pickable!=null:
 		_collect_pickable(pickable)
+	
 
 func _die():
 	queue_free()
