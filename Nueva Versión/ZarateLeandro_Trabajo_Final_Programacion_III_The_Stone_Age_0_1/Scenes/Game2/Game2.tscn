@@ -383,6 +383,9 @@ align = 1
 [node name="damage_timer" type="Timer" parent="."]
 autostart = true
 
+[node name="SpawnPosition" type="Position2D" parent="."]
+position = Vector2( 603, 352 )
+
 [connection signal="is_arrow" from="." to="." method="_on_Game2_is_arrow"]
 [connection signal="is_axe" from="." to="." method="_on_Game2_is_axe"]
 [connection signal="is_basket" from="." to="." method="_on_Game2_is_basket"]

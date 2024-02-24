@@ -52,6 +52,7 @@ onready var puddle = tree.get_node("TileMap/Puddle")
 onready var quarry1 = tree.get_node("TileMap/Quarry1")
 onready var quarry2 = tree.get_node("TileMap/Quarry2")
 onready var lake = tree.get_node("TileMap/Lake")
+onready var spawn_position=tree.get_node("SpawnPosition")
 
 var cave
 
@@ -209,8 +210,7 @@ func deselect_unit(unit):
 
 func _create_unit(cost = 0):
 	var new_Unit = Unit2.instance()
-	unit_count+=1
-	new_Unit.position = Vector2(camera.position.x,camera.position.y)
+	unit_count+=1	
 	if(unit_count%2==0):
 		new_Unit.is_girl=true
 	else:
@@ -221,6 +221,7 @@ func _create_unit(cost = 0):
 		new_Unit.has_bag=true	
 		new_Unit.get_child(3).visible = true
 	food_points -= cost
+	new_Unit.position = spawn_position.position
 	tile_map.add_child(new_Unit)
 	all_units.append(new_Unit)
 		
