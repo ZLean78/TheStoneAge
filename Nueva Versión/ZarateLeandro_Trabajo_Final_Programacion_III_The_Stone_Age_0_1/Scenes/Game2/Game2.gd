@@ -114,7 +114,7 @@ func _ready():
 	
 	all_units=get_tree().get_nodes_in_group("units")
 	tile_map=tree.find_node("TileMap")
-	cave=tile_map.get_node("Cave")
+	cave=get_node("Cave")
 	all_trees.append(tree.find_node("fruit_tree"))
 	all_trees.append(tree.find_node("fruit_tree2"))
 	all_trees.append(tree.find_node("fruit_tree3"))
@@ -210,7 +210,7 @@ func deselect_unit(unit):
 func _create_unit(cost = 0):
 	var new_Unit = Unit2.instance()
 	unit_count+=1
-	new_Unit.position = Vector2(camera.position.x+rand_range(50,100),camera.position.y+rand_range(50,100))
+	new_Unit.position = Vector2(camera.position.x,camera.position.y)
 	if(unit_count%2==0):
 		new_Unit.is_girl=true
 	else:

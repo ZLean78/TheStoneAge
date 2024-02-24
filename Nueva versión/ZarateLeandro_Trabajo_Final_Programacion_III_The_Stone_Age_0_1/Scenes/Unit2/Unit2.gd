@@ -27,7 +27,8 @@ onready var bar = $Bar
 onready var all_timer = $all_timer
 onready var sprite = get_node("scalable/sprite")
 onready var bag_sprite = get_node("scalable/bag_sprite")
-onready var shoot_point = $shootPoint
+onready var shoot_node = $shootNode
+onready var shoot_point = $shootNode/shootPoint
 
 #Variable que indica si el jugador debe moverse.
 var move_p = false
@@ -363,18 +364,16 @@ func _unhandled_input(event):
 		if get_tree().root.get_child(0).sword_mode:
 			target_position = get_tree().root.get_child(0).touching_tiger.position
 			if selected:
-				shoot_point.look_at(target_position)
-				var angle = shoot_point.rotation
+				shoot_node.look_at(target_position)				
+				var angle = shoot_node.rotation
 				var forward = Vector2(cos(angle),sin(angle))
-				bullet = bullet_scene.instance()				
+				bullet = bullet_scene.instance()
+				shoot_point.rotation = angle				
 				bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
 				bullet.set_dir(forward)
+				bullet.rotation = angle		
 				get_parent().add_child(bullet)
-				
-
-		
-	
-	
+			
 
 func _on_Unit_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton:

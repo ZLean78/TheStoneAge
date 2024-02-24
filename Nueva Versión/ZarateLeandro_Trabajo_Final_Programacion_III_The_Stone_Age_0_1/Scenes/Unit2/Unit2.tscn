@@ -39,6 +39,7 @@ animations = [ {
 [node name="Unit2" type="KinematicBody2D"]
 collision_layer = 2
 input_pickable = true
+motion/sync_to_physics = true
 script = ExtResource( 2 )
 
 [node name="Selected" type="Sprite" parent="."]
@@ -57,11 +58,13 @@ shape = SubResource( 1 )
 [node name="Bar" parent="." instance=ExtResource( 1 )]
 position = Vector2( -7, -19 )
 
+[node name="shootNode" type="Node2D" parent="."]
+
+[node name="shootPoint" type="Position2D" parent="shootNode"]
+position = Vector2( 12, 0 )
+
 [node name="all_timer" type="Timer" parent="."]
 autostart = true
-
-[node name="shootPoint" type="Position2D" parent="."]
-position = Vector2( 12, 0 )
 
 [node name="scalable" type="Node2D" parent="."]
 

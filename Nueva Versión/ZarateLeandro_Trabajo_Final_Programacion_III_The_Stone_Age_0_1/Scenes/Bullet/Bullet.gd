@@ -33,10 +33,7 @@ func _move_bullets(var _to_delta):
 
 func set_dir(new_dir):
 	dir = new_dir
-	if(dir.x<0):
-		scale.x = -1
-	else:
-		scale.x = 1
-
+	scale.x = 1
+	
 func set_speed(new_speed):
 	speed = new_speed

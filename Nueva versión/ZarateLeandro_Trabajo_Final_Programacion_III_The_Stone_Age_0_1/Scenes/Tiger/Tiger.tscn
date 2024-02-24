@@ -20,6 +20,7 @@ radius = 29.0
 height = 0.0
 
 [node name="Tiger" type="KinematicBody2D" groups=["tigers"]]
+collision_mask = 3
 script = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

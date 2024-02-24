@@ -73,8 +73,9 @@ func _on_Area2D_body_entered(body):
 			if life <=0:
 				is_dead=true
 				is_chasing=false
-				unit.is_chased=false
-				unit = null
+				if unit:
+					unit.is_chased=false
+					unit = null
 				
 
 

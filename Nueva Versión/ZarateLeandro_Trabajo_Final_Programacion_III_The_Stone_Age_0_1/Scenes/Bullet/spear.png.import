@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/male61_d.png-48fb0a021a87a6e47206228168b070d3.stex"
+path="res://.import/spear.png-fe37fd0cb0aff39b6c5614fafd9e582d.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/Unit/male61_d.png"
-dest_files=[ "res://.import/male61_d.png-48fb0a021a87a6e47206228168b070d3.stex" ]
+source_file="res://Scenes/Bullet/spear.png"
+dest_files=[ "res://.import/spear.png-fe37fd0cb0aff39b6c5614fafd9e582d.stex" ]
 
 [params]
 
@@ -28,6 +28,7 @@ process/fix_alpha_border=true
 process/premult_alpha=false
 process/HDR_as_SRGB=false
 process/invert_color=false
+process/normal_map_invert_y=false
 stream=false
 size_limit=0
 detect_3d=true
