@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=28 format=2]
 
 [ext_resource path="res://Scenes/Cave/Cave.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Plant/Plant.tscn" type="PackedScene" id=2]
@@ -10,7 +10,6 @@
 [ext_resource path="res://Scenes/Game2/male1_d.png" type="Texture" id=8]
 [ext_resource path="res://Sprites/game/tiles/grass/simple/grass.png" type="Texture" id=9]
 [ext_resource path="res://Scenes/Game2/axe.png" type="Texture" id=10]
-[ext_resource path="res://Scenes/Tiger/Tiger.tscn" type="PackedScene" id=11]
 [ext_resource path="res://Scenes/Unit2/Unit2.tscn" type="PackedScene" id=12]
 [ext_resource path="res://Scenes/Game2/wheel.png" type="Texture" id=13]
 [ext_resource path="res://Scenes/Game2/claypot.png" type="Texture" id=14]
@@ -101,30 +100,6 @@ position = Vector2( 0, 600 )
 position = Vector2( 4, 2 )
 navpoly = SubResource( 3 )
 
-[node name="Tiger1" parent="nav" instance=ExtResource( 11 )]
-visible = false
-position = Vector2( -261, -181 )
-
-[node name="tiger_agent" type="NavigationAgent2D" parent="nav/Tiger1"]
-target_desired_distance = 5.0
-path_max_distance = 20.0
-
-[node name="Tiger2" parent="nav" instance=ExtResource( 11 )]
-visible = false
-position = Vector2( -357, -83 )
-
-[node name="tiger_agent" type="NavigationAgent2D" parent="nav/Tiger2"]
-target_desired_distance = 5.0
-path_max_distance = 20.0
-
-[node name="Tiger3" parent="nav" instance=ExtResource( 11 )]
-visible = false
-position = Vector2( -357, 59 )
-
-[node name="tiger_agent" type="NavigationAgent2D" parent="nav/Tiger3"]
-target_desired_distance = 5.0
-path_max_distance = 20.0
-
 [node name="SelectDraw" type="Node2D" parent="."]
 script = ExtResource( 7 )
 
@@ -179,8 +154,7 @@ position = Vector2( -541, -98 )
 [node name="food_timer" type="Timer" parent="."]
 
 [node name="tiger_timer" type="Timer" parent="."]
-wait_time = 25.0
-one_shot = true
+wait_time = 50.0
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -385,6 +359,9 @@ autostart = true
 
 [node name="SpawnPosition" type="Position2D" parent="."]
 position = Vector2( 713, 404 )
+
+[node name="TigerSpawn" type="Position2D" parent="."]
+position = Vector2( -974, -587 )
 
 [connection signal="is_arrow" from="." to="." method="_on_Game2_is_arrow"]
 [connection signal="is_axe" from="." to="." method="_on_Game2_is_axe"]

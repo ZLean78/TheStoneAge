@@ -45,7 +45,7 @@ func _physics_process(delta):
 	
 	if is_dead==true:
 		visible=false	
-			
+		
 	
 func update_pathfinding():
 	if !is_dead:
@@ -93,3 +93,6 @@ func _on_Area2D_mouse_entered():
 
 func _on_Area2D_mouse_exited():
 	get_tree().root.get_child(0).emit_signal("is_arrow")
+
+
+

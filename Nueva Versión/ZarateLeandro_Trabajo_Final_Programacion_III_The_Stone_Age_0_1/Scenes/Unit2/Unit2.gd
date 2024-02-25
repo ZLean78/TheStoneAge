@@ -364,18 +364,19 @@ func _unhandled_input(event):
 		elif get_tree().root.get_child(0).name == "Game3":
 			get_tree().root.get_child(0).move_group()
 		if get_tree().root.get_child(0).sword_mode:
-			target_position = get_tree().root.get_child(0).touching_tiger.position
-			if selected && can_shoot:
-				shoot_node.look_at(target_position)				
-				var angle = shoot_node.rotation
-				var forward = Vector2(cos(angle),sin(angle))
-				bullet = bullet_scene.instance()
-				shoot_point.rotation = angle				
-				bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-				bullet.set_dir(forward)
-				bullet.rotation = angle		
-				get_parent().add_child(bullet)
-				can_shoot=false
+			if get_tree().root.get_child(0).touching_tiger!=null:
+				target_position = get_tree().root.get_child(0).touching_tiger.position
+				if selected && can_shoot:
+					shoot_node.look_at(target_position)				
+					var angle = shoot_node.rotation
+					var forward = Vector2(cos(angle),sin(angle))
+					bullet = bullet_scene.instance()
+					shoot_point.rotation = angle				
+					bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+					bullet.set_dir(forward)
+					bullet.rotation = angle		
+					get_parent().add_child(bullet)
+					can_shoot=false
 			
 
 func _on_Unit_input_event(_viewport, event, _shape_idx):
