@@ -56,7 +56,11 @@ func update_pathfinding():
 				unit.is_chased=false
 				unit=null
 				is_chasing=false
-				agent.set_target_location(Vector2(-937,-520))
+				var random_num=randi()
+				if random_num%2==0:
+					agent.set_target_location(get_tree().root.get_child(0).spawn_position.position)
+				else:
+					agent.set_target_location(get_tree().root.get_child(0).tiger_spawn.position)
 		
 
 

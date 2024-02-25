@@ -170,7 +170,7 @@ func _input(event):
 		mousePos = event.position
 		mousePosGlobal = get_global_mouse_position()
 
-	print(str(zoom.x)+" , "+str(zoom.y))	
+	#print(str(zoom.x)+" , "+str(zoom.y))	
 	
 func _set_its_raining(var _its_raining):
 	its_raining = _its_raining

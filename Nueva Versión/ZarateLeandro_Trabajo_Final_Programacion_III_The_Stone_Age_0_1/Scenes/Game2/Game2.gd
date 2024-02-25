@@ -53,6 +53,7 @@ onready var quarry1 = tree.get_node("TileMap/Quarry1")
 onready var quarry2 = tree.get_node("TileMap/Quarry2")
 onready var lake = tree.get_node("TileMap/Lake")
 onready var spawn_position=tree.get_node("SpawnPosition")
+onready var tiger_spawn=tree.get_node("TigerSpawn")
 onready var tiger = preload("res://Scenes/Tiger/Tiger.tscn")
 onready var navigator = $nav
 
@@ -173,8 +174,10 @@ func _ready():
 	
 
 func _process(_delta):
-	
-	timer_label.text = "PELIGRO EN: " + str(int(tiger_timer.time_left))
+	if all_tigers.empty():
+		timer_label.text = "POSIBLE PELIGRO EN: " + str(int(tiger_timer.time_left))
+	else:
+		timer_label.text = "¡CUIDADO, HAY TIGRES!"
 	food_label.text = str(int(food_points))
 	leaves_label.text = str(int(leaves_points))	
 	stone_label.text = str(int(stone_points))	
@@ -397,15 +400,23 @@ func _on_tiger_timer_timeout():
 	if all_tigers.empty():	
 		for tiger_counter in range(0,2):
 			var new_tiger = tiger.instance()
-			new_tiger.position = spawn_position.position
+			new_tiger.position = tiger_spawn.position
 			navigator.add_child(new_tiger)
 			all_tigers.append(new_tiger)
 	else:
 		tiger_timer.start()
 		
+		
+		
 	for a_tiger in all_tigers:
 		a_tiger.visible=true
 		is_tiger=true
+		if !a_tiger.is_chasing:		
+			var random_num=randi()
+			if random_num%2==0:
+				a_tiger.agent.set_target_location(spawn_position.position)
+			else:
+				a_tiger.agent.set_target_location(tiger_spawn.position)
 
 		
 func deselect_all():
