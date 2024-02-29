@@ -52,6 +52,10 @@ onready var puddle = tree.get_node("TileMap/Puddle")
 onready var quarry1 = tree.get_node("TileMap/Quarry1")
 onready var quarry2 = tree.get_node("TileMap/Quarry2")
 onready var lake = tree.get_node("TileMap/Lake")
+onready var spawn_position=tree.get_node("SpawnPosition")
+onready var tiger_spawn=tree.get_node("TigerSpawn")
+onready var tiger = preload("res://Scenes/Tiger/Tiger.tscn")
+onready var navigator = $nav
 
 var cave
 
@@ -114,7 +118,7 @@ func _ready():
 	
 	all_units=get_tree().get_nodes_in_group("units")
 	tile_map=tree.find_node("TileMap")
-	cave=tile_map.get_node("Cave")
+	cave=get_node("Cave")
 	all_trees.append(tree.find_node("fruit_tree"))
 	all_trees.append(tree.find_node("fruit_tree2"))
 	all_trees.append(tree.find_node("fruit_tree3"))
@@ -136,9 +140,9 @@ func _ready():
 	all_pine_trees.append(tree.find_node("PineTree8"))
 	
 	
-	all_tigers.append(tree.find_node("Tiger1"))
-	all_tigers.append(tree.find_node("Tiger2"))
-	all_tigers.append(tree.find_node("Tiger3"))
+	#all_tigers.append(tree.find_node("Tiger1"))
+	#all_tigers.append(tree.find_node("Tiger2"))
+	#all_tigers.append(tree.find_node("Tiger3"))
 
 	all_quarries.append(quarry1)
 	all_quarries.append(quarry2)
@@ -170,8 +174,10 @@ func _ready():
 	
 
 func _process(_delta):
-	
-	timer_label.text = "ATAQUE ENEMIGO: " + str(int(tiger_timer.time_left))
+	if all_tigers.empty():
+		timer_label.text = "POSIBLE PELIGRO EN: " + str(int(tiger_timer.time_left))
+	else:
+		timer_label.text = "¡CUIDADO, HAY TIGRES!"
 	food_label.text = str(int(food_points))
 	leaves_label.text = str(int(leaves_points))	
 	stone_label.text = str(int(stone_points))	
@@ -191,8 +197,12 @@ func _process(_delta):
 			is_tiger_coundown=true	
 	
 	for a_tiger in all_tigers:
-		if a_tiger.visible:
+		if !a_tiger.is_dead:
 			_tiger_attack()
+		else:
+			all_tigers.erase(a_tiger)
+			touching_tiger=null
+			a_tiger.queue_free()
 
 		
 func select_unit(unit):
@@ -209,8 +219,7 @@ func deselect_unit(unit):
 
 func _create_unit(cost = 0):
 	var new_Unit = Unit2.instance()
-	unit_count+=1
-	new_Unit.position = Vector2(camera.position.x+rand_range(50,100),camera.position.y+rand_range(50,100))
+	unit_count+=1	
 	if(unit_count%2==0):
 		new_Unit.is_girl=true
 	else:
@@ -221,6 +230,7 @@ func _create_unit(cost = 0):
 		new_Unit.has_bag=true	
 		new_Unit.get_child(3).visible = true
 	food_points -= cost
+	new_Unit.position = spawn_position.position
 	tile_map.add_child(new_Unit)
 	all_units.append(new_Unit)
 		
@@ -375,7 +385,7 @@ func _on_CreateCitizen_pressed():
 func _tiger_attack():
 	for i in range(all_tigers.size()):
 		for j in range(all_units.size()):
-			if !all_tigers[i].is_chasing && all_tigers[i].visible && !all_tigers[i].is_dead:
+			if !all_tigers[i].is_chasing && !all_tigers[i].is_dead:
 				var the_unit=all_units[j]
 				var the_tiger=all_tigers[i]
 				if the_unit!=null && !the_unit.is_chased && abs(the_unit.position.distance_to(the_tiger.position))<400:
@@ -386,9 +396,27 @@ func _tiger_attack():
 				
 
 func _on_tiger_timer_timeout():
+	
+	if all_tigers.empty():	
+		for tiger_counter in range(0,2):
+			var new_tiger = tiger.instance()
+			new_tiger.position = tiger_spawn.position
+			navigator.add_child(new_tiger)
+			all_tigers.append(new_tiger)
+	else:
+		tiger_timer.start()
+		
+		
+		
 	for a_tiger in all_tigers:
 		a_tiger.visible=true
 		is_tiger=true
+		if !a_tiger.is_chasing:		
+			var random_num=randi()
+			if random_num%2==0:
+				a_tiger.agent.set_target_location(spawn_position.position)
+			else:
+				a_tiger.agent.set_target_location(tiger_spawn.position)
 
 		
 func deselect_all():
@@ -431,6 +459,17 @@ func start_move_selection(obj):
 		
 
 
+func move_group():
+	var pos_minus_one=0
+	for i in range (0,selected_units.size()):
+		if i==0:
+			selected_units[i].target_position = get_global_mouse_position()	
+		else:
+			if i%4==0:
+				selected_units[i].target_position =	Vector2(get_global_mouse_position().x,pos_minus_one.y+20)
+			else:
+				selected_units[i].target_position =	Vector2(pos_minus_one.x+20,pos_minus_one.y)
+		pos_minus_one=selected_units[i].target_position
 
 
 

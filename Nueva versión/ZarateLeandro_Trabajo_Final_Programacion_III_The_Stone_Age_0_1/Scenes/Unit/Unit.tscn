@@ -72,7 +72,9 @@ visible = false
 frames = SubResource( 3 )
 animation = "bag_1"
 
-[node name="shootPoint" type="Position2D" parent="scalable"]
+[node name="shootNode" type="Node2D" parent="scalable"]
+
+[node name="shootPoint" type="Position2D" parent="scalable/shootNode"]
 position = Vector2( 12, 0 )
 
 [connection signal="input_event" from="." to="." method="_on_Unit_input_event"]

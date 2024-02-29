@@ -97,7 +97,7 @@ onready var all_timer = $all_timer
 
 onready var sprite = get_node("scalable/sprite")
 onready var bag_sprite = get_node("scalable/bag_sprite")
-onready var shoot_point = get_node("scalable/shootPoint")
+onready var shoot_point = get_node("scalable/shootNode/shootPoint")
 
 #Variable contador para diferenciar cuándo ha acabado el timer "all_timer".
 var timer_count=1

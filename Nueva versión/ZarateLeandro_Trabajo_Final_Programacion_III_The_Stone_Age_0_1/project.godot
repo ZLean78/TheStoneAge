@@ -68,6 +68,10 @@ ui_right_mouse_button={
 
 pointing/ios/touch_delay=0.0
 
+[mono]
+
+project/assembly_name="Zarate_Leandro_Trabajo_Final_Programacion_III_The_Stone_Age_0_1"
+
 [physics]
 
 common/enable_pause_aware_picking=true

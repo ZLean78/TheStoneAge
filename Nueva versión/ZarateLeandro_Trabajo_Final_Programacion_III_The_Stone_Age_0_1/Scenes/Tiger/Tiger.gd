@@ -45,7 +45,7 @@ func _physics_process(delta):
 	
 	if is_dead==true:
 		visible=false	
-			
+		
 	
 func update_pathfinding():
 	if !is_dead:
@@ -56,7 +56,11 @@ func update_pathfinding():
 				unit.is_chased=false
 				unit=null
 				is_chasing=false
-				agent.set_target_location(Vector2(-937,-520))
+				var random_num=randi()
+				if random_num%2==0:
+					agent.set_target_location(get_tree().root.get_child(0).spawn_position.position)
+				else:
+					agent.set_target_location(get_tree().root.get_child(0).tiger_spawn.position)
 		
 
 
@@ -73,8 +77,9 @@ func _on_Area2D_body_entered(body):
 			if life <=0:
 				is_dead=true
 				is_chasing=false
-				unit.is_chased=false
-				unit = null
+				if unit:
+					unit.is_chased=false
+					unit = null
 				
 
 
@@ -92,3 +97,6 @@ func _on_Area2D_mouse_entered():
 
 func _on_Area2D_mouse_exited():
 	get_tree().root.get_child(0).emit_signal("is_arrow")
+
+
+

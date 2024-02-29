@@ -23,20 +23,15 @@ func _move_bullets(var _to_delta):
 	if collision != null:
 		if collision.collider.name == "TileMap":
 			queue_free()
-		elif collision.collider.name == "Bullet":
+		elif collision.collider.name == "Tiger":
 			queue_free()
 			collision.collider.queue_free()
-		elif collision.collider.name == "player":
-			collision.collider.emit_signal("im_dead")
-			#get_tree().reload_current_scene()
+	
 			
 
 func set_dir(new_dir):
 	dir = new_dir
-	if(dir.x<0):
-		scale.x = -1
-	else:
-		scale.x = 1
-
+	scale.x = 1
+	
 func set_speed(new_speed):
 	speed = new_speed
