@@ -1,0 +1,76 @@
+[gd_scene load_steps=10 format=3 uid="uid://dqd1odhmpqybx"]
+
+[ext_resource type="Script" path="res://Scenes/TownHall/town_hall.gd" id="1_6e1ac"]
+[ext_resource type="Texture2D" uid="uid://btedmd1m26sd8" path="res://Sprites/UI/PNG/grey_circle.png" id="2_3f7gd"]
+[ext_resource type="Texture2D" uid="uid://bu7jma7xblep" path="res://Sprites/UI/PNG/blue_tick.png" id="3_btk6o"]
+[ext_resource type="Texture2D" uid="uid://bhl4nr7sbbrvw" path="res://Sprites/Structure/medievalStructure_06.png" id="3_yqv37"]
+[ext_resource type="Texture2D" uid="uid://61ycfehg2vjv" path="res://Sprites/Structure/medievalStructure_01.png" id="4_mk4eh"]
+[ext_resource type="Texture2D" uid="uid://b4fy50n747qab" path="res://Sprites/Structure/medievalStructure_05.png" id="5_vnrw2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5sj1g"]
+size = Vector2(63, 117.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_i1lgt"]
+size = Vector2(82, 144)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ap3k6"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.211765, 0.8, 0.8, 1)
+border_blend = true
+
+[node name="TownHall" type="StaticBody2D"]
+script = ExtResource("1_6e1ac")
+
+[node name="Base" type="Sprite2D" parent="."]
+position = Vector2(0, -2)
+scale = Vector2(1, 0.938)
+texture = ExtResource("3_yqv37")
+
+[node name="Middle" type="Sprite2D" parent="."]
+position = Vector2(0, -40.508)
+scale = Vector2(1, 0.984625)
+texture = ExtResource("5_vnrw2")
+
+[node name="UpperRoof" type="Sprite2D" parent="."]
+position = Vector2(0, -104)
+texture = ExtResource("4_mk4eh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1.5, -55.25)
+shape = SubResource("RectangleShape2D_5sj1g")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-1, -61)
+shape = SubResource("RectangleShape2D_i1lgt")
+
+[node name="Selected" type="Panel" parent="."]
+y_sort_enabled = true
+offset_left = -44.0
+offset_top = -134.0
+offset_right = -30.0
+offset_bottom = -101.0
+scale = Vector2(6.23088, 4.4053)
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_ap3k6")
+
+[node name="Bar" type="TextureProgressBar" parent="."]
+offset_left = -45.0
+offset_top = -135.0
+offset_right = 44.0
+offset_bottom = -118.0
+max_value = 300.0
+nine_patch_stretch = true
+texture_under = ExtResource("2_3f7gd")
+texture_progress = ExtResource("3_btk6o")
+
+[node name="Timer" type="Timer" parent="."]
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
