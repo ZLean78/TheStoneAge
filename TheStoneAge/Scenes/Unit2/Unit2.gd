@@ -335,10 +335,11 @@ func _get_damage(var the_tiger):
 				bar._set_energy_points(energy_points)
 				bar._update_energy()
 			else:
-				the_tiger.unit = null
-				the_tiger.is_chasing = false
-				_set_selected(false)			
-				is_deleted=true
+				if the_tiger:
+					the_tiger.unit = null
+					the_tiger.is_chasing = false
+					_set_selected(false)			
+					is_deleted=true
 #								
 
 
