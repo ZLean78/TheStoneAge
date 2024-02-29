@@ -225,12 +225,6 @@ margin_left = 220.0
 margin_top = 6.00006
 margin_right = 662.0
 margin_bottom = 122.0
-text = "Recoge lodo, agua, alimentos, madera, piedra y hojas
-para cumplir con cada uno de los hitos
-marcados al seleccionar la
-entrada de la cueva. Escapa de los tigres dientes de sable
-o arrójales piedras haciendo
-clic derecho sobre ellos estandoa gran distancia.."
 
 [node name="FoodTexture" type="TextureRect" parent="UI/Base/Rectangle"]
 margin_left = 17.0

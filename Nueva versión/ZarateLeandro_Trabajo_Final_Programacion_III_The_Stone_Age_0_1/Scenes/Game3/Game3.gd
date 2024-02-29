@@ -42,6 +42,7 @@ onready var water_label = tree.get_node("UI/Base/Rectangle/WaterLabel")
 onready var rectangle = tree.get_node("UI/Base/Rectangle")
 onready var create_shack = tree.get_node("UI/Base/Rectangle/CreateShack")
 onready var give_attack_order = tree.get_node("UI/Base/Rectangle/GiveAttackOrder")
+onready var create_warrior_unit = tree.get_node("UI/Base/Rectangle/CreateWarriorUnit")
 onready var make_warchief = tree.get_node("UI/Base/Rectangle/MakeWarchief")
 #onready var make_claypot = tree.get_node("UI/Base/Rectangle/MakeClaypot")
 onready var develop_agriculture = tree.get_node("UI/Base/Rectangle/DevelopAgriculture")
@@ -99,17 +100,13 @@ var claypot_mode=false
 var hand_mode=false
 var axe_mode=false
 
-var start_string = """Recoge lodo, agua, alimentos, madera, piedra y hojas
-para cumplir con cada uno de los hitos
-marcados al seleccionar la
-entrada de la cueva. Escapa de los tigres dientes de sable
-o arrójales piedras haciendo
-clic derecho sobre ellos estandoa gran distancia."""
+var start_string="Convierte a una de las unidades en jefe de grupo."
 
 #Si el cursor está en forma de espada tocando un tigre, lo guardamos en esta variable.
 var touching_tiger
 
 func _ready():
+	
 	
 	
 	all_units=get_tree().get_nodes_in_group("units")
@@ -184,6 +181,8 @@ func _ready():
 	hand_mode=false
 	axe_mode=false
 	
+	prompts_label.text=start_string
+	create_warrior_unit.visible = false
 
 func _process(_delta):
 	
@@ -618,7 +617,8 @@ func _check_units():
 func _on_MakeWarchief_pressed():
 	if selected_units.size()==1:
 		selected_units[0].is_warchief=true
-		prompts_label.text = "¡Ya tienes a tu jefe!"
+		prompts_label.text = "¡Ya tienes a tu jefe! Úsalo para entrenar unidades 'cazador'.\nNecesitas crear al menos 6."
+		create_warrior_unit.visible = true	
 	elif selected_units.size()>1:
 		prompts_label.text = "Debes seleccionar una sola unidad."
 	elif selected_units.size()==0:
