@@ -196,13 +196,15 @@ func _process(_delta):
 			tiger_timer.start()
 			is_tiger_coundown=true	
 	
-	for a_tiger in all_tigers:
-		if !a_tiger.is_dead:
+	for i in range(0,all_tigers.size()-1):
+		if !all_tigers[i].is_dead:
 			_tiger_attack()
-		else:
-			all_tigers.erase(a_tiger)
+		else:			
 			touching_tiger=null
-			a_tiger.queue_free()
+			all_tigers.erase(all_tigers[i])
+			all_tigers.remove(i)
+			
+			
 
 		
 func select_unit(unit):

@@ -25,6 +25,8 @@ func _move_bullets(var _to_delta):
 			queue_free()
 		elif collision.collider.name == "Tiger":
 			queue_free()
+			collision.collider.unit.is_tiger_touching=false
+			collision.collider.unit=null
 			collision.collider.queue_free()
 	
 			
