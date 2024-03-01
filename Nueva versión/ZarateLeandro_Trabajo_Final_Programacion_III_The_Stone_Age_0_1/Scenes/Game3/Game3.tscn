@@ -87,13 +87,13 @@ editor_draw_limits = true
 editor_draw_drag_margin = true
 script = ExtResource( 11 )
 
+[node name="Position2D" type="Position2D" parent="."]
+position = Vector2( 0, 600 )
+
 [node name="Units" type="Node2D" parent="."]
 
 [node name="Unit3" parent="Units" instance=ExtResource( 27 )]
-position = Vector2( 728, 326 )
-
-[node name="Position2D" type="Position2D" parent="."]
-position = Vector2( 0, 600 )
+position = Vector2( 650, 400 )
 
 [node name="Tigers" type="Node2D" parent="."]
 

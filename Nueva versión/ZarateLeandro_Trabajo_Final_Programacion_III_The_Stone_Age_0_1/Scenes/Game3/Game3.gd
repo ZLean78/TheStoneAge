@@ -116,6 +116,7 @@ var start_string="Convierte a una de las unidades en jefe de grupo."
 #Si el cursor está en forma de espada tocando un tigre, lo guardamos en esta variable.
 var touching_tiger
 
+
 func _ready():
 	
 	
@@ -129,25 +130,47 @@ func _ready():
 		_create_unit();
 		
 	
-	for i in range(0,12):
-		if i==0:
-			units_node.get_child(i).position = Vector2(camera.position.x+50,camera.position.y+50)
+	"""if i==0:
+			all_units[i].position = Vector2(camera.position.x+50,camera.position.y+50)
 			#all_units[i].position = Vector2(camera.get_viewport().size.x/6,camera.get_viewport().size.y/4)
 		else:
 			if i<4:
-				units_node.get_child(i).position =	Vector2(units_node.get_child(i-1).position.x+20,units_node.get_child(i-1).position.y)
+				all_units[i].position =	Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
 			elif i>=4 && i<8:
 				if i==4:
-					units_node.get_child(i).position =	Vector2(units_node.get_child(0).position.x,units_node.get_child(0).position.y+20)
+					all_units[i].position =	Vector2(all_units[0].position.x,all_units[0].position.y+20)
 				else:
-					units_node.get_child(i).position = Vector2(units_node.get_child(i-1).position.x+20,units_node.get_child(i-1).position.y)
+					all_units[i].position = Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
 			elif i>=8:
 				if i==8:
-					units_node.get_child(i).position = Vector2(units_node.get_child(0).position.x,units_node.get_child(0).position.y+40)
+					all_units[i].position = Vector2(all_units[0].position.x,all_units[0].position.y+40)
 				else:
-					units_node.get_child(i).position = Vector2(units_node.get_child(i-1).position.x+20,units_node.get_child(i-1).position.y)
+					all_units[i].position = Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
+	"""
 	
-	
+	var all_units=[]
+	for i in range(0,units_node.get_child_count()):		
+		all_units.append(units_node.get_child(i))
+		
+	var previous_position
+	for j in range(0,all_units.size()):
+		if j==0:
+			all_units[j].position = Vector2(camera.position.x+50,camera.position.y+50)
+			#all_units[i].position = Vector2(camera.get_viewport().size.x/6,camera.get_viewport().size.y/4)
+		else:
+			if j<4:
+				all_units[j].position =	Vector2(previous_position.x+20,previous_position.y)
+			elif j>=4 && j<8:
+				if j==4:
+					all_units[j].position =	Vector2(all_units[0].position.x,all_units[0].position.y+20)
+				else:
+					all_units[j].position = Vector2(previous_position.x+20,previous_position.y)
+			elif j>=8:
+				if j==8:
+					all_units[j].position = Vector2(all_units[0].position.x,all_units[0].position.y+40)
+				else:
+					all_units[j].position = Vector2(previous_position.x+20,previous_position.y)
+		previous_position=all_units[j].position
 	
 	
 	
@@ -206,7 +229,7 @@ func deselect_unit(unit):
 func _create_unit(cost = 0):
 	var new_Unit = Unit3.instance()
 	unit_count+=1
-	new_Unit.position = Vector2(camera.position.x+rand_range(50,100),camera.position.y+rand_range(50,100))
+	new_Unit.position = Vector2(camera.position.x+50,camera.position.y)
 	if(unit_count%2==0):
 		new_Unit.is_girl=true
 	else:
@@ -319,7 +342,7 @@ func start_move_selection(obj):
 
 
 func move_group():
-	var pos_minus_one=0
+	var pos_minus_one=Vector2.ZERO
 	for i in range (0,selected_units.size()):
 		if i==0:
 			selected_units[i].target_position = get_global_mouse_position()	
