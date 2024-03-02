@@ -10,9 +10,6 @@
 
 [sub_resource type="CanvasItemMaterial" id=2]
 
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 9.875, 12.5 )
-
 [sub_resource type="SpriteFrames" id=3]
 animations = [ {
 "frames": [ ExtResource( 5 ) ],
@@ -36,10 +33,13 @@ animations = [ {
 "speed": 5.0
 } ]
 
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 4, 3 )
+
 [node name="Unit2" type="KinematicBody2D"]
 collision_layer = 2
+collision_mask = 3
 input_pickable = true
-motion/sync_to_physics = true
 script = ExtResource( 2 )
 
 [node name="Selected" type="Sprite" parent="."]
@@ -48,10 +48,6 @@ material = SubResource( 2 )
 position = Vector2( 0, 11 )
 scale = Vector2( 0.63281, 0.49219 )
 texture = ExtResource( 4 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 0.125, -0.5 )
-shape = SubResource( 1 )
 
 [node name="Mouse_Control" type="Node" parent="."]
 
@@ -77,6 +73,10 @@ animation = "male_idle3_d"
 [node name="bag_sprite" type="AnimatedSprite" parent="scalable"]
 frames = SubResource( 3 )
 animation = "bag_1"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, 9 )
+shape = SubResource( 1 )
 
 [connection signal="input_event" from="." to="." method="_on_Unit_input_event"]
 [connection signal="timeout" from="all_timer" to="." method="_on_all_timer_timeout"]

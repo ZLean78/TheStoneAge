@@ -30,6 +30,7 @@ onready var bag_sprite = get_node("scalable/bag_sprite")
 onready var shoot_node = $shootNode
 onready var shoot_point = $shootNode/shootPoint
 
+
 #Variable que indica si el jugador debe moverse.
 var move_p = false
 #Vector2 que indica cuánto debe moverse el jugador.
@@ -76,7 +77,7 @@ var is_erased = false
 
 
 #Posición adonde la unidad debe moverse.
-var target_position = Vector2(0,0)
+var target_position = Vector2.ZERO
 
 #Indica si la unidad puede agregar puntos de comida o no.
 var can_add = false
@@ -135,6 +136,10 @@ var is_warchief = false
 
 var can_shoot = true
 
+var to_delta = 0.0
+
+var direction = Vector2.ZERO
+
 #Señal de cambio de salud (incremento o decremento).
 signal health_change
 #Señal de que la unidad ha muerto.
@@ -170,6 +175,7 @@ func _ready():
 	#label.text = name
 	#randomize()
 	#bar.value = randi() % 90 + 10
+	
 
 func _set_selected(value):
 	if selected != value:
@@ -182,11 +188,16 @@ func _set_selected(value):
 		else:
 			emit_signal("was_deselected",self)
 
+
+	
+	
+
 func _physics_process(delta):
 	
-	position.x = clamp(position.x,-1028,screensize.x)
-	position.y = clamp(position.y,-608,screensize.y)
+	to_delta=delta
 	
+	position.x = clamp(position.x,-1028,screensize.x)
+	position.y = clamp(position.y,-608,screensize.y)	
 	
 	if selected:
 		if box.visible == false:
@@ -194,11 +205,19 @@ func _physics_process(delta):
 	else:
 		if box.visible == true:
 			box.visible = false
-			
-#	position.x = clamp(position.x,0,screensize.x)
-#	position.y = clamp(position.y,0,screensize.y)	
 	
-	if move_p:
+	if selected:
+		if target_position!=Vector2.ZERO:
+			if position.distance_to(target_position) > 10:
+				_move_to_target(target_position)
+			else:
+				velocity=Vector2.ZERO
+		
+	
+			
+	
+	
+	"""if move_p:
 		path = get_tree().root.get_child(0).get_node("nav").get_simple_path(position,target_position)
 		velocity=(target_position-position)
 		initialPosition = position
@@ -206,7 +225,7 @@ func _physics_process(delta):
 	if path.size()>0:
 		move_towards(initialPosition,path[0],delta)
 	else:
-		velocity=Vector2(0,0)	
+		velocity=Vector2(0,0)"""	
 	
 	# Orientar al player.
 	if velocity.x<0:
@@ -224,11 +243,13 @@ func _physics_process(delta):
 		
 	#Cambiar los cuadros de animación del player.
 	if velocity.length() > 0:
-		velocity = velocity.normalized() * SPEED
+		#velocity = velocity.normalized() * SPEED
 		if(!sprite.is_playing()):
 			sprite.play()
 	else:
 		sprite.stop()
+	
+	move_and_slide(velocity)
 		
 	#revisar si está tocando un árbol
 	_check_fruit_tree_touching()
@@ -245,6 +266,7 @@ func _physics_process(delta):
 	if(all_timer.is_stopped()):
 		all_timer.start()
 		
+	
 		
 func _collect_pickable(var _pickable):
 	if _pickable.type == "fruit_tree" or _pickable.type == "pine_tree" or _pickable.type == "plant" or _pickable.type == "quarry":
@@ -353,17 +375,34 @@ func move_towards(pos,point,delta):
 		path.remove(0)
 		initialPosition = position
 		
+
+func _move_to_target(target):
+	direction = (target-position)*SPEED
+	velocity=direction*to_delta	
+	#position+=direction
+	
 		
 func move_unit(point):
 	to_move = point
 	move_p = true
+	
+	
+	
+	
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
 		if get_tree().root.get_child(0).name == "Game2":
-			target_position = get_global_mouse_position()
-		elif get_tree().root.get_child(0).name == "Game3":
-			get_tree().root.get_child(0).move_group()
+			if selected:
+				target_position = get_global_mouse_position()
+			else:
+				target_position=position
+		if get_tree().root.get_child(0).name == "Game3":
+			if selected:
+				target_position=get_global_mouse_position()
+				#get_tree().root.get_child(0).move_group()
+			else:
+				target_position=position
 		if get_tree().root.get_child(0).sword_mode:
 			if get_tree().root.get_child(0).touching_tiger!=null:
 				target_position = get_tree().root.get_child(0).touching_tiger.position
@@ -382,7 +421,7 @@ func _unhandled_input(event):
 
 func _on_Unit_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton:
-		if event.is_pressed():
+		if event.is_pressed():			
 			if event.button_index == BUTTON_LEFT:
 				_set_selected(not selected)
 				root.select_last()
