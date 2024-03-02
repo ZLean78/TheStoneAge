@@ -50,7 +50,7 @@ signal area_selected
 signal start_move_selection
 
 func _ready():
-	rectd.visible=true
+	#rectd.visible=true
 	connect("area_selected",get_parent(),"area_selected",[self])
 	connect("start_move_selection",get_parent(),"start_move_selection",[self])
 
