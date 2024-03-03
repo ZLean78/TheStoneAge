@@ -115,13 +115,13 @@ func _process(delta):
 
 
 
-	if(Input.is_action_just_pressed("ui_right_mouse_button")):
+	"""if (Input.is_action_just_pressed("ui_right_mouse_button")):
 		#position=get_global_mouse_position()
 		position.x=lerp(position.x,position.x+speed*zoom.x,speed*delta)
 		position.y=lerp(position.y,position.y+speed*zoom.y,speed*delta)	
 
 		move_to_point = mousePosGlobal
-		emit_signal("start_move_selection")		
+		emit_signal("start_move_selection")	"""	
 
 	position.x=clamp(position.x,-1650,1650)
 	position.y=clamp(position.y,-960,960)
