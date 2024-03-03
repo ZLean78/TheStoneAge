@@ -185,11 +185,10 @@ func _process(_delta):
 	wood_label.text = str(int(wood_points))
 	water_label.text = str(int(water_points))
 	
-	_check_units()
+	_check_units()	
+	_check_has_arrived()
 	_check_victory()
-	#for a_unit in all_units:
-
-		
+			
 		
 	if !is_tiger:
 		if !is_tiger_coundown:
@@ -598,6 +597,14 @@ func _on_Game2_is_axe():
 	claypot_mode=false
 	hand_mode=false
 
+
+func _check_has_arrived():
+	var the_unit
+	for unit in selected_units:
+		if unit.has_arrived:
+			for other_unit in selected_units:
+				other_unit.has_arrived=true
+				other_unit.velocity=Vector2.ZERO
 
 func _check_units():
 	for a_unit in all_units:

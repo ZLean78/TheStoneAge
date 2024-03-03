@@ -252,7 +252,7 @@ func _physics_process(delta):
 	else:
 		sprite.stop()
 	
-	move_and_slide(velocity)
+	
 		
 	#revisar si está tocando un árbol
 	_check_fruit_tree_touching()
@@ -381,8 +381,8 @@ func move_towards(pos,point,delta):
 
 func _move_to_target(target):
 	direction = (target-position)*SPEED
-	velocity=direction*to_delta	
-	#position+=direction
+	velocity=(direction*to_delta).normalized()
+	move_and_collide(velocity)
 	
 		
 func move_unit(point):
