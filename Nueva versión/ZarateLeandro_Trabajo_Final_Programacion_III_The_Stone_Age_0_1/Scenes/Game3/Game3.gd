@@ -601,11 +601,18 @@ func _on_Game2_is_axe():
 
 func _check_has_arrived():
 	var the_unit
-	for unit in selected_units:
+	for unit in all_units:
 		if unit.has_arrived:
-			for other_unit in selected_units:
-				other_unit.has_arrived=true
-				other_unit.velocity=Vector2.ZERO
+			the_unit = unit
+			break
+			
+	if the_unit:
+		for another_unit in all_units:
+			if another_unit!=the_unit:
+				another_unit.target_position=the_unit.position-Vector2(20,0)
+				
+	
+	
 	
 				
 

@@ -5,7 +5,7 @@ var bullet
 export var bullet_scene=preload("res://Scenes/Bullet/Bullet.tscn")
 
 #Velocidad
-export (float) var SPEED = 100.0
+export (float) var SPEED = 150.0
 #Máximo de Salud
 export (float) var MAX_HEALTH = 100.0
 
@@ -142,6 +142,10 @@ var direction = Vector2.ZERO
 
 var has_arrived = false
 
+var colliding_body: KinematicBody2D
+
+var is_colliding_body=false
+
 #Señal de cambio de salud (incremento o decremento).
 signal health_change
 #Señal de que la unidad ha muerto.
@@ -208,12 +212,13 @@ func _physics_process(delta):
 		if box.visible == true:
 			box.visible = false
 	
-	if selected && !has_arrived:
+	if !has_arrived:
 		if target_position!=Vector2.ZERO:
 			if position.distance_to(target_position) > 10:
 				_move_to_target(target_position)
 			else:
-				has_arrived = true
+				has_arrived=true
+				target_position=position
 				velocity=Vector2.ZERO
 		
 	
@@ -804,3 +809,18 @@ func _die():
 
 
 
+
+
+
+
+
+func _on_Area2D_body_entered(body):
+	if "Unit" in body.name:
+		colliding_body = body
+		is_colliding_body = true
+
+
+func _on_Area2D_body_exited(body):
+	if "Unit" in body.name:
+		colliding_body = null
+		is_colliding_body = false
