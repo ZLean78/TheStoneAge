@@ -48,14 +48,18 @@ onready var develop_agriculture = tree.get_node("UI/Base/Rectangle/DevelopAgricu
 onready var camera = tree.get_node("Camera")
 onready var tiger_timer = tree.get_node("tiger_timer")
 onready var tile_map = tree.get_node("TileMap")
-onready var puddle = tree.get_node("TileMap/Puddle")
-onready var quarry1 = tree.get_node("TileMap/Quarry1")
-onready var quarry2 = tree.get_node("TileMap/Quarry2")
-onready var lake = tree.get_node("TileMap/Lake")
-onready var spawn_position=tree.get_node("SpawnPosition")
-onready var tiger_spawn=tree.get_node("TigerSpawn")
+onready var lake = tree.get_node("Lake")
+onready var puddle = tree.get_node("Puddle")
+onready var quarries = $Quarries
+onready var units_node=$Units
+onready var spawn_position=tree.get_node("Units/SpawnPosition")
+onready var tigers=$Tigers
+onready var tiger_spawn=tree.get_node("Tigers/TigerSpawn")
 onready var tiger = preload("res://Scenes/Tiger/Tiger.tscn")
-onready var navigator = $nav
+onready var fruit_trees=$FruitTrees
+onready var pine_trees=$PineTrees
+onready var plants=$Plants
+onready var navigator = $Tigers/nav
 
 var cave
 
@@ -117,7 +121,7 @@ func _ready():
 	
 	
 	all_units=get_tree().get_nodes_in_group("units")
-	tile_map=tree.find_node("TileMap")
+	#tile_map=tree.find_node("TileMap")
 	cave=get_node("Cave")
 	all_trees.append(tree.find_node("fruit_tree"))
 	all_trees.append(tree.find_node("fruit_tree2"))
@@ -144,8 +148,8 @@ func _ready():
 	#all_tigers.append(tree.find_node("Tiger2"))
 	#all_tigers.append(tree.find_node("Tiger3"))
 
-	all_quarries.append(quarry1)
-	all_quarries.append(quarry2)
+#	all_quarries.append(quarry1)
+#	all_quarries.append(quarry2)
 	
 	_create_unit();
 	
@@ -209,15 +213,13 @@ func _process(_delta):
 func select_unit(unit):
 	if not selected_units.has(unit):
 		selected_units.append(unit)
-	#print("selected %s" % unit.name)
-	#create_buttons()
+		
 
 func deselect_unit(unit):
 	if selected_units.has(unit):
 		selected_units.erase(unit)
 	
-
-
+	
 func _create_unit(cost = 0):
 	var new_Unit = Unit2.instance()
 	unit_count+=1	
