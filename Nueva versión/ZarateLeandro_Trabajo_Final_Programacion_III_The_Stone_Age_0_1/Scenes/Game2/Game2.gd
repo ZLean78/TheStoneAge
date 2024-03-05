@@ -182,6 +182,8 @@ func _process(_delta):
 		timer_label.text = "POSIBLE PELIGRO EN: " + str(int(tiger_timer.time_left))
 	else:
 		timer_label.text = "¡CUIDADO, HAY TIGRES!"
+	
+	
 	food_label.text = str(int(food_points))
 	leaves_label.text = str(int(leaves_points))	
 	stone_label.text = str(int(stone_points))	
@@ -234,7 +236,7 @@ func _create_unit(cost = 0):
 		new_Unit.get_child(3).visible = true
 	food_points -= cost
 	new_Unit.position = spawn_position.position
-	tile_map.add_child(new_Unit)
+	units_node.add_child(new_Unit)
 	all_units.append(new_Unit)
 		
 

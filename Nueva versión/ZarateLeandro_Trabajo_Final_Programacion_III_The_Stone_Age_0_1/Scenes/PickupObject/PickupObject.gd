@@ -47,11 +47,11 @@ func _on_Area2D_body_exited(body):
 
 func _on_Area2D_mouse_entered():
 	if type == "fruit_tree":
-		get_parent().emit_signal("is_basket")
+		get_parent().get_parent().emit_signal("is_basket")
 	elif type == "plant":
-		get_parent().emit_signal("is_basket")	
+		get_parent().get_parent().emit_signal("is_basket")	
 	elif type == "pine_tree":
-		get_parent().emit_signal("is_axe")
+		get_parent().get_parent().emit_signal("is_axe")
 	elif type == "quarry":
 		get_tree().root.get_child(0).emit_signal("is_pick_mattock")	
 	elif type == "puddle":
@@ -63,7 +63,7 @@ func _on_Area2D_mouse_entered():
 
 func _on_Area2D_mouse_exited():
 	if type == "fruit_tree" or type == "plant" or type == "pine_tree":
-		get_parent().emit_signal("is_arrow")
+		get_parent().get_parent().emit_signal("is_arrow")
 	elif type == "quarry" or type == "puddle" or type == "lake":
 		get_tree().root.get_child(0).emit_signal("is_arrow")
 		if type=="lake":
