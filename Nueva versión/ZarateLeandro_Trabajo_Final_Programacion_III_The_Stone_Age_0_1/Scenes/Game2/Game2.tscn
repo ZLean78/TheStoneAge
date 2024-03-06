@@ -95,7 +95,7 @@ position = Vector2( 80, -530 )
 [node name="Unit2" parent="Units" groups=["units"] instance=ExtResource( 12 )]
 position = Vector2( 669, 347 )
 
-[node name="SpawnPosition" type="Position2D" parent="Units"]
+[node name="SpawnPosition" type="Position2D" parent="."]
 position = Vector2( 713, 404 )
 
 [node name="Tigers" type="Node2D" parent="."]
@@ -106,7 +106,7 @@ position = Vector2( 713, 404 )
 position = Vector2( 4, 2 )
 navpoly = SubResource( 3 )
 
-[node name="TigerSpawn" type="Position2D" parent="Tigers"]
+[node name="TigerSpawn" type="Position2D" parent="."]
 position = Vector2( -974, -587 )
 
 [node name="FruitTrees" type="Node2D" parent="."]

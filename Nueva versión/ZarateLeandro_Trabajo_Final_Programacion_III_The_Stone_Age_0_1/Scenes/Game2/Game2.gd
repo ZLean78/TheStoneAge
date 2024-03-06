@@ -51,10 +51,10 @@ onready var tile_map = tree.get_node("TileMap")
 onready var lake = tree.get_node("Lake")
 onready var puddle = tree.get_node("Puddle")
 onready var quarries = $Quarries
-onready var units_node=$Units
-onready var spawn_position=tree.get_node("Units/SpawnPosition")
+onready var units=$Units
+onready var spawn_position=tree.get_node("SpawnPosition")
 onready var tigers=$Tigers
-onready var tiger_spawn=tree.get_node("Tigers/TigerSpawn")
+onready var tiger_spawn=tree.get_node("TigerSpawn")
 onready var tiger = preload("res://Scenes/Tiger/Tiger.tscn")
 onready var fruit_trees=$FruitTrees
 onready var pine_trees=$PineTrees
@@ -119,8 +119,12 @@ var touching_tiger
 
 func _ready():
 	
+	all_units=units.get_children()
+	all_plants=plants.get_children()
+	all_trees=fruit_trees.get_children()
+	all_pine_trees=pine_trees.get_children()
+	all_quarries=quarries.get_children()
 	
-	all_units=get_tree().get_nodes_in_group("units")
 	#tile_map=tree.find_node("TileMap")
 	cave=get_node("Cave")
 	all_trees.append(tree.find_node("fruit_tree"))
@@ -156,7 +160,7 @@ func _ready():
 		
 	
 	
-	all_units[all_units.size()-1].position = Vector2(camera.get_viewport().size.x/6,camera.get_viewport().size.y/4)
+	
 	
 	#Agregar ropa y bolso a todas las unidades
 	for a_unit in all_units:
@@ -236,7 +240,7 @@ func _create_unit(cost = 0):
 		new_Unit.get_child(3).visible = true
 	food_points -= cost
 	new_Unit.position = spawn_position.position
-	units_node.add_child(new_Unit)
+	units.add_child(new_Unit)
 	all_units.append(new_Unit)
 		
 
