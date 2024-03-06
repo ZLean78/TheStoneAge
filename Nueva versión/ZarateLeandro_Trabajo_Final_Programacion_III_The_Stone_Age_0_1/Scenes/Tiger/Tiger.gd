@@ -79,6 +79,7 @@ func _on_Area2D_body_entered(body):
 				is_chasing=false
 				if unit:
 					unit.is_chased=false
+					unit.is_tiger_touching=false
 					unit = null
 				
 

@@ -91,12 +91,11 @@ position = Vector2( -359, 426 )
 position = Vector2( 80, -530 )
 
 [node name="Units" type="Node2D" parent="."]
+process_priority = 1
 
 [node name="Unit2" parent="Units" groups=["units"] instance=ExtResource( 12 )]
+process_priority = 1
 position = Vector2( 669, 347 )
-
-[node name="SpawnPosition" type="Position2D" parent="."]
-position = Vector2( 713, 404 )
 
 [node name="Tigers" type="Node2D" parent="."]
 
@@ -105,6 +104,9 @@ position = Vector2( 713, 404 )
 [node name="polygon" type="NavigationPolygonInstance" parent="Tigers/nav"]
 position = Vector2( 4, 2 )
 navpoly = SubResource( 3 )
+
+[node name="SpawnPosition" type="Position2D" parent="."]
+position = Vector2( 713, 404 )
 
 [node name="TigerSpawn" type="Position2D" parent="."]
 position = Vector2( -974, -587 )

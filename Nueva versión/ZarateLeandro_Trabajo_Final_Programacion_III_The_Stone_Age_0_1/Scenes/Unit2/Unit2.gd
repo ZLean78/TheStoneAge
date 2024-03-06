@@ -5,7 +5,7 @@ var bullet
 export var bullet_scene=preload("res://Scenes/Bullet/Bullet.tscn")
 
 #Velocidad
-export (float) var SPEED = 150.0
+export (float) var SPEED = 250.0
 #Máximo de Salud
 export (float) var MAX_HEALTH = 100.0
 
