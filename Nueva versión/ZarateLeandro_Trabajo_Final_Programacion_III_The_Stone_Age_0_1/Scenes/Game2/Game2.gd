@@ -196,7 +196,7 @@ func _process(_delta):
 	water_label.text = str(int(water_points))
 	
 	_check_units()	
-	_check_has_arrived()
+	#_check_has_arrived()
 	_check_victory()
 			
 		
@@ -240,6 +240,9 @@ func _create_unit(cost = 0):
 		new_Unit.get_child(3).visible = true
 	food_points -= cost
 	new_Unit.position = spawn_position.position
+	for unit in units.get_children():
+		if new_Unit.position==unit.position:
+			new_Unit.position+=Vector2(20,20)
 	units.add_child(new_Unit)
 	all_units.append(new_Unit)
 		

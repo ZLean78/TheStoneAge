@@ -196,7 +196,7 @@ func _process(_delta):
 	water_label.text = str(int(water_points))
 	
 	_check_units()
-	_check_has_arrived()
+	#_check_has_arrived()
 	_check_victory()
 	
 

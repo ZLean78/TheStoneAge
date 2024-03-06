@@ -6,10 +6,11 @@ extends KinematicBody2D
 # var b = "text"
 var dir = 0
 var speed = 400
+var start_position = Vector2.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	start_position=position
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -21,13 +22,14 @@ func _move_bullets(var _to_delta):
 	var collision = move_and_collide(speed*dir*_to_delta)
 	
 	if collision != null:
-		if collision.collider.name == "TileMap":
-			queue_free()
-		elif collision.collider.name == "Tiger":
-			queue_free()
+		if collision.collider.name == "Tiger":
 			collision.collider.unit.is_tiger_touching=false
 			collision.collider.unit=null
 			collision.collider.queue_free()
+		queue_free()
+	
+	if position.distance_to(start_position) > 400:
+		queue_free()
 	
 			
 
