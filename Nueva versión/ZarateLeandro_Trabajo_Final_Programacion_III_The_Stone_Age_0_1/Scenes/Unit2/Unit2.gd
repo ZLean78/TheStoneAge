@@ -146,6 +146,8 @@ var colliding_body: KinematicBody2D
 
 var is_colliding_body=false
 
+var body_velocity = Vector2.ZERO
+
 #Señal de cambio de salud (incremento o decremento).
 signal health_change
 #Señal de que la unidad ha muerto.
@@ -222,7 +224,8 @@ func _physics_process(delta):
 				velocity=Vector2.ZERO
 		
 	
-			
+	if is_colliding_body && body_velocity==Vector2.ZERO:
+		velocity=Vector2.ZERO		
 	
 	
 	"""if move_p:
@@ -818,6 +821,7 @@ func _on_Area2D_body_entered(body):
 	if "Unit" in body.name:
 		colliding_body = body
 		is_colliding_body = true
+		body_velocity = body.velocity
 
 
 func _on_Area2D_body_exited(body):

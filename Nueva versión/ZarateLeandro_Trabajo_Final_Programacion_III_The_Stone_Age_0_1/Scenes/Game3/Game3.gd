@@ -21,11 +21,8 @@ var group_dressed = false
 var group_has_bag = false
 
 #Variables de hitos
-var is_fire_discovered = false
-var is_wheel_invented = false
-var is_stone_weapons_developed = false
-var is_claypot_made = false
-var is_agriculture_developed = false
+var mammoths_dead = false
+var is_townhall_created = false
 
 
 onready var tree = get_tree().root.get_child(0)
@@ -44,7 +41,7 @@ onready var create_shack = tree.get_node("UI/Base/Rectangle/CreateShack")
 onready var give_attack_order = tree.get_node("UI/Base/Rectangle/GiveAttackOrder")
 onready var make_warchief = tree.get_node("UI/Base/Rectangle/MakeWarchief")
 #onready var make_claypot = tree.get_node("UI/Base/Rectangle/MakeClaypot")
-onready var develop_agriculture = tree.get_node("UI/Base/Rectangle/DevelopAgriculture")
+onready var create_warrior = tree.get_node("UI/Base/Rectangle/CreateWarriorUnit")
 onready var camera = tree.get_node("Camera")
 onready var tiger_timer = tree.get_node("tiger_timer")
 onready var tile_map = tree.get_node("TileMap")
@@ -259,7 +256,7 @@ func _create_warrior_unit(cost = 0):
 	all_units.append(new_Unit)
 			
 func _check_victory():
-	if is_fire_discovered && is_wheel_invented && is_stone_weapons_developed && is_claypot_made && is_agriculture_developed:
+	if is_townhall_created:
 		prompts_label.text = "¡Has ganado!"	
 	elif(all_units.size()==0 && food_points<15):
 		prompts_label.text = "Has sido derrotado."
@@ -480,45 +477,6 @@ func start_move_selection(obj):
 
 	
 
-func _on_DevelopStoneWeapons_pressed():
-	if stone_points>=70 && wood_points>=70 && leaves_points >=50:
-		stone_points-=70
-		wood_points-=70
-		leaves_points-=50
-		is_stone_weapons_developed=true	
-		#develop_stone_weapons.visible = false	
-		
-		
-
-
-func _on_InventWheel_pressed():
-	if stone_points >=70 && wood_points>=40:
-		stone_points-=70
-		wood_points-=40
-		is_wheel_invented=true
-		#invent_wheel.visible = false
-
-func _on_DiscoverFire_pressed():
-	if wood_points >=60 && stone_points>=40:
-		wood_points-=60
-		stone_points-=40
-		is_fire_discovered=true
-		#discover_fire.visible = false
-		
-func _on_MakeClaypot_pressed():
-	if clay_points>=85:
-		clay_points-=85
-		is_claypot_made=true
-		#make_claypot.visible=false
-
-
-func _on_DevelopAgriculture_pressed():
-	if food_points>=70 && leaves_points>=70 && water_points>=70:
-		food_points-=70
-		leaves_points-=70
-		water_points-=70
-		is_agriculture_developed=true
-		develop_agriculture.visible=false
 
 
 func _on_Game2_is_arrow():
@@ -636,7 +594,9 @@ func _check_units():
 func _on_MakeWarchief_pressed():
 	if selected_units.size()==1:
 		selected_units[0].is_warchief=true
-		prompts_label.text = "¡Ya tienes a tu jefe!"
+		create_warrior.visible=true
+		make_warchief.visible=false
+		prompts_label.text = "¡Ya tienes a tu jefe! Utilízalo para entrenar unidades militares\ncon el botón de crear unidad militar."
 	elif selected_units.size()>1:
 		prompts_label.text = "Debes seleccionar una sola unidad."
 	elif selected_units.size()==0:

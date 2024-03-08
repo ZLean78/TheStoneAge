@@ -98,25 +98,6 @@ var is_tiger_touching=false
 #Tigre que la unidad está tocando
 var tiger = null
 
-#Indica si la unidad está tocando un árbol frutal.
-var fruit_tree_touching = false
-
-#Indica si la unidad está tocando una planta (para obtener hojas).
-var plant_touching = false
-
-#Indica si la unidad está tocando una cantera (para obtener piedra).
-var quarry_touching = false
-
-#Indica si la unidad está tocando un charco (para obtener lodo).
-var puddle_touching = false
-
-#Indica si la unidad está tocando un pino (para obtener madera).
-var pine_tree_touching = false
-
-#Indica si la unidad está tocando el lago (para obtener agua).
-var lake_touching = false
-
-
 
 #!!!!
 
@@ -126,8 +107,7 @@ var timer_count=1
 #Para saber si la unidad ha sido eliminada.
 var is_deleted=false
 
-#Para saber si la unidad ha sido convertida en jefe guerrero.
-var is_warchief = false
+
 
 var can_shoot = true
 
@@ -140,6 +120,8 @@ var has_arrived = false
 var colliding_body: KinematicBody2D
 
 var is_colliding_body=false
+
+var body_velocity=Vector2.ZERO
 
 #Señal de cambio de salud (incremento o decremento).
 signal health_change
@@ -171,11 +153,9 @@ func _ready():
 	
 	
 	box.visible = false
-	#label.visible = false
+	
 	bar.visible = false
-	#label.text = name
-	#randomize()
-	#bar.value = randi() % 90 + 10
+
 	
 
 func _set_selected(value):
@@ -189,8 +169,6 @@ func _set_selected(value):
 		else:
 			emit_signal("was_deselected",self)
 
-
-	
 	
 
 func _physics_process(delta):
@@ -217,7 +195,8 @@ func _physics_process(delta):
 				velocity=Vector2.ZERO
 		
 	
-			
+	if is_colliding_body && body_velocity==Vector2.ZERO:
+		velocity=Vector2.ZERO			
 	
 	
 	"""if move_p:
@@ -254,23 +233,11 @@ func _physics_process(delta):
 	
 	
 		
-	#revisar si está tocando un árbol
-	#_check_fruit_tree_touching()
-	#_check_plant_touching()
-	_check_pine_tree_touching()
-	
-#	if(Input.is_action_just_pressed("shoot") && selected):
-#		bullet = bullet_scene.instance()
-#		bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-#		bullet.set_dir($scalable.scale.x)
-#		get_parent().add_child(bullet)
+
 		
 		
 	if(all_timer.is_stopped()):
 		all_timer.start()
-		
-	
-		
 
 
 
@@ -287,10 +254,7 @@ func _get_damage(var the_tiger):
 				the_tiger.is_chasing = false
 				_set_selected(false)			
 				is_deleted=true
-#								
-
-
-	
+					
 	
 func move_towards(pos,point,delta):
 	var v = (point-pos).normalized()
@@ -305,14 +269,6 @@ func _move_to_target(target):
 	direction = (target-position)*SPEED
 	velocity=(direction*to_delta).normalized()
 	move_and_collide(velocity)
-	
-		
-func move_unit(point):
-	to_move = point
-	move_p = true
-	
-	
-	
 	
 
 func _unhandled_input(event):
@@ -528,18 +484,7 @@ func _animate():
 			else:
 				sprite.animation = "female_idle1_d"
 
-	
 
-
-func _on_fruit_tree_fruit_tree_entered():	
-	can_add = true	
-	is_sheltered = true
-	
-	
-func _on_fruit_tree_fruit_tree_exited():
-	can_add = false
-	is_sheltered = false
-	
 
 
 func _on_tiger_tiger_entered():
@@ -551,36 +496,14 @@ func _on_tiger_tiger_exited():
 func _on_player_mouse_entered():
 	selected = true
 
-	
-
-	
-func _set_pine_tree_touching(var _pine_tree):
-	pine_tree_touching=_pine_tree
-	
-
-func _set_lake_touching(var _lake):
-	lake_touching=_lake
-	
 
 
-
-
-func _set_its_raining(var _its_raining):
-	its_raining = _its_raining
 	
 func _set_erased(var _is_erased):
 	is_erased=_is_erased
 	
-#func _check_fruit_tree_touching():
-	#_set_fruit_tree_touching(fruit_tree_touching)
-	
-#func _check_plant_touching():
-	#_set_plant_touching(plant_touching)
 
 
-	
-func _check_pine_tree_touching():
-	_set_pine_tree_touching(pine_tree_touching)
 #	
 func _on_all_timer_timeout():
 	timer_count=0
@@ -596,15 +519,11 @@ func _die():
 
 
 
-
-
-
-
-
 func _on_Area2D_body_entered(body):
-	if "Unit" in body.name:
+	if "Unit" in body.name || "Warrior" in body.name:
 		colliding_body = body
 		is_colliding_body = true
+		body_velocity=body.velocity
 
 
 func _on_Area2D_body_exited(body):
