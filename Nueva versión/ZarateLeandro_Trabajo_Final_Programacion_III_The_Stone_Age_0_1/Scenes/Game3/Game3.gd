@@ -19,6 +19,11 @@ var water_points = 0
 #Hitos anteriores ya cumplidos
 var group_dressed = false
 var group_has_bag = false
+var is_fire_discovered = true
+var is_wheel_invented = true
+var is_stone_weapons_developed = true
+var is_claypot_made = true
+var is_agriculture_developed = true
 
 #Variables de hitos
 var mammoths_dead = false
@@ -96,18 +101,15 @@ var claypot_mode=false
 var hand_mode=false
 var axe_mode=false
 
-var start_string = """Recoge lodo, agua, alimentos, madera, piedra y hojas
-para cumplir con cada uno de los hitos
-marcados al seleccionar la
-entrada de la cueva. Escapa de los tigres dientes de sable
-o arrójales piedras haciendo
-clic derecho sobre ellos estandoa gran distancia."""
+var start_string = """Selecciona una unidad de tu grupo y haz clic en el botón
+"convertir en jefe guerrero" para que pase a ser el jefe de tu tribu."""
 
 #Si el cursor está en forma de espada tocando un tigre, lo guardamos en esta variable.
 var touching_tiger
 
 func _ready():
 	
+	prompts_label.text = start_string
 	
 	all_units=get_tree().get_nodes_in_group("units")
 	tile_map=tree.find_node("TileMap")
@@ -479,7 +481,7 @@ func start_move_selection(obj):
 
 
 
-func _on_Game2_is_arrow():
+func _on_Game3_is_arrow():
 	Input.set_custom_mouse_cursor(arrow)
 	arrow_mode=true
 	basket_mode=false
@@ -490,7 +492,7 @@ func _on_Game2_is_arrow():
 	axe_mode=false
 
 
-func _on_Game2_is_basket():
+func _on_Game3_is_basket():
 	Input.set_custom_mouse_cursor(basket)
 	basket_mode=true
 	arrow_mode=false
@@ -500,7 +502,7 @@ func _on_Game2_is_basket():
 	hand_mode=false
 	axe_mode=false
 	
-func _on_Game2_is_pick_mattock():
+func _on_Game3_is_pick_mattock():
 	Input.set_custom_mouse_cursor(pick_mattock)
 	mattock_mode=true
 	basket_mode=false
@@ -511,7 +513,7 @@ func _on_Game2_is_pick_mattock():
 	axe_mode=false
 
 
-func _on_Game2_is_sword():
+func _on_Game3_is_sword():
 	Input.set_custom_mouse_cursor(sword)
 	sword_mode=true
 	mattock_mode=false
@@ -523,7 +525,7 @@ func _on_Game2_is_sword():
 	
 
 
-func _on_Game2_is_hand():
+func _on_Game3_is_hand():
 	Input.set_custom_mouse_cursor(hand)
 	hand_mode=true
 	mattock_mode=false
@@ -535,7 +537,7 @@ func _on_Game2_is_hand():
 	
 
 
-func _on_Game2_is_claypot():
+func _on_Game3_is_claypot():
 	Input.set_custom_mouse_cursor(claypot)
 	claypot_mode=true
 	arrow_mode=false
@@ -546,7 +548,7 @@ func _on_Game2_is_claypot():
 	axe_mode=false
 
 
-func _on_Game2_is_axe():
+func _on_Game3_is_axe():
 	Input.set_custom_mouse_cursor(axe)
 	axe_mode=true
 	arrow_mode=false

@@ -337,10 +337,15 @@ func _collect_pickable(var _pickable):
 			if _pickable.type == "puddle" && puddle_touching:
 				root.clay_points+=4
 			elif _pickable.type == "lake" && lake_touching:
-				if root.is_claypot_made:
-					root.water_points+=4
+				if root.name == "Game2":
+					if root.is_claypot_made:
+						root.water_points+=4
+					else:
+						root.prompts_label.text="Debes desarrollar el cuenco de barro \n para poder transportar agua."
 				else:
-					root.prompts_label.text="Debes desarrollar el cuenco de barro \n para poder transportar agua."
+					root.water_points+=4
+				
+					
 
 
 		

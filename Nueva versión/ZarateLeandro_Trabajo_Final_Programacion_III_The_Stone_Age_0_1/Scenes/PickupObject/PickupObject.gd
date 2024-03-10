@@ -67,7 +67,8 @@ func _on_Area2D_mouse_exited():
 	elif type == "quarry" or type == "puddle" or type == "lake":
 		get_tree().root.get_child(0).emit_signal("is_arrow")
 		if type=="lake":
-			get_tree().root.get_child(0).prompts_label.text = get_tree().root.get_child(0).start_string
+			if get_tree().root.name == "Game2":
+				get_tree().root.get_child(0).prompts_label.text = get_tree().root.get_child(0).start_string
 	
 
 
