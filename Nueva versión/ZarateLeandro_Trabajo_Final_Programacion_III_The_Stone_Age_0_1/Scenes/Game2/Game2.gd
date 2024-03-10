@@ -224,6 +224,18 @@ func select_unit(unit):
 func deselect_unit(unit):
 	if selected_units.has(unit):
 		selected_units.erase(unit)
+		
+func _unhandled_input(event):
+	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
+		for i in range(0,selected_units.size()):
+			selected_units[i].has_arrived=false
+			if i==0:
+				selected_units[i].target_position=get_global_mouse_position()
+			else:
+				if i%4==0:
+					selected_units[i].target_position=Vector2(selected_units[0].target_position.x,selected_units[i-1].target_position.y+20)
+				else:
+					selected_units[i].target_position=Vector2(selected_units[i-1].target_position.x+20,selected_units[i-1].target_position.y)
 	
 	
 func _create_unit(cost = 0):
