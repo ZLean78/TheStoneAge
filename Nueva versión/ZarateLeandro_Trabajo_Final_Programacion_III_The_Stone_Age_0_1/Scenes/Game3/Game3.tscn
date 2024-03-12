@@ -169,7 +169,6 @@ position = Vector2( 100, 123 )
 [node name="PineTrees" type="Node2D" parent="."]
 
 [node name="PineTree1" parent="PineTrees" instance=ExtResource( 5 )]
-visible = false
 position = Vector2( 824, 231 )
 
 [node name="PineTree2" parent="PineTrees" instance=ExtResource( 5 )]

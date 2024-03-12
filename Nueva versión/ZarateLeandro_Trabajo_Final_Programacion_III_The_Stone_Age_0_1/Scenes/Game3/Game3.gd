@@ -111,6 +111,9 @@ var start_string = """Selecciona una unidad de tu grupo y haz clic en el botón
 #Si el cursor está en forma de espada tocando un tigre, lo guardamos en esta variable.
 var touching_tiger
 
+var row=0
+var column=0
+
 func _ready():
 	
 	prompts_label.text = start_string
@@ -252,7 +255,7 @@ func _create_unit(cost = 0):
 	new_Unit.position = spawn_position.position
 	for unit in units.get_children():
 		if new_Unit.position==unit.position:
-			new_Unit.position+=Vector2(20,20)
+			new_Unit.position+=Vector2(20,20)		
 	tile_map.add_child(new_Unit)
 	all_units.append(new_Unit)
 		
@@ -612,9 +615,22 @@ func _on_MakeWarchief_pressed():
 
 
 func _on_CreateWarriorUnit_pressed():
+	
 	var new_warrior = Warrior.instance()
 	new_warrior.position = spawn_position.position
+	for warrior in warriors.get_children():			
+		if new_warrior.position == warrior.position:
+			column+=1
+		if new_warrior.position.x>cave.position.x:
+			column=0
+			row+=1
+		new_warrior.position=spawn_position.position+Vector2(20*column,20*row)
+		
+		
+			
+		
 	warriors.add_child(new_warrior)
+	
 	
 
 func _on_CreateShack_pressed():
