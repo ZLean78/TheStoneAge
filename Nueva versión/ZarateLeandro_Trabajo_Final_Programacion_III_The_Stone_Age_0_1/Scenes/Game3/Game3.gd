@@ -54,10 +54,14 @@ onready var puddle = tree.get_node("TileMap/Puddle")
 onready var quarry1 = tree.get_node("TileMap/Quarry1")
 onready var quarry2 = tree.get_node("TileMap/Quarry2")
 onready var lake = tree.get_node("TileMap/Lake")
+onready var spawn_position = $SpawnPosition
+onready var units = $Units
+onready var warriors = $Warriors
 
 var cave
 
 export (PackedScene) var Unit2
+export (PackedScene) var Warrior
 
 var selected_units=[]
 var all_units=[]
@@ -235,7 +239,6 @@ func _unhandled_input(event):
 func _create_unit(cost = 0):
 	var new_Unit = Unit2.instance()
 	unit_count+=1
-	new_Unit.position = Vector2(camera.position.x+rand_range(50,100),camera.position.y+rand_range(50,100))
 	if(unit_count%2==0):
 		new_Unit.is_girl=true
 	else:
@@ -246,6 +249,10 @@ func _create_unit(cost = 0):
 		new_Unit.has_bag=true	
 		new_Unit.get_child(3).visible = true
 	food_points -= cost
+	new_Unit.position = spawn_position.position
+	for unit in units.get_children():
+		if new_Unit.position==unit.position:
+			new_Unit.position+=Vector2(20,20)
 	tile_map.add_child(new_Unit)
 	all_units.append(new_Unit)
 		
@@ -263,7 +270,7 @@ func _create_warrior_unit(cost = 0):
 		new_Unit.has_bag=true	
 		new_Unit.get_child(3).visible = true
 	food_points -= cost
-	tile_map.add_child(new_Unit)
+	units.add_child(new_Unit)
 	all_units.append(new_Unit)
 			
 func _check_victory():
@@ -605,11 +612,14 @@ func _on_MakeWarchief_pressed():
 
 
 func _on_CreateWarriorUnit_pressed():
-	pass # Replace with function body.
-
+	var new_warrior = Warrior.instance()
+	new_warrior.position = spawn_position.position
+	warriors.add_child(new_warrior)
+	
 
 func _on_CreateShack_pressed():
 	pass # Replace with function body.
+	
 
 
 

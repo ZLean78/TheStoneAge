@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://Scenes/Cave/Cave.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Unit2/Unit2.tscn" type="PackedScene" id=2]
@@ -15,6 +15,7 @@
 [ext_resource path="res://Scenes/Game2/male1_d.png" type="Texture" id=13]
 [ext_resource path="res://Sprites/game/tiles/grass/simple/grass.png" type="Texture" id=14]
 [ext_resource path="res://Scenes/Game2/gray_texture.png" type="Texture" id=15]
+[ext_resource path="res://Scenes/Warrior/Warrior.tscn" type="PackedScene" id=16]
 [ext_resource path="res://Scenes/Game2/watericon.png" type="Texture" id=17]
 [ext_resource path="res://Scenes/Game2/puddle.png" type="Texture" id=18]
 [ext_resource path="res://Scenes/Game2/fire.png" type="Texture" id=19]
@@ -41,6 +42,11 @@
 0/shapes = [  ]
 0/z_index = 0
 
+[sub_resource type="NavigationPolygon" id=4]
+vertices = PoolVector2Array( 1023, -634, 1027, 601, 1025, 241, 1024, 406, 837, 243, -84, 29, -84, -27, -1023, -634, -291, -28, -1015, 602, -291, 29, 827, 405, 941, 406, 888, 329, 940, 331, 871, 403 )
+polygons = [ PoolIntArray( 0, 1, 2 ), PoolIntArray( 3, 2, 1 ), PoolIntArray( 0, 2, 4, 5, 6 ), PoolIntArray( 7, 0, 6, 8 ), PoolIntArray( 9, 7, 8, 10 ), PoolIntArray( 1, 9, 10, 5, 11 ), PoolIntArray( 12, 3, 1 ), PoolIntArray( 13, 14, 12, 15 ), PoolIntArray( 5, 4, 11 ), PoolIntArray( 12, 1, 11, 15 ) ]
+outlines = [ PoolVector2Array( -1023, -634, -1015, 602, 1027, 601, 1023, -634 ), PoolVector2Array( -291, -28, -291, 29, -84, 29, -84, -27 ), PoolVector2Array( 1025, 241, 837, 243, 827, 405, 871, 403, 888, 329, 940, 331, 941, 406, 1024, 406 ) ]
+
 [sub_resource type="NavigationPolygon" id=3]
 vertices = PoolVector2Array( 1027, 601, -1015, 602, -67, 20, 1023, -634, -296, 23, -1023, -634, -299, -46, -71, -48 )
 polygons = [ PoolIntArray( 0, 1, 2, 3 ), PoolIntArray( 4, 2, 1 ), PoolIntArray( 4, 1, 5, 6 ), PoolIntArray( 6, 5, 3, 7 ), PoolIntArray( 7, 3, 2 ) ]
@@ -50,6 +56,7 @@ outlines = [ PoolVector2Array( -1023, -634, -1015, 602, 1027, 601, 1023, -634 ),
 position = Vector2( -4, -11 )
 script = ExtResource( 10 )
 Unit2 = ExtResource( 2 )
+Warrior = ExtResource( 16 )
 
 [node name="TileMap" type="TileMap" parent="."]
 position = Vector2( 0, 1 )
@@ -85,11 +92,47 @@ editor_draw_limits = true
 editor_draw_drag_margin = true
 script = ExtResource( 11 )
 
-[node name="Unit2" parent="." groups=["units"] instance=ExtResource( 2 )]
+[node name="Warriors" type="Node2D" parent="."]
+
+[node name="Units" type="Node2D" parent="."]
+
+[node name="Unit2" parent="Units" groups=["units"] instance=ExtResource( 2 )]
 position = Vector2( 669, 347 )
 
 [node name="Position2D" type="Position2D" parent="."]
 position = Vector2( 0, 600 )
+
+[node name="Tigers" type="Node2D" parent="."]
+
+[node name="nav" type="Navigation2D" parent="Tigers"]
+
+[node name="polygon" type="NavigationPolygonInstance" parent="Tigers/nav"]
+position = Vector2( 4, 2 )
+navpoly = SubResource( 4 )
+
+[node name="Tiger1" parent="Tigers/nav" instance=ExtResource( 4 )]
+visible = false
+position = Vector2( -261, -181 )
+
+[node name="tiger_agent" type="NavigationAgent2D" parent="Tigers/nav/Tiger1"]
+target_desired_distance = 5.0
+path_max_distance = 20.0
+
+[node name="Tiger2" parent="Tigers/nav" instance=ExtResource( 4 )]
+visible = false
+position = Vector2( -357, -83 )
+
+[node name="tiger_agent" type="NavigationAgent2D" parent="Tigers/nav/Tiger2"]
+target_desired_distance = 5.0
+path_max_distance = 20.0
+
+[node name="Tiger3" parent="Tigers/nav" instance=ExtResource( 4 )]
+visible = false
+position = Vector2( -357, 59 )
+
+[node name="tiger_agent" type="NavigationAgent2D" parent="Tigers/nav/Tiger3"]
+target_desired_distance = 5.0
+path_max_distance = 20.0
 
 [node name="nav" type="Navigation2D" parent="."]
 
@@ -97,38 +140,11 @@ position = Vector2( 0, 600 )
 position = Vector2( 4, 2 )
 navpoly = SubResource( 3 )
 
-[node name="Tiger1" parent="nav" instance=ExtResource( 4 )]
-visible = false
-position = Vector2( -261, -181 )
-
-[node name="tiger_agent" type="NavigationAgent2D" parent="nav/Tiger1"]
-target_desired_distance = 5.0
-path_max_distance = 20.0
-
-[node name="Tiger2" parent="nav" instance=ExtResource( 4 )]
-visible = false
-position = Vector2( -357, -83 )
-
-[node name="tiger_agent" type="NavigationAgent2D" parent="nav/Tiger2"]
-target_desired_distance = 5.0
-path_max_distance = 20.0
-
-[node name="Tiger3" parent="nav" instance=ExtResource( 4 )]
-visible = false
-position = Vector2( -357, 59 )
-
-[node name="tiger_agent" type="NavigationAgent2D" parent="nav/Tiger3"]
-target_desired_distance = 5.0
-path_max_distance = 20.0
-
-[node name="SelectDraw" type="Node2D" parent="."]
-script = ExtResource( 12 )
-
-[node name="food_timer" type="Timer" parent="."]
-
 [node name="tiger_timer" type="Timer" parent="."]
 wait_time = 180.0
 one_shot = true
+
+[node name="food_timer" type="Timer" parent="."]
 
 [node name="FruitTrees" type="Node2D" parent="."]
 
@@ -153,6 +169,7 @@ position = Vector2( 100, 123 )
 [node name="PineTrees" type="Node2D" parent="."]
 
 [node name="PineTree1" parent="PineTrees" instance=ExtResource( 5 )]
+visible = false
 position = Vector2( 824, 231 )
 
 [node name="PineTree2" parent="PineTrees" instance=ExtResource( 5 )]
@@ -183,6 +200,15 @@ position = Vector2( 592, 53 )
 
 [node name="Plant2" parent="Plants" instance=ExtResource( 7 )]
 position = Vector2( 181, 469 )
+
+[node name="SelectDraw" type="Node2D" parent="."]
+script = ExtResource( 12 )
+
+[node name="SpawnPosition" type="Position2D" parent="."]
+position = Vector2( 713, 404 )
+
+[node name="TigerSpawn" type="Position2D" parent="."]
+position = Vector2( -974, -587 )
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -245,20 +271,6 @@ margin_bottom = 36.0001
 text = "0
 "
 
-[node name="LeavesTexture" type="TextureRect" parent="UI/Base/Rectangle"]
-margin_left = 17.0
-margin_top = 35.0
-margin_right = 53.0
-margin_bottom = 69.0
-texture = ExtResource( 23 )
-
-[node name="LeavesLabel" type="Label" parent="UI/Base/Rectangle"]
-margin_left = 18.0
-margin_top = 50.0001
-margin_right = 40.0
-margin_bottom = 72.0001
-text = "0"
-
 [node name="StoneTexture" type="TextureRect" parent="UI/Base/Rectangle"]
 margin_left = 17.0
 margin_top = 74.0001
@@ -301,6 +313,20 @@ margin_right = 112.0
 margin_bottom = 61.0001
 text = "0"
 
+[node name="LeavesTexture" type="TextureRect" parent="UI/Base/Rectangle"]
+margin_left = 17.0
+margin_top = 35.0
+margin_right = 53.0
+margin_bottom = 69.0
+texture = ExtResource( 23 )
+
+[node name="LeavesLabel" type="Label" parent="UI/Base/Rectangle"]
+margin_left = 18.0
+margin_top = 50.0001
+margin_right = 40.0
+margin_bottom = 72.0001
+text = "0"
+
 [node name="WaterTexture" type="TextureRect" parent="UI/Base/Rectangle"]
 margin_left = 76.0
 margin_top = 81.0001
@@ -308,14 +334,12 @@ margin_right = 116.0
 margin_bottom = 121.0
 texture = ExtResource( 17 )
 
-[node name="MakeWarchief" type="TextureButton" parent="UI/Base/Rectangle"]
-margin_left = 910.0
-margin_top = 22.0
-margin_right = 922.0
-margin_bottom = 44.0
-hint_tooltip = "Convertir unidad en
-jefe guerrero."
-texture_normal = ExtResource( 13 )
+[node name="WaterLabel" type="Label" parent="UI/Base/Rectangle"]
+margin_left = 78.0
+margin_top = 85.0001
+margin_right = 95.0
+margin_bottom = 100.0
+text = "0"
 
 [node name="CreateWarriorUnit" type="TextureButton" parent="UI/Base/Rectangle"]
 visible = false
@@ -363,12 +387,14 @@ margin_right = 900.0
 margin_bottom = 14.0
 text = "DESAFÍOS/DESARROLLOS:"
 
-[node name="WaterLabel" type="Label" parent="UI/Base/Rectangle"]
-margin_left = 78.0
-margin_top = 85.0001
-margin_right = 95.0
-margin_bottom = 100.0
-text = "0"
+[node name="MakeWarchief" type="TextureButton" parent="UI/Base/Rectangle"]
+margin_left = 910.0
+margin_top = 22.0
+margin_right = 922.0
+margin_bottom = 44.0
+hint_tooltip = "Convertir unidad en
+jefe guerrero."
+texture_normal = ExtResource( 13 )
 
 [node name="TimerLabel" type="Label" parent="UI/Base"]
 margin_left = 1115.0
@@ -391,8 +417,8 @@ autostart = true
 [connection signal="is_sword" from="." to="." method="_on_Game3_is_sword"]
 [connection signal="timeout" from="tiger_timer" to="." method="_on_tiger_timer_timeout"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/MakeWarchief" to="." method="_on_MakeWarchief_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateWarriorUnit" to="." method="_on_CreateWarriorUnit_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateShack" to="." method="_on_CreateShack_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/GiveAttackOrder" to="." method="_on_GiveAttackOrder_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/DevelopAgriculture" to="." method="_on_DevelopAgriculture_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/MakeWarchief" to="." method="_on_MakeWarchief_pressed"]
