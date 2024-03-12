@@ -41,7 +41,6 @@ radius = 19.5064
 
 [node name="Unit2" type="KinematicBody2D"]
 collision_layer = 2
-collision_mask = 3
 input_pickable = true
 script = ExtResource( 2 )
 
@@ -89,5 +88,3 @@ shape = SubResource( 4 )
 
 [connection signal="input_event" from="." to="." method="_on_Unit_input_event"]
 [connection signal="timeout" from="all_timer" to="." method="_on_all_timer_timeout"]
-[connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
-[connection signal="body_exited" from="Area2D" to="." method="_on_Area2D_body_exited"]

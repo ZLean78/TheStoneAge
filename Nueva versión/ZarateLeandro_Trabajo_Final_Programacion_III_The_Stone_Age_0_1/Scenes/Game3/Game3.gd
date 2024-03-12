@@ -195,7 +195,6 @@ func _process(_delta):
 	water_label.text = str(int(water_points))
 	
 	_check_units()
-	#_check_has_arrived()
 	_check_victory()
 	
 
@@ -224,7 +223,6 @@ func deselect_unit(unit):
 func _unhandled_input(event):
 	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
 		for i in range(0,selected_units.size()):
-			selected_units[i].has_arrived=false
 			if i==0:
 				selected_units[i].target_position=get_global_mouse_position()
 			else:
@@ -570,17 +568,7 @@ func _on_Game3_is_axe():
 	hand_mode=false
 
 
-func _check_has_arrived():
-	var the_unit
-	for unit in all_units:
-		if unit.has_arrived:
-			the_unit = unit
-			break
-			
-	if the_unit:
-		for another_unit in all_units:
-			if another_unit!=the_unit:
-				another_unit.target_position=the_unit.position-Vector2(20,0)
+
 				
 	
 	
