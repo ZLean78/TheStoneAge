@@ -115,11 +115,7 @@ var to_delta = 0.0
 
 var direction = Vector2.ZERO
 
-var has_arrived = false
-
 var colliding_body: KinematicBody2D
-
-var is_colliding_body=false
 
 var body_velocity=Vector2.ZERO
 
@@ -185,18 +181,11 @@ func _physics_process(delta):
 		if box.visible == true:
 			box.visible = false
 	
-	if !has_arrived:
-		if target_position!=Vector2.ZERO:
-			if position.distance_to(target_position) > 10:
-				_move_to_target(target_position)
-			else:
-				has_arrived=true
-				target_position=position
-				velocity=Vector2.ZERO
-		
-	
-	if is_colliding_body && body_velocity==Vector2.ZERO:
-		velocity=Vector2.ZERO			
+	if target_position!=Vector2.ZERO:
+		if position.distance_to(target_position) > 10:
+			_move_to_target(target_position)
+		else:
+			velocity=Vector2.ZERO
 	
 	
 	"""if move_p:
@@ -273,20 +262,6 @@ func _move_to_target(target):
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
-		if get_tree().root.get_child(0).name == "Game2":
-			if selected:
-				has_arrived = false
-				target_position = get_global_mouse_position()
-			else:
-				has_arrived=false
-				target_position=position
-		if get_tree().root.get_child(0).name == "Game3":
-			if selected:
-				has_arrived = false
-				target_position=get_global_mouse_position()
-			else:
-				has_arrived = false
-				target_position=position
 		if get_tree().root.get_child(0).sword_mode:
 			if get_tree().root.get_child(0).touching_tiger!=null:
 				target_position = get_tree().root.get_child(0).touching_tiger.position
@@ -519,14 +494,4 @@ func _die():
 
 
 
-func _on_Area2D_body_entered(body):
-	if "Unit" in body.name || "Warrior" in body.name:
-		colliding_body = body
-		is_colliding_body = true
-		body_velocity=body.velocity
 
-
-func _on_Area2D_body_exited(body):
-	if "Unit" in body.name:
-		colliding_body = null
-		is_colliding_body = false

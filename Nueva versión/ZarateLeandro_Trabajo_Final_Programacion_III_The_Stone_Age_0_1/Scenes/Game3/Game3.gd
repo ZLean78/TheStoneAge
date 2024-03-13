@@ -283,7 +283,7 @@ func _check_victory():
 		prompts_label.text = "Has sido derrotado."
 	else:
 		for a_unit in all_units:
-			if a_unit.is_warchief && a_unit.is_deleted:
+			if "Unit" in a_unit.name && a_unit.is_warchief && a_unit.is_deleted:
 				prompts_label.text = "Has sido derrotado. Tu jefe ha muerto."	
 		
 #func collect_pickable(var _pickable):
@@ -621,15 +621,14 @@ func _on_CreateWarriorUnit_pressed():
 	for warrior in warriors.get_children():			
 		if new_warrior.position == warrior.position:
 			column+=1
-		if new_warrior.position.x>cave.position.x:
+		#if new_warrior.position.x>cave.position.x:
+		if column==10:
 			column=0
 			row+=1
 		new_warrior.position=spawn_position.position+Vector2(20*column,20*row)
 		
-		
-			
-		
 	warriors.add_child(new_warrior)
+	all_units.append(new_warrior)
 	
 	
 
