@@ -417,7 +417,7 @@ func _unhandled_input(event):
 					var new_stone = stone_scene.instance()
 					shoot_point.rotation = angle				
 					new_stone.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-					if is_flipped:
+					if target_position.x<position.x:
 						new_stone.set_velocity(Vector2(-200,0))
 					else:
 						new_stone.set_velocity(Vector2(200,0))
