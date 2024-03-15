@@ -71,9 +71,9 @@ func _on_Area2D_body_entered(body):
 			body.is_tiger_touching=true 
 			body.tiger=self
 			emit_signal("tiger_entered")
-		elif "Bullet" in body.name:
+		elif "Bullet" in body.name || "Stone" in body.name:
 			body.visible=false
-			life-=5
+			life-=20
 			if life <=0:
 				is_dead=true
 				is_chasing=false

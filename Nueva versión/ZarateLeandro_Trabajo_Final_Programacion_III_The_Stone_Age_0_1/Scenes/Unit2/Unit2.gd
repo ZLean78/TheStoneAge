@@ -3,9 +3,10 @@ extends KinematicBody2D
 #Proyectil, piedra para lanzar al enemigo.
 var bullet
 export var bullet_scene=preload("res://Scenes/Bullet/Bullet.tscn")
+export var stone_scene=preload("res://Scenes/Stone/stone.tscn")
 
 #Velocidad
-export (float) var SPEED = 250.0
+export (float) var SPEED = 100.0
 #Máximo de Salud
 export (float) var MAX_HEALTH = 100.0
 
@@ -390,9 +391,9 @@ func move_towards(pos,point,delta):
 		
 
 func _move_to_target(target):
-	direction = (target-position)*SPEED
-	velocity=(direction*to_delta).normalized()
-	move_and_collide(velocity)
+	direction = (target-position)
+	velocity=(direction).normalized()
+	move_and_collide(velocity*to_delta*SPEED)
 	
 		
 func move_unit(point):
@@ -413,12 +414,15 @@ func _unhandled_input(event):
 					shoot_node.look_at(target_position)				
 					var angle = shoot_node.rotation
 					var forward = Vector2(cos(angle),sin(angle))
-					bullet = bullet_scene.instance()
+					var new_stone = stone_scene.instance()
 					shoot_point.rotation = angle				
-					bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-					bullet.set_dir(forward)
-					bullet.rotation = angle		
-					get_parent().add_child(bullet)
+					new_stone.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+					if is_flipped:
+						new_stone.set_velocity(Vector2(-200,0))
+					else:
+						new_stone.set_velocity(Vector2(200,0))
+					new_stone.rotation = angle		
+					get_parent().add_child(new_stone)
 					can_shoot=false
 #		if get_tree().root.get_child(0).name == "Game2":
 #			if selected:
