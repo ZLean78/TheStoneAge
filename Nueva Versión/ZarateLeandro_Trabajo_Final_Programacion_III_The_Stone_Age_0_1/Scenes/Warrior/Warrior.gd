@@ -53,6 +53,7 @@ var is_chased = false
 #var click_relative = 16
 #Indica si la unidad ha muerto.
 var dead = false
+var collision 
 
 
 
@@ -231,19 +232,26 @@ func _physics_process(delta):
 
 
 		
-func _get_damage(var the_tiger):
+func _get_damage(var the_beast):
 	if is_chased && is_tiger_touching:
 		if(energy_points>0):
 			energy_points-=5
 			bar._set_energy_points(energy_points)
 			bar._update_energy()
 		else:
-			if the_tiger:
-				the_tiger.unit = null
-				the_tiger.is_chasing = false
+			if "Tiger" in the_beast.name:
+				the_beast.unit = null
+				the_beast.is_chasing = false
 				_set_selected(false)			
 				is_deleted=true
-					
+	if "Mammoth" in the_beast.name:
+		if energy_points>0:
+			energy_points-=15
+			bar._set_energy_points(energy_points)
+			bar._update_energy()
+		else:
+			_set_selected(false)			
+			is_deleted=true		
 	
 func move_towards(pos,point,delta):
 	var v = (point-pos).normalized()
@@ -257,7 +265,7 @@ func move_towards(pos,point,delta):
 func _move_to_target(target):
 	direction = (target-position)*SPEED
 	velocity=(direction*to_delta).normalized()
-	move_and_collide(velocity)
+	collision = move_and_collide(velocity)
 	
 
 func _unhandled_input(event):
@@ -486,6 +494,9 @@ func _on_all_timer_timeout():
 	can_shoot=true
 	if tiger!=null:
 		_get_damage(tiger)
+	if collision!=null && "Mammoth" in collision.collider.name:
+		_get_damage(collision.collider)
+	
 	
 	
 

@@ -7,10 +7,11 @@
 extents = Vector2( 147, 85 )
 
 [sub_resource type="CircleShape2D" id=2]
-radius = 351.006
+radius = 798.904
 
 [node name="Mammoth" type="KinematicBody2D"]
 scale = Vector2( 0.5, 0.5 )
+collision_mask = 2
 script = ExtResource( 2 )
 
 [node name="Scalable" type="Node2D" parent="."]

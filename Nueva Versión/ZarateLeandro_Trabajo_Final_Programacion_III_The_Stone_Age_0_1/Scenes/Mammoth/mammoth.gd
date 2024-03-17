@@ -30,7 +30,11 @@ func _physics_process(delta):
 		var direction=(target_position-position)
 		velocity=direction.normalized()*speed*delta
 		
-		move_and_collide(velocity)
+		var collision = move_and_collide(velocity)
+
+		#if collision != null:
+			#if "Unit" in collision.collider.name || "Warrior" in collision.collider.name:
+				#collision.collider._get_damage()
 		
 	# Orientar al mamut.
 	if velocity.x<0:
@@ -48,8 +52,8 @@ func check_state():
 		0:
 			target_position=position
 		1: 
-			if body_entered!=null:
-				target_position=body_entered.position-position
+			if body_entered!=null && !body_entered.dead:
+				target_position=body_entered.position
 				if position.distance_to(body_entered.position) > 400:
 					state=2
 					body_entered=null

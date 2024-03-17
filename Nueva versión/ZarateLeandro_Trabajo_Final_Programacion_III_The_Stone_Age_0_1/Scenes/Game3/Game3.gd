@@ -588,14 +588,18 @@ func _on_Game3_is_axe():
 func _check_units():
 	for a_unit in all_units:
 		if a_unit.is_deleted:
-			if !a_unit.is_warchief:
+			if "Unit" in a_unit.name:
+				if !a_unit.is_warchief:
+					var the_unit=all_units[all_units.find(a_unit,0)]
+					all_units.remove(all_units.find(a_unit,0))
+					for a_tiger in all_tigers:
+						if a_tiger.unit == the_unit:
+							a_tiger.unit = null
+							the_unit._die()
+			if "Warrior" in a_unit.name:
 				var the_unit=all_units[all_units.find(a_unit,0)]
 				all_units.remove(all_units.find(a_unit,0))
-				for a_tiger in all_tigers:
-					if a_tiger.unit == the_unit:
-						a_tiger.unit = null
-						the_unit._die()
-	
+				the_unit._die()
 	
 
 
