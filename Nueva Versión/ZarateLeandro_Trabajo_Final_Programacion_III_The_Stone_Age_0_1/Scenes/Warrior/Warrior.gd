@@ -198,7 +198,7 @@ func _physics_process(delta):
 	else:
 		velocity=Vector2(0,0)"""	
 	
-	# Orientar al player.
+	# Orientar al warrior.
 	if velocity.x<0:
 		if(is_flipped==false):			
 			$scalable.scale.x = -1
