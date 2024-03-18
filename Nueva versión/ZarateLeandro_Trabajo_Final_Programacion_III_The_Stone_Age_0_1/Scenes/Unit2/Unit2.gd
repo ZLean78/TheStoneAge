@@ -408,22 +408,22 @@ func _unhandled_input(event):
 	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
 		if get_tree().root.get_child(0).sword_mode:
 			if get_tree().root.get_child(0).touching_enemy!=null:
-				
-				if selected && can_shoot:
-					target_position = get_tree().root.get_child(0).touching_enemy.position
-					shoot_node.look_at(target_position)				
-					var angle = shoot_node.rotation
-					var forward = Vector2(cos(angle),sin(angle))
-					var new_stone = stone_scene.instance()
-					shoot_point.rotation = angle				
-					new_stone.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-					if target_position.x<position.x:
-						new_stone.set_velocity(Vector2(-200,0))
-					else:
-						new_stone.set_velocity(Vector2(200,0))
-					new_stone.rotation = angle		
-					get_parent().add_child(new_stone)
-					can_shoot=false
+				if is_instance_valid(get_tree().root.get_child(0).touching_enemy):
+					if selected && can_shoot:
+						target_position = get_tree().root.get_child(0).touching_enemy.position
+						shoot_node.look_at(target_position)				
+						var angle = shoot_node.rotation
+						var forward = Vector2(cos(angle),sin(angle))
+						var new_stone = stone_scene.instance()
+						shoot_point.rotation = angle				
+						new_stone.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+						if target_position.x<position.x:
+							new_stone.set_velocity(Vector2(-200,0))
+						else:
+							new_stone.set_velocity(Vector2(200,0))
+						new_stone.rotation = angle		
+						get_parent().add_child(new_stone)
+						can_shoot=false
 #		if get_tree().root.get_child(0).name == "Game2":
 #			if selected:
 #				has_arrived = false

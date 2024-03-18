@@ -182,7 +182,12 @@ func _ready():
 	
 
 func _process(_delta):
-	if all_tigers.empty():
+	var valid_counter=0
+	for a_tiger in all_tigers:
+		if is_instance_valid(a_tiger):
+			valid_counter+=1
+			
+	if valid_counter==0:
 		timer_label.text = "POSIBLE PELIGRO EN: " + str(int(tiger_timer.time_left))
 	else:
 		timer_label.text = "¡CUIDADO, HAY TIGRES!"
@@ -205,12 +210,13 @@ func _process(_delta):
 			is_tiger_coundown=true	
 	
 	for i in range(0,all_tigers.size()-1):
-		if !all_tigers[i].is_dead:
-			_tiger_attack()
-		else:			
-			touching_enemy=null
-			all_tigers.erase(all_tigers[i])
-			all_tigers.remove(i)
+		if is_instance_valid(all_tigers[i]):
+			if !all_tigers[i].is_dead:
+				_tiger_attack()
+			else:			
+				touching_enemy=null
+				all_tigers.erase(all_tigers[i])
+				all_tigers.remove(i)
 			
 			
 
@@ -407,19 +413,25 @@ func _on_CreateCitizen_pressed():
 func _tiger_attack():
 	for i in range(all_tigers.size()):
 		for j in range(all_units.size()):
-			if !all_tigers[i].is_chasing && !all_tigers[i].is_dead:
-				var the_unit=all_units[j]
-				var the_tiger=all_tigers[i]
-				if the_unit!=null && !the_unit.is_chased && abs(the_unit.position.distance_to(the_tiger.position))<400:
-					the_tiger.unit=the_unit
-					the_unit.is_chased=true
-					the_tiger.is_chasing=true
+			if is_instance_valid(all_tigers[i]):
+				if !all_tigers[i].is_chasing && !all_tigers[i].is_dead:
+					var the_unit=all_units[j]
+					var the_tiger=all_tigers[i]
+					if the_unit!=null && !the_unit.is_chased && abs(the_unit.position.distance_to(the_tiger.position))<400:
+						the_tiger.unit=the_unit
+						the_unit.is_chased=true
+						the_tiger.is_chasing=true
 
 				
 
 func _on_tiger_timer_timeout():
+	var valid_counter=0
+	for a_tiger in all_tigers:
+		if is_instance_valid(a_tiger):
+			valid_counter+=1
 	
-	if all_tigers.empty():	
+	
+	if valid_counter==0:	
 		for tiger_counter in range(0,2):
 			var new_tiger = tiger.instance()
 			new_tiger.position = tiger_spawn.position
@@ -627,8 +639,9 @@ func _check_units():
 			var the_unit=all_units[all_units.find(a_unit,0)]
 			all_units.remove(all_units.find(a_unit,0))
 			for a_tiger in all_tigers:
-				if a_tiger.unit == the_unit:
-					a_tiger.unit = null
+				if is_instance_valid(a_tiger):
+					if a_tiger.unit == the_unit:
+						a_tiger.unit = null
 			the_unit._die()
 	
 	
