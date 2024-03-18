@@ -34,9 +34,12 @@ func _physics_process(delta):
 		
 		var collision = move_and_collide(velocity)
 
-		#if collision != null:
-			#if "Unit" in collision.collider.name || "Warrior" in collision.collider.name:
-				#collision.collider._get_damage()
+		if collision != null:
+			if "Bullet" in collision.collider.name || "Stone" in collision.collider.name:
+				life-=20
+				if life <=0:
+					is_dead=true
+					queue_free()
 		
 	# Orientar al mamut.
 	if velocity.x<0:
@@ -54,11 +57,12 @@ func check_state():
 		0:
 			target_position=position
 		1: 
-			if body_entered!=null && !body_entered.dead:
-				target_position=body_entered.position
-				if position.distance_to(body_entered.position) > 400:
-					state=2
-					body_entered=null
+			if is_instance_valid(body_entered):
+				if body_entered!=null && !body_entered.dead:
+					target_position=body_entered.position
+					if position.distance_to(body_entered.position) > 400:
+						state=2
+						body_entered=null
 		2:
 			target_position=start_position
 			if position.distance_to(target_position)<=5:
@@ -70,11 +74,7 @@ func _on_Area2D_body_entered(body):
 	if "Unit" in body.name || "Warrior" in body.name:
 		body_entered=body
 		state=1
-	elif "Bullet" in body.name || "Stone" in body.name:
-			#body.visible=false
-			life-=20
-			if life <=0:
-				is_dead=true
+	
 				
 
 

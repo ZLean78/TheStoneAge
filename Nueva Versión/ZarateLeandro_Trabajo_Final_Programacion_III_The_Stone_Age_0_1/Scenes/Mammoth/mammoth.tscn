@@ -11,7 +11,7 @@ radius = 798.904
 
 [node name="Mammoth" type="KinematicBody2D"]
 scale = Vector2( 0.5, 0.5 )
-collision_mask = 2
+collision_mask = 14
 input_pickable = true
 script = ExtResource( 2 )
 

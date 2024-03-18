@@ -55,6 +55,7 @@ onready var quarry1 = tree.get_node("TileMap/Quarry1")
 onready var quarry2 = tree.get_node("TileMap/Quarry2")
 onready var lake = tree.get_node("TileMap/Lake")
 onready var spawn_position = $SpawnPosition
+onready var tiger_spawn = $TigerSpawn
 onready var units = $Units
 onready var warriors = $Warriors
 
@@ -596,9 +597,10 @@ func _check_units():
 					var the_unit=all_units[all_units.find(a_unit,0)]
 					all_units.remove(all_units.find(a_unit,0))
 					for a_tiger in all_tigers:
-						if a_tiger.unit == the_unit:
-							a_tiger.unit = null
-							the_unit._die()
+						if is_instance_valid(a_tiger):
+							if a_tiger.unit == the_unit:
+								a_tiger.unit = null
+								the_unit._die()
 			if "Warrior" in a_unit.name:
 				var the_unit=all_units[all_units.find(a_unit,0)]
 				all_units.remove(all_units.find(a_unit,0))
