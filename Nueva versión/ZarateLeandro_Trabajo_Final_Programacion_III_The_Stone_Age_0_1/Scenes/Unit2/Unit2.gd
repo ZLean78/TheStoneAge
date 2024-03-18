@@ -407,10 +407,10 @@ func move_unit(point):
 func _unhandled_input(event):
 	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
 		if get_tree().root.get_child(0).sword_mode:
-			if get_tree().root.get_child(0).touching_tiger!=null:
+			if get_tree().root.get_child(0).touching_enemy!=null:
 				
 				if selected && can_shoot:
-					target_position = get_tree().root.get_child(0).touching_tiger.position
+					target_position = get_tree().root.get_child(0).touching_enemy.position
 					shoot_node.look_at(target_position)				
 					var angle = shoot_node.rotation
 					var forward = Vector2(cos(angle),sin(angle))

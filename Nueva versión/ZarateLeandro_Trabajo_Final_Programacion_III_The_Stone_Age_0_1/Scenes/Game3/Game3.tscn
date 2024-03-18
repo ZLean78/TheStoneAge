@@ -156,7 +156,7 @@ position = Vector2( 4, 2 )
 navpoly = SubResource( 3 )
 
 [node name="tiger_timer" type="Timer" parent="."]
-wait_time = 180.0
+wait_time = 40.0
 one_shot = true
 
 [node name="food_timer" type="Timer" parent="."]

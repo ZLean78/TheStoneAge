@@ -12,6 +12,7 @@ radius = 798.904
 [node name="Mammoth" type="KinematicBody2D"]
 scale = Vector2( 0.5, 0.5 )
 collision_mask = 2
+input_pickable = true
 script = ExtResource( 2 )
 
 [node name="Scalable" type="Node2D" parent="."]
@@ -27,4 +28,6 @@ shape = SubResource( 1 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource( 2 )
 
+[connection signal="mouse_entered" from="." to="." method="_on_Mammoth_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_Mammoth_mouse_exited"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]

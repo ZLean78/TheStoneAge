@@ -115,7 +115,7 @@ o arrójales piedras haciendo
 clic derecho sobre ellos estandoa gran distancia."""
 
 #Si el cursor está en forma de espada tocando un tigre, lo guardamos en esta variable.
-var touching_tiger
+var touching_enemy
 
 func _ready():
 	
@@ -208,7 +208,7 @@ func _process(_delta):
 		if !all_tigers[i].is_dead:
 			_tiger_attack()
 		else:			
-			touching_tiger=null
+			touching_enemy=null
 			all_tigers.erase(all_tigers[i])
 			all_tigers.remove(i)
 			
@@ -431,14 +431,15 @@ func _on_tiger_timer_timeout():
 		
 		
 	for a_tiger in all_tigers:
-		a_tiger.visible=true
-		is_tiger=true
-		if !a_tiger.is_chasing:		
-			var random_num=randi()
-			if random_num%2==0:
-				a_tiger.agent.set_target_location(spawn_position.position)
-			else:
-				a_tiger.agent.set_target_location(tiger_spawn.position)
+		if is_instance_valid(a_tiger):
+			a_tiger.visible=true
+			is_tiger=true
+			if !a_tiger.is_chasing:		
+				var random_num=randi()
+				if random_num%2==0:
+					a_tiger.agent.set_target_location(spawn_position.position)
+				else:
+					a_tiger.agent.set_target_location(tiger_spawn.position)
 
 		
 func deselect_all():

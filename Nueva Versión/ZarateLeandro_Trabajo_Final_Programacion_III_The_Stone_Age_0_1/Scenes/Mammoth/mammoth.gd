@@ -5,7 +5,9 @@ var state=0
 var target_position=Vector2()
 var body_entered
 var velocity=Vector2()
+var is_dead=false
 var speed=50.0
+var life=120
 export var is_flipped:bool
 
 
@@ -68,3 +70,20 @@ func _on_Area2D_body_entered(body):
 	if "Unit" in body.name || "Warrior" in body.name:
 		body_entered=body
 		state=1
+	elif "Bullet" in body.name || "Stone" in body.name:
+			#body.visible=false
+			life-=20
+			if life <=0:
+				is_dead=true
+				
+
+
+func _on_Mammoth_mouse_entered():
+	get_tree().get_root().get_child(0)._on_Game3_is_sword()
+	get_tree().root.get_child(0).emit_signal("is_sword")
+	get_tree().root.get_child(0).touching_enemy=self
+
+
+
+func _on_Mammoth_mouse_exited():
+	get_tree().get_root().get_child(0)._on_Game3_is_arrow()

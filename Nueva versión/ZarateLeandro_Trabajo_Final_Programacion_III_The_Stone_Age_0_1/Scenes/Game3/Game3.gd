@@ -109,7 +109,7 @@ var start_string = """Selecciona una unidad de tu grupo y haz clic en el botón
 "convertir en jefe guerrero" para que pase a ser el jefe de tu tribu."""
 
 #Si el cursor está en forma de espada tocando un tigre, lo guardamos en esta variable.
-var touching_tiger
+var touching_enemy
 
 var row=0
 var column=0
@@ -213,8 +213,9 @@ func _process(_delta):
 			is_tiger_coundown=true	
 	
 	for a_tiger in all_tigers:
-		if a_tiger.visible:
-			_tiger_attack()
+		if is_instance_valid(a_tiger):
+			if a_tiger.visible:
+				_tiger_attack()
 
 		
 func select_unit(unit):
@@ -428,20 +429,22 @@ func _on_CreateCitizen_pressed():
 func _tiger_attack():
 	for i in range(all_tigers.size()):
 		for j in range(all_units.size()):
-			if !all_tigers[i].is_chasing && all_tigers[i].visible && !all_tigers[i].is_dead:
-				var the_unit=all_units[j]
-				var the_tiger=all_tigers[i]
-				if the_unit!=null && !the_unit.is_chased && abs(the_unit.position.distance_to(the_tiger.position))<400:
-					the_tiger.unit=the_unit
-					the_unit.is_chased=true
-					the_tiger.is_chasing=true
+			if is_instance_valid(all_tigers[i]):
+				if !all_tigers[i].is_chasing && all_tigers[i].visible && !all_tigers[i].is_dead:
+					var the_unit=all_units[j]
+					var the_tiger=all_tigers[i]
+					if the_unit!=null && !the_unit.is_chased && abs(the_unit.position.distance_to(the_tiger.position))<400:
+						the_tiger.unit=the_unit
+						the_unit.is_chased=true
+						the_tiger.is_chasing=true
 
 				
 
 func _on_tiger_timer_timeout():
 	for a_tiger in all_tigers:
-		a_tiger.visible=true
-		is_tiger=true
+		if is_instance_valid(a_tiger):
+			a_tiger.visible=true
+			is_tiger=true
 
 		
 func deselect_all():

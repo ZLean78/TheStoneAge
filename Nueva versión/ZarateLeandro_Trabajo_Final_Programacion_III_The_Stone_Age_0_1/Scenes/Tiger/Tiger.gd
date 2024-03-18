@@ -72,7 +72,8 @@ func _on_Area2D_body_entered(body):
 			body.tiger=self
 			emit_signal("tiger_entered")
 		elif "Bullet" in body.name || "Stone" in body.name:
-			body.visible=false
+			#body.visible=false
+			body.queue_free()
 			life-=20
 			if life <=0:
 				is_dead=true
@@ -81,6 +82,7 @@ func _on_Area2D_body_entered(body):
 					unit.is_chased=false
 					unit.is_tiger_touching=false
 					unit = null
+				queue_free()
 				
 
 
@@ -93,7 +95,7 @@ func _on_Area2D_body_exited(body):
 
 func _on_Area2D_mouse_entered():
 	get_tree().root.get_child(0).emit_signal("is_sword")
-	get_tree().root.get_child(0).touching_tiger=self
+	get_tree().root.get_child(0).touching_enemy=self
 
 
 func _on_Area2D_mouse_exited():
