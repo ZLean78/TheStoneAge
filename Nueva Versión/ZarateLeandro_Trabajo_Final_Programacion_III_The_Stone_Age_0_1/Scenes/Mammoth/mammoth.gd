@@ -8,8 +8,10 @@ var velocity=Vector2()
 var is_dead=false
 var speed=50.0
 var life=120
+onready var progress_bar=$ProgressBar
 export var is_flipped:bool
-
+onready var warriors=get_tree().get_root().get_child(0).get_node("Warriors")
+onready var citizens=get_tree().get_root().get_child(0).get_node("Units")
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -19,6 +21,7 @@ export var is_flipped:bool
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	start_position=position
+	progress_bar.value = life
 	if is_flipped==false:
 		$Scalable.scale.x=1
 	else:
@@ -26,20 +29,25 @@ func _ready():
 
 func _physics_process(delta):
 	
+	#Comprobar máquina de estados.
 	check_state()
 	
+	#Mover y comprobar colisiones.
 	if position.distance_to(target_position)>5:
 		var direction=(target_position-position)
 		velocity=direction.normalized()*speed*delta
 		
 		var collision = move_and_collide(velocity)
 
-		if collision != null:
+		if collision!=null && is_instance_valid(collision.collider):
 			if "Bullet" in collision.collider.name || "Stone" in collision.collider.name:
 				life-=20
 				if life <=0:
 					is_dead=true
 					queue_free()
+	
+	#Actualizar barra de vida.
+	progress_bar.value=life
 		
 	# Orientar al mamut.
 	if velocity.x<0:
@@ -55,14 +63,10 @@ func check_state():
 	
 	match state:
 		0:
-			target_position=position
+			target_position=position			
 		1: 
-			if is_instance_valid(body_entered):
-				if body_entered!=null && !body_entered.dead:
-					target_position=body_entered.position
-					if position.distance_to(body_entered.position) > 400:
-						state=2
-						body_entered=null
+			if body_entered!=null && is_instance_valid(body_entered):
+				target_position=body_entered.position
 		2:
 			target_position=start_position
 			if position.distance_to(target_position)<=5:
@@ -71,9 +75,12 @@ func check_state():
 
 
 func _on_Area2D_body_entered(body):
-	if "Unit" in body.name || "Warrior" in body.name:
-		body_entered=body
-		state=1
+	if "Bullet" in body.name || "Stone" in body.name:
+		life-=5
+		body.queue_free()
+		if life <=0:
+			is_dead=true
+			queue_free()
 	
 				
 
@@ -87,3 +94,15 @@ func _on_Mammoth_mouse_entered():
 
 func _on_Mammoth_mouse_exited():
 	get_tree().get_root().get_child(0)._on_Game3_is_arrow()
+
+
+
+	
+
+
+func _on_DetectionArea_body_entered(body):
+	if "Warrior" in body.name || "Unit2" in body.name:
+		body_entered=body
+		for mammoth in get_parent().get_children():
+			if is_instance_valid(mammoth):
+				mammoth.state = 1

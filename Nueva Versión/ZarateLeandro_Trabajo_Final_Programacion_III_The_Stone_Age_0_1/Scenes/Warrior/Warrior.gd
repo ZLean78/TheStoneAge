@@ -108,7 +108,8 @@ var timer_count=1
 #Para saber si la unidad ha sido eliminada.
 var is_deleted=false
 
-
+#Para detección de daño. Cuerpo que ingresa al área 2D
+var body_entered
 
 var can_shoot = true
 
@@ -233,20 +234,19 @@ func _physics_process(delta):
 
 		
 func _get_damage(var the_beast):
-	if is_chased && is_tiger_touching:
+	if "Tiger" in the_beast.name:
 		if(energy_points>0):
 			energy_points-=5
 			bar._set_energy_points(energy_points)
 			bar._update_energy()
 		else:
-			if "Tiger" in the_beast.name:
-				the_beast.unit = null
-				the_beast.is_chasing = false
-				_set_selected(false)			
-				is_deleted=true
+			#the_beast.unit = null
+			#the_beast.is_chasing = false
+			_set_selected(false)			
+			is_deleted=true
 	if "Mammoth" in the_beast.name:
 		if energy_points>0:
-			energy_points-=15
+			energy_points-=30
 			bar._set_energy_points(energy_points)
 			bar._update_energy()
 		else:
@@ -285,8 +285,9 @@ func _unhandled_input(event):
 						bullet.rotation = angle		
 						get_parent().add_child(bullet)
 						can_shoot=false
-			
-
+				else:
+					get_tree().root.get_child(0)._on_Game3_is_arrow()
+					
 func _on_Unit_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton:
 		if event.is_pressed():			
@@ -492,10 +493,11 @@ func _set_erased(var _is_erased):
 func _on_all_timer_timeout():
 	timer_count=0
 	can_shoot=true
-	if tiger!=null:
+	if tiger!=null && is_instance_valid(tiger):
 		_get_damage(tiger)
-	if collision!=null && "Mammoth" in collision.collider.name:
-		_get_damage(collision.collider)
+	if body_entered!=null && is_instance_valid(body_entered):
+		if "Tiger" in body_entered.name || "Mammoth" in body_entered.name:
+			_get_damage(body_entered)
 	
 	
 	
@@ -507,3 +509,7 @@ func _die():
 
 
 
+
+
+func _on_Area2D_body_entered(body):
+	body_entered=body

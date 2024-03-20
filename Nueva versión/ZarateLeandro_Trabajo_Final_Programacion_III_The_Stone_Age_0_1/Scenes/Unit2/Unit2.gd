@@ -347,36 +347,44 @@ func _collect_pickable(var _pickable):
 
 
 		
-func _get_damage(var the_tiger):
-	if is_chased && is_tiger_touching:
-		if is_warchief:
-			if(energy_points>0):
-				if(!is_dressed):
-					energy_points-=10
+func _get_damage(var the_beast):
+	if "Tiger" in the_beast.name:
+		if is_chased && is_tiger_touching:
+			if is_warchief:
+				if(energy_points>0):
+					if(!is_dressed):
+						energy_points-=10
+					else:
+						energy_points-=5
+					bar._set_energy_points(energy_points)
+					bar._update_energy()
 				else:
-					energy_points-=5
-				bar._set_energy_points(energy_points)
-				bar._update_energy()
-			else:
-				the_tiger.unit = null
-				the_tiger.is_chasing = false
-				_set_selected(false)			
-				is_deleted=true				
-		else:
-			if(energy_points>0):
-				if(!is_dressed):
-					energy_points-=15
-				else:
-					energy_points-=10
-				bar._set_energy_points(energy_points)
-				bar._update_energy()
-			else:
-				if the_tiger:
-					the_tiger.unit = null
-					the_tiger.is_chasing = false
+					the_beast.unit = null
+					the_beast.is_chasing = false
 					_set_selected(false)			
-					is_deleted=true
-#								
+					is_deleted=true				
+			else:
+				if(energy_points>0):
+					if(!is_dressed):
+						energy_points-=15
+					else:
+						energy_points-=10
+					bar._set_energy_points(energy_points)
+					bar._update_energy()
+				else:
+					if the_beast:
+						the_beast.unit = null
+						the_beast.is_chasing = false
+						_set_selected(false)			
+						is_deleted=true
+	if "Mammoth" in the_beast.name:
+		if energy_points>0:
+			energy_points-=30
+			bar._set_energy_points(energy_points)
+			bar._update_energy()
+		else:
+			_set_selected(false)			
+			is_deleted=true							
 
 
 	
@@ -424,6 +432,10 @@ func _unhandled_input(event):
 						new_stone.rotation = angle		
 						get_parent().add_child(new_stone)
 						can_shoot=false
+				else:
+					get_tree().root.get_child(0)._on_Game3_is_arrow()
+					
+					
 #		if get_tree().root.get_child(0).name == "Game2":
 #			if selected:
 #				has_arrived = false

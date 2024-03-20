@@ -4,8 +4,8 @@
 [ext_resource path="res://Scenes/Tiger/Tiger.gd" type="Script" id=2]
 
 [sub_resource type="CapsuleShape2D" id=2]
-radius = 29.0
-height = 0.0
+radius = 27.0
+height = 2.0
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {

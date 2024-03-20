@@ -10,7 +10,15 @@ func _physics_process(delta):
 	move_projectile()
 
 func move_projectile():
-	move_and_slide(velocity_x+velocity_y)
+	var collision = move_and_slide(velocity_x+velocity_y)
+	
+#	if collision != null:
+#		if "Tiger" in collision.collider.name || "Mammoth" in collision.collider.name:
+#			if "Tiger" in collision.collider.name:
+#				collision.collider.unit.is_tiger_touching=false
+#				collision.collider.unit=null
+#			#collision.collider.queue_free()
+#		queue_free()
 
 func set_velocity(_velocity):
 	velocity_x=_velocity

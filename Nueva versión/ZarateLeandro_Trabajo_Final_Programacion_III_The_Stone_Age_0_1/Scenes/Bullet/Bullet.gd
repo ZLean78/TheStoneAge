@@ -19,15 +19,15 @@ func _process(delta):
 
 func _move_bullets(var _to_delta):
 	#var new_position=position.x+2
-	var collision = move_and_collide(speed*dir*_to_delta)
+	var collision = move_and_slide(speed*dir)
 	
-	if collision != null:
-		if "Tiger" in collision.collider.name || "Mammoth" in collision.collider.name:
-			if "Tiger" in collision.collider.name:
-				collision.collider.unit.is_tiger_touching=false
-				collision.collider.unit=null
-			#collision.collider.queue_free()
-		queue_free()
+#	if collision != null:
+#		if "Tiger" in collision.collider.name || "Mammoth" in collision.collider.name:
+#			if "Tiger" in collision.collider.name:
+#				collision.collider.unit.is_tiger_touching=false
+#				collision.collider.unit=null
+#			#collision.collider.queue_free()
+#		queue_free()
 	
 	if position.distance_to(start_position) > 400:
 		queue_free()
