@@ -614,13 +614,14 @@ func _check_units():
 func _on_MakeWarchief_pressed():
 	if selected_units.size()==1:
 		selected_units[0].is_warchief=true
+		selected_units[0].warchief_mark.visible=true
 		create_warrior.visible=true
 		make_warchief.visible=false
 		prompts_label.text = "¡Ya tienes a tu jefe! Utilízalo para entrenar unidades militares\ncon el botón de crear unidad militar."
 	elif selected_units.size()>1:
 		prompts_label.text = "Debes seleccionar una sola unidad."
 	elif selected_units.size()==0:
-		prompts_label.text = "Selecciona una sola unidad."
+		prompts_label.text = "Selecciona una unidad."
 
 
 func _on_CreateWarriorUnit_pressed():

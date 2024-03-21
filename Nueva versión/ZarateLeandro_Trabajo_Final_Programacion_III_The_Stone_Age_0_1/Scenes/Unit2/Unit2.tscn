@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Scenes/Bar/Bar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Unit2/Unit2.gd" type="Script" id=2]
@@ -7,8 +7,22 @@
 [ext_resource path="res://Scenes/Unit/bag_1.png" type="Texture" id=5]
 [ext_resource path="res://Scenes/Unit/bag_3.png" type="Texture" id=6]
 [ext_resource path="res://Scenes/Unit/bag_2.png" type="Texture" id=7]
+[ext_resource path="res://Scenes/Warrior/WarriorMark.png" type="Texture" id=8]
 
 [sub_resource type="CanvasItemMaterial" id=2]
+
+[sub_resource type="Shader" id=5]
+code = "shader_type canvas_item;
+render_mode blend_mix;
+
+void fragment(){
+	vec4 current_color = texture(TEXTURE,UV);
+	
+	COLOR=vec4(1.0,0.3,0.0,current_color.a);
+}"
+
+[sub_resource type="ShaderMaterial" id=6]
+shader = SubResource( 5 )
 
 [sub_resource type="SpriteFrames" id=3]
 animations = [ {
@@ -51,6 +65,13 @@ material = SubResource( 2 )
 position = Vector2( 0, 11 )
 scale = Vector2( 0.63281, 0.49219 )
 texture = ExtResource( 4 )
+
+[node name="WarchiefMark" type="Sprite" parent="."]
+visible = false
+material = SubResource( 6 )
+position = Vector2( 1, -18 )
+scale = Vector2( 0.63281, 0.49219 )
+texture = ExtResource( 8 )
 
 [node name="Mouse_Control" type="Node" parent="."]
 

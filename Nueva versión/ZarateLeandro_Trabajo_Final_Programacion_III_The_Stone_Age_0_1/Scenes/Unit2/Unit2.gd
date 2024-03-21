@@ -31,6 +31,9 @@ onready var bag_sprite = get_node("scalable/bag_sprite")
 onready var shoot_node = $shootNode
 onready var shoot_point = $shootNode/shootPoint
 
+#Marca de jefe guerrero.
+onready var warchief_mark= $WarchiefMark
+
 
 #Variable que indica si el jugador debe moverse.
 var move_p = false
