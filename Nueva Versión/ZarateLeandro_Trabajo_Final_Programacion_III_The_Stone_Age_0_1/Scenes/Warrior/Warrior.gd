@@ -493,11 +493,11 @@ func _set_erased(var _is_erased):
 func _on_all_timer_timeout():
 	timer_count=0
 	can_shoot=true
-	if tiger!=null && is_instance_valid(tiger):
-		_get_damage(tiger)
+	#if tiger!=null && is_instance_valid(tiger):
+		#_get_damage(tiger)
 	if body_entered!=null && is_instance_valid(body_entered):
-		if "Tiger" in body_entered.name || "Mammoth" in body_entered.name:
-			_get_damage(body_entered)
+		#if "Tiger" in body_entered.name || "Mammoth" in body_entered.name:
+		_get_damage(body_entered)
 	
 	
 	

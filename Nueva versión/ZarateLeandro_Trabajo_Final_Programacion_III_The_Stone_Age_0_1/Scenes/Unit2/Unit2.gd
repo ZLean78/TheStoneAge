@@ -132,6 +132,9 @@ var timer_count=1
 #Para saber si la unidad ha sido eliminada.
 var is_deleted=false
 
+#Para detección de daño. Cuerpo que ingresa al área 2D
+var body_entered
+
 #Para saber si la unidad ha sido convertida en jefe guerrero.
 var is_warchief = false
 
@@ -359,8 +362,8 @@ func _get_damage(var the_beast):
 					bar._set_energy_points(energy_points)
 					bar._update_energy()
 				else:
-					the_beast.unit = null
-					the_beast.is_chasing = false
+					#the_beast.unit = null
+					#the_beast.is_chasing = false
 					_set_selected(false)			
 					is_deleted=true				
 			else:
@@ -833,8 +836,8 @@ func _check_pine_tree_touching():
 func _on_all_timer_timeout():
 	timer_count=0
 	can_shoot=true
-	if tiger!=null:
-		_get_damage(tiger)
+	if body_entered!=null && is_instance_valid(body_entered):
+		_get_damage(body_entered)
 	if pickable!=null:
 		_collect_pickable(pickable)
 	
@@ -850,3 +853,7 @@ func _die():
 
 
 
+
+
+func _on_Area2D_body_entered(body):
+	body_entered=body
