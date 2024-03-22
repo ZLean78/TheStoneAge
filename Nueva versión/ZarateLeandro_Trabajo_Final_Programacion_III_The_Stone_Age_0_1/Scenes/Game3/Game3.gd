@@ -149,8 +149,11 @@ func _ready():
 	all_tigers.append(tree.find_node("Tiger3"))
 	
 	all_tigers[0].position=Vector2(tiger_spawn.position.x,tiger_spawn.position.y-100)
+	all_tigers[0].tiger_number=1
 	all_tigers[1].position=Vector2(tiger_spawn.position.x,tiger_spawn.position.y-200)
+	all_tigers[1].tiger_number=2
 	all_tigers[2].position=Vector2(tiger_spawn.position.x,tiger_spawn.position.y-300)
+	all_tigers[2].tiger_number=3
 
 	all_quarries.append(quarry1)
 	all_quarries.append(quarry2)

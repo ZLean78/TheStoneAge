@@ -9,6 +9,7 @@ var velocity=Vector2()
 var is_dead=false
 var speed=35.0
 var life=100
+var tiger_number=0
 
 export var is_flipped:bool
 onready var warriors=get_tree().get_root().get_child(0).get_node("Warriors")
@@ -29,7 +30,7 @@ func _physics_process(delta):
 	check_state()
 	
 	#Mover y comprobar colisiones.
-	if position.distance_to(target_position)>5:
+	if visible && position.distance_to(target_position)>5:
 		var direction=(target_position-position)
 		velocity=direction.normalized()*speed*delta
 		
@@ -59,14 +60,22 @@ func check_state():
 	
 	match state:
 		0:
-			target_position=position					
+			if visible:
+				if tiger_number==1:
+					target_position=get_tree().root.get_child(0).tiger_target.position
+				if tiger_number==2:
+					target_position=get_tree().root.get_child(0).spawn_position.position
+				if tiger_number==3:
+					target_position=get_tree().root.get_child(0).tiger_spawn.position
+			
 		1: 
 			if visible && body_entered!=null && is_instance_valid(body_entered):
 				target_position=body_entered.position
 		2:
-			target_position=start_position
-			if position.distance_to(target_position)<=5:
-				state=0
+			if visible:
+				target_position=start_position
+				if position.distance_to(target_position)<=5:
+					state=0
 				
 
 

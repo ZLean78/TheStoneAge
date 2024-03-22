@@ -418,9 +418,16 @@ func _on_tiger_timer_timeout():
 	if valid_counter==0:	
 		for tiger_counter in range(0,2):
 			var new_tiger = tiger.instance()
+			if tiger_counter==0:
+				new_tiger.tiger_number=1
+			if tiger_counter==1:
+				new_tiger.tiger_number=2
+			if tiger_counter==2:
+				new_tiger.tiger_number=3
 			new_tiger.position = tiger_spawn.position
 			tigers.add_child(new_tiger)
 			all_tigers.append(new_tiger)
+			
 	else:
 		tiger_timer.start()
 		
