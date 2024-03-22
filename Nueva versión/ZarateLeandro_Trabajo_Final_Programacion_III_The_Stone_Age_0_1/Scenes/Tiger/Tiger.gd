@@ -59,17 +59,9 @@ func check_state():
 	
 	match state:
 		0:
-			var tiger_count=0
-			for tiger in get_parent().get_children():
-				tiger_count+=1
-				if tiger_count==1:
-					tiger.target_position=get_tree().root.get_child(0).tiger_spawn.position
-				if tiger_count==2:
-					tiger.target_position=get_tree().root.get_child(0).tiger_target.position
-				if tiger_count==3:
-					tiger.target_position=get_tree().root.get_child(0).spawn_position.position					
+			target_position=position					
 		1: 
-			if body_entered!=null && is_instance_valid(body_entered):
+			if visible && body_entered!=null && is_instance_valid(body_entered):
 				target_position=body_entered.position
 		2:
 			target_position=start_position
@@ -114,7 +106,7 @@ func _on_DetectionArea_body_entered(body):
 	if "Warrior" in body.name || "Unit2" in body.name:
 		body_entered=body
 		for tiger in get_parent().get_children():
-			if is_instance_valid(tiger):
+			if tiger.visible && is_instance_valid(tiger):
 				tiger.state = 1
 
 

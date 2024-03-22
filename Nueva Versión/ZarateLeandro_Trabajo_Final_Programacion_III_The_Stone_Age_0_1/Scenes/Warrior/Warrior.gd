@@ -94,7 +94,7 @@ var its_raining = false
 var screensize = Vector2(ProjectSettings.get("display/window/size/width"),ProjectSettings.get("display/window/size/height"))
 
 #Indica si la unidad está tocando un tgre
-var is_tiger_touching=false
+var is_enemy_touching=false
 
 #Tigre que la unidad está tocando
 var tiger = null
@@ -234,7 +234,7 @@ func _physics_process(delta):
 
 		
 func _get_damage(var the_beast):
-	if "Tiger" in the_beast.name:
+	if "Tiger" in the_beast.name && the_beast.visible && is_enemy_touching:
 		if(energy_points>0):
 			energy_points-=5
 			bar._set_energy_points(energy_points)
@@ -244,7 +244,7 @@ func _get_damage(var the_beast):
 			#the_beast.is_chasing = false
 			_set_selected(false)			
 			is_deleted=true
-	if "Mammoth" in the_beast.name:
+	if "Mammoth" in the_beast.name && is_enemy_touching:
 		if energy_points>0:
 			energy_points-=30
 			bar._set_energy_points(energy_points)
@@ -266,6 +266,11 @@ func _move_to_target(target):
 	direction = (target-position)*SPEED
 	velocity=(direction*to_delta).normalized()
 	collision = move_and_collide(velocity)
+	
+	if collision != null:
+		if "Tiger" in collision.collider.name || "Mammoth" in collision.collider.name:
+			is_enemy_touching=true
+			
 	
 
 func _unhandled_input(event):
@@ -472,11 +477,11 @@ func _animate():
 
 
 
-func _on_tiger_tiger_entered():
-	is_tiger_touching=true
+#func _on_tiger_tiger_entered():
+#	is_tiger_touching=true
 
-func _on_tiger_tiger_exited():
-	is_tiger_touching=false
+#func _on_tiger_tiger_exited():
+#	is_tiger_touching=false
 
 func _on_player_mouse_entered():
 	selected = true

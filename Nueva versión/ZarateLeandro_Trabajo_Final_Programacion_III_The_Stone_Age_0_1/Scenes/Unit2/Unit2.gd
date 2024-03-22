@@ -97,7 +97,7 @@ var its_raining = false
 var screensize = Vector2(ProjectSettings.get("display/window/size/width"),ProjectSettings.get("display/window/size/height"))
 
 #Indica si la unidad está tocando un tgre
-var is_tiger_touching=false
+var is_enemy_touching=false
 
 #Tigre que la unidad está tocando
 var tiger = null
@@ -354,36 +354,35 @@ func _collect_pickable(var _pickable):
 
 		
 func _get_damage(var the_beast):
-	if "Tiger" in the_beast.name:
-		if is_chased && is_tiger_touching:
-			if is_warchief:
-				if(energy_points>0):
-					if(!is_dressed):
-						energy_points-=10
-					else:
-						energy_points-=5
-					bar._set_energy_points(energy_points)
-					bar._update_energy()
+	if "Tiger" in the_beast.name && the_beast.visible && is_enemy_touching:
+		if is_warchief:
+			if(energy_points>0):
+				if(!is_dressed):
+					energy_points-=10
 				else:
-					#the_beast.unit = null
-					#the_beast.is_chasing = false
-					_set_selected(false)			
-					is_deleted=true				
+					energy_points-=5
+				bar._set_energy_points(energy_points)
+				bar._update_energy()
 			else:
-				if(energy_points>0):
-					if(!is_dressed):
-						energy_points-=15
-					else:
-						energy_points-=10
-					bar._set_energy_points(energy_points)
-					bar._update_energy()
+				#the_beast.unit = null
+				#the_beast.is_chasing = false
+				_set_selected(false)			
+				is_deleted=true				
+		else:
+			if(energy_points>0):
+				if(!is_dressed):
+					energy_points-=15
 				else:
-					if the_beast:
-						the_beast.unit = null
-						the_beast.is_chasing = false
-						_set_selected(false)			
-						is_deleted=true
-	if "Mammoth" in the_beast.name:
+					energy_points-=10
+				bar._set_energy_points(energy_points)
+				bar._update_energy()
+			else:
+				if the_beast:
+					the_beast.unit = null
+					the_beast.is_chasing = false
+					_set_selected(false)			
+					is_deleted=true
+	if "Mammoth" in the_beast.name && is_enemy_touching:
 		if energy_points>0:
 			energy_points-=30
 			bar._set_energy_points(energy_points)
@@ -407,7 +406,11 @@ func move_towards(pos,point,delta):
 func _move_to_target(target):
 	direction = (target-position)
 	velocity=(direction).normalized()
-	move_and_collide(velocity*to_delta*SPEED)
+	var collision = move_and_collide(velocity*to_delta*SPEED)
+	
+	if collision != null:
+		if "Tiger" in collision.collider.name || "Mammoth" in collision.collider.name:
+			is_enemy_touching=true
 	
 		
 func move_unit(point):
@@ -784,11 +787,11 @@ func _on_plant_plant_entered():
 func _on_plant_plant_exited():
 	can_add_leaves = false;
 
-func _on_tiger_tiger_entered():
-	is_tiger_touching=true
+#func _on_tiger_tiger_entered():
+#	is_tiger_touching=true
 
-func _on_tiger_tiger_exited():
-	is_tiger_touching=false
+#func _on_tiger_tiger_exited():
+#	is_tiger_touching=false
 
 func _on_player_mouse_entered():
 	selected = true

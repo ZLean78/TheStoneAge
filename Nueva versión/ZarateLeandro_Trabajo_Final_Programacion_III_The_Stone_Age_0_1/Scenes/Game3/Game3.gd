@@ -439,7 +439,7 @@ func _on_tiger_timer_timeout():
 	for a_tiger in all_tigers:
 		if is_instance_valid(a_tiger):
 			a_tiger.visible=true
-			is_tiger=true
+			a_tiger.state=1
 
 		
 func deselect_all():
