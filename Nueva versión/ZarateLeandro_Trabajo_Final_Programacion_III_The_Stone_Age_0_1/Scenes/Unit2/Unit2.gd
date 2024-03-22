@@ -439,7 +439,10 @@ func _unhandled_input(event):
 						get_parent().add_child(new_stone)
 						can_shoot=false
 				else:
-					get_tree().root.get_child(0)._on_Game3_is_arrow()
+					if get_tree().get_root().get_child(0).name == "Game3":
+						get_tree().get_root().get_child(0)._on_Game3_is_arrow()
+					if get_tree().get_root().get_child(0).name == "Game2":
+						get_tree().get_root().get_child(0)._on_Game2_is_arrow()
 					
 					
 #		if get_tree().root.get_child(0).name == "Game2":

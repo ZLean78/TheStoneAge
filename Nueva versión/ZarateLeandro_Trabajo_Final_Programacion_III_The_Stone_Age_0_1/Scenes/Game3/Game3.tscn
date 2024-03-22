@@ -100,38 +100,37 @@ script = ExtResource( 11 )
 [node name="Unit2" parent="Units" groups=["units"] instance=ExtResource( 2 )]
 position = Vector2( 669, 347 )
 
-[node name="Position2D" type="Position2D" parent="."]
-position = Vector2( 0, 600 )
+[node name="nav2" type="Navigation2D" parent="."]
+position = Vector2( 3, -2 )
 
-[node name="Tigers" type="Node2D" parent="."]
-
-[node name="nav" type="Navigation2D" parent="Tigers"]
-
-[node name="polygon" type="NavigationPolygonInstance" parent="Tigers/nav"]
-position = Vector2( 4, 2 )
+[node name="polygon" type="NavigationPolygonInstance" parent="nav2"]
+position = Vector2( -5, 0 )
 navpoly = SubResource( 4 )
 
-[node name="Tiger1" parent="Tigers/nav" instance=ExtResource( 4 )]
-visible = false
-position = Vector2( -261, -181 )
+[node name="Tigers" type="Node2D" parent="."]
+position = Vector2( 3, -2 )
 
-[node name="tiger_agent" type="NavigationAgent2D" parent="Tigers/nav/Tiger1"]
+[node name="Tiger1" parent="Tigers" instance=ExtResource( 4 )]
+visible = false
+position = Vector2( -802, 131 )
+
+[node name="tiger_agent" type="NavigationAgent2D" parent="Tigers/Tiger1"]
 target_desired_distance = 5.0
 path_max_distance = 20.0
 
-[node name="Tiger2" parent="Tigers/nav" instance=ExtResource( 4 )]
+[node name="Tiger2" parent="Tigers" instance=ExtResource( 4 )]
 visible = false
-position = Vector2( -357, -83 )
+position = Vector2( -898, 229 )
 
-[node name="tiger_agent" type="NavigationAgent2D" parent="Tigers/nav/Tiger2"]
+[node name="tiger_agent" type="NavigationAgent2D" parent="Tigers/Tiger2"]
 target_desired_distance = 5.0
 path_max_distance = 20.0
 
-[node name="Tiger3" parent="Tigers/nav" instance=ExtResource( 4 )]
+[node name="Tiger3" parent="Tigers" instance=ExtResource( 4 )]
 visible = false
-position = Vector2( -357, 59 )
+position = Vector2( -898, 371 )
 
-[node name="tiger_agent" type="NavigationAgent2D" parent="Tigers/nav/Tiger3"]
+[node name="tiger_agent" type="NavigationAgent2D" parent="Tigers/Tiger3"]
 target_desired_distance = 5.0
 path_max_distance = 20.0
 
@@ -222,7 +221,10 @@ script = ExtResource( 12 )
 position = Vector2( 713, 404 )
 
 [node name="TigerSpawn" type="Position2D" parent="."]
-position = Vector2( -945, 521 )
+position = Vector2( -963, 343 )
+
+[node name="TigerTarget" type="Position2D" parent="."]
+position = Vector2( 7, 57 )
 
 [node name="UI" type="CanvasLayer" parent="."]
 

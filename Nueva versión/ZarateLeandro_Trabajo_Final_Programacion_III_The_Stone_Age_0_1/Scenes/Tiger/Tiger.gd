@@ -1,105 +1,121 @@
 extends KinematicBody2D
 
-var velocity = Vector2.ZERO
 
-export var life=100
+var start_position
+var state=0
+var target_position=Vector2()
+var body_entered
+var velocity=Vector2()
+var is_dead=false
+var speed=35.0
+var life=100
 
-onready var agent: NavigationAgent2D = $tiger_agent
-var unit
-var units = []
-
-onready var move_timer = $move_timer
-
-var is_flipped = false
-var is_chasing = false
-var is_dead = false
-
-signal tiger_entered
-signal tiger_exited
-
-
-
+export var is_flipped:bool
+onready var warriors=get_tree().get_root().get_child(0).get_node("Warriors")
+onready var citizens=get_tree().get_root().get_child(0).get_node("Units")
 
 func _ready():
-	move_timer.connect("timeout",self,"update_pathfinding")
 	
-#	
-func _physics_process(delta):
-	if agent.is_navigation_finished():
-		return
-		
-	var direction = global_position.direction_to(agent.get_next_location())
+	start_position=position
 	
-	var desired_velocity = direction * 50.0
-	var steering = (desired_velocity - velocity) * delta * 4.0
-	velocity += steering
-	
-	velocity = move_and_slide(velocity)
-	
-	# Orientar al tigre.
-	if velocity.x<0:
-		$AnimatedSprite.flip_h=true
+	if is_flipped==false:
+		$Scalable.scale.x=1
 	else:
-		$AnimatedSprite.flip_h=false
-			
+		$Scalable.scale.x=-1
+
+func _physics_process(delta):
 	
-	if is_dead==true:
-		visible=false	
-		
+	#Comprobar máquina de estados.
+	check_state()
 	
-func update_pathfinding():
-	if !is_dead:
-		if unit!=null:
-			if abs(position.distance_to(unit.global_position))<400:		
-				agent.set_target_location(unit.global_position)
-			elif abs(position.distance_to(unit.global_position))>400:
-				unit.is_chased=false
-				unit=null
-				is_chasing=false
-				var random_num=randi()
-				if random_num%2==0:
-					agent.set_target_location(get_tree().root.get_child(0).spawn_position.position)
-				else:
-					agent.set_target_location(get_tree().root.get_child(0).tiger_spawn.position)
+	#Mover y comprobar colisiones.
+	if position.distance_to(target_position)>5:
+		var direction=(target_position-position)
+		velocity=direction.normalized()*speed*delta
 		
+		var collision = move_and_collide(velocity)
 
-
-
-func _on_Area2D_body_entered(body):
-	if is_chasing:
-		if "Unit" in body.name:
-			body.is_tiger_touching=true 
-			body.tiger=self
-			emit_signal("tiger_entered")
-		elif "Bullet" in body.name || "Stone" in body.name:
-			#body.visible=false
-			body.queue_free()
-			life-=20
-			if life <=0:
-				is_dead=true
-				is_chasing=false
-				if unit:
-					unit.is_chased=false
-					unit.is_tiger_touching=false
-					unit = null
-				queue_free()
+		if collision!=null && is_instance_valid(collision.collider):
+			if "Bullet" in collision.collider.name || "Stone" in collision.collider.name:
+				life-=20
+				if life <=0:
+					is_dead=true
+					queue_free()
+	
+	#Actualizar barra de vida.
+	
+		
+	# Orientar al mamut.
+	if velocity.x<0:
+		if(is_flipped==false):			
+			$Scalable.scale.x = -1
+			is_flipped = true
+	if velocity.x>0:
+		if(is_flipped==true):			
+			$Scalable.scale.x = 1
+			is_flipped = false
+	
+func check_state():
+	
+	match state:
+		0:
+			var tiger_count=0
+			for tiger in get_parent().get_children():
+				tiger_count+=1
+				if tiger_count==1:
+					tiger.target_position=get_tree().root.get_child(0).tiger_spawn.position
+				if tiger_count==2:
+					tiger.target_position=get_tree().root.get_child(0).tiger_target.position
+				if tiger_count==3:
+					tiger.target_position=get_tree().root.get_child(0).spawn_position.position					
+		1: 
+			if body_entered!=null && is_instance_valid(body_entered):
+				target_position=body_entered.position
+		2:
+			target_position=start_position
+			if position.distance_to(target_position)<=5:
+				state=0
 				
 
 
-func _on_Area2D_body_exited(body):
-	if is_chasing:
-		if body==unit:
-			body.is_tiger_touching=false
-			emit_signal("tiger_exited")
+func _on_Area2D_body_entered(body):
+	if "Bullet" in body.name || "Stone" in body.name:
+		life-=10
+		body.queue_free()
+		if life <=0:
+			is_dead=true
+			queue_free()
+	
+				
 
 
-func _on_Area2D_mouse_entered():
+func _on_Tiger_mouse_entered():
+	if get_tree().get_root().get_child(0).name == "Game3":
+		get_tree().get_root().get_child(0)._on_Game3_is_sword()
+	if get_tree().get_root().get_child(0).name == "Game2":
+		get_tree().get_root().get_child(0)._on_Game2_is_sword()
 	get_tree().root.get_child(0).emit_signal("is_sword")
 	get_tree().root.get_child(0).touching_enemy=self
 
 
-func _on_Area2D_mouse_exited():
-	get_tree().root.get_child(0).emit_signal("is_arrow")
+
+func _on_Tiger_mouse_exited():
+	if get_tree().get_root().get_child(0).name == "Game3":
+		get_tree().get_root().get_child(0)._on_Game3_is_arrow()
+	if get_tree().get_root().get_child(0).name == "Game2":
+		get_tree().get_root().get_child(0)._on_Game2_is_arrow()
+
+
+
+	
+
+
+func _on_DetectionArea_body_entered(body):
+	if "Warrior" in body.name || "Unit2" in body.name:
+		body_entered=body
+		for tiger in get_parent().get_children():
+			if is_instance_valid(tiger):
+				tiger.state = 1
 
 
 

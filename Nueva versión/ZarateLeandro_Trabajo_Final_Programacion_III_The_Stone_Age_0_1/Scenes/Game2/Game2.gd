@@ -53,13 +53,14 @@ onready var puddle = tree.get_node("Puddle")
 onready var quarries = $Quarries
 onready var units=$Units
 onready var spawn_position=tree.get_node("SpawnPosition")
-onready var tigers=$Tigers
 onready var tiger_spawn=tree.get_node("TigerSpawn")
+onready var tiger_target=tree.get_node("TigerTarget")
+onready var tigers=$Tigers
 onready var tiger = preload("res://Scenes/Tiger/Tiger.tscn")
 onready var fruit_trees=$FruitTrees
 onready var pine_trees=$PineTrees
 onready var plants=$Plants
-onready var navigator = $Tigers/nav
+#onready var navigator = $Tigers/nav
 
 var cave
 
@@ -209,14 +210,7 @@ func _process(_delta):
 			tiger_timer.start()
 			is_tiger_coundown=true	
 	
-	for i in range(0,all_tigers.size()-1):
-		if is_instance_valid(all_tigers[i]):
-			if !all_tigers[i].is_dead:
-				_tiger_attack()
-			else:			
-				touching_enemy=null
-				all_tigers.erase(all_tigers[i])
-				all_tigers.remove(i)
+	
 			
 			
 
@@ -410,17 +404,7 @@ func _on_CreateCitizen_pressed():
 #				all_tigers.remove(the_tiger)
 #				the_tiger.queue_free()
 
-func _tiger_attack():
-	for i in range(all_tigers.size()):
-		for j in range(all_units.size()):
-			if is_instance_valid(all_tigers[i]):
-				if !all_tigers[i].is_chasing && !all_tigers[i].is_dead:
-					var the_unit=all_units[j]
-					var the_tiger=all_tigers[i]
-					if the_unit!=null && !the_unit.is_chased && abs(the_unit.position.distance_to(the_tiger.position))<400:
-						the_tiger.unit=the_unit
-						the_unit.is_chased=true
-						the_tiger.is_chasing=true
+
 
 				
 
@@ -435,7 +419,7 @@ func _on_tiger_timer_timeout():
 		for tiger_counter in range(0,2):
 			var new_tiger = tiger.instance()
 			new_tiger.position = tiger_spawn.position
-			navigator.add_child(new_tiger)
+			tigers.add_child(new_tiger)
 			all_tigers.append(new_tiger)
 	else:
 		tiger_timer.start()
@@ -446,12 +430,11 @@ func _on_tiger_timer_timeout():
 		if is_instance_valid(a_tiger):
 			a_tiger.visible=true
 			is_tiger=true
-			if !a_tiger.is_chasing:		
-				var random_num=randi()
-				if random_num%2==0:
-					a_tiger.agent.set_target_location(spawn_position.position)
-				else:
-					a_tiger.agent.set_target_location(tiger_spawn.position)
+			var random_num=randi()
+			if random_num%2==0:
+				a_tiger.target_position=spawn_position.position
+			else:
+				a_tiger.target_position=tiger_spawn.position
 
 		
 func deselect_all():

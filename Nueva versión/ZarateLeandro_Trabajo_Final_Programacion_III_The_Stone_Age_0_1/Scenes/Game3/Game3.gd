@@ -26,7 +26,7 @@ var is_claypot_made = true
 var is_agriculture_developed = true
 
 #Variables de hitos
-var mammoths_dead = false
+onready var mammoths=$Mammoths
 var is_townhall_created = false
 
 
@@ -56,6 +56,7 @@ onready var quarry2 = tree.get_node("TileMap/Quarry2")
 onready var lake = tree.get_node("TileMap/Lake")
 onready var spawn_position = $SpawnPosition
 onready var tiger_spawn = $TigerSpawn
+onready var tiger_target = $TigerTarget
 onready var units = $Units
 onready var warriors = $Warriors
 
@@ -146,6 +147,10 @@ func _ready():
 	all_tigers.append(tree.find_node("Tiger1"))
 	all_tigers.append(tree.find_node("Tiger2"))
 	all_tigers.append(tree.find_node("Tiger3"))
+	
+	all_tigers[0].position=Vector2(tiger_spawn.position.x,tiger_spawn.position.y-100)
+	all_tigers[1].position=Vector2(tiger_spawn.position.x,tiger_spawn.position.y-200)
+	all_tigers[2].position=Vector2(tiger_spawn.position.x,tiger_spawn.position.y-300)
 
 	all_quarries.append(quarry1)
 	all_quarries.append(quarry2)
@@ -203,6 +208,7 @@ func _process(_delta):
 	water_label.text = str(int(water_points))
 	
 	_check_units()
+	_check_mammoths()
 	_check_victory()
 	
 
@@ -213,10 +219,7 @@ func _process(_delta):
 			tiger_timer.start()
 			is_tiger_coundown=true	
 	
-	for a_tiger in all_tigers:
-		if is_instance_valid(a_tiger):
-			if a_tiger.visible:
-				_tiger_attack()
+	
 
 		
 func select_unit(unit):
@@ -427,18 +430,9 @@ func _on_CreateCitizen_pressed():
 #				all_tigers.remove(the_tiger)
 #				the_tiger.queue_free()
 
-func _tiger_attack():
-	for i in range(all_tigers.size()):
-		for j in range(all_units.size()):
-			if is_instance_valid(all_tigers[i]):
-				if !all_tigers[i].is_chasing && all_tigers[i].visible && !all_tigers[i].is_dead:
-					var the_unit=all_units[j]
-					var the_tiger=all_tigers[i]
-					if the_unit!=null && !the_unit.is_chased && abs(the_unit.position.distance_to(the_tiger.position))<400:
-						the_tiger.unit=the_unit
-						the_unit.is_chased=true
-						the_tiger.is_chasing=true
 
+					
+					
 				
 
 func _on_tiger_timer_timeout():
@@ -625,10 +619,11 @@ func _on_MakeWarchief_pressed():
 
 
 func _on_CreateWarriorUnit_pressed():
-	
+	var warriors_count=0
 	var new_warrior = Warrior.instance()
 	new_warrior.position = spawn_position.position
-	for warrior in warriors.get_children():			
+	for warrior in warriors.get_children():
+		warriors_count+=1				
 		if new_warrior.position == warrior.position:
 			column+=1
 		#if new_warrior.position.x>cave.position.x:
@@ -640,7 +635,19 @@ func _on_CreateWarriorUnit_pressed():
 	warriors.add_child(new_warrior)
 	all_units.append(new_warrior)
 	
+	if warriors_count>=3:
+		prompts_label.text="Cuando consideres que tienes suficientes guerreros,\nenvíalos a pelear contra los mamuts,\nal noroeste del lago."
+
+func _check_mammoths():
+	var mammoths_count=0
 	
+	for mammoth in mammoths.get_children():
+		mammoths_count+=1
+	
+	if mammoths_count==0:
+		prompts_label.text="""Regresa cerca de la cueva y haz que tus ciudadanos
+		construyan cuatro casas en la zona. Haz clic en uno
+		o varios ciudadanos para llevar a cabo la tarea."""	
 
 func _on_CreateShack_pressed():
 	pass # Replace with function body.
