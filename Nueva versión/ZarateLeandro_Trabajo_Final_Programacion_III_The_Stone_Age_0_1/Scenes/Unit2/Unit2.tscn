@@ -99,6 +99,8 @@ animation = "bag_1"
 position = Vector2( 0, 9 )
 shape = SubResource( 1 )
 
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]

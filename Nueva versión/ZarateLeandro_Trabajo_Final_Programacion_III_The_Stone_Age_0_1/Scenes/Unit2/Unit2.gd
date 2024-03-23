@@ -34,6 +34,8 @@ onready var shoot_point = $shootNode/shootPoint
 #Marca de jefe guerrero.
 onready var warchief_mark= $WarchiefMark
 
+onready var agent=$NavigationAgent2D
+
 
 #Variable que indica si el jugador debe moverse.
 var move_p = false
@@ -154,6 +156,8 @@ var colliding_body: KinematicBody2D
 
 
 var body_velocity = Vector2.ZERO
+
+var house_entered=false
 
 #Señal de cambio de salud (incremento o decremento).
 signal health_change

@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://Scenes/Cave/Cave.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Unit2/Unit2.tscn" type="PackedScene" id=2]
@@ -18,7 +18,7 @@
 [ext_resource path="res://Scenes/Warrior/Warrior.tscn" type="PackedScene" id=16]
 [ext_resource path="res://Scenes/Game2/watericon.png" type="Texture" id=17]
 [ext_resource path="res://Scenes/Game2/puddle.png" type="Texture" id=18]
-[ext_resource path="res://Scenes/Game2/fire.png" type="Texture" id=19]
+[ext_resource path="res://Scenes/MouseIcons/house_small.png" type="Texture" id=19]
 [ext_resource path="res://Scenes/Game2/claypot.png" type="Texture" id=20]
 [ext_resource path="res://Scenes/Game2/woodicon.png" type="Texture" id=21]
 [ext_resource path="res://Scenes/Game2/agro.png" type="Texture" id=22]
@@ -26,6 +26,7 @@
 [ext_resource path="res://Scenes/Game2/quarry.png" type="Texture" id=24]
 [ext_resource path="res://Scenes/Game2/food.png" type="Texture" id=25]
 [ext_resource path="res://Scenes/Mammoth/mammoth.tscn" type="PackedScene" id=26]
+[ext_resource path="res://Scenes/House/house.tscn" type="PackedScene" id=27]
 
 [sub_resource type="TileSet" id=1]
 0/name = "grass.png 0"
@@ -58,6 +59,7 @@ position = Vector2( -4, -11 )
 script = ExtResource( 10 )
 Unit2 = ExtResource( 2 )
 Warrior = ExtResource( 16 )
+House = ExtResource( 27 )
 
 [node name="TileMap" type="TileMap" parent="."]
 position = Vector2( 0, 1 )
@@ -213,6 +215,8 @@ position = Vector2( 592, 53 )
 
 [node name="Plant2" parent="Plants" instance=ExtResource( 7 )]
 position = Vector2( 181, 469 )
+
+[node name="Houses" type="Node2D" parent="."]
 
 [node name="SelectDraw" type="Node2D" parent="."]
 script = ExtResource( 12 )
@@ -370,12 +374,14 @@ Costo: 20 ptos. alimento,
 10 ptos. piedra."
 texture_normal = ExtResource( 13 )
 
-[node name="CreateShack" type="TextureButton" parent="UI/Base/Rectangle"]
+[node name="CreateHouse" type="TextureButton" parent="UI/Base/Rectangle"]
+visible = false
 margin_left = 858.0
-margin_top = 23.0001
-margin_right = 871.0
-margin_bottom = 47.0001
-hint_tooltip = "Descubrir el fuego: Avance tecnológico crucial para calefacción, cocina y en ocasiones uso armamentístico. Costo: 60 ptos. madera, 40 ptos. piedra."
+margin_top = 23.0
+margin_right = 881.0
+margin_bottom = 46.0
+hint_tooltip = "Crear casa: construir una vivienda.
+Costo: arcilla, 40 ptos, madera, 20 ptos."
 texture_normal = ExtResource( 19 )
 
 [node name="GiveAttackOrder" type="TextureButton" parent="UI/Base/Rectangle"]
@@ -434,7 +440,6 @@ autostart = true
 [connection signal="timeout" from="tiger_timer" to="." method="_on_tiger_timer_timeout"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateWarriorUnit" to="." method="_on_CreateWarriorUnit_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/CreateShack" to="." method="_on_CreateShack_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/CreateHouse" to="." method="_on_CreateHouse_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/GiveAttackOrder" to="." method="_on_GiveAttackOrder_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/DevelopAgriculture" to="." method="_on_DevelopAgriculture_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/MakeWarchief" to="." method="_on_MakeWarchief_pressed"]
