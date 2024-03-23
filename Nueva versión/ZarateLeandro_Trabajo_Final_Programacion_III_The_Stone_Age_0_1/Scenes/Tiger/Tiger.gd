@@ -71,6 +71,8 @@ func check_state():
 		1: 
 			if visible && body_entered!=null && is_instance_valid(body_entered):
 				target_position=body_entered.position
+			if body_entered!=null && position.distance_to(body_entered.position)>400:
+				state=2
 		2:
 			if visible:
 				target_position=start_position
