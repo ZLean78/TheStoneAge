@@ -16,11 +16,12 @@ func _process(delta):
 
 func _house_build():
 	if condition<20:
-		condition+=1
-		if root.wood_points>0:
-			root.wood_points-=1
-		if root.clay_points>0:
-			root.clay_points-=1
+		condition+=1	
+		if condition==20:
+			if root.wood_points>0:
+				root.wood_points-=20
+			if root.clay_points>0:
+				root.clay_points-=40
 			
 
 

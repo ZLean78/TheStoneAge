@@ -258,19 +258,9 @@ func _unhandled_input(event):
 func _create_house():
 	var citizens=units.get_children()
 	var dwells=houses.get_children()
-	var citizen_count=0
-	var dwells_count=0
-	
-	for citizen in citizens:
-		citizen_count+=1
 		
-	for dwell in dwells:
-		dwells_count+=1
-	
-	print("citizens count/4= " + str(int(citizen_count/4)))
-	print("dwells count= " + str(int(dwells_count)))
 	for citizen in citizens:
-		if (citizen_count/4)>dwells_count:			
+		if (citizens.size()/4)>dwells.size():			
 			if citizen.selected:
 				if wood_points>=20 && clay_points>=40:					
 					var new_house=House.instance()
