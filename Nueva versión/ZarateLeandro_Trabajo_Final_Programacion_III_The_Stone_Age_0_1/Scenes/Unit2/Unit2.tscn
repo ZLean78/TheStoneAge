@@ -54,6 +54,7 @@ extents = Vector2( 4, 3 )
 radius = 19.5064
 
 [node name="Unit2" type="KinematicBody2D"]
+input_pickable = true
 script = ExtResource( 2 )
 
 [node name="Selected" type="Sprite" parent="."]
@@ -99,13 +100,14 @@ animation = "bag_1"
 position = Vector2( 0, 9 )
 shape = SubResource( 1 )
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
-
 [node name="Area2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2( 0.5, -1.5 )
 shape = SubResource( 4 )
 
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+
+[connection signal="input_event" from="." to="." method="_on_Unit_input_event"]
 [connection signal="timeout" from="all_timer" to="." method="_on_all_timer_timeout"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]

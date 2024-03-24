@@ -95,6 +95,8 @@ editor_draw_limits = true
 editor_draw_drag_margin = true
 script = ExtResource( 11 )
 
+[node name="Houses" type="Node2D" parent="."]
+
 [node name="Warriors" type="Node2D" parent="."]
 
 [node name="Units" type="Node2D" parent="."]
@@ -215,8 +217,6 @@ position = Vector2( 592, 53 )
 
 [node name="Plant2" parent="Plants" instance=ExtResource( 7 )]
 position = Vector2( 181, 469 )
-
-[node name="Houses" type="Node2D" parent="."]
 
 [node name="SelectDraw" type="Node2D" parent="."]
 script = ExtResource( 12 )

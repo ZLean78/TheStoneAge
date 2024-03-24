@@ -92,7 +92,7 @@ var is_flipped = false
 var screensize = Vector2(ProjectSettings.get("display/window/size/width"),ProjectSettings.get("display/window/size/height"))
 
 var is_tiger=false
-var is_tiger_coundown=false
+var is_tiger_countdown=false
 
 
 signal is_arrow
@@ -223,9 +223,9 @@ func _process(_delta):
 		
 		
 	if !is_tiger:
-		if !is_tiger_coundown:
+		if !is_tiger_countdown:
 			tiger_timer.start()
-			is_tiger_coundown=true	
+			is_tiger_countdown=true	
 	
 	
 
@@ -252,26 +252,20 @@ func _unhandled_input(event):
 					else:
 						selected_units[i].target_position=Vector2(selected_units[i-1].target_position.x+20,selected_units[i-1].target_position.y)
 		if house_mode:
-			var the_citizen
-			for citizen in units.get_children():
-				if citizen.selected:
-					the_citizen=citizen
-					break
-			
-			if the_citizen!=null:
-				print("El ciudadano no es null.")
-				print("wood points" + str(int(wood_points)))
-				print("clay_points" + str(int(clay_points)))
-				if wood_points>=20 && clay_points>=40:
-					print("Se cumplen los requisitos")
-					var new_house=House.instance()
-					#the_citizen.agent.set_target_location(get_global_mouse_position())
-					new_house.position = get_global_mouse_position()
-					houses.add_child(new_house)
-					the_citizen.target_position=new_house.position
-					print("se construyó la casa")
+			_create_house()
+					
 				
-
+func _create_house():
+	var citizens=units.get_children()
+	for citizen in citizens:
+		if citizen.selected:
+			if wood_points>=20 && clay_points>=40:					
+				var new_house=House.instance()
+				#the_citizen.agent.set_target_location(get_global_mouse_position())
+				new_house.position = get_global_mouse_position()
+				houses.add_child(new_house)
+				citizen.target_position=new_house.position
+	
 func _create_unit(cost = 0):
 	var new_Unit = Unit2.instance()
 	unit_count+=1
@@ -289,7 +283,7 @@ func _create_unit(cost = 0):
 	for unit in units.get_children():
 		if new_Unit.position==unit.position:
 			new_Unit.position+=Vector2(20,20)		
-	tile_map.add_child(new_Unit)
+	units.add_child(new_Unit)
 	all_units.append(new_Unit)
 		
 func _create_warrior_unit(cost = 0):
