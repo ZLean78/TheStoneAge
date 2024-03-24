@@ -60,6 +60,7 @@ onready var tiger = preload("res://Scenes/Tiger/Tiger.tscn")
 onready var fruit_trees=$FruitTrees
 onready var pine_trees=$PineTrees
 onready var plants=$Plants
+onready var next_scene_button=tree.get_node("UI/Base/NextSceneButton")
 #onready var navigator = $Tigers/nav
 
 var cave
@@ -260,7 +261,8 @@ func _create_unit(cost = 0):
 			
 func _check_victory():
 	if is_fire_discovered && is_wheel_invented && is_stone_weapons_developed && is_claypot_made && is_agriculture_developed:
-		prompts_label.text = "¡Has ganado!"	
+		prompts_label.text = "¡Has ganado!"
+		next_scene_button.visible=true	
 		
 	elif(all_units.size()==0 && food_points<15):
 		prompts_label.text = "Has sido derrotado."	
@@ -638,3 +640,7 @@ func _check_units():
 
 
 
+
+
+func _on_NextSceneButton_pressed():
+	get_tree().change_scene("res://Scenes/Game3/Game3.tscn")

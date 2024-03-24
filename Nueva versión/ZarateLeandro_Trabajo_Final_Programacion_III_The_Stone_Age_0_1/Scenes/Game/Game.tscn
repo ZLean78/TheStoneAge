@@ -232,7 +232,6 @@ align = 2
 color = Color( 0.0666667, 0.286275, 0.701961, 0.831373 )
 
 [node name="NextSceneButton" type="TextureButton" parent="UI/Base"]
-visible = false
 margin_left = 490.0
 margin_top = -269.0
 margin_right = 732.0

@@ -241,7 +241,7 @@ func deselect_unit(unit):
 		selected_units.erase(unit)
 	
 func _unhandled_input(event):
-	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
+	if event is InputEventMouseButton && event.is_action_pressed("ui_right_mouse_button"):
 		if !house_mode:
 			for i in range(0,selected_units.size()):
 				if i==0:
@@ -257,14 +257,29 @@ func _unhandled_input(event):
 				
 func _create_house():
 	var citizens=units.get_children()
+	var dwells=houses.get_children()
+	var citizen_count=0
+	var dwells_count=0
+	
 	for citizen in citizens:
-		if citizen.selected:
-			if wood_points>=20 && clay_points>=40:					
-				var new_house=House.instance()
-				#the_citizen.agent.set_target_location(get_global_mouse_position())
-				new_house.position = get_global_mouse_position()
-				houses.add_child(new_house)
-				citizen.target_position=new_house.position
+		citizen_count+=1
+		
+	for dwell in dwells:
+		dwells_count+=1
+	
+	print("citizens count/4= " + str(int(citizen_count/4)))
+	print("dwells count= " + str(int(dwells_count)))
+	for citizen in citizens:
+		if (citizen_count/4)>dwells_count:			
+			if citizen.selected:
+				if wood_points>=20 && clay_points>=40:					
+					var new_house=House.instance()
+					#the_citizen.agent.set_target_location(get_global_mouse_position())
+					new_house.position = get_global_mouse_position()
+					houses.add_child(new_house)
+					citizen.target_position=new_house.position
+		else:
+			prompts_label.text="Necesitas más población civil para crear una vivienda."
 	
 func _create_unit(cost = 0):
 	var new_Unit = Unit2.instance()
