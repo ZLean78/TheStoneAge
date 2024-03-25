@@ -36,6 +36,6 @@ func _on_Area2D_body_exited(body):
 
 func _on_Timer_timeout():
 	for citizen in units.get_children():
-		if citizen.house_entered:
+		if citizen.house_entered && citizen.position.distance_to(self.position)<20:
 			_house_build()
 	timer.start()

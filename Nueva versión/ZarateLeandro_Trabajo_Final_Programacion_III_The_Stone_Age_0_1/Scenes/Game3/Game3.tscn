@@ -373,8 +373,8 @@ margin_right = 948.0
 margin_bottom = 46.0
 hint_tooltip = "Crear unidad militar
 guerrero y cazador.
-Costo: 20 ptos. alimento,
-10 ptos. madera,
+Costo: 30 ptos. alimento,
+20 ptos. madera,
 10 ptos. piedra."
 texture_normal = ExtResource( 13 )
 
@@ -394,7 +394,7 @@ margin_left = 880.0
 margin_top = 23.0
 margin_right = 903.0
 margin_bottom = 46.0
-hint_tooltip = "Crear casa: construir una vivienda.
+hint_tooltip = "Crear centro cívico: construir una edificio de gobierno.
 Costo: arcilla, 40 ptos, madera, 20 ptos."
 texture_normal = ExtResource( 30 )
 
@@ -467,3 +467,4 @@ autostart = true
 [connection signal="pressed" from="UI/Base/Rectangle/CreateTownHall" to="." method="_on_CreateTownHall_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/GiveAttackOrder" to="." method="_on_GiveAttackOrder_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/MakeWarchief" to="." method="_on_MakeWarchief_pressed"]
+[connection signal="pressed" from="UI/Base/NextSceneButton" to="." method="_on_NextSceneButton_pressed"]

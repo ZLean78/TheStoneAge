@@ -43,6 +43,9 @@ func _physics_process(delta):
 			if "Bullet" in collision.collider.name || "Stone" in collision.collider.name:
 				life-=20
 				if life <=0:
+					get_tree().root.get_child(0).food_points+=90
+					get_tree().root.get_child(0).wood_points+=60
+					get_tree().root.get_child(0).stone_points+=40
 					is_dead=true
 					queue_free()
 	

@@ -688,11 +688,11 @@ func _check_units():
 				if !a_unit.is_warchief:
 					var the_unit=all_units[all_units.find(a_unit,0)]
 					all_units.remove(all_units.find(a_unit,0))
-					for a_tiger in all_tigers:
-						if is_instance_valid(a_tiger):
-							if a_tiger.unit == the_unit:
-								a_tiger.unit = null
-					the_unit._die()
+#					for a_tiger in all_tigers:
+#						if is_instance_valid(a_tiger):
+#							if a_tiger.unit == the_unit:
+#								a_tiger.unit = null
+#					the_unit._die()
 			if "Warrior" in a_unit.name:
 				var the_unit=all_units[all_units.find(a_unit,0)]
 				all_units.remove(all_units.find(a_unit,0))
@@ -718,20 +718,24 @@ func _on_MakeWarchief_pressed():
 
 func _on_CreateWarriorUnit_pressed():
 	var warriors_count=0
-	var new_warrior = Warrior.instance()
-	new_warrior.position = spawn_position.position
-	for warrior in warriors.get_children():
-		warriors_count+=1				
-		if new_warrior.position == warrior.position:
-			column+=1
-		#if new_warrior.position.x>cave.position.x:
-		if column==10:
-			column=0
-			row+=1
-		new_warrior.position=spawn_position.position+Vector2(20*column,20*row)
+	if food_points>=30 && wood_points>=20 && stone_points>=10:
+		var new_warrior = Warrior.instance()
+		new_warrior.position = spawn_position.position
+		for warrior in warriors.get_children():
+			warriors_count+=1				
+			if new_warrior.position == warrior.position:
+				column+=1
+			#if new_warrior.position.x>cave.position.x:
+			if column==10:
+				column=0
+				row+=1
+			new_warrior.position=spawn_position.position+Vector2(20*column,20*row)
 		
-	warriors.add_child(new_warrior)
-	all_units.append(new_warrior)
+		warriors.add_child(new_warrior)
+		all_units.append(new_warrior)
+		food_points-=30
+		wood_points-=20
+		stone_points-=10
 	
 	if warriors_count>=3:
 		prompts_label.text="Cuando consideres que tienes suficientes guerreros,\nenvíalos a pelear contra los mamuts,\nal noroeste del lago."
@@ -744,8 +748,9 @@ func _check_mammoths():
 	
 	if mammoths_count==0:
 		prompts_label.text="""Regresa cerca de la cueva y haz que tus ciudadanos
-		construyan cuatro casas en la zona. Haz clic en uno
-		o varios ciudadanos para llevar a cabo la tarea."""	
+		construyan cuatro casas en la zona. Obtén los recursos necesarios
+		y haz clic en un ciudadano para llevar a cabo la tarea. Debes construir 
+		una	casa cada cuatro civiles."""	
 		create_house.visible=true
 
 func _on_CreateHouse_pressed():
@@ -764,3 +769,7 @@ func _on_CreateTownHall_pressed():
 		_on_Game3_is_townhall()
 	else:
 		_on_Game3_is_arrow()
+
+
+func _on_NextSceneButton_pressed():
+	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
