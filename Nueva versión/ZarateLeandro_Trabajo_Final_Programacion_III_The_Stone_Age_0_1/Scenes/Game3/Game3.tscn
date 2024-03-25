@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=2]
+[gd_scene load_steps=34 format=2]
 
 [ext_resource path="res://Scenes/Cave/Cave.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Unit2/Unit2.tscn" type="PackedScene" id=2]
@@ -27,6 +27,9 @@
 [ext_resource path="res://Scenes/Game2/food.png" type="Texture" id=25]
 [ext_resource path="res://Scenes/Mammoth/mammoth.tscn" type="PackedScene" id=26]
 [ext_resource path="res://Scenes/House/house.tscn" type="PackedScene" id=27]
+[ext_resource path="res://Scenes/Game2/NextStageButton.png" type="Texture" id=28]
+[ext_resource path="res://Scenes/TownHall/townhall.tscn" type="PackedScene" id=29]
+[ext_resource path="res://Scenes/MouseIcons/townhall_small.png" type="Texture" id=30]
 
 [sub_resource type="TileSet" id=1]
 0/name = "grass.png 0"
@@ -60,6 +63,7 @@ script = ExtResource( 10 )
 Unit2 = ExtResource( 2 )
 Warrior = ExtResource( 16 )
 House = ExtResource( 27 )
+TownHall = ExtResource( 29 )
 
 [node name="TileMap" type="TileMap" parent="."]
 position = Vector2( 0, 1 )
@@ -363,9 +367,9 @@ text = "0"
 
 [node name="CreateWarriorUnit" type="TextureButton" parent="UI/Base/Rectangle"]
 visible = false
-margin_left = 883.0
+margin_left = 935.0
 margin_top = 22.0
-margin_right = 896.0
+margin_right = 948.0
 margin_bottom = 46.0
 hint_tooltip = "Crear unidad militar
 guerrero y cazador.
@@ -376,13 +380,23 @@ texture_normal = ExtResource( 13 )
 
 [node name="CreateHouse" type="TextureButton" parent="UI/Base/Rectangle"]
 visible = false
-margin_left = 858.0
-margin_top = 23.0
-margin_right = 881.0
-margin_bottom = 46.0
+margin_left = 848.0
+margin_top = 24.0
+margin_right = 871.0
+margin_bottom = 47.0
 hint_tooltip = "Crear casa: construir una vivienda.
 Costo: arcilla, 40 ptos, madera, 20 ptos."
 texture_normal = ExtResource( 19 )
+
+[node name="CreateTownHall" type="TextureButton" parent="UI/Base/Rectangle"]
+visible = false
+margin_left = 880.0
+margin_top = 23.0
+margin_right = 903.0
+margin_bottom = 46.0
+hint_tooltip = "Crear casa: construir una vivienda.
+Costo: arcilla, 40 ptos, madera, 20 ptos."
+texture_normal = ExtResource( 30 )
 
 [node name="GiveAttackOrder" type="TextureButton" parent="UI/Base/Rectangle"]
 visible = false
@@ -427,6 +441,15 @@ text = "ATAQUE ENEMIGO:
 000"
 align = 1
 
+[node name="NextSceneButton" type="TextureButton" parent="UI/Base"]
+visible = false
+margin_left = 490.0
+margin_top = -269.0
+margin_right = 732.0
+margin_bottom = -199.0
+texture_normal = ExtResource( 28 )
+expand = true
+
 [node name="damage_timer" type="Timer" parent="."]
 autostart = true
 
@@ -441,5 +464,6 @@ autostart = true
 [connection signal="pressed" from="UI/Base/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateWarriorUnit" to="." method="_on_CreateWarriorUnit_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateHouse" to="." method="_on_CreateHouse_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/CreateTownHall" to="." method="_on_CreateTownHall_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/GiveAttackOrder" to="." method="_on_GiveAttackOrder_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/MakeWarchief" to="." method="_on_MakeWarchief_pressed"]

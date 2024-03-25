@@ -14,16 +14,18 @@ onready var bar=$Bar
 func _process(delta):
 	bar.value=condition
 
-func _house_build():
-	if condition<20:
+func _townhall_build():
+	if condition<80:
 		condition+=1	
 		
+			
+			
 			
 
 
 func _on_Area2D_body_entered(body):
 	if "Unit" in body.name:
-		body.house_entered=true
+		body.townhall_entered=true
 
 
 
@@ -31,11 +33,11 @@ func _on_Area2D_body_entered(body):
 
 func _on_Area2D_body_exited(body):
 	if "Unit" in body.name:
-		body.house_entered=false
+		body.townhall_entered=false
 
 
 func _on_Timer_timeout():
 	for citizen in units.get_children():
-		if citizen.house_entered:
-			_house_build()
+		if citizen.townhall_entered:
+			_townhall_build()
 	timer.start()

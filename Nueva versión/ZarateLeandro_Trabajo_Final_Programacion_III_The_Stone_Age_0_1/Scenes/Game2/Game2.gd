@@ -643,4 +643,4 @@ func _check_units():
 
 
 func _on_NextSceneButton_pressed():
-	get_tree().change_scene("res://Scenes/Game3/Game3.tscn")
+	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")

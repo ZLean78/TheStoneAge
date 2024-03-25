@@ -158,6 +158,8 @@ var colliding_body: KinematicBody2D
 var body_velocity = Vector2.ZERO
 
 var house_entered=false
+var townhall_entered=false
+
 
 #Señal de cambio de salud (incremento o decremento).
 signal health_change

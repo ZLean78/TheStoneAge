@@ -8,6 +8,7 @@ var claypot=load("res://Scenes/MouseIcons/claypot.png")
 var hand=load("res://Scenes/MouseIcons/hand.png")
 var axe=load("res://Scenes/MouseIcons/axe.png")
 var house=load("res://Scenes/MouseIcons/house.png")
+var townhall=load("res://Scenes/MouseIcons/townHall.png")
 
 var unit_count = 1
 var food_points = 0
@@ -43,11 +44,13 @@ onready var wood_label = tree.get_node("UI/Base/Rectangle/WoodLabel")
 onready var water_label = tree.get_node("UI/Base/Rectangle/WaterLabel")
 #onready var developments_label = tree.get_node("UI/Base/Rectangle/DevelopmentsLabel")
 onready var rectangle = tree.get_node("UI/Base/Rectangle")
-onready var create_shack = tree.get_node("UI/Base/Rectangle/CreateHouse")
+#onready var create_shack = tree.get_node("UI/Base/Rectangle/CreateHouse")
 onready var give_attack_order = tree.get_node("UI/Base/Rectangle/GiveAttackOrder")
 onready var make_warchief = tree.get_node("UI/Base/Rectangle/MakeWarchief")
 onready var create_house = tree.get_node("UI/Base/Rectangle/CreateHouse")
+onready var create_townhall = tree.get_node("UI/Base/Rectangle/CreateTownHall")
 onready var create_warrior = tree.get_node("UI/Base/Rectangle/CreateWarriorUnit")
+onready var next_scene_button = tree.get_node("UI/Base/NextSceneButton")
 onready var camera = tree.get_node("Camera")
 onready var tiger_timer = tree.get_node("tiger_timer")
 onready var tile_map = tree.get_node("TileMap")
@@ -67,6 +70,7 @@ var cave
 export (PackedScene) var Unit2
 export (PackedScene) var Warrior
 export (PackedScene) var House
+export (PackedScene) var TownHall
 
 var selected_units=[]
 var all_units=[]
@@ -111,6 +115,7 @@ var claypot_mode=false
 var hand_mode=false
 var axe_mode=false
 var house_mode=false
+var townhall_mode=false
 
 var start_string = """Selecciona una unidad de tu grupo y haz clic en el botón
 "convertir en jefe guerrero" para que pase a ser el jefe de tu tribu."""
@@ -217,6 +222,7 @@ func _process(_delta):
 	
 	_check_units()
 	_check_mammoths()
+	_check_houses()
 	_check_victory()
 	
 
@@ -253,11 +259,29 @@ func _unhandled_input(event):
 						selected_units[i].target_position=Vector2(selected_units[i-1].target_position.x+20,selected_units[i-1].target_position.y)
 		if house_mode:
 			_create_house()
-					
+		if townhall_mode:
+			_create_townhall()
+
+func _create_townhall():
+	var citizens=units.get_children()
+	
+	for citizen in citizens:
+		if citizen.selected:
+			if wood_points>=80 && leaves_points>=90 && clay_points>=100:					
+				var new_townhall=TownHall.instance()
+				#the_citizen.agent.set_target_location(get_global_mouse_position())
+				new_townhall.position = get_global_mouse_position()
+				tile_map.add_child(new_townhall)
+				citizen.target_position=new_townhall.position
+				wood_points-=80
+				leaves_points-=90
+				clay_points-=100
+									
 				
 func _create_house():
 	var citizens=units.get_children()
 	var dwells=houses.get_children()
+	var dwell_count=0
 		
 	for citizen in citizens:
 		if (citizens.size()/4)>dwells.size():			
@@ -268,8 +292,20 @@ func _create_house():
 					new_house.position = get_global_mouse_position()
 					houses.add_child(new_house)
 					citizen.target_position=new_house.position
-		else:
-			prompts_label.text="Necesitas más población civil para crear una vivienda."
+					wood_points-=20
+					clay_points-=40
+		
+	
+
+func _check_houses():
+	var dwells=houses.get_children()
+	var dwell_count=0	
+	
+	for dwell in dwells:
+		dwell_count+=1
+	
+	if dwell_count>=4:
+		create_townhall.visible=true	
 	
 func _create_unit(cost = 0):
 	var new_Unit = Unit2.instance()
@@ -309,8 +345,15 @@ func _create_warrior_unit(cost = 0):
 	all_units.append(new_Unit)
 			
 func _check_victory():
+	for child in tile_map.get_children():
+		if "TownHall" in child.name:
+			if child.condition==80:
+				is_townhall_created=true
+	
+	
 	if is_townhall_created:
 		prompts_label.text = "¡Has ganado!"	
+		next_scene_button.visible = true
 	elif(all_units.size()==0 && food_points<15):
 		prompts_label.text = "Has sido derrotado."
 	else:
@@ -535,6 +578,7 @@ func _on_Game3_is_arrow():
 	hand_mode=false
 	axe_mode=false
 	house_mode=false
+	townhall_mode=false
 
 
 func _on_Game3_is_basket():
@@ -547,6 +591,7 @@ func _on_Game3_is_basket():
 	hand_mode=false
 	axe_mode=false
 	house_mode=false
+	townhall_mode=false
 	
 func _on_Game3_is_pick_mattock():
 	Input.set_custom_mouse_cursor(pick_mattock)
@@ -558,6 +603,7 @@ func _on_Game3_is_pick_mattock():
 	hand_mode=false
 	axe_mode=false
 	house_mode=false
+	townhall_mode=false
 
 func _on_Game3_is_sword():
 	Input.set_custom_mouse_cursor(sword)
@@ -569,7 +615,7 @@ func _on_Game3_is_sword():
 	hand_mode=false
 	axe_mode=false
 	house_mode=false
-
+	townhall_mode=false
 
 func _on_Game3_is_hand():
 	Input.set_custom_mouse_cursor(hand)
@@ -581,6 +627,7 @@ func _on_Game3_is_hand():
 	claypot_mode=false
 	axe_mode=false
 	house_mode=false
+	townhall_mode=false
 
 
 func _on_Game3_is_claypot():
@@ -593,6 +640,7 @@ func _on_Game3_is_claypot():
 	hand_mode=false
 	axe_mode=false
 	house_mode=false
+	townhall_mode=false
 
 func _on_Game3_is_axe():
 	Input.set_custom_mouse_cursor(axe)
@@ -604,6 +652,7 @@ func _on_Game3_is_axe():
 	claypot_mode=false
 	hand_mode=false
 	house_mode=false
+	townhall_mode=false
 	
 func _on_Game3_is_house():
 	Input.set_custom_mouse_cursor(house)
@@ -615,9 +664,20 @@ func _on_Game3_is_house():
 	claypot_mode=false
 	hand_mode=false
 	axe_mode=false
+	townhall_mode=false
 				
 	
-	
+func _on_Game3_is_townhall():
+	Input.set_custom_mouse_cursor(townhall)	
+	townhall_mode=true
+	arrow_mode=false
+	basket_mode=false
+	mattock_mode=false
+	sword_mode=false
+	claypot_mode=false
+	hand_mode=false
+	axe_mode=false
+	house_mode=false
 	
 				
 
@@ -693,11 +753,14 @@ func _on_CreateHouse_pressed():
 		_on_Game3_is_house()
 	else:
 		_on_Game3_is_arrow()
-	
-
-
-
 
 
 func _on_GiveAttackOrder_pressed():
 	pass # Replace with function body.
+
+
+func _on_CreateTownHall_pressed():
+	if !townhall_mode:
+		_on_Game3_is_townhall()
+	else:
+		_on_Game3_is_arrow()
