@@ -1,9 +1,12 @@
 extends KinematicBody2D
 
-
+var start_position=Vector2.ZERO
 var gravity=Vector2(0,9.8)
 var velocity_x=Vector2.ZERO
 var velocity_y=Vector2(0,-250)
+
+func _ready():
+	start_position=position
 
 func _physics_process(delta):
 	velocity_y+=gravity
@@ -19,6 +22,9 @@ func move_projectile():
 #				collision.collider.unit=null
 #			#collision.collider.queue_free()
 #		queue_free()
+
+	if position.distance_to(start_position)>250:
+		queue_free()
 
 func set_velocity(_velocity):
 	velocity_x=_velocity

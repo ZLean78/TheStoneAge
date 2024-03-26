@@ -35,19 +35,19 @@ func _physics_process(delta):
 	#Mover y comprobar colisiones.
 	if position.distance_to(target_position)>5:
 		var direction=(target_position-position)
-		velocity=direction.normalized()*speed*delta
+		velocity=direction.normalized()*speed
 		
-		var collision = move_and_collide(velocity)
+		var collision = move_and_slide(velocity)
 
-		if collision!=null && is_instance_valid(collision.collider):
-			if "Bullet" in collision.collider.name || "Stone" in collision.collider.name:
-				life-=20
-				if life <=0:
-					get_tree().root.get_child(0).food_points+=90
-					get_tree().root.get_child(0).wood_points+=60
-					get_tree().root.get_child(0).stone_points+=40
-					is_dead=true
-					queue_free()
+#		if collision!=null && is_instance_valid(collision.collider):
+#			if "Bullet" in collision.collider.name || "Stone" in collision.collider.name:
+#				life-=20
+#				if life <=0:
+#					get_tree().root.get_child(0).food_points+=90
+#					get_tree().root.get_child(0).wood_points+=60
+#					get_tree().root.get_child(0).stone_points+=40
+#					is_dead=true
+#					queue_free()
 	
 	#Actualizar barra de vida.
 	progress_bar.value=life
@@ -82,6 +82,9 @@ func _on_Area2D_body_entered(body):
 		life-=5
 		body.queue_free()
 		if life <=0:
+			get_tree().root.get_child(0).food_points+=90
+			get_tree().root.get_child(0).wood_points+=60
+			get_tree().root.get_child(0).stone_points+=40
 			is_dead=true
 			queue_free()
 	

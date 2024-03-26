@@ -692,7 +692,7 @@ func _check_units():
 #						if is_instance_valid(a_tiger):
 #							if a_tiger.unit == the_unit:
 #								a_tiger.unit = null
-#					the_unit._die()
+					the_unit._die()
 			if "Warrior" in a_unit.name:
 				var the_unit=all_units[all_units.find(a_unit,0)]
 				all_units.remove(all_units.find(a_unit,0))

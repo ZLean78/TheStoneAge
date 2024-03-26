@@ -370,8 +370,6 @@ func _get_damage(var the_beast):
 				bar._set_energy_points(energy_points)
 				bar._update_energy()
 			else:
-				#the_beast.unit = null
-				#the_beast.is_chasing = false
 				_set_selected(false)			
 				is_deleted=true				
 		else:
@@ -384,8 +382,6 @@ func _get_damage(var the_beast):
 				bar._update_energy()
 			else:
 				if the_beast:
-					the_beast.unit = null
-					the_beast.is_chasing = false
 					_set_selected(false)			
 					is_deleted=true
 	if "Mammoth" in the_beast.name && is_enemy_touching:
