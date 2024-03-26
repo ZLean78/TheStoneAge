@@ -282,18 +282,24 @@ func _create_house():
 	var citizens=units.get_children()
 	var dwells=houses.get_children()
 	var dwell_count=0
+	var the_citizen=null
 		
 	for citizen in citizens:
 		if (citizens.size()/4)>dwells.size():			
 			if citizen.selected:
-				if wood_points>=20 && clay_points>=40:					
-					var new_house=House.instance()
-					#the_citizen.agent.set_target_location(get_global_mouse_position())
-					new_house.position = get_global_mouse_position()
-					houses.add_child(new_house)
-					citizen.target_position=new_house.position
-					wood_points-=20
-					clay_points-=40
+				the_citizen=citizen
+				break
+				
+	if the_citizen!=null:
+		if wood_points>=20 && clay_points>=40:					
+			var new_house=House.instance()
+			#the_citizen.agent.set_target_location(get_global_mouse_position())
+			new_house.position = get_global_mouse_position()
+			houses.add_child(new_house)
+			the_citizen.target_position=new_house.position
+			wood_points-=20
+			clay_points-=40
+			print("Se construyó la casa.")
 		
 	
 
