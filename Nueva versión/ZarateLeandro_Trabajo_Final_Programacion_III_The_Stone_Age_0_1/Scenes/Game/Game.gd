@@ -122,6 +122,20 @@ func _process(_delta):
 		a_unit._set_its_raining(its_raining)
 		
 		#a_unit.move_unit(a_unit.target_position)
+		
+
+		
+#UNHANDLED INPUT
+func _unhandled_input(event):
+	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
+		for i in range(0,selected_units.size()):			
+			if i==0:
+				selected_units[i].target_position=get_global_mouse_position()
+			else:
+				if i%4==0:
+					selected_units[i].target_position=Vector2(selected_units[0].target_position.x,selected_units[i-1].target_position.y+20)
+				else:
+					selected_units[i].target_position=Vector2(selected_units[i-1].target_position.x+20,selected_units[i-1].target_position.y)
 
 #///////////////////////////////////////////////////////////////////////////
 #FUNCIONES DE CREACIÓN Y CONFIGURACIÓN DE UNIDADES
@@ -130,8 +144,8 @@ func _process(_delta):
 func _create_unit():
 	if food_points >=15:
 		var new_Unit = Unit.instance()
-		unit_count+=1
-		new_Unit.position = Vector2(camera.position.x+rand_range(50,100),camera.position.y+rand_range(50,100))
+		new_Unit.position = Vector2(-800,-500)
+		unit_count+=1		
 		if(unit_count%2==0):
 			new_Unit.is_girl=true
 		else:
@@ -141,7 +155,7 @@ func _create_unit():
 		if(group_has_bag):
 			new_Unit.has_bag=true	
 			new_Unit.get_child(3).visible = true
-		tile_map.add_child(new_Unit)
+		tile_map.add_child(new_Unit)		
 		food_points-=15	
 		all_units.append(new_Unit)
 

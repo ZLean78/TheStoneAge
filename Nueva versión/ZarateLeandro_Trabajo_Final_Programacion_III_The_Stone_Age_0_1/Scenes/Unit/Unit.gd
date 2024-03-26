@@ -3,7 +3,10 @@ extends KinematicBody2D
 #Proyectil, piedra para lanzar al enemigo.
 var bullet
 export var bullet_scene=preload("res://Scenes/Bullet/Bullet.tscn")
-
+#direction del proyectil
+var direction = Vector2.ZERO
+#para guardar el parámetro delta del procedimiento _physics_process(delta)
+var to_delta=0.0
 #Velocidad
 export (float) var SPEED = 100.0
 #Máximo de Salud
@@ -65,7 +68,7 @@ var is_erased = false
 
 
 #Posición adonde la unidad debe moverse.
-var target_position = Vector2(0,0)
+var target_position = Vector2.ZERO
 
 
 
@@ -150,6 +153,9 @@ func _set_selected(value):
 			emit_signal("was_deselected",self)
 
 func _physics_process(delta):
+	
+	to_delta=delta
+	
 	if selected:
 		if box.visible == false:
 			box.visible = true
@@ -160,15 +166,12 @@ func _physics_process(delta):
 #	position.x = clamp(position.x,0,screensize.x)
 #	position.y = clamp(position.y,0,screensize.y)	
 	
-	if move_p:
-		path = get_viewport().get_node("Game/nav").get_simple_path(position,target_position)
-		velocity=(target_position-position)
-		initialPosition = position
-		move_p = false
-	if path.size()>0:
-		move_towards(initialPosition,path[0]+Vector2(rand_range(0,5),0),delta)
-	else:
-		velocity=Vector2(0,0)	
+	if target_position!=Vector2.ZERO:
+		if position.distance_to(target_position) > 10:
+			_move_to_target(target_position)
+		else:
+			target_position=position
+			velocity=Vector2.ZERO
 	
 	# Orientar al player.
 	if velocity.x<0:
@@ -280,14 +283,14 @@ func move_towards(pos,point,delta):
 		path.remove(0)
 		initialPosition = position
 		
+func _move_to_target(target):
+	direction = (target-position)
+	velocity=(direction).normalized()
+	var collision = move_and_collide(velocity*to_delta*SPEED)
+	
+	
 		
-func move_unit(point):
-	to_move = point
-	move_p = true
-
-func _unhandled_input(event):
-	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
-		target_position = get_global_mouse_position()
+		
 	
 	
 

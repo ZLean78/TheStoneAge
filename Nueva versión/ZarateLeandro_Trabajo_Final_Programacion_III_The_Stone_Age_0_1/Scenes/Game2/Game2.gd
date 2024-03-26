@@ -464,7 +464,7 @@ func get_units_in_area(area):
 			if unit.position.y>area[0].y and unit.position.y<area[1].y:
 				u.append(unit)
 	return u
-		
+
 func area_selected(obj):
 	var start=obj.start
 	var end=obj.end
