@@ -395,7 +395,8 @@ margin_top = 23.0
 margin_right = 903.0
 margin_bottom = 46.0
 hint_tooltip = "Crear centro cívico: construir una edificio de gobierno.
-Costo: arcilla, 40 ptos, madera, 20 ptos."
+Costo: madera, 80 ptos, hojas, 90 ptos,
+arcilla, 100 ptos."
 texture_normal = ExtResource( 30 )
 
 [node name="GiveAttackOrder" type="TextureButton" parent="UI/Base/Rectangle"]

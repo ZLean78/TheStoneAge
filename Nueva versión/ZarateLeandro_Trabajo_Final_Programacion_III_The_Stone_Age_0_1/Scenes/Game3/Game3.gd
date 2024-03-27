@@ -264,25 +264,37 @@ func _unhandled_input(event):
 
 func _create_townhall():
 	var citizens=units.get_children()
+	var the_citizen=null
+	var the_townhall=null
 	
 	for citizen in citizens:
 		if citizen.selected:
-			if wood_points>=80 && leaves_points>=90 && clay_points>=100:					
-				var new_townhall=TownHall.instance()
-				#the_citizen.agent.set_target_location(get_global_mouse_position())
-				new_townhall.position = get_global_mouse_position()
-				tile_map.add_child(new_townhall)
-				citizen.target_position=new_townhall.position
-				wood_points-=80
-				leaves_points-=90
-				clay_points-=100
-									
+			the_citizen=citizen
+	
+	if the_citizen!=null:
+		if wood_points>=80 && leaves_points>=90 && clay_points>=100:					
+			var new_townhall=TownHall.instance()
+			#the_citizen.agent.set_target_location(get_global_mouse_position())
+			new_townhall.position = get_global_mouse_position()
+			tile_map.add_child(new_townhall)
+			the_citizen.target_position=new_townhall.position
+			the_townhall=new_townhall
+			wood_points-=80
+			leaves_points-=90
+			clay_points-=100
+			print("Se construyó un centro cívico.")	
+	
+	if the_townhall!=null:
+		for citizen in citizens:
+			if citizen.selected && citizen!=the_citizen:
+				citizen.target_position=the_townhall.position				
 				
 func _create_house():
 	var citizens=units.get_children()
 	var dwells=houses.get_children()
 	var dwell_count=0
 	var the_citizen=null
+	var the_house=null
 		
 	for citizen in citizens:
 		if (citizens.size()/4)>dwells.size():			
@@ -297,10 +309,15 @@ func _create_house():
 			new_house.position = get_global_mouse_position()
 			houses.add_child(new_house)
 			the_citizen.target_position=new_house.position
+			the_house=new_house
 			wood_points-=20
 			clay_points-=40
-			print("Se construyó la casa.")
-		
+			print("Se construyó una casa.")
+	
+	if the_house!=null:
+		for citizen in citizens:
+			if citizen.selected && citizen!=the_citizen:
+				citizen.target_position=the_house.position	
 	
 
 func _check_houses():
