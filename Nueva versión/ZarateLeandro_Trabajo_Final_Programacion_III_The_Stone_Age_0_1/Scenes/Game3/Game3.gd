@@ -30,6 +30,7 @@ var is_agriculture_developed = true
 #Variables de hitos
 onready var mammoths=$Mammoths
 var is_townhall_created = false
+var is_warchief_dead = false
 
 
 onready var tree = get_tree().root.get_child(0)
@@ -212,26 +213,28 @@ func _ready():
 
 func _process(_delta):
 	
-	timer_label.text = "ATAQUE ENEMIGO: " + str(int(tiger_timer.time_left))
-	food_label.text = str(int(food_points))
-	leaves_label.text = str(int(leaves_points))	
-	stone_label.text = str(int(stone_points))	
-	clay_label.text = str(int(clay_points))
-	wood_label.text = str(int(wood_points))
-	water_label.text = str(int(water_points))
+	if !is_warchief_dead:
 	
-	_check_units()
-	_check_mammoths()
-	_check_houses()
-	_check_victory()
+		timer_label.text = "ATAQUE ENEMIGO: " + str(int(tiger_timer.time_left))
+		food_label.text = str(int(food_points))
+		leaves_label.text = str(int(leaves_points))	
+		stone_label.text = str(int(stone_points))	
+		clay_label.text = str(int(clay_points))
+		wood_label.text = str(int(wood_points))
+		water_label.text = str(int(water_points))
+	
+		_check_units()
+		_check_mammoths()
+		_check_houses()
+		_check_victory()
 	
 
 		
 		
-	if !is_tiger:
-		if !is_tiger_countdown:
-			tiger_timer.start()
-			is_tiger_countdown=true	
+		if !is_tiger:
+			if !is_tiger_countdown:
+				tiger_timer.start()
+				is_tiger_countdown=true	
 	
 	
 
@@ -247,20 +250,21 @@ func deselect_unit(unit):
 		selected_units.erase(unit)
 	
 func _unhandled_input(event):
-	if event is InputEventMouseButton && event.is_action_pressed("ui_right_mouse_button"):
-		if !house_mode:
-			for i in range(0,selected_units.size()):
-				if i==0:
-					selected_units[i].target_position=get_global_mouse_position()
-				else:
-					if i%4==0:
-						selected_units[i].target_position=Vector2(selected_units[0].target_position.x,selected_units[i-1].target_position.y+20)
+	if !is_warchief_dead:
+		if event is InputEventMouseButton && event.is_action_pressed("ui_right_mouse_button"):
+			if !house_mode:
+				for i in range(0,selected_units.size()):
+					if i==0:
+						selected_units[i].target_position=get_global_mouse_position()
 					else:
-						selected_units[i].target_position=Vector2(selected_units[i-1].target_position.x+20,selected_units[i-1].target_position.y)
-		if house_mode:
-			_create_house()
-		if townhall_mode:
-			_create_townhall()
+						if i%4==0:
+							selected_units[i].target_position=Vector2(selected_units[0].target_position.x,selected_units[i-1].target_position.y+20)
+						else:
+							selected_units[i].target_position=Vector2(selected_units[i-1].target_position.x+20,selected_units[i-1].target_position.y)
+			if house_mode:
+				_create_house()
+			if townhall_mode:
+				_create_townhall()
 
 func _create_townhall():
 	var citizens=units.get_children()
@@ -382,6 +386,7 @@ func _check_victory():
 	else:
 		for a_unit in all_units:
 			if "Unit" in a_unit.name && a_unit.is_warchief && a_unit.is_deleted:
+				is_warchief_dead=true
 				prompts_label.text = "Has sido derrotado. Tu jefe ha muerto."	
 		
 #func collect_pickable(var _pickable):
@@ -532,7 +537,7 @@ func _on_tiger_timer_timeout():
 	for a_tiger in all_tigers:
 		if is_instance_valid(a_tiger):
 			a_tiger.visible=true
-			a_tiger.state=1
+			a_tiger.state=0
 
 		
 func deselect_all():

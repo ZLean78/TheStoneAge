@@ -410,9 +410,7 @@ func _move_to_target(target):
 	velocity=(direction).normalized()
 	var collision = move_and_collide(velocity*to_delta*SPEED)
 	
-	if collision != null:
-		if "Tiger" in collision.collider.name || "Mammoth" in collision.collider.name:
-			is_enemy_touching=true
+	
 	
 		
 func move_unit(point):

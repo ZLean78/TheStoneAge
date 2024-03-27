@@ -4,11 +4,12 @@
 [ext_resource path="res://Scenes/Lake/Lake.gd" type="Script" id=2]
 
 [sub_resource type="CapsuleShape2D" id=1]
-radius = 33.8834
+radius = 35.8918
 height = 194.902
 
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 99.5, 26 )
+[sub_resource type="CapsuleShape2D" id=2]
+radius = 26.0
+height = 132.0
 
 [node name="Lake" type="Node2D"]
 script = ExtResource( 2 )
@@ -28,7 +29,7 @@ collision_layer = 8
 collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2( 0.5, 1 )
+rotation = 1.5708
 shape = SubResource( 2 )
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]

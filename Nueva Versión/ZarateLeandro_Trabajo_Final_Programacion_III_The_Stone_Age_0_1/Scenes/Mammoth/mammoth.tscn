@@ -7,10 +7,10 @@
 bg_color = Color( 1, 0, 0, 1 )
 
 [sub_resource type="RectangleShape2D" id=5]
-extents = Vector2( 176, 76 )
+extents = Vector2( 126, 62 )
 
 [sub_resource type="CircleShape2D" id=2]
-radius = 194.813
+radius = 184.272
 
 [sub_resource type="CircleShape2D" id=4]
 radius = 740.945
@@ -53,4 +53,5 @@ shape = SubResource( 4 )
 [connection signal="mouse_entered" from="." to="." method="_on_Mammoth_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_Mammoth_mouse_exited"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_Area2D_body_exited"]
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_DetectionArea_body_entered"]

@@ -93,8 +93,14 @@ func _on_Area2D_body_entered(body):
 			is_dead=true
 			queue_free()
 	
+	if "Unit" in body.name || "Warrior" in body.name:
+		body.is_enemy_touching=true
+	
 				
-
+func _on_Area2D_body_exited(body):
+	if "Unit" in body.name || "Warrior" in body.name:
+		body.is_enemy_touching=false
+	
 
 func _on_Tiger_mouse_entered():
 	if get_tree().get_root().get_child(0).name == "Game3":
@@ -123,6 +129,9 @@ func _on_DetectionArea_body_entered(body):
 		for tiger in get_parent().get_children():
 			if tiger.visible && is_instance_valid(tiger):
 				tiger.state = 1
+
+
+
 
 
 

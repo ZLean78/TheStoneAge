@@ -87,9 +87,14 @@ func _on_Area2D_body_entered(body):
 			get_tree().root.get_child(0).stone_points+=40
 			is_dead=true
 			queue_free()
+			
+	if "Unit" in body.name || "Warrior" in body.name:
+		body.is_enemy_touching=true
 	
 				
-
+func _on_Area2D_body_exited(body):
+	if "Unit" in body.name || "Warrior" in body.name:
+		body.is_enemy_touching=false
 
 func _on_Mammoth_mouse_entered():
 	get_tree().get_root().get_child(0)._on_Game3_is_sword()
@@ -112,3 +117,6 @@ func _on_DetectionArea_body_entered(body):
 		for mammoth in get_parent().get_children():
 			if is_instance_valid(mammoth):
 				mammoth.state = 1
+
+
+
