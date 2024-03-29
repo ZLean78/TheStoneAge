@@ -53,7 +53,7 @@ position = Vector2( -4, -11 )
 script = ExtResource( 6 )
 Unit2 = ExtResource( 12 )
 
-[node name="TileMap" type="TileMap" parent="."]
+[node name="TileMap" type="TileMap" parent="." groups=["tilemap"]]
 position = Vector2( 0, 1 )
 z_as_relative = false
 tile_set = SubResource( 1 )

@@ -78,15 +78,20 @@ func check_state():
 
 
 func _on_Area2D_body_entered(body):
-	if "Bullet" in body.name || "Stone" in body.name:
-		life-=5
+	if "Stone" in body.name:
+		life-=3
 		body.queue_free()
-		if life <=0:
-			get_tree().root.get_child(0).food_points+=90
-			get_tree().root.get_child(0).wood_points+=60
-			get_tree().root.get_child(0).stone_points+=40
-			is_dead=true
-			queue_free()
+	
+	if "Bullet" in body.name:
+		life-=10
+		body.queue_free()	
+	
+	if life <=0:
+		get_tree().root.get_child(0).food_points+=90
+		get_tree().root.get_child(0).wood_points+=60
+		get_tree().root.get_child(0).stone_points+=40
+		is_dead=true
+		queue_free()
 			
 	if "Unit" in body.name || "Warrior" in body.name:
 		body.is_enemy_touching=true

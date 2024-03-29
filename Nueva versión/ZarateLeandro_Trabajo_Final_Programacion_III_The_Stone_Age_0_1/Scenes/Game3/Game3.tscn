@@ -55,7 +55,7 @@ Warrior = ExtResource( 16 )
 House = ExtResource( 27 )
 TownHall = ExtResource( 29 )
 
-[node name="TileMap" type="TileMap" parent="."]
+[node name="TileMap" type="TileMap" parent="." groups=["tilemap"]]
 position = Vector2( 0, 1 )
 tile_set = SubResource( 1 )
 cell_size = Vector2( 32, 32 )

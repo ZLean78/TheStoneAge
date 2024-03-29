@@ -439,7 +439,8 @@ func _unhandled_input(event):
 						else:
 							new_stone.set_velocity(Vector2(200,0))
 						new_stone.rotation = angle		
-						get_parent().add_child(new_stone)
+						var the_tilemap=get_tree().get_nodes_in_group("tilemap")
+						the_tilemap[0].add_child(new_stone)
 						can_shoot=false
 				else:
 					if get_tree().get_root().get_child(0).name == "Game3":
@@ -843,12 +844,16 @@ func _check_pine_tree_touching():
 	_set_pine_tree_touching(pine_tree_touching)
 #	
 func _on_all_timer_timeout():
-	timer_count=0
-	can_shoot=true
+	timer_count+=1	
 	if body_entered!=null && is_instance_valid(body_entered):
 		_get_damage(body_entered)
 	if pickable!=null:
 		_collect_pickable(pickable)
+	if timer_count>3:
+		can_shoot=true
+	if timer_count>4:
+		timer_count=0
+	all_timer.start()
 	
 
 func _die():

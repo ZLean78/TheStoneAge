@@ -288,7 +288,8 @@ func _unhandled_input(event):
 						bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
 						bullet.set_dir(forward)
 						bullet.rotation = angle		
-						get_parent().add_child(bullet)
+						var the_tilemap=get_tree().get_nodes_in_group("tilemap")
+						the_tilemap[0].add_child(bullet)
 						can_shoot=false
 				else:
 					get_tree().root.get_child(0)._on_Game3_is_arrow()
@@ -496,14 +497,17 @@ func _set_erased(var _is_erased):
 
 #	
 func _on_all_timer_timeout():
-	timer_count=0
-	can_shoot=true
+	timer_count+=1	
 	#if tiger!=null && is_instance_valid(tiger):
 		#_get_damage(tiger)
 	if body_entered!=null && is_instance_valid(body_entered):
 		#if "Tiger" in body_entered.name || "Mammoth" in body_entered.name:
 		_get_damage(body_entered)
-	
+	if timer_count>3:
+		can_shoot=true
+	if timer_count>4:
+		timer_count=0
+	all_timer.start()
 	
 	
 
