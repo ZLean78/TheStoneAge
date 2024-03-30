@@ -71,6 +71,8 @@ var screensize = Vector2(ProjectSettings.get("display/window/size/width"),Projec
 #de recursos que esté tocando.
 signal is_basket
 signal is_arrow
+var arrow_mode=false
+var basket_mode=false
 
 #/////////////////////////////////////////
 #FUNCIONES PRINCIPALES MAIN
@@ -100,7 +102,9 @@ func _ready():
 	all_units[all_units.size()-1].position = Vector2(camera.position.x+rand_range(50,100),camera.position.y+rand_range(50,100))
 	
 	#Configuración por defecto del cursor del mouse a aspecto de flecha.
-	Input.set_custom_mouse_cursor(arrow)
+	emit_signal("is_arrow")
+	arrow_mode=true
+	basket_mode=false
 
 #Función _process(_delta)
 func _process(_delta):
@@ -282,10 +286,14 @@ func _on_AddBag_pressed():
 #A canasta...
 func _on_Game_is_basket():
 	Input.set_custom_mouse_cursor(basket)
+	basket_mode=true
+	arrow_mode=false
 
 #A flecha...
 func _on_Game_is_arrow():
 	Input.set_custom_mouse_cursor(arrow)
+	arrow_mode=true
+	basket_mode=false
 	
 #///////////////////////////////////////////////////////////////////
 #SEÑAL DE BOTÓN DE 'CREAR CIUDADANO' PRESIONADO.

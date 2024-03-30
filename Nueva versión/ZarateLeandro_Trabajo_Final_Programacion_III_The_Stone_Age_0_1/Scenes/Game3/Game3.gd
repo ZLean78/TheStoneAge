@@ -129,6 +129,9 @@ var column=0
 
 func _ready():
 	
+	
+	
+	
 	prompts_label.text = start_string
 	
 	all_units=get_tree().get_nodes_in_group("units")
