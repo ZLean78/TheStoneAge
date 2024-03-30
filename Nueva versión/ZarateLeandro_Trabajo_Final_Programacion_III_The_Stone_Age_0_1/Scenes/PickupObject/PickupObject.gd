@@ -45,7 +45,7 @@ func _on_Area2D_body_exited(body):
 
 
 
-func _on_Area2D_mouse_entered():
+func _on_Area2D_mouse_entered():	
 	if type == "fruit_tree":
 		get_parent().get_parent().emit_signal("is_basket")
 	elif type == "plant":
@@ -58,6 +58,7 @@ func _on_Area2D_mouse_entered():
 		get_tree().root.get_child(0).emit_signal("is_hand")	
 	elif type == "lake":
 		get_tree().root.get_child(0).emit_signal("is_claypot")	
+	
 		
 
 
@@ -69,6 +70,7 @@ func _on_Area2D_mouse_exited():
 		if type=="lake":
 			if get_tree().root.name == "Game2":
 				get_tree().root.get_child(0).prompts_label.text = get_tree().root.get_child(0).start_string
+	
 	
 
 

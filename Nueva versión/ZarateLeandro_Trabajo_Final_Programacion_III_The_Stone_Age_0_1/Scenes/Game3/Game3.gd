@@ -265,6 +265,9 @@ func _unhandled_input(event):
 				_create_house()
 			if townhall_mode:
 				_create_townhall()
+		if event is InputEventKey && event.is_action_pressed("ui_cancel"):
+			if house_mode || townhall_mode:
+				_on_Game3_is_arrow()
 
 func _create_townhall():
 	var citizens=units.get_children()
@@ -610,77 +613,83 @@ func _on_Game3_is_arrow():
 
 
 func _on_Game3_is_basket():
-	Input.set_custom_mouse_cursor(basket)
-	basket_mode=true
-	arrow_mode=false
-	mattock_mode=false
-	sword_mode=false
-	claypot_mode=false
-	hand_mode=false
-	axe_mode=false
-	house_mode=false
-	townhall_mode=false
+	if !house_mode && !townhall_mode:
+		Input.set_custom_mouse_cursor(basket)
+		basket_mode=true
+		arrow_mode=false
+		mattock_mode=false
+		sword_mode=false
+		claypot_mode=false
+		hand_mode=false
+		axe_mode=false
+		house_mode=false
+		townhall_mode=false
 	
 func _on_Game3_is_pick_mattock():
-	Input.set_custom_mouse_cursor(pick_mattock)
-	mattock_mode=true
-	basket_mode=false
-	arrow_mode=false
-	sword_mode=false
-	claypot_mode=false
-	hand_mode=false
-	axe_mode=false
-	house_mode=false
-	townhall_mode=false
+	if !house_mode && !townhall_mode:
+		Input.set_custom_mouse_cursor(pick_mattock)
+		mattock_mode=true
+		basket_mode=false
+		arrow_mode=false
+		sword_mode=false
+		claypot_mode=false
+		hand_mode=false
+		axe_mode=false
+		house_mode=false
+		townhall_mode=false
 
 func _on_Game3_is_sword():
-	Input.set_custom_mouse_cursor(sword)
-	sword_mode=true
-	mattock_mode=false
-	basket_mode=false
-	arrow_mode=false
-	claypot_mode=false
-	hand_mode=false
-	axe_mode=false
-	house_mode=false
-	townhall_mode=false
+	if !house_mode && !townhall_mode:
+		Input.set_custom_mouse_cursor(sword)
+		sword_mode=true
+		mattock_mode=false
+		basket_mode=false
+		arrow_mode=false
+		claypot_mode=false
+		hand_mode=false
+		axe_mode=false
+		house_mode=false
+		townhall_mode=false
 
 func _on_Game3_is_hand():
-	Input.set_custom_mouse_cursor(hand)
-	hand_mode=true
-	mattock_mode=false
-	basket_mode=false
-	arrow_mode=false
-	sword_mode=false
-	claypot_mode=false
-	axe_mode=false
-	house_mode=false
-	townhall_mode=false
+	if !house_mode && !townhall_mode:
+		Input.set_custom_mouse_cursor(hand)
+		hand_mode=true
+		mattock_mode=false
+		basket_mode=false
+		arrow_mode=false
+		sword_mode=false
+		claypot_mode=false
+		axe_mode=false
+		house_mode=false
+		townhall_mode=false
 
 
 func _on_Game3_is_claypot():
-	Input.set_custom_mouse_cursor(claypot)
-	claypot_mode=true
-	arrow_mode=false
-	basket_mode=false
-	mattock_mode=false
-	sword_mode=false
-	hand_mode=false
-	axe_mode=false
-	house_mode=false
-	townhall_mode=false
+	if !house_mode && !townhall_mode:
+		Input.set_custom_mouse_cursor(claypot)
+		claypot_mode=true
+		arrow_mode=false
+		basket_mode=false
+		mattock_mode=false
+		sword_mode=false
+		hand_mode=false
+		axe_mode=false
+		house_mode=false
+		townhall_mode=false
 
 func _on_Game3_is_axe():
-	Input.set_custom_mouse_cursor(axe)
-	axe_mode=true
-	arrow_mode=false
-	basket_mode=false
-	mattock_mode=false
-	sword_mode=false
-	claypot_mode=false
-	hand_mode=false
-	house_mode=false
-	townhall_mode=false
+	if !house_mode && !townhall_mode:
+		Input.set_custom_mouse_cursor(axe)
+		axe_mode=true
+		arrow_mode=false
+		basket_mode=false
+		mattock_mode=false
+		sword_mode=false
+		claypot_mode=false
+		hand_mode=false
+		house_mode=false
+		townhall_mode=false
 	
 func _on_Game3_is_house():
 	Input.set_custom_mouse_cursor(house)

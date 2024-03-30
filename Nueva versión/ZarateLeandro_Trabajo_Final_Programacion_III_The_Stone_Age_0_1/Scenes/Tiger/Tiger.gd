@@ -10,6 +10,7 @@ var is_dead=false
 var speed=35.0
 var life=100
 var tiger_number
+onready var bar=$ProgressBar
 
 export var is_flipped:bool
 onready var warriors=get_tree().get_root().get_child(0).get_node("Warriors")
@@ -44,7 +45,7 @@ func _physics_process(delta):
 #					queue_free()
 	
 	#Actualizar barra de vida.
-	
+	$ProgressBar.value=life
 		
 	# Orientar al mamut.
 	if velocity.x<0:
