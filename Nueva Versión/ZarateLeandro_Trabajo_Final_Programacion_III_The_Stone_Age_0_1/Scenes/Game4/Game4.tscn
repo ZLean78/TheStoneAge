@@ -1,35 +1,34 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=28 format=2]
 
-[ext_resource path="res://Scenes/Cave/Cave.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Scenes/Plant/Plant.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Scenes/fruit_tree/fruit_tree.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scenes/Game/Camera.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/Game/SelectDraw.gd" type="Script" id=3]
 [ext_resource path="res://Scenes/Game2/gray_texture.png" type="Texture" id=4]
-[ext_resource path="res://Scenes/Game/Camera.gd" type="Script" id=5]
-[ext_resource path="res://Scenes/Game2/Game2.gd" type="Script" id=6]
-[ext_resource path="res://Scenes/Game/SelectDraw.gd" type="Script" id=7]
-[ext_resource path="res://Scenes/Game2/male1_d.png" type="Texture" id=8]
-[ext_resource path="res://Sprites/game/tiles/grass/simple/grass.png" type="Texture" id=9]
-[ext_resource path="res://Scenes/Game2/axe.png" type="Texture" id=10]
-[ext_resource path="res://Scenes/Game2/NextStageButton.png" type="Texture" id=11]
+[ext_resource path="res://Scenes/Game2/NextStageButton.png" type="Texture" id=5]
+[ext_resource path="res://Scenes/Game2/male1_d.png" type="Texture" id=6]
+[ext_resource path="res://Scenes/Game2/axe.png" type="Texture" id=7]
+[ext_resource path="res://Sprites/game/tiles/grass/simple/grass.png" type="Texture" id=8]
+[ext_resource path="res://Scenes/Plant/Plant.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Scenes/Puddle/Puddle.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Scenes/fruit_tree/fruit_tree.tscn" type="PackedScene" id=11]
 [ext_resource path="res://Scenes/Unit2/Unit2.tscn" type="PackedScene" id=12]
-[ext_resource path="res://Scenes/Game2/wheel.png" type="Texture" id=13]
-[ext_resource path="res://Scenes/Game2/claypot.png" type="Texture" id=14]
-[ext_resource path="res://Scenes/Game2/fire.png" type="Texture" id=15]
-[ext_resource path="res://Scenes/Game2/agro.png" type="Texture" id=16]
-[ext_resource path="res://Scenes/Quarry/Quarry.tscn" type="PackedScene" id=17]
-[ext_resource path="res://Scenes/Game2/food.png" type="Texture" id=18]
-[ext_resource path="res://Scenes/Game2/plant.png" type="Texture" id=19]
-[ext_resource path="res://Scenes/Game2/quarry.png" type="Texture" id=20]
-[ext_resource path="res://Scenes/Puddle/Puddle.tscn" type="PackedScene" id=21]
-[ext_resource path="res://Scenes/Game2/puddle.png" type="Texture" id=22]
-[ext_resource path="res://Scenes/PineTree/PineTree.tscn" type="PackedScene" id=23]
-[ext_resource path="res://Scenes/Game2/woodicon.png" type="Texture" id=24]
-[ext_resource path="res://Scenes/Lake/Lake.tscn" type="PackedScene" id=25]
-[ext_resource path="res://Scenes/Game2/watericon.png" type="Texture" id=26]
+[ext_resource path="res://Scenes/Lake/Lake.tscn" type="PackedScene" id=13]
+[ext_resource path="res://Scenes/PineTree/PineTree.tscn" type="PackedScene" id=14]
+[ext_resource path="res://Scenes/Cave/Cave.tscn" type="PackedScene" id=15]
+[ext_resource path="res://Scenes/Quarry/Quarry.tscn" type="PackedScene" id=16]
+[ext_resource path="res://Scenes/Game2/claypot.png" type="Texture" id=17]
+[ext_resource path="res://Scenes/Game2/quarry.png" type="Texture" id=18]
+[ext_resource path="res://Scenes/Game2/puddle.png" type="Texture" id=19]
+[ext_resource path="res://Scenes/Game2/wheel.png" type="Texture" id=20]
+[ext_resource path="res://Scenes/Game2/agro.png" type="Texture" id=21]
+[ext_resource path="res://Scenes/Game2/woodicon.png" type="Texture" id=22]
+[ext_resource path="res://Scenes/Game2/watericon.png" type="Texture" id=23]
+[ext_resource path="res://Scenes/Game2/food.png" type="Texture" id=24]
+[ext_resource path="res://Scenes/Game2/fire.png" type="Texture" id=25]
+[ext_resource path="res://Scenes/Game2/plant.png" type="Texture" id=26]
 
 [sub_resource type="TileSet" id=1]
 0/name = "grass.png 0"
-0/texture = ExtResource( 9 )
+0/texture = ExtResource( 8 )
 0/tex_offset = Vector2( 0, 0 )
 0/modulate = Color( 1, 1, 1, 1 )
 0/region = Rect2( 0, 0, 32, 33 )
@@ -48,10 +47,8 @@ vertices = PoolVector2Array( 1023, -634, 1027, 601, 1025, 241, 1024, 406, 837, 2
 polygons = [ PoolIntArray( 0, 1, 2 ), PoolIntArray( 3, 2, 1 ), PoolIntArray( 0, 2, 4, 5, 6 ), PoolIntArray( 7, 0, 6, 8 ), PoolIntArray( 9, 7, 8, 10 ), PoolIntArray( 1, 9, 10, 5, 11 ), PoolIntArray( 12, 3, 1 ), PoolIntArray( 13, 14, 12, 15 ), PoolIntArray( 5, 4, 11 ), PoolIntArray( 12, 1, 11, 15 ) ]
 outlines = [ PoolVector2Array( -1023, -634, -1015, 602, 1027, 601, 1023, -634 ), PoolVector2Array( -291, -28, -291, 29, -84, 29, -84, -27 ), PoolVector2Array( 1025, 241, 837, 243, 827, 405, 871, 403, 888, 329, 940, 331, 941, 406, 1024, 406 ) ]
 
-[node name="Game2" type="Node2D"]
+[node name="Game4" type="Node2D"]
 position = Vector2( -4, -11 )
-script = ExtResource( 6 )
-Unit2 = ExtResource( 12 )
 
 [node name="TileMap" type="TileMap" parent="." groups=["tilemap"]]
 position = Vector2( 0, 1 )
@@ -64,21 +61,21 @@ tile_data = PoolIntArray( -1245216, 0, 0, -1245215, 0, 0, -1245214, 0, 0, -12452
 
 [node name="Cave" type="Node2D" parent="."]
 
-[node name="Cave" parent="Cave" instance=ExtResource( 1 )]
+[node name="Cave" parent="Cave" instance=ExtResource( 15 )]
 position = Vector2( 931, 330 )
 
-[node name="Lake" parent="." instance=ExtResource( 25 )]
+[node name="Lake" parent="." instance=ExtResource( 13 )]
 position = Vector2( -180, -1 )
 
-[node name="Puddle" parent="." instance=ExtResource( 21 )]
+[node name="Puddle" parent="." instance=ExtResource( 10 )]
 position = Vector2( 531, 430 )
 
 [node name="Quarries" type="Node2D" parent="."]
 
-[node name="Quarry1" parent="Quarries" instance=ExtResource( 17 )]
+[node name="Quarry1" parent="Quarries" instance=ExtResource( 16 )]
 position = Vector2( -359, 426 )
 
-[node name="Quarry2" parent="Quarries" instance=ExtResource( 17 )]
+[node name="Quarry2" parent="Quarries" instance=ExtResource( 16 )]
 position = Vector2( 80, -530 )
 
 [node name="SpawnPosition" type="Position2D" parent="."]
@@ -88,7 +85,7 @@ position = Vector2( 713, 404 )
 position = Vector2( -870, -466 )
 
 [node name="TigerTarget" type="Position2D" parent="."]
-position = Vector2( 37, 98 )
+position = Vector2( 496, 365 )
 
 [node name="Units" type="Node2D" parent="."]
 process_priority = 1
@@ -106,56 +103,56 @@ z_as_relative = false
 
 [node name="FruitTrees" type="Node2D" parent="."]
 
-[node name="fruit_tree" parent="FruitTrees" instance=ExtResource( 3 )]
+[node name="fruit_tree" parent="FruitTrees" instance=ExtResource( 11 )]
 position = Vector2( -530, -207 )
 
-[node name="fruit_tree2" parent="FruitTrees" instance=ExtResource( 3 )]
+[node name="fruit_tree2" parent="FruitTrees" instance=ExtResource( 11 )]
 position = Vector2( -354, 152 )
 
-[node name="fruit_tree3" parent="FruitTrees" instance=ExtResource( 3 )]
+[node name="fruit_tree3" parent="FruitTrees" instance=ExtResource( 11 )]
 position = Vector2( -596, 3 )
 
-[node name="fruit_tree4" parent="FruitTrees" instance=ExtResource( 3 )]
+[node name="fruit_tree4" parent="FruitTrees" instance=ExtResource( 11 )]
 position = Vector2( 782, -336 )
 
-[node name="fruit_tree5" parent="FruitTrees" instance=ExtResource( 3 )]
+[node name="fruit_tree5" parent="FruitTrees" instance=ExtResource( 11 )]
 position = Vector2( 589, 266 )
 
-[node name="fruit_tree6" parent="FruitTrees" instance=ExtResource( 3 )]
+[node name="fruit_tree6" parent="FruitTrees" instance=ExtResource( 11 )]
 position = Vector2( 100, 123 )
 
 [node name="PineTrees" type="Node2D" parent="."]
 
-[node name="PineTree1" parent="PineTrees" instance=ExtResource( 23 )]
+[node name="PineTree1" parent="PineTrees" instance=ExtResource( 14 )]
 position = Vector2( 824, 231 )
 
-[node name="PineTree2" parent="PineTrees" instance=ExtResource( 23 )]
+[node name="PineTree2" parent="PineTrees" instance=ExtResource( 14 )]
 position = Vector2( 956, -501 )
 
-[node name="PineTree3" parent="PineTrees" instance=ExtResource( 23 )]
+[node name="PineTree3" parent="PineTrees" instance=ExtResource( 14 )]
 position = Vector2( -826, 411 )
 
-[node name="PineTree4" parent="PineTrees" instance=ExtResource( 23 )]
+[node name="PineTree4" parent="PineTrees" instance=ExtResource( 14 )]
 position = Vector2( -844, 63 )
 
-[node name="PineTree5" parent="PineTrees" instance=ExtResource( 23 )]
+[node name="PineTree5" parent="PineTrees" instance=ExtResource( 14 )]
 position = Vector2( -159, -543 )
 
-[node name="PineTree6" parent="PineTrees" instance=ExtResource( 23 )]
+[node name="PineTree6" parent="PineTrees" instance=ExtResource( 14 )]
 position = Vector2( 250, -141 )
 
-[node name="PineTree7" parent="PineTrees" instance=ExtResource( 23 )]
+[node name="PineTree7" parent="PineTrees" instance=ExtResource( 14 )]
 position = Vector2( -573, -569 )
 
-[node name="PineTree8" parent="PineTrees" instance=ExtResource( 23 )]
+[node name="PineTree8" parent="PineTrees" instance=ExtResource( 14 )]
 position = Vector2( -541, -98 )
 
 [node name="Plants" type="Node2D" parent="."]
 
-[node name="Plant" parent="Plants" instance=ExtResource( 2 )]
+[node name="Plant" parent="Plants" instance=ExtResource( 9 )]
 position = Vector2( 592, 53 )
 
-[node name="Plant2" parent="Plants" instance=ExtResource( 2 )]
+[node name="Plant2" parent="Plants" instance=ExtResource( 9 )]
 position = Vector2( 181, 469 )
 
 [node name="YSort" type="YSort" parent="."]
@@ -170,7 +167,7 @@ limit_right = 1024
 limit_bottom = 600
 editor_draw_limits = true
 editor_draw_drag_margin = true
-script = ExtResource( 5 )
+script = ExtResource( 1 )
 
 [node name="nav" type="Navigation2D" parent="."]
 
@@ -179,7 +176,7 @@ position = Vector2( 4, 2 )
 navpoly = SubResource( 3 )
 
 [node name="SelectDraw" type="Node2D" parent="."]
-script = ExtResource( 7 )
+script = ExtResource( 3 )
 
 [node name="food_timer" type="Timer" parent="."]
 
@@ -227,26 +224,26 @@ margin_bottom = 43.0
 hint_tooltip = "Crear Ciudadano.
 Costo: 15 ptos.
 de comida."
-texture_normal = ExtResource( 8 )
+texture_normal = ExtResource( 6 )
 
 [node name="PromptsLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 220.0
-margin_top = 6.00006
-margin_right = 662.0
+margin_top = 6.0
+margin_right = 579.0
 margin_bottom = 122.0
-text = "Recoge lodo, agua, alimentos, madera, piedra y hojas
-para cumplir con cada uno de los hitos
-marcados al seleccionar la
-entrada de la cueva. Escapa de los tigres dientes de sable
-o arrójales piedras haciendo
-clic derecho sobre ellos estandoa gran distancia.."
+text = "Desarrolla los hitos debajo del título de 
+DESAFÍOS/DESARROLLOS\".
+Recoge los recursos para hacerlo.
+Repele a los invasores enemigos. Crea 
+un fuerte de soldados y torres
+de vigilancia para hacerlo."
 
 [node name="FoodTexture" type="TextureRect" parent="UI/Base/Rectangle"]
 margin_left = 17.0
 margin_top = 5.0
 margin_right = 53.0
 margin_bottom = 34.0
-texture = ExtResource( 18 )
+texture = ExtResource( 24 )
 
 [node name="FoodLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 17.0
@@ -261,7 +258,7 @@ margin_left = 17.0
 margin_top = 35.0
 margin_right = 53.0
 margin_bottom = 69.0
-texture = ExtResource( 19 )
+texture = ExtResource( 26 )
 
 [node name="LeavesLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 18.0
@@ -275,7 +272,7 @@ margin_left = 17.0
 margin_top = 74.0001
 margin_right = 57.0
 margin_bottom = 114.0
-texture = ExtResource( 20 )
+texture = ExtResource( 18 )
 
 [node name="StoneLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 17.0
@@ -289,7 +286,7 @@ margin_left = 76.0
 margin_top = 10.0
 margin_right = 116.0
 margin_bottom = 29.0
-texture = ExtResource( 22 )
+texture = ExtResource( 19 )
 
 [node name="ClayLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 70.0
@@ -303,7 +300,7 @@ margin_left = 71.0
 margin_top = 35.0
 margin_right = 111.0
 margin_bottom = 77.0
-texture = ExtResource( 24 )
+texture = ExtResource( 22 )
 
 [node name="WoodLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 72.0
@@ -317,52 +314,88 @@ margin_left = 76.0
 margin_top = 81.0001
 margin_right = 116.0
 margin_bottom = 121.0
-texture = ExtResource( 26 )
+texture = ExtResource( 23 )
 
-[node name="DevelopStoneWeapons" type="TextureButton" parent="UI/Base/Rectangle"]
-visible = false
-margin_left = 910.0
-margin_top = 31.0001
-margin_right = 937.0
-margin_bottom = 52.0001
-hint_tooltip = "Desarrollar armas de piedra, cuerda y madera: Crea armas que te servirán para combatir a las bestias. Costo: 70 ptos. piedra, 70 ptos. madera y 50 ptos. hojas"
-texture_normal = ExtResource( 10 )
-
-[node name="InventWheel" type="TextureButton" parent="UI/Base/Rectangle"]
-visible = false
-margin_left = 883.0
-margin_top = 26.0001
-margin_right = 896.0
-margin_bottom = 50.0001
-hint_tooltip = "Inventar la rueda: Uno de los avances tecnológicos más importantes de la época, no podrás crear vehículos más adelante sin él. Costo: 70 ptos piedra, 40 ptos. madera."
-texture_normal = ExtResource( 13 )
-
-[node name="DiscoverFire" type="TextureButton" parent="UI/Base/Rectangle"]
-visible = false
-margin_left = 858.0
-margin_top = 23.0001
-margin_right = 871.0
-margin_bottom = 47.0001
-hint_tooltip = "Descubrir el fuego: Avance tecnológico crucial para calefacción, cocina y en ocasiones uso armamentístico. Costo: 60 ptos. madera, 40 ptos. piedra."
-texture_normal = ExtResource( 15 )
-
-[node name="MakeClaypot" type="TextureButton" parent="UI/Base/Rectangle"]
-visible = false
-margin_left = 946.0
+[node name="DevelopPottery" type="TextureButton" parent="UI/Base/Rectangle"]
+margin_left = 990.0
 margin_top = 25.0001
-margin_right = 959.0
+margin_right = 1002.0
 margin_bottom = 49.0001
-hint_tooltip = "Cuenco de barro: primer gran hito en alfarería. No podrás recolectar agua sin él. Costo: 85 ptos. lodo."
-texture_normal = ExtResource( 14 )
+hint_tooltip = "Desarrollar alfarería:
+necesario para fabricar
+recipientes y cacharros
+de todo tipo. Aumenta tu capacidad de recolección.
+Costo: 400 pts. arcilla, 150 pts. madera."
+texture_normal = ExtResource( 17 )
 
-[node name="DevelopAgriculture" type="TextureButton" parent="UI/Base/Rectangle"]
-visible = false
-margin_left = 975.0
-margin_top = 25.0001
-margin_right = 988.0
-margin_bottom = 49.0001
-hint_tooltip = "Desarrollar agricultura: Una forma constante y dinámica de proveer alimentos. Costo: 70 ptos. agua, 70 ptos alimentos, 70 ptos. hojas."
-texture_normal = ExtResource( 16 )
+[node name="DevelopCarpentry" type="TextureButton" parent="UI/Base/Rectangle"]
+margin_left = 960.0
+margin_top = 25.0
+margin_right = 987.0
+margin_bottom = 46.0
+hint_tooltip = "Desarrollar carpintería:
+útil en todo tipo de
+construcciones, armas y
+herramientas. Costo: 500 pts. madera."
+texture_normal = ExtResource( 7 )
+
+[node name="DevelopMining" type="TextureButton" parent="UI/Base/Rectangle"]
+margin_left = 940.0
+margin_top = 25.0
+margin_right = 953.0
+margin_bottom = 49.0
+hint_tooltip = "Desarrollar minería:
+aprende a recolectar y
+explotar más rápido los 
+recursos minerales de la zona. Costo: 300 pts. piedra,
+200 pts. cobre."
+texture_normal = ExtResource( 20 )
+
+[node name="DevelopMetals" type="TextureButton" parent="UI/Base/Rectangle"]
+margin_left = 921.0
+margin_top = 25.0
+margin_right = 934.0
+margin_bottom = 49.0
+hint_tooltip = "Desarrollar fundición de metales:
+te permitirá fabricar armas,
+herramientas y utensilios
+más resistentes y duraderos.
+Costo: 250 pts. piedra, 150 pts. cobre."
+texture_normal = ExtResource( 20 )
+
+[node name="BuildBarn" type="TextureButton" parent="UI/Base/Rectangle"]
+margin_left = 868.0
+margin_top = 25.0
+margin_right = 881.0
+margin_bottom = 49.0
+hint_tooltip = "Crear granero: aumenta 200%
+tu capacidad de almacenamiento
+de alimentos. Costo: 300 pts.
+arcilla, 200 pts. hojas."
+texture_normal = ExtResource( 21 )
+
+[node name="BuildSurveillanceTower" type="TextureButton" parent="UI/Base/Rectangle"]
+margin_left = 894.0
+margin_top = 25.0
+margin_right = 907.0
+margin_bottom = 49.0
+hint_tooltip = "Construir torre de vigilancia:
+construcción esencial para
+defender la aldea. Costo,
+piedra: 100 pts, madera: 80 pts, hojas: 20 pts."
+texture_normal = ExtResource( 21 )
+
+[node name="BuildFort" type="TextureButton" parent="UI/Base/Rectangle"]
+margin_left = 849.0
+margin_top = 25.0
+margin_right = 862.0
+margin_bottom = 49.0
+hint_tooltip = "Contruir fuerte de soldados:
+aquí podrás entrenar
+militares más avanzados
+y fabricar equipamiento
+bélico. Costo, 300 pts. madera, 200 pts. piedra, 40 pts. hojas."
+texture_normal = ExtResource( 25 )
 
 [node name="DevelopmentsLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 850.0
@@ -393,21 +426,16 @@ margin_left = 490.0
 margin_top = -269.0
 margin_right = 732.0
 margin_bottom = -199.0
-texture_normal = ExtResource( 11 )
+texture_normal = ExtResource( 5 )
 expand = true
 
-[connection signal="is_arrow" from="." to="." method="_on_Game2_is_arrow"]
-[connection signal="is_axe" from="." to="." method="_on_Game2_is_axe"]
-[connection signal="is_basket" from="." to="." method="_on_Game2_is_basket"]
-[connection signal="is_claypot" from="." to="." method="_on_Game2_is_claypot"]
-[connection signal="is_hand" from="." to="." method="_on_Game2_is_hand"]
-[connection signal="is_pick_mattock" from="." to="." method="_on_Game2_is_pick_mattock"]
-[connection signal="is_sword" from="." to="." method="_on_Game2_is_sword"]
 [connection signal="timeout" from="tiger_timer" to="." method="_on_tiger_timer_timeout"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/DevelopStoneWeapons" to="." method="_on_DevelopStoneWeapons_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/InventWheel" to="." method="_on_InventWheel_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/DiscoverFire" to="." method="_on_DiscoverFire_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/MakeClaypot" to="." method="_on_MakeClaypot_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/DevelopAgriculture" to="." method="_on_DevelopAgriculture_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/DevelopPottery" to="." method="_on_MakeClaypot_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/DevelopCarpentry" to="." method="_on_DevelopStoneWeapons_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/DevelopMining" to="." method="_on_InventWheel_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/DevelopMetals" to="." method="_on_InventWheel_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/BuildBarn" to="." method="_on_DevelopAgriculture_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/BuildSurveillanceTower" to="." method="_on_DevelopAgriculture_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/BuildFort" to="." method="_on_DiscoverFire_pressed"]
 [connection signal="pressed" from="UI/Base/NextSceneButton" to="." method="_on_NextSceneButton_pressed"]
