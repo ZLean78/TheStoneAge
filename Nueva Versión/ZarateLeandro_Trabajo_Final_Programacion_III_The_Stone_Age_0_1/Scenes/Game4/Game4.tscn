@@ -1,6 +1,7 @@
-[gd_scene load_steps=28 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://Scenes/Game/Camera.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/Copper/CopperSmall.png" type="Texture" id=2]
 [ext_resource path="res://Scenes/Game/SelectDraw.gd" type="Script" id=3]
 [ext_resource path="res://Scenes/Game2/gray_texture.png" type="Texture" id=4]
 [ext_resource path="res://Scenes/Game2/NextStageButton.png" type="Texture" id=5]
@@ -155,6 +156,16 @@ position = Vector2( 592, 53 )
 [node name="Plant2" parent="Plants" instance=ExtResource( 9 )]
 position = Vector2( 181, 469 )
 
+[node name="Houses" type="Node2D" parent="."]
+
+[node name="TownHall" type="Node2D" parent="."]
+
+[node name="Fort" type="Node2D" parent="."]
+
+[node name="Barn" type="Node2D" parent="."]
+
+[node name="Towers" type="Node2D" parent="."]
+
 [node name="YSort" type="YSort" parent="."]
 
 [node name="Camera" type="Camera2D" parent="."]
@@ -279,6 +290,20 @@ margin_left = 17.0
 margin_top = 84.0
 margin_right = 35.0
 margin_bottom = 101.0
+text = "0"
+
+[node name="CopperTexture" type="TextureRect" parent="UI/Base/Rectangle"]
+margin_left = 126.0
+margin_top = 8.0
+margin_right = 161.0
+margin_bottom = 38.0
+texture = ExtResource( 2 )
+
+[node name="CopperLabel" type="Label" parent="UI/Base/Rectangle"]
+margin_left = 126.0
+margin_top = 3.0
+margin_right = 144.0
+margin_bottom = 20.0
 text = "0"
 
 [node name="ClayTexture" type="TextureRect" parent="UI/Base/Rectangle"]
