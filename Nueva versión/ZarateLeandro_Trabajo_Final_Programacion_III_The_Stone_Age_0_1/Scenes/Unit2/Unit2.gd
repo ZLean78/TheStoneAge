@@ -290,7 +290,7 @@ func _physics_process(delta):
 	
 		
 func _collect_pickable(var _pickable):
-	if _pickable.type == "fruit_tree" or _pickable.type == "pine_tree" or _pickable.type == "plant" or _pickable.type == "quarry":
+	if _pickable.type == "fruit_tree" or _pickable.type == "pine_tree" or _pickable.type == "plant" or _pickable.type == "quarry" or _pickable.type == "copper":
 		if _pickable.touching && !_pickable.empty && pickable_touching:
 			if((abs(position.x-_pickable.position.x)<50)&&
 			(abs(position.y-_pickable.position.y)<50)):
@@ -339,6 +339,17 @@ func _collect_pickable(var _pickable):
 							_pickable.points=0
 					else:
 						root.stone_points+=1
+						_pickable.points-=1
+				elif _pickable.type == "copper":
+					if(root.is_stone_weapons_developed):
+						if(_pickable.points>=4):
+							root.copper_points+=4
+							_pickable.points-=4
+						else:
+							root.copper_points+=_pickable.points
+							_pickable.points=0
+					else:
+						root.copper_points+=1
 						_pickable.points-=1
 			if _pickable.points <= 0:
 				_pickable.empty = true	

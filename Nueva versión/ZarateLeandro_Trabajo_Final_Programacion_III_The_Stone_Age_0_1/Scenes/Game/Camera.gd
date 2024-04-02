@@ -76,7 +76,6 @@ func _process(delta):
 		position.y=lerp(position.y,position.y+abs(mousePos.y-ProjectSettings.get("display/window/size/height")+marginY)/marginY*panSpeed*zoom.y,panSpeed*delta)
 
 	if Input.is_action_just_pressed("ui_left_mouse_button"):
-		#rectd.visible=true		
 		start = mousePosGlobal
 		startV = mousePos
 		is_dragging = true	

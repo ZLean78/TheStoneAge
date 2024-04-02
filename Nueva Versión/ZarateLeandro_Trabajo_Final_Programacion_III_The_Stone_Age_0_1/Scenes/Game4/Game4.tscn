@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=35 format=2]
 
 [ext_resource path="res://Scenes/Game/Camera.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Copper/CopperSmall.png" type="Texture" id=2]
@@ -26,6 +26,12 @@
 [ext_resource path="res://Scenes/Game2/food.png" type="Texture" id=24]
 [ext_resource path="res://Scenes/Game2/fire.png" type="Texture" id=25]
 [ext_resource path="res://Scenes/Game2/plant.png" type="Texture" id=26]
+[ext_resource path="res://Scenes/Game4/Game4.gd" type="Script" id=27]
+[ext_resource path="res://Scenes/MouseIcons/house_small.png" type="Texture" id=28]
+[ext_resource path="res://Scenes/House/house.tscn" type="PackedScene" id=29]
+[ext_resource path="res://Scenes/TownHall/townhall.tscn" type="PackedScene" id=30]
+[ext_resource path="res://Scenes/Warrior/Warrior.tscn" type="PackedScene" id=31]
+[ext_resource path="res://Scenes/Copper/Copper.tscn" type="PackedScene" id=32]
 
 [sub_resource type="TileSet" id=1]
 0/name = "grass.png 0"
@@ -50,6 +56,11 @@ outlines = [ PoolVector2Array( -1023, -634, -1015, 602, 1027, 601, 1023, -634 ),
 
 [node name="Game4" type="Node2D"]
 position = Vector2( -4, -11 )
+script = ExtResource( 27 )
+Unit2 = ExtResource( 12 )
+Warrior = ExtResource( 31 )
+House = ExtResource( 29 )
+TownHall = ExtResource( 30 )
 
 [node name="TileMap" type="TileMap" parent="." groups=["tilemap"]]
 position = Vector2( 0, 1 )
@@ -78,6 +89,14 @@ position = Vector2( -359, 426 )
 
 [node name="Quarry2" parent="Quarries" instance=ExtResource( 16 )]
 position = Vector2( 80, -530 )
+
+[node name="Coppers" type="Node2D" parent="."]
+
+[node name="Copper" parent="Coppers" instance=ExtResource( 32 )]
+position = Vector2( -121, -359 )
+
+[node name="Copper2" parent="Coppers" instance=ExtResource( 32 )]
+position = Vector2( -523, 336 )
 
 [node name="SpawnPosition" type="Position2D" parent="."]
 position = Vector2( 713, 404 )
@@ -191,7 +210,7 @@ script = ExtResource( 3 )
 
 [node name="food_timer" type="Timer" parent="."]
 
-[node name="tiger_timer" type="Timer" parent="."]
+[node name="enemy_timer" type="Timer" parent="."]
 wait_time = 50.0
 
 [node name="damage_timer" type="Timer" parent="."]
@@ -228,13 +247,25 @@ size_flags_vertical = 2
 color = Color( 0.0627451, 0.27451, 0.835294, 0.768627 )
 
 [node name="CreateCitizen" type="TextureButton" parent="UI/Base/Rectangle"]
-margin_left = 1060.0
-margin_top = 20.0
-margin_right = 1072.0
-margin_bottom = 43.0
+margin_left = 1104.0
+margin_top = 19.0
+margin_right = 1116.0
+margin_bottom = 42.0
 hint_tooltip = "Crear Ciudadano.
 Costo: 15 ptos.
 de comida."
+texture_normal = ExtResource( 6 )
+
+[node name="CreateWarriorUnit" type="TextureButton" parent="UI/Base/Rectangle"]
+margin_left = 1082.0
+margin_top = 19.0
+margin_right = 1095.0
+margin_bottom = 43.0
+hint_tooltip = "Crear unidad militar
+guerrero y cazador.
+Costo: 30 ptos. alimento,
+20 ptos. madera,
+10 ptos. piedra."
 texture_normal = ExtResource( 6 )
 
 [node name="PromptsLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -388,6 +419,15 @@ más resistentes y duraderos.
 Costo: 250 pts. piedra, 150 pts. cobre."
 texture_normal = ExtResource( 20 )
 
+[node name="CreateHouse" type="TextureButton" parent="UI/Base/Rectangle"]
+margin_left = 1052.0
+margin_top = 20.0
+margin_right = 1075.0
+margin_bottom = 43.0
+hint_tooltip = "Crear casa: construir una vivienda.
+Costo: arcilla, 40 ptos, madera, 20 ptos."
+texture_normal = ExtResource( 28 )
+
 [node name="BuildBarn" type="TextureButton" parent="UI/Base/Rectangle"]
 margin_left = 868.0
 margin_top = 25.0
@@ -454,7 +494,14 @@ margin_bottom = -199.0
 texture_normal = ExtResource( 5 )
 expand = true
 
-[connection signal="timeout" from="tiger_timer" to="." method="_on_tiger_timer_timeout"]
+[connection signal="is_arrow" from="." to="." method="_on_Game4_is_arrow"]
+[connection signal="is_axe" from="." to="." method="_on_Game4_is_axe"]
+[connection signal="is_basket" from="." to="." method="_on_Game4_is_basket"]
+[connection signal="is_claypot" from="." to="." method="_on_Game4_is_claypot"]
+[connection signal="is_hand" from="." to="." method="_on_Game4_is_hand"]
+[connection signal="is_pick_mattock" from="." to="." method="_on_Game4_is_pick_mattock"]
+[connection signal="is_sword" from="." to="." method="_on_Game4_is_sword"]
+[connection signal="timeout" from="enemy_timer" to="." method="_on_tiger_timer_timeout"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/DevelopPottery" to="." method="_on_MakeClaypot_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/DevelopCarpentry" to="." method="_on_DevelopStoneWeapons_pressed"]

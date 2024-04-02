@@ -72,7 +72,23 @@ func _on_Area2D_mouse_entered():
 			elif type == "puddle":
 				get_tree().root.get_child(0).emit_signal("is_hand")	
 			elif type == "lake":
-				get_tree().root.get_child(0).emit_signal("is_claypot")	
+				get_tree().root.get_child(0).emit_signal("is_claypot")
+	if tree.name == "Game4":
+		if !tree.house_mode:
+			if type == "fruit_tree":
+				get_parent().get_parent().emit_signal("is_basket")
+			elif type == "plant":
+				get_parent().get_parent().emit_signal("is_basket")	
+			elif type == "pine_tree":
+				get_parent().get_parent().emit_signal("is_axe")
+			elif type == "quarry":
+				get_parent().get_parent().emit_signal("is_pick_mattock")	
+			elif type == "copper":
+				get_parent().get_parent().emit_signal("is_pick_mattock")	
+			elif type == "puddle":
+				get_parent().emit_signal("is_hand")	
+			elif type == "lake":
+				get_parent().emit_signal("is_claypot")		
 
 
 func _on_Area2D_mouse_exited():
@@ -94,8 +110,12 @@ func _on_Area2D_mouse_exited():
 				get_parent().get_parent().emit_signal("is_arrow")
 			elif type == "quarry" or type == "puddle" or type == "lake":
 				tree.emit_signal("is_arrow")
-				if type=="lake":
-					if tree.name == "Game2":
-						tree.prompts_label.text = tree.start_string
+	if tree.name == "Game4":
+		if !tree.house_mode:
+			if type == "fruit_tree" or type == "plant" or type == "pine_tree":
+				get_parent().get_parent().emit_signal("is_arrow")
+			elif type == "quarry" or type == "puddle" or type == "lake" or type == "copper":
+				tree.emit_signal("is_arrow")
+				
 
 
