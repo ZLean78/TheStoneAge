@@ -76,24 +76,27 @@ func _process(delta):
 		position.y=lerp(position.y,position.y+abs(mousePos.y-ProjectSettings.get("display/window/size/height")+marginY)/marginY*panSpeed*zoom.y,panSpeed*delta)
 
 	if Input.is_action_just_pressed("ui_left_mouse_button"):
-		start = mousePosGlobal
-		startV = mousePos
-		is_dragging = true	
+		if get_parent().arrow_mode:
+			start = mousePosGlobal
+			startV = mousePos
+			is_dragging = true	
 	if is_dragging:
 		end = mousePosGlobal
 		endV = mousePos
 		draw_area()
 	if Input.is_action_just_released("ui_left_mouse_button"):
-		if startV.distance_to(mousePos)>20:
-			end = mousePosGlobal
-			endV = mousePos
-			is_dragging = false
-			draw_area(false)
-			emit_signal("area_selected")
-		else:
-			end = start
-			is_dragging = false
-			draw_area(false)		
+		if get_parent().arrow_mode:
+			if startV.distance_to(mousePos)>20:
+				end = mousePosGlobal
+				endV = mousePos
+				is_dragging = false
+				draw_area(false)
+				emit_signal("area_selected")
+			else:
+				end = start
+				is_dragging = false
+				draw_area(false)
+			
 #		if startV.distance_to(mousePos)>20:
 #			end = mousePosGlobal
 #			endV = mousePos
