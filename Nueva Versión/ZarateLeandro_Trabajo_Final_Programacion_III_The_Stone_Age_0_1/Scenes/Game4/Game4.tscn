@@ -107,6 +107,16 @@ position = Vector2( -870, -466 )
 [node name="TigerTarget" type="Position2D" parent="."]
 position = Vector2( 496, 365 )
 
+[node name="Houses" type="Node2D" parent="."]
+
+[node name="TownHall" type="Node2D" parent="."]
+
+[node name="Fort" type="Node2D" parent="."]
+
+[node name="Barn" type="Node2D" parent="."]
+
+[node name="Towers" type="Node2D" parent="."]
+
 [node name="Units" type="Node2D" parent="."]
 process_priority = 1
 z_as_relative = false
@@ -174,16 +184,6 @@ position = Vector2( 592, 53 )
 
 [node name="Plant2" parent="Plants" instance=ExtResource( 9 )]
 position = Vector2( 181, 469 )
-
-[node name="Houses" type="Node2D" parent="."]
-
-[node name="TownHall" type="Node2D" parent="."]
-
-[node name="Fort" type="Node2D" parent="."]
-
-[node name="Barn" type="Node2D" parent="."]
-
-[node name="Towers" type="Node2D" parent="."]
 
 [node name="YSort" type="YSort" parent="."]
 
@@ -503,10 +503,8 @@ expand = true
 [connection signal="is_sword" from="." to="." method="_on_Game4_is_sword"]
 [connection signal="timeout" from="enemy_timer" to="." method="_on_tiger_timer_timeout"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/DevelopPottery" to="." method="_on_MakeClaypot_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/DevelopCarpentry" to="." method="_on_DevelopStoneWeapons_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/DevelopMining" to="." method="_on_InventWheel_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/DevelopMetals" to="." method="_on_InventWheel_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/CreateWarriorUnit" to="." method="_on_CreateWarriorUnit_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/CreateHouse" to="." method="_on_CreateHouse_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/BuildBarn" to="." method="_on_DevelopAgriculture_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/BuildSurveillanceTower" to="." method="_on_DevelopAgriculture_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/BuildFort" to="." method="_on_DiscoverFire_pressed"]
