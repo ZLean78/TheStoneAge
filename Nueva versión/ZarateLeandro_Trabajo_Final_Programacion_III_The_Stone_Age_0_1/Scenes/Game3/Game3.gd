@@ -264,13 +264,16 @@ func _unhandled_input(event):
 							selected_units[i].target_position=Vector2(selected_units[0].target_position.x,selected_units[i-1].target_position.y+20)
 						else:
 							selected_units[i].target_position=Vector2(selected_units[i-1].target_position.x+20,selected_units[i-1].target_position.y)
+			if house_mode || townhall_mode:
+				_on_Game3_is_arrow()
+		if event is InputEventKey && event.is_action_pressed("ui_cancel"):
+			if house_mode || townhall_mode:
+				_on_Game3_is_arrow()
+		if event is InputEventMouseButton && event.is_action_pressed("ui_left_mouse_button"):
 			if house_mode:
 				_create_house()
 			if townhall_mode:
 				_create_townhall()
-		if event is InputEventKey && event.is_action_pressed("ui_cancel"):
-			if house_mode || townhall_mode:
-				_on_Game3_is_arrow()
 
 func _create_townhall():
 	var citizens=units.get_children()
