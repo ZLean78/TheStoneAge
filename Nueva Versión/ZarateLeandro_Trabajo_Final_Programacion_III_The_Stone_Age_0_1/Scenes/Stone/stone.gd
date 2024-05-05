@@ -8,7 +8,7 @@ var velocity_y=Vector2(0,-250)
 func _ready():
 	start_position=position
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	velocity_y+=gravity
 	move_projectile()
 

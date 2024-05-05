@@ -38,21 +38,24 @@ var zooming=false
 
 var is_dragging=false
 
-var move_to_point=Vector2()
+#var move_to_point=Vector2()
 
 onready var tree = get_tree().root.get_child(0)
 
-onready var rectd = tree.find_node("draw_rect")
+#onready var rectd = tree.find_node("draw_rect")
+
+onready var select_draw = tree.find_node("SelectDraw")
 
 var its_raining=false
 
 signal area_selected
-signal start_move_selection
+#signal start_move_selection
 
 func _ready():
 	#rectd.visible=true
 	connect("area_selected",get_parent(),"area_selected",[self])
 	#connect("start_move_selection",get_parent(),"start_move_selection",[self])
+	pass
 
 func _process(delta):
 	#smooth movement
@@ -81,32 +84,24 @@ func _process(delta):
 			startV = mousePos
 			is_dragging = true	
 	if is_dragging:
-		end = mousePosGlobal
-		endV = mousePos
-		draw_area()
+		if startV.distance_to(mousePos)>20:
+			end = mousePosGlobal
+			endV = mousePos
+			select_draw.update_status(start,mousePosGlobal+Vector2(6,12),is_dragging)
+			#var drag_end = mousePos
 	if Input.is_action_just_released("ui_left_mouse_button"):
-		if get_parent().arrow_mode:
-			if startV.distance_to(mousePos)>20:
-				end = mousePosGlobal
-				endV = mousePos
-				is_dragging = false
-				draw_area(false)
-				emit_signal("area_selected")
-			else:
-				end = start
-				is_dragging = false
-				draw_area(false)
+		if startV.distance_to(mousePos)>20:
+			end = mousePosGlobal
+			endV = mousePos
+			is_dragging = false
+			select_draw.update_status(start,mousePosGlobal,is_dragging)				
+			emit_signal("area_selected")
+		else:
+			end = start
+			is_dragging = false
+				
 			
-#		if startV.distance_to(mousePos)>20:
-#			end = mousePosGlobal
-#			endV = mousePos
-#			is_dragging = false
-#			draw_area(false)
-#			emit_signal("area_selected")
-#		else:
-#			end = start
-#			is_dragging = false
-#			draw_area(false)
+#		
 
 	#zoom in
 	zoom.x = lerp(zoom.x,zoom.x*zoomFactor,zoomSpeed*delta)
@@ -114,21 +109,10 @@ func _process(delta):
 
 	zoom.x=clamp(zoom.x,zoomMin,zoomMax)
 	zoom.y=clamp(zoom.y,zoomMin,zoomMax)
-
-
-
-	"""if (Input.is_action_just_pressed("ui_right_mouse_button")):
-		#position=get_global_mouse_position()
-		position.x=lerp(position.x,position.x+speed*zoom.x,speed*delta)
-		position.y=lerp(position.y,position.y+speed*zoom.y,speed*delta)	
-
-		move_to_point = mousePosGlobal
-		emit_signal("start_move_selection")	"""	
+	
 
 	position.x=clamp(position.x,-1650,1650)
 	position.y=clamp(position.y,-960,960)
-	
-
 
 
 	if not zooming:
@@ -136,23 +120,23 @@ func _process(delta):
 
 
 
-func draw_area(s = true):
-	rectd.rect_size = endV-startV
-
-	var pos = Vector2()
-	pos.x = min(startV.x,endV.x)
-	pos.y = min(startV.y,endV.y)
-	
-	pos.x = clamp(pos.x,0,OS.window_size.x - rectd.rect_size.x)
-	pos.y = clamp(pos.y,0,OS.window_size.y - rectd.rect_size.y)
-	
-	#pos.y = min(startV.y,endV.y) - OS.window_size.y/1.25 - 18
-	pos.y = min(startV.y,endV.y) - OS.window_size.y/1.18	
-	
-	
-	rectd.rect_position = pos
-
-	rectd.rect_size *= int(s) # true = 1, false = 0	
+#func draw_area(s = true):
+#	rectd.rect_size = endV-startV
+#
+#	var pos = Vector2()
+#	pos.x = min(startV.x,endV.x)
+#	pos.y = min(startV.y,endV.y)
+#
+#	pos.x = clamp(pos.x,0,OS.window_size.x - rectd.rect_size.x)
+#	pos.y = clamp(pos.y,0,OS.window_size.y - rectd.rect_size.y)
+#
+#	#pos.y = min(startV.y,endV.y) - OS.window_size.y/1.25 - 18
+#	pos.y = min(startV.y,endV.y) - OS.window_size.y/1.18	
+#
+#
+#	rectd.rect_position = pos
+#
+#	rectd.rect_size *= int(s) # true = 1, false = 0	
 	
 
 func _input(event):

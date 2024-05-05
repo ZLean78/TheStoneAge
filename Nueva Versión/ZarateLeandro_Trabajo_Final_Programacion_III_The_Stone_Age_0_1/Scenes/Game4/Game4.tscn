@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=2]
+[gd_scene load_steps=38 format=2]
 
 [ext_resource path="res://Scenes/Game/Camera.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Copper/CopperSmall.png" type="Texture" id=2]
@@ -32,6 +32,9 @@
 [ext_resource path="res://Scenes/TownHall/townhall.tscn" type="PackedScene" id=30]
 [ext_resource path="res://Scenes/Warrior/Warrior.tscn" type="PackedScene" id=31]
 [ext_resource path="res://Scenes/Copper/Copper.tscn" type="PackedScene" id=32]
+[ext_resource path="res://Scenes/Fort/Fort.tscn" type="PackedScene" id=33]
+[ext_resource path="res://Scenes/Tower/Tower.tscn" type="PackedScene" id=34]
+[ext_resource path="res://Scenes/Barn/Barn.tscn" type="PackedScene" id=35]
 
 [sub_resource type="TileSet" id=1]
 0/name = "grass.png 0"
@@ -61,6 +64,9 @@ Unit2 = ExtResource( 12 )
 Warrior = ExtResource( 31 )
 House = ExtResource( 29 )
 TownHall = ExtResource( 30 )
+Fort = ExtResource( 33 )
+Tower = ExtResource( 34 )
+Barn = ExtResource( 35 )
 
 [node name="TileMap" type="TileMap" parent="." groups=["tilemap"]]
 position = Vector2( 0, 1 )
@@ -90,6 +96,12 @@ position = Vector2( -359, 426 )
 [node name="Quarry2" parent="Quarries" instance=ExtResource( 16 )]
 position = Vector2( 80, -530 )
 
+[node name="Quarry3" parent="Quarries" instance=ExtResource( 16 )]
+position = Vector2( -761, -333 )
+
+[node name="Quarry4" parent="Quarries" instance=ExtResource( 16 )]
+position = Vector2( 972, -421 )
+
 [node name="Coppers" type="Node2D" parent="."]
 
 [node name="Copper" parent="Coppers" instance=ExtResource( 32 )]
@@ -109,7 +121,32 @@ position = Vector2( 496, 365 )
 
 [node name="Houses" type="Node2D" parent="."]
 
+[node name="House" parent="Houses" instance=ExtResource( 29 )]
+position = Vector2( 470, 227 )
+condition = 20
+condition_max = 20
+
+[node name="House2" parent="Houses" instance=ExtResource( 29 )]
+position = Vector2( 528, 136 )
+condition = 20
+condition_max = 20
+
+[node name="House3" parent="Houses" instance=ExtResource( 29 )]
+position = Vector2( 520, 326 )
+condition = 20
+condition_max = 20
+
+[node name="House4" parent="Houses" instance=ExtResource( 29 )]
+position = Vector2( 648, 88 )
+condition = 20
+condition_max = 20
+
 [node name="TownHall" type="Node2D" parent="."]
+
+[node name="TownHall" parent="TownHall" instance=ExtResource( 30 )]
+position = Vector2( 686, 219 )
+condition = 80
+condition_max = 80
 
 [node name="Fort" type="Node2D" parent="."]
 
@@ -177,6 +214,12 @@ position = Vector2( -573, -569 )
 [node name="PineTree8" parent="PineTrees" instance=ExtResource( 14 )]
 position = Vector2( -541, -98 )
 
+[node name="PineTree9" parent="PineTrees" instance=ExtResource( 14 )]
+position = Vector2( -516, 178 )
+
+[node name="PineTree10" parent="PineTrees" instance=ExtResource( 14 )]
+position = Vector2( -789, 213 )
+
 [node name="Plants" type="Node2D" parent="."]
 
 [node name="Plant" parent="Plants" instance=ExtResource( 9 )]
@@ -184,6 +227,9 @@ position = Vector2( 592, 53 )
 
 [node name="Plant2" parent="Plants" instance=ExtResource( 9 )]
 position = Vector2( 181, 469 )
+
+[node name="Plant3" parent="Plants" instance=ExtResource( 9 )]
+position = Vector2( -892, -70 )
 
 [node name="YSort" type="YSort" parent="."]
 
@@ -231,21 +277,6 @@ size_flags_horizontal = 2
 size_flags_vertical = 0
 texture = ExtResource( 4 )
 
-[node name="draw_rect" type="ColorRect" parent="UI/Base/Rectangle"]
-show_behind_parent = true
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 640.0
-margin_top = -360.0
-margin_right = -640.0
-margin_bottom = -480.0
-grow_horizontal = 2
-grow_vertical = 2
-input_pass_on_modal_close_click = false
-size_flags_horizontal = 2
-size_flags_vertical = 2
-color = Color( 0.0627451, 0.27451, 0.835294, 0.768627 )
-
 [node name="CreateCitizen" type="TextureButton" parent="UI/Base/Rectangle"]
 margin_left = 1104.0
 margin_top = 19.0
@@ -285,6 +316,7 @@ margin_left = 17.0
 margin_top = 5.0
 margin_right = 53.0
 margin_bottom = 34.0
+hint_tooltip = "Comida"
 texture = ExtResource( 24 )
 
 [node name="FoodLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -300,6 +332,7 @@ margin_left = 17.0
 margin_top = 35.0
 margin_right = 53.0
 margin_bottom = 69.0
+hint_tooltip = "Hojas"
 texture = ExtResource( 26 )
 
 [node name="LeavesLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -314,6 +347,7 @@ margin_left = 17.0
 margin_top = 74.0001
 margin_right = 57.0
 margin_bottom = 114.0
+hint_tooltip = "Piedra"
 texture = ExtResource( 18 )
 
 [node name="StoneLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -328,6 +362,7 @@ margin_left = 126.0
 margin_top = 8.0
 margin_right = 161.0
 margin_bottom = 38.0
+hint_tooltip = "Cobre"
 texture = ExtResource( 2 )
 
 [node name="CopperLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -342,6 +377,7 @@ margin_left = 76.0
 margin_top = 10.0
 margin_right = 116.0
 margin_bottom = 29.0
+hint_tooltip = "Arcilla"
 texture = ExtResource( 19 )
 
 [node name="ClayLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -356,6 +392,7 @@ margin_left = 71.0
 margin_top = 35.0
 margin_right = 111.0
 margin_bottom = 77.0
+hint_tooltip = "Madera"
 texture = ExtResource( 22 )
 
 [node name="WoodLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -370,6 +407,7 @@ margin_left = 76.0
 margin_top = 81.0001
 margin_right = 116.0
 margin_bottom = 121.0
+hint_tooltip = "Agua"
 texture = ExtResource( 23 )
 
 [node name="DevelopPottery" type="TextureButton" parent="UI/Base/Rectangle"]
@@ -436,7 +474,7 @@ margin_bottom = 49.0
 hint_tooltip = "Crear granero: aumenta 200%
 tu capacidad de almacenamiento
 de alimentos. Costo: 300 pts.
-arcilla, 200 pts. hojas."
+arcilla, 200 pts. madera, 80 pts. hojas."
 texture_normal = ExtResource( 21 )
 
 [node name="BuildSurveillanceTower" type="TextureButton" parent="UI/Base/Rectangle"]
@@ -505,7 +543,7 @@ expand = true
 [connection signal="pressed" from="UI/Base/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateWarriorUnit" to="." method="_on_CreateWarriorUnit_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateHouse" to="." method="_on_CreateHouse_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/BuildBarn" to="." method="_on_DevelopAgriculture_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/BuildSurveillanceTower" to="." method="_on_DevelopAgriculture_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/BuildFort" to="." method="_on_DiscoverFire_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/BuildBarn" to="." method="_on_BuildBarn_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/BuildSurveillanceTower" to="." method="_on_BuildSurveillanceTower_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/BuildFort" to="." method="_on_BuildFort_pressed"]
 [connection signal="pressed" from="UI/Base/NextSceneButton" to="." method="_on_NextSceneButton_pressed"]

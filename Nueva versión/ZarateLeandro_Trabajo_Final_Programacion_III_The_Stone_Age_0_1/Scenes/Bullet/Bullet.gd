@@ -44,3 +44,5 @@ func set_dir(new_dir):
 	
 func set_speed(new_speed):
 	speed = new_speed
+	
+

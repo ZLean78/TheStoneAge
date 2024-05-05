@@ -8,7 +8,9 @@ var claypot=load("res://Scenes/MouseIcons/claypot.png")
 var hand=load("res://Scenes/MouseIcons/hand.png")
 var axe=load("res://Scenes/MouseIcons/axe.png")
 var house=load("res://Scenes/MouseIcons/house.png")
+var house_b=load("res://Scenes/MouseIcons/house_b.png")
 var townhall=load("res://Scenes/MouseIcons/townHall.png")
+var townhall_b=load("res://Scenes/MouseIcons/townHall_b.png")
 
 var unit_count = 1
 var food_points = 0
@@ -30,6 +32,8 @@ var is_agriculture_developed = true
 #Variables de hitos
 onready var mammoths=$Mammoths
 var is_townhall_created = false
+
+#El jefe ha muerto.
 var is_warchief_dead = false
 
 
@@ -65,6 +69,9 @@ onready var tiger_target = $TigerTarget
 onready var units = $Units
 onready var warriors = $Warriors
 onready var houses = $Houses
+onready var nav2d = $nav
+onready var townhall_node=$TownHall
+var path=[]
 
 var cave
 
@@ -83,6 +90,10 @@ var all_pickables=[]
 var sheltered=[]
 var all_tigers=[]
 
+#Arreglo que va a incluir todos los obstáculos creados dinámicamente que las
+#unidades van a tener que esquivar.
+var obstacles=[]
+
 
 var dragging = false
 var selected = []
@@ -96,6 +107,11 @@ var is_flipped = false
 
 var screensize = Vector2(ProjectSettings.get("display/window/size/width"),ProjectSettings.get("display/window/size/height"))
 
+#Propiedades para evitar crear una construcción encima de otra.
+var is_mouse_entered=false
+var is_too_close=false
+
+
 var is_tiger=false
 var is_tiger_countdown=false
 
@@ -107,7 +123,9 @@ signal is_sword
 signal is_claypot
 signal is_hand
 signal is_axe
-signal is_house
+#signal is_house
+
+
 var arrow_mode=false
 var basket_mode=false
 var mattock_mode=false
@@ -230,7 +248,7 @@ func _process(_delta):
 		_check_mammoths()
 		_check_houses()
 		_check_victory()
-	
+		_check_mouse_modes()
 
 		
 		
@@ -253,8 +271,33 @@ func deselect_unit(unit):
 		selected_units.erase(unit)
 	
 func _unhandled_input(event):
-	if !is_warchief_dead:
-		if event is InputEventMouseButton && event.is_action_pressed("ui_right_mouse_button"):
+	if !is_warchief_dead:		
+		
+		if event is InputEventMouseMotion:
+			if house_mode || townhall_mode:
+				
+				for house in houses.get_children():
+					if !house in obstacles:
+						obstacles.append(house)
+						
+				for a_townhall in townhall_node.get_children():
+					if !a_townhall in obstacles:
+						obstacles.append(a_townhall)
+				
+				for an_obstacle in obstacles:
+					if an_obstacle.mouse_entered:
+						is_mouse_entered=true
+						break
+					else:
+						is_mouse_entered=false	
+
+					if an_obstacle.position.distance_to(get_global_mouse_position())<130:
+						is_too_close=true
+						break
+					else:
+						is_too_close=false		
+		
+		if event.is_action_pressed("RightClick"):
 			if !house_mode:
 				for i in range(0,selected_units.size()):
 					if i==0:
@@ -266,14 +309,32 @@ func _unhandled_input(event):
 							selected_units[i].target_position=Vector2(selected_units[i-1].target_position.x+20,selected_units[i-1].target_position.y)
 			if house_mode || townhall_mode:
 				_on_Game3_is_arrow()
-		if event is InputEventKey && event.is_action_pressed("ui_cancel"):
-			if house_mode || townhall_mode:
-				_on_Game3_is_arrow()
-		if event is InputEventMouseButton && event.is_action_pressed("ui_left_mouse_button"):
+		
+		if event is InputEventMouseButton && event.is_action_pressed("LeftClick"):
 			if house_mode:
 				_create_house()
+				
 			if townhall_mode:
-				_create_townhall()
+				_create_townhall()				
+			
+			if house_mode || townhall_mode:
+				#Enviar a los ciudadanos a construir el edificio.
+				for citizen in units.get_children():
+					if citizen.selected:
+						citizen.firstPoint=citizen.global_position
+						citizen.secondPoint=citizen.target_position
+						_on_Game3_is_arrow()
+						var arrPath: PoolVector2Array = nav2d.get_simple_path(citizen.firstPoint,citizen.secondPoint,true)
+						citizen.firstPoint = arrPath[0]
+						citizen.path = arrPath
+						citizen.index = 0
+		#Tecla Escape. Se utiliza para poner el cursor en modo flecha,
+		#cancelando así la construcción de una casa u otra acción.
+		if event.is_action_pressed("EscapeKey"):
+			#Si el cursor está en modo casa.
+			if house_mode || townhall_mode:
+				#Ponemos el cursor en modo flecha para cancelar la construcción de una casa.
+				_on_Game3_is_arrow()
 
 func _create_townhall():
 	var citizens=units.get_children()
@@ -285,52 +346,109 @@ func _create_townhall():
 			the_citizen=citizen
 	
 	if the_citizen!=null:
-		if wood_points>=80 && leaves_points>=90 && clay_points>=100:					
+		if wood_points>=80 && leaves_points>=90 && clay_points>=100 && !is_mouse_entered && !is_too_close:					
 			var new_townhall=TownHall.instance()
+			new_townhall.condition_max=80
 			#the_citizen.agent.set_target_location(get_global_mouse_position())
 			new_townhall.position = get_global_mouse_position()
 			tile_map.add_child(new_townhall)
-			the_citizen.target_position=new_townhall.position
+			if the_citizen.position.x < new_townhall.position.x:
+				#Si el nuevo centro cívico está a la derecha.
+				the_citizen.target_position=Vector2(new_townhall.position.x-125,new_townhall.position.y)
+			else:
+				#Si el nuevo centro cívico está a la izquierda.
+				the_citizen.target_position=Vector2(new_townhall.position.x+125,new_townhall.position.y)
 			the_townhall=new_townhall
 			wood_points-=80
 			leaves_points-=90
 			clay_points-=100
-			print("Se construyó un centro cívico.")	
+			print("Se construyó un centro cívico.")
+			#Actualizamos el mapa de navegación con el nuevo centro cívico.
+			_update_path(new_townhall)	
 	
 	if the_townhall!=null:
 		for citizen in citizens:
 			if citizen.selected && citizen!=the_citizen:
-				citizen.target_position=the_townhall.position				
+				if citizen.position.x < the_townhall.position.x:
+					#Si el nuevo centro cívico está a la derecha.
+					citizen.target_position=Vector2(the_townhall.position.x-125,the_townhall.position.y)
+				else:
+					#Si el nuevo centro cívico está a la izquierda.
+					the_citizen.target_position=Vector2(the_townhall.position.x+125,the_townhall.position.y)	
 				
 func _create_house():
+	#Obtenemos los ciudadanos hijos del nodo units.
 	var citizens=units.get_children()
+	#Obtenemos las casas hijas del nodo houses.
 	var dwells=houses.get_children()
+	#Contador de casas.
 	var dwell_count=0
+	#Identificador de un ciudadano seleccionado (si lo hay).
+	#Será el que inicie la construcción de la casa.
 	var the_citizen=null
+	#La casa a construir.
 	var the_house=null
 		
+	#Comprobamos que no haya menos de cuatro ciudadanos por casa.
 	for citizen in citizens:
-		if (citizens.size()/4)>dwells.size():			
+		if (citizens.size()/4)>dwells.size():	
+			#Identificamos al primer ciudadano seleccionado para 
+			#construir la casa.			
 			if citizen.selected:
 				the_citizen=citizen
+				#Interrumpimos el loop para que no tome a los otros ciudadanos seleccionados.
 				break
-				
+	
+	#Si el ciudadano seleccionado para construir la casa no es nulo.			
 	if the_citizen!=null:
-		if wood_points>=20 && clay_points>=40:					
+		#Si tenemos al menos 20 puntos de madera y 40 de arcilla.
+		if wood_points>=20 && clay_points>=40 && !is_mouse_entered && !is_too_close:
+			#Instanciamos la nueva casa.					
 			var new_house=House.instance()
-			#the_citizen.agent.set_target_location(get_global_mouse_position())
+			#Ubicamos la nueva casa en la posición global del mouse.
 			new_house.position = get_global_mouse_position()
+			#Máximo de puntos de la barra de constitución de una casa.
+			new_house.condition_max=20
+			#Agregamos la nueva casa al nodo casas.
 			houses.add_child(new_house)
-			the_citizen.target_position=new_house.position
+			#Actualizamos el mapa de navegación con la nueva casa.
+			_update_path(new_house)
+			
+			#Le marcamos la posición de la casa al ciudadano seleccionado
+			#para que vaya a construirla.
+			#Posicionamos a la unidad según el lugar en que se encuentre la nueva casa
+			#para construirla.
+			if the_citizen.position.x < new_house.position.x:
+				#Si la nueva casa está a la derecha.
+				the_citizen.target_position=Vector2(new_house.position.x-30,new_house.position.y)
+			else:
+				#Si la nueva casa está a la izquierda.
+				the_citizen.target_position=Vector2(new_house.position.x+30,new_house.position.y)
+			
+			#Identificamos la nueva casa con la variable the_house.
 			the_house=new_house
+			#Restamos 20 puntos de madera y 40 de arcilla.
 			wood_points-=20
 			clay_points-=40
+			#Mensaje de comprobación para la consola.
 			print("Se construyó una casa.")
 	
+	#Si la nueva casa no es nula.
 	if the_house!=null:
+		#Si hay otros ciudadanos seleccionados, 
+		#también los mandamos a construir la casa.
 		for citizen in citizens:
-			if citizen.selected && citizen!=the_citizen:
-				citizen.target_position=the_house.position	
+			if citizen.selected:
+				#Les marcamos la posición de la casa a los ciudadanos seleccionados
+				#para que vayan a construirla.
+				#Posicionamos a las unidades según el lugar en que se encuentre la nueva casa
+				#para construirla.
+				if citizen.position.x < the_house.position.x:
+					#Si la nueva casa está a la derecha.
+					citizen.target_position=Vector2(the_house.position.x-30,the_house.position.y)
+				else:
+					#Si la nueva casa está a la izquierda.
+					citizen.target_position=Vector2(the_house.position.x+30,the_house.position.y)
 	
 
 func _check_houses():
@@ -698,7 +816,10 @@ func _on_Game3_is_axe():
 		townhall_mode=false
 	
 func _on_Game3_is_house():
-	Input.set_custom_mouse_cursor(house)
+	if is_mouse_entered || is_too_close:
+		Input.set_custom_mouse_cursor(house_b)
+	else:
+		Input.set_custom_mouse_cursor(house)
 	house_mode=true
 	arrow_mode=false
 	basket_mode=false
@@ -711,7 +832,10 @@ func _on_Game3_is_house():
 				
 	
 func _on_Game3_is_townhall():
-	Input.set_custom_mouse_cursor(townhall)	
+	if is_mouse_entered || is_too_close:
+		Input.set_custom_mouse_cursor(townhall_b)
+	else:
+		Input.set_custom_mouse_cursor(townhall)	
 	townhall_mode=true
 	arrow_mode=false
 	basket_mode=false
@@ -812,7 +936,36 @@ func _on_CreateTownHall_pressed():
 		_on_Game3_is_townhall()
 	else:
 		_on_Game3_is_arrow()
+		
+func _update_path(new_obstacle):	
+	var citizens=units.get_children()
+	var the_citizen=null
+	var new_polygon=PoolVector2Array()
+	var col_polygon=new_obstacle.get_node("CollisionPolygon2D").get_polygon()
+	
+	for vector in col_polygon:
+		new_polygon.append(vector + new_obstacle.position)		
+		
+	var navi_polygon=nav2d.get_node("polygon").get_navigation_polygon()
+	navi_polygon.add_outline(new_polygon)
+	navi_polygon.make_polygons_from_outlines()	
+	
+	for citizen in citizens:
+		if citizen.selected:
+			the_citizen=citizen
+			break
+	
+	if the_citizen!=null:	
+		var p = nav2d.get_simple_path(the_citizen.firstPoint,the_citizen.secondPoint,true)
+		path = Array(p)
+		path.invert()
 
 
 func _on_NextSceneButton_pressed():
-	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
+	get_tree().change_scene("res://Scenes/Game4/Game4.tscn")
+	
+func _check_mouse_modes():
+	if house_mode:
+		_on_Game3_is_house()
+	if townhall_mode:
+		_on_Game3_is_townhall()

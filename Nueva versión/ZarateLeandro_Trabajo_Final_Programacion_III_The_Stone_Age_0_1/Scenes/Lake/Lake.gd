@@ -1,7 +1,7 @@
 extends "res://Scenes/PickupObject/PickupObject.gd"
 
-signal lake_entered
-signal lake_exited
+#signal lake_entered
+#signal lake_exited
 var is_touching
 
 

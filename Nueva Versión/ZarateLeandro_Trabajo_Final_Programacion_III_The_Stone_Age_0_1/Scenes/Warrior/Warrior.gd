@@ -5,7 +5,7 @@ var bullet
 export var bullet_scene=preload("res://Scenes/Bullet/Bullet.tscn")
 
 #Velocidad
-export (float) var SPEED = 200.0
+export (float) var SPEED = 100.0
 #Máximo de Salud
 export (float) var MAX_HEALTH = 100.0
 
@@ -15,7 +15,7 @@ onready var root=get_tree().root.get_child(0)
 #Temporizador de comida, agrega un punto de comida por segundo cuando la unidad toca un árbol frutal.
 
 #Salud
-onready var health = MAX_HEALTH
+#onready var health = MAX_HEALTH
 
 #Variable que indica si está seleccionada la unidad.
 var selected = false setget _set_selected
@@ -43,7 +43,7 @@ var initialPosition = Vector2()
 #Puntos de comida de la unidad.
 var food_points = 0
 #Puntos de energía.
-var energy_points = 100
+var energy_points = MAX_HEALTH
 #Variable que indica si se está arrastrando el mouse sobre la unidad.
 var dragging = true
 
@@ -117,9 +117,19 @@ var to_delta = 0.0
 
 var direction = Vector2.ZERO
 
-var colliding_body: KinematicBody2D
+#Variables origen y destino de navegación.
+var firstPoint = Vector2.ZERO
+var secondPoint = Vector2.ZERO
+var index = 0
 
-var body_velocity=Vector2.ZERO
+#Polígono de navegación.
+onready var nav2d=get_tree().get_root().get_child(0).get_node("nav")
+
+#var colliding_body: KinematicBody2D
+
+#var body_velocity=Vector2.ZERO
+
+
 
 #Señal de cambio de salud (incremento o decremento).
 signal health_change
@@ -135,7 +145,7 @@ signal was_deselected
 func _ready():
 	connect("was_selected",get_tree().root.get_child(0),"select_unit")
 	connect("was_deselected",get_tree().root.get_child(0),"deselect_unit")
-	emit_signal("health_change",health)
+	emit_signal("health_change",energy_points)
 	
 	is_dressed=true
 	if(!is_dressed):
@@ -185,7 +195,8 @@ func _physics_process(delta):
 	
 	if target_position!=Vector2.ZERO:
 		if position.distance_to(target_position) > 10:
-			_move_to_target(target_position)
+			#_move_to_target(target_position)
+			_move_along_path(SPEED*delta)
 		else:
 			velocity=Vector2.ZERO
 	
@@ -261,6 +272,23 @@ func move_towards(pos,point,delta):
 		path.remove(0)
 		initialPosition = position
 		
+func _move_along_path(distance):	
+	var last_point=position
+	direction=last_point-firstPoint
+	velocity=(direction).normalized()
+	while path.size():
+		var distance_between_points = last_point.distance_to(path[0])
+		if distance_between_points>7:
+			last_point=lerp(last_point,path[0],distance/distance_between_points)
+			position=last_point
+			return
+		
+		distance-=distance_between_points
+		last_point=path[0]
+		path.remove(0)
+		position=last_point
+		set_process(false)
+		
 
 func _move_to_target(target):
 	direction = (target-position)*SPEED
@@ -274,25 +302,37 @@ func _move_to_target(target):
 	
 
 func _unhandled_input(event):
-	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
+	if event.is_action_pressed("RightClick"):
 		if get_tree().root.get_child(0).sword_mode:
 			if get_tree().root.get_child(0).touching_enemy!=null:
 				if is_instance_valid(get_tree().root.get_child(0).touching_enemy):
 					if selected && can_shoot:
-						target_position = get_tree().root.get_child(0).touching_enemy.position
-						shoot_node.look_at(target_position)				
+						var bullet_target = get_tree().root.get_child(0).touching_enemy.position
+						shoot_node.look_at(bullet_target)				
 						var angle = shoot_node.rotation
 						var forward = Vector2(cos(angle),sin(angle))
 						bullet = bullet_scene.instance()
 						shoot_point.rotation = angle				
 						bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
 						bullet.set_dir(forward)
-						bullet.rotation = angle		
+						bullet.rotation = angle
+						target_position=bullet_target	
 						var the_tilemap=get_tree().get_nodes_in_group("tilemap")
 						the_tilemap[0].add_child(bullet)
 						can_shoot=false
 				else:
 					get_tree().root.get_child(0)._on_Game3_is_arrow()
+		else:
+			firstPoint=global_position
+			
+	if event.is_action_released("RightClick"):	
+		if !get_tree().root.get_child(0).sword_mode:
+			secondPoint = target_position		
+			var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
+			firstPoint = arrPath[0]
+			path = arrPath
+			index = 0			
+	
 					
 func _on_Unit_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton:
@@ -306,19 +346,19 @@ func _on_Unit_input_event(_viewport, event, _shape_idx):
 
 
 
-func hurt(amount):
-	health-=amount
-	#esto podría ir en un setter
-	if health <= 0:
-		if !dead:
-			emit_signal("im_dead")
-			dead = true
-			set_physics_process(false) 
-		health = 0
-		return
-	elif health > 100:
-		health = 100
-	emit_signal("health_change",health)
+#func hurt(amount):
+#	health-=amount
+#	#esto podría ir en un setter
+#	if health <= 0:
+#		if !dead:
+#			emit_signal("im_dead")
+#			dead = true
+#			set_physics_process(false) 
+#		health = 0
+#		return
+#	elif health > 100:
+#		health = 100
+#	emit_signal("health_change",health)
 
 
 func _on_Target_Position_body_entered(_body):

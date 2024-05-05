@@ -246,6 +246,7 @@ margin_left = 17.0
 margin_top = 5.0
 margin_right = 53.0
 margin_bottom = 34.0
+hint_tooltip = "Comida"
 texture = ExtResource( 18 )
 
 [node name="FoodLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -261,6 +262,7 @@ margin_left = 17.0
 margin_top = 35.0
 margin_right = 53.0
 margin_bottom = 69.0
+hint_tooltip = "Hojas"
 texture = ExtResource( 19 )
 
 [node name="LeavesLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -275,6 +277,7 @@ margin_left = 17.0
 margin_top = 74.0001
 margin_right = 57.0
 margin_bottom = 114.0
+hint_tooltip = "Piedra"
 texture = ExtResource( 20 )
 
 [node name="StoneLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -289,6 +292,7 @@ margin_left = 76.0
 margin_top = 10.0
 margin_right = 116.0
 margin_bottom = 29.0
+hint_tooltip = "Arcilla"
 texture = ExtResource( 22 )
 
 [node name="ClayLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -303,6 +307,7 @@ margin_left = 71.0
 margin_top = 35.0
 margin_right = 111.0
 margin_bottom = 77.0
+hint_tooltip = "Madera"
 texture = ExtResource( 24 )
 
 [node name="WoodLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -317,6 +322,7 @@ margin_left = 76.0
 margin_top = 81.0001
 margin_right = 116.0
 margin_bottom = 121.0
+hint_tooltip = "Agua"
 texture = ExtResource( 26 )
 
 [node name="DevelopStoneWeapons" type="TextureButton" parent="UI/Base/Rectangle"]

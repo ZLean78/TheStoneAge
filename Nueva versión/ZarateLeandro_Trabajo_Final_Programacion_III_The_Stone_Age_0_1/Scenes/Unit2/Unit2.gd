@@ -15,8 +15,7 @@ onready var root=get_tree().root.get_child(0)
 
 #Temporizador de comida, agrega un punto de comida por segundo cuando la unidad toca un árbol frutal.
 onready var food_timer = root.find_node("food_timer")
-#Salud
-onready var health = MAX_HEALTH
+
 
 #Variable que indica si está seleccionada la unidad.
 var selected = false setget _set_selected
@@ -48,8 +47,8 @@ var initialPosition = Vector2()
 
 #Puntos de comida de la unidad.
 var food_points = 0
-#Puntos de energía.
-var energy_points = 100
+#Salud.
+var energy_points = MAX_HEALTH
 #Variable que indica si se está arrastrando el mouse sobre la unidad.
 var dragging = true
 
@@ -151,14 +150,33 @@ var direction = Vector2.ZERO
 
 #var has_arrived = false
 
-var colliding_body: KinematicBody2D
+#var colliding_body: KinematicBody2D
 
 
 
-var body_velocity = Vector2.ZERO
+#var body_velocity = Vector2.ZERO
 
+#Variables para levantamiento de construcciones, que indican si una unidad ciudadano
+#ha entrado en el Area2D de la construcción para erigirla.
 var house_entered=false
 var townhall_entered=false
+var fort_entered=false
+var tower_entered=false
+var barn_entered=false
+
+#Variables origen y destino de navegación.
+var firstPoint = Vector2.ZERO
+var secondPoint = Vector2.ZERO
+var index = 0
+
+#Podígono de navegación
+onready var nav2d=get_tree().get_root().get_child(0).get_node("nav")
+
+#Variables para curarse o curar a otro
+var health=MAX_HEALTH
+var heal_counter=60
+var can_heal_itself=false
+var can_heal_another
 
 
 #Señal de cambio de salud (incremento o decremento).
@@ -175,7 +193,7 @@ signal was_deselected
 func _ready():
 	connect("was_selected",get_tree().root.get_child(0),"select_unit")
 	connect("was_deselected",get_tree().root.get_child(0),"deselect_unit")
-	emit_signal("health_change",health)
+	emit_signal("health_change",energy_points)
 	has_bag=true
 	is_dressed=true
 	if(!is_dressed):
@@ -229,24 +247,15 @@ func _physics_process(delta):
 	
 	if target_position!=Vector2.ZERO:
 		if position.distance_to(target_position) > 10:
-			_move_to_target(target_position)
+			#_move_to_target(target_position)
+			_move_along_path(SPEED*delta)
+			#_move_towards(position,target_position,delta)
 		else:
 			target_position=position
 			velocity=Vector2.ZERO
 		
-	
 
-	
-	
-	"""if move_p:
-		path = get_tree().root.get_child(0).get_node("nav").get_simple_path(position,target_position)
-		velocity=(target_position-position)
-		initialPosition = position
-		move_p = false
-	if path.size()>0:
-		move_towards(initialPosition,path[0],delta)
-	else:
-		velocity=Vector2(0,0)"""	
+
 	
 	# Orientar al player.
 	if velocity.x<0:
@@ -407,13 +416,30 @@ func _get_damage(var the_beast):
 
 	
 	
-func move_towards(pos,point,delta):
+func _move_towards(pos,point,delta):
 	var v = (point-pos).normalized()
 	v *=delta*SPEED
 	position += v
 	if position.distance_squared_to(point) < 5:
 		path.remove(0)
 		initialPosition = position
+		
+func _move_along_path(distance):	
+	var last_point=position
+	direction=last_point-firstPoint
+	velocity=(direction).normalized()
+	while path.size():
+		var distance_between_points = last_point.distance_to(path[0])
+		if distance_between_points>7:
+			last_point=lerp(last_point,path[0],distance/distance_between_points)
+			position=last_point
+			return
+		
+		distance-=distance_between_points
+		last_point=path[0]
+		path.remove(0)
+		position=last_point
+		set_process(false)
 		
 
 func _move_to_target(target):
@@ -424,70 +450,70 @@ func _move_to_target(target):
 	
 	
 		
-func move_unit(point):
-	to_move = point
-	move_p = true
-	
+#func move_unit(point):
+#	to_move = point
+#	move_p = true
+#
 	
 	
 	
 
 func _unhandled_input(event):
-	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
+	if event.is_action_pressed("RightClick"):
 		if get_tree().root.get_child(0).sword_mode:
 			if get_tree().root.get_child(0).touching_enemy!=null:
 				if is_instance_valid(get_tree().root.get_child(0).touching_enemy):
 					if selected && can_shoot:
-						target_position = get_tree().root.get_child(0).touching_enemy.position
-						shoot_node.look_at(target_position)				
-						var angle = shoot_node.rotation
-						var forward = Vector2(cos(angle),sin(angle))
-						var new_stone = stone_scene.instance()
-						shoot_point.rotation = angle				
-						new_stone.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-						if target_position.x<position.x:
-							new_stone.set_velocity(Vector2(-200,0))
+						if !is_warchief:
+							target_position = get_tree().root.get_child(0).touching_enemy.position
+							shoot_node.look_at(target_position)				
+							var angle = shoot_node.rotation
+							var forward = Vector2(cos(angle),sin(angle))
+							var new_stone = stone_scene.instance()
+							shoot_point.rotation = angle				
+							new_stone.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+							if target_position.x<position.x:
+								new_stone.set_velocity(Vector2(-200,0))
+							else:
+								new_stone.set_velocity(Vector2(200,0))
+							new_stone.rotation = angle		
+							var the_tilemap=get_tree().get_nodes_in_group("tilemap")
+							the_tilemap[0].add_child(new_stone)
+							can_shoot=false
 						else:
-							new_stone.set_velocity(Vector2(200,0))
-						new_stone.rotation = angle		
-						var the_tilemap=get_tree().get_nodes_in_group("tilemap")
-						the_tilemap[0].add_child(new_stone)
-						can_shoot=false
-				else:
+							for warrior in root.warriors.get_children():
+								if warrior.position.distance_to(position):
+									if warrior.can_shoot:
+										var bullet_target = root.touching_enemy.position
+										warrior.shoot_node.look_at(bullet_target)				
+										var angle = warrior.shoot_node.rotation
+										var forward = Vector2(cos(angle),sin(angle))
+										warrior.bullet = warrior.bullet_scene.instance()
+										warrior.shoot_point.rotation = angle				
+										warrior.bullet.position = Vector2(warrior.shoot_point.global_position.x,warrior.shoot_point.global_position.y)
+										warrior.bullet.set_dir(forward)
+										warrior.bullet.rotation = angle
+										target_position=bullet_target	
+										var the_tilemap=get_tree().get_nodes_in_group("tilemap")
+										the_tilemap[0].add_child(warrior.bullet)
+										warrior.can_shoot=false
+				else:					
 					if get_tree().get_root().get_child(0).name == "Game3":
 						get_tree().get_root().get_child(0)._on_Game3_is_arrow()
 					if get_tree().get_root().get_child(0).name == "Game2":
 						get_tree().get_root().get_child(0)._on_Game2_is_arrow()
-					
-					
-#		if get_tree().root.get_child(0).name == "Game2":
-#			if selected:
-#				has_arrived = false
-#				target_position = get_global_mouse_position()
-#			else:
-#				has_arrived=false
-#				target_position=position
-#		if get_tree().root.get_child(0).name == "Game3":
-#			if selected:
-#				has_arrived = false
-#				target_position=get_global_mouse_position()
-#			else:
-#				has_arrived = false
-#				target_position=position
-#		if get_tree().root.get_child(0).sword_mode:
-#			if get_tree().root.get_child(0).touching_tiger!=null:
-#				target_position = get_tree().root.get_child(0).touching_tiger.position
-#				if selected && can_shoot:
-#					shoot_node.look_at(target_position)				
-#					var angle = shoot_node.rotation
-#					var forward = Vector2(cos(angle),sin(angle))
-#					bullet = bullet_scene.instance()
-#					shoot_point.rotation = angle				
-#					bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-#					bullet.set_dir(forward)
-#					bullet.rotation = angle		
-#					get_parent().add_child(bullet)
-#					can_shoot=false
+		else:
+			firstPoint=global_position
+			
+	if event.is_action_released("RightClick"):		
+		secondPoint = target_position		
+		var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
+		firstPoint = arrPath[0]
+		path = arrPath
+		index = 0	
+				
+
+
 			
 
 func _on_Unit_input_event(_viewport, event, _shape_idx):
@@ -760,10 +786,7 @@ func _animate():
 #				else:
 #					$sprite.animation = "female_idle1"	
 		
-			
-	
-		
-		
+
 	
 	
 	#if position.distance_to(get_node("Single_Tap_Device/Target_Position").position) < 5:
@@ -858,30 +881,75 @@ func _on_all_timer_timeout():
 	timer_count+=1	
 	if body_entered!=null && is_instance_valid(body_entered):
 		_get_damage(body_entered)
+		if is_warchief:
+		
+			if energy_points<MAX_HEALTH && heal_counter>0:
+				heal_counter-=1
+				if heal_counter<=0:
+					can_heal_itself=true
+		
+			if can_heal_another && timer_count>3:
+				heal(body_entered)
+			if can_heal_itself && timer_count>3:
+				self_heal()
+		
 	if pickable!=null:
 		_collect_pickable(pickable)
 	if timer_count>3:
 		can_shoot=true
 	if timer_count>4:
 		timer_count=0
+		
 	all_timer.start()
 	
 
 func _die():
 	queue_free()
 
-
-
-
-
-
-
-
-
-
-
 func _on_Area2D_body_entered(body):
 	body_entered=body
+	if is_warchief:
+		if "Unit" in body_entered.name || "Warrior" in body_entered.name:
+			can_heal_another=true
+	
+func heal(_body):	
+	if "Unit" in _body.name || "Warrior" in _body.name:		
+		if _body.energy_points<_body.MAX_HEALTH:
+			_body.energy_points+=5
+			_body.bar._set_energy_points(energy_points)
+			_body.bar._update_energy()
+			
+			if _body.energy_points>_body.MAX_HEALTH:
+				_body.energy_points=_body.MAX_HEALTH
+		
+		
+		_body.bar.visible=true
+		
+			
+func self_heal():	
+	if energy_points<MAX_HEALTH:
+		energy_points+=5
+		bar._set_energy_points(energy_points)
+		bar._update_energy()	
+		
+		if energy_points>MAX_HEALTH:
+			energy_points=MAX_HEALTH
+			can_heal_itself=false
+			heal_counter=60
+		
+		
 
 
 
+
+
+func _on_Area2D_body_exited(body):
+	body_entered=body
+	if "Unit" in body_entered.name || "Warrior" in body_entered.name:
+		can_heal_another=false
+
+
+
+
+			
+			
