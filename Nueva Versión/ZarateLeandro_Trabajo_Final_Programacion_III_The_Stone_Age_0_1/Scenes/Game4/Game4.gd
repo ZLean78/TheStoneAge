@@ -48,6 +48,7 @@ var is_warchief_dead = false
 #Variables de hitos
 var is_pottery_developed=false
 var is_carpentry_developed=false
+var is_mining_developed=false
 var is_metals_developed=false
 var is_first_tower_built=false
 var is_barn_built=false
@@ -69,9 +70,10 @@ onready var wood_label = tree.get_node("UI/Base/Rectangle/WoodLabel")
 onready var water_label = tree.get_node("UI/Base/Rectangle/WaterLabel")
 #onready var developments_label = tree.get_node("UI/Base/Rectangle/DevelopmentsLabel")
 onready var rectangle = tree.get_node("UI/Base/Rectangle")
-#onready var create_shack = tree.get_node("UI/Base/Rectangle/CreateHouse")
-#onready var give_attack_order = tree.get_node("UI/Base/Rectangle/GiveAttackOrder")
-#onready var make_warchief = tree.get_node("UI/Base/Rectangle/MakeWarchief")
+onready var develop_pottery = tree.get_node("UI/Base/Rectangle/DevelopPottery")
+onready var develop_carpentry = tree.get_node("UI/Base/Rectangle/DevelopCarpentry")
+onready var develop_mining = tree.get_node("UI/Base/Rectangle/DevelopMining")
+onready var develop_metals = tree.get_node("UI/Base/Rectangle/DevelopMetals")
 onready var create_house = tree.get_node("UI/Base/Rectangle/CreateHouse")
 #onready var create_townhall = tree.get_node("UI/Base/Rectangle/CreateTownHall")
 onready var create_warrior = tree.get_node("UI/Base/Rectangle/CreateWarriorUnit")
@@ -84,6 +86,8 @@ onready var quarry1 = tree.get_node("Quarries/Quarry1")
 onready var quarry2 = tree.get_node("Quarries/Quarry2")
 onready var quarry3 = tree.get_node("Quarries/Quarry3")
 onready var quarry4 = tree.get_node("Quarries/Quarry4")
+onready var copper1 = tree.get_node("Coppers/Copper")
+onready var copper2 = tree.get_node("Coppers/Copper2")
 onready var lake = tree.get_node("Lake")
 onready var spawn_position = $SpawnPosition
 onready var tiger_spawn = $TigerSpawn
@@ -236,14 +240,17 @@ func _ready():
 	all_pine_trees.append(tree.find_node("PineTree7"))
 	all_pine_trees.append(tree.find_node("PineTree8"))	
 	
-	#Agregamos las dos canteras existentes 
+	#Agregamos las cuatro canteras existentes 
 	#en la escena principal al arreglo all_quarries.
 	all_quarries.append(quarry1)
 	all_quarries.append(quarry2)
 	all_quarries.append(quarry3)
 	all_quarries.append(quarry4)
 	
-	
+	#Agregamos las dos minas de cobre existentes 
+	#en la escena principal al arreglo all_coppers.
+	all_coppers.append(copper1)
+	all_coppers.append(copper2)
 	
 	#Creamos las 11 unidades restantes aparte de la que agregamos
 	#en la línea 176. 
@@ -342,6 +349,9 @@ func _process(_delta):
 		
 		#Comprobar si todas las canteras han sido agotadas.
 		_check_quarries()
+		
+		#Comprobar si todas las minas de cobre han sido agotadas.
+		_check_coppers()
 		
 		_check_mouse_modes()
 
@@ -809,7 +819,8 @@ func _check_victory():
 			is_fort_built=true
 	
 	
-	if is_first_tower_built && is_barn_built && is_fort_built:
+	if (is_pottery_developed && is_carpentry_developed && is_mining_developed && 
+	 is_metals_developed && is_first_tower_built && is_barn_built && is_fort_built):
 		prompts_label.text = "¡Has ganado!"	
 		next_scene_button.visible = true
 	elif(all_units.size()==0 && food_points<15):
@@ -1146,6 +1157,38 @@ func _check_quarries():
 			4:
 				quarry4.points+=150
 				quarry4.empty=false
+				
+func _check_coppers():
+	var not_all_coppers_empty=false
+	
+	for a_copper in all_coppers:
+		if !a_copper.empty:
+			not_all_coppers_empty=true
+			break
+	
+	if not_all_coppers_empty==false:
+		var copper_number=randi()%2+1
+		
+		if copper_number==1:
+			copper1.points+=150
+			copper1.empty=false
+		else:
+			copper2.points+=150
+			copper2.empty=false
+
+func _check_plants():
+	var not_all_plants_empty=false
+	
+	for a_plant in all_plants:
+		if !a_plant.empty:
+			not_all_plants_empty=true
+			
+	if not_all_plants_empty==false:
+		for a_plant in all_plants:
+			a_plant.points+=60
+			a_plant.empty=false	
+			
+
 		
 
 #Botón para crear unidades militares guerrero y cazador.
@@ -1257,4 +1300,36 @@ func _check_mouse_modes():
 	if fort_mode:
 		_on_Game4_is_fort()
 	
+		
+
+
+func _on_DevelopPottery_pressed():
+	if clay_points>=400 && wood_points>=150:
+		clay_points-=400
+		wood_points-=150
+		is_pottery_developed=true
+		develop_pottery.visible=false
+
+
+func _on_DevelopCarpentry_pressed():
+	if wood_points>=500:
+		wood_points-=500
+		is_carpentry_developed=true
+		develop_carpentry.visible=false
+
+
+func _on_DevelopMining_pressed():
+	if stone_points>=300 && copper_points>=200:
+		stone_points-=300
+		copper_points-=200
+		is_mining_developed=true
+		develop_mining.visible=false
+
+
+func _on_DevelopMetals_pressed():
+	if stone_points>=250 && copper_points>=150:
+		stone_points-=250
+		copper_points-=150
+		is_metals_developed=true
+		develop_metals.visible=false
 		

@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=2]
+[gd_scene load_steps=39 format=2]
 
 [ext_resource path="res://Scenes/Game/Camera.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Copper/CopperSmall.png" type="Texture" id=2]
@@ -20,11 +20,11 @@
 [ext_resource path="res://Scenes/Game2/quarry.png" type="Texture" id=18]
 [ext_resource path="res://Scenes/Game2/puddle.png" type="Texture" id=19]
 [ext_resource path="res://Scenes/Game2/wheel.png" type="Texture" id=20]
-[ext_resource path="res://Scenes/Game2/agro.png" type="Texture" id=21]
+[ext_resource path="res://Scenes/MouseIcons/fort_m.png" type="Texture" id=21]
 [ext_resource path="res://Scenes/Game2/woodicon.png" type="Texture" id=22]
 [ext_resource path="res://Scenes/Game2/watericon.png" type="Texture" id=23]
 [ext_resource path="res://Scenes/Game2/food.png" type="Texture" id=24]
-[ext_resource path="res://Scenes/Game2/fire.png" type="Texture" id=25]
+[ext_resource path="res://Scenes/MouseIcons/barn_m.png" type="Texture" id=25]
 [ext_resource path="res://Scenes/Game2/plant.png" type="Texture" id=26]
 [ext_resource path="res://Scenes/Game4/Game4.gd" type="Script" id=27]
 [ext_resource path="res://Scenes/MouseIcons/house_small.png" type="Texture" id=28]
@@ -35,6 +35,7 @@
 [ext_resource path="res://Scenes/Fort/Fort.tscn" type="PackedScene" id=33]
 [ext_resource path="res://Scenes/Tower/Tower.tscn" type="PackedScene" id=34]
 [ext_resource path="res://Scenes/Barn/Barn.tscn" type="PackedScene" id=35]
+[ext_resource path="res://Scenes/MouseIcons/tower_m.png" type="Texture" id=36]
 
 [sub_resource type="TileSet" id=1]
 0/name = "grass.png 0"
@@ -475,7 +476,7 @@ hint_tooltip = "Crear granero: aumenta 200%
 tu capacidad de almacenamiento
 de alimentos. Costo: 300 pts.
 arcilla, 200 pts. madera, 80 pts. hojas."
-texture_normal = ExtResource( 21 )
+texture_normal = ExtResource( 25 )
 
 [node name="BuildSurveillanceTower" type="TextureButton" parent="UI/Base/Rectangle"]
 margin_left = 894.0
@@ -486,19 +487,19 @@ hint_tooltip = "Construir torre de vigilancia:
 construcción esencial para
 defender la aldea. Costo,
 piedra: 100 pts, madera: 80 pts, hojas: 20 pts."
-texture_normal = ExtResource( 21 )
+texture_normal = ExtResource( 36 )
 
 [node name="BuildFort" type="TextureButton" parent="UI/Base/Rectangle"]
-margin_left = 849.0
-margin_top = 25.0
-margin_right = 862.0
-margin_bottom = 49.0
+margin_left = 843.0
+margin_top = 26.0
+margin_right = 865.0
+margin_bottom = 50.0
 hint_tooltip = "Contruir fuerte de soldados:
 aquí podrás entrenar
 militares más avanzados
 y fabricar equipamiento
 bélico. Costo, 300 pts. madera, 200 pts. piedra, 40 pts. hojas."
-texture_normal = ExtResource( 25 )
+texture_normal = ExtResource( 21 )
 
 [node name="DevelopmentsLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 850.0
@@ -542,6 +543,10 @@ expand = true
 [connection signal="timeout" from="enemy_timer" to="." method="_on_tiger_timer_timeout"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateWarriorUnit" to="." method="_on_CreateWarriorUnit_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/DevelopPottery" to="." method="_on_DevelopPottery_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/DevelopCarpentry" to="." method="_on_DevelopCarpentry_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/DevelopMining" to="." method="_on_DevelopMining_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/DevelopMetals" to="." method="_on_DevelopMetals_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateHouse" to="." method="_on_CreateHouse_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/BuildBarn" to="." method="_on_BuildBarn_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/BuildSurveillanceTower" to="." method="_on_BuildSurveillanceTower_pressed"]
