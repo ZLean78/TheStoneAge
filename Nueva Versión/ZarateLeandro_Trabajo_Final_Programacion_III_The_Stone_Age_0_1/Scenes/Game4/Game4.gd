@@ -515,10 +515,10 @@ func _create_fort():
 			#para construirlo.
 			if the_citizen.position.x < new_fort.position.x:
 				#Si el nuevo fuerte está a la derecha.
-				the_citizen.target_position=Vector2(new_fort.position.x-50,new_fort.position.y)
+				the_citizen.target_position=Vector2(new_fort.position.x-60,new_fort.position.y)
 			else:
 				#Si el nuevo fuerte está a la izquierda
-				the_citizen.target_position=Vector2(new_fort.position.x+50,new_fort.position.y)
+				the_citizen.target_position=Vector2(new_fort.position.x+60,new_fort.position.y)
 			the_fort=new_fort
 			wood_points-=300
 			stone_points-=200
@@ -531,10 +531,10 @@ func _create_fort():
 			if citizen.selected && citizen!=the_citizen:
 				if citizen.position.x < the_fort.position.x:
 					#Si el nuevo fuerte está a la derecha.
-					citizen.target_position=Vector2(the_fort.position.x-50,the_fort.position.y)
+					citizen.target_position=Vector2(the_fort.position.x-60,the_fort.position.y)
 				else:
 					#Si el nuevo fuerte está a la izquierda.
-					citizen.target_position=Vector2(the_fort.position.x+50,the_fort.position.y)
+					citizen.target_position=Vector2(the_fort.position.x+60,the_fort.position.y)
 				
 #Función crear torre de vigilancia
 func _create_tower():
@@ -580,10 +580,10 @@ func _create_tower():
 			#para construirla.
 			if the_citizen.position.x < new_tower.position.x:
 				#Si la nueva torre está a la derecha.
-				the_citizen.target_position=Vector2(new_tower.position.x-50,new_tower.position.y)
+				the_citizen.target_position=Vector2(new_tower.position.x-35,new_tower.position.y)
 			else:
 				#Si la nueva torre está a la izquierda
-				the_citizen.target_position=Vector2(new_tower.position.x+50,new_tower.position.y)
+				the_citizen.target_position=Vector2(new_tower.position.x+35,new_tower.position.y)
 			#Identificamos la nueva casa con la variable the_house.
 			the_tower=new_tower
 			#Restamos 100 puntos de piedra, 80 puntos de madera y veinte de hojas.
@@ -601,10 +601,10 @@ func _create_tower():
 			if citizen.selected && citizen!=the_citizen:
 				if citizen.position.x < the_tower.position.x:
 					#Si la nueva torre está a la derecha.
-					citizen.target_position=Vector2(the_tower.position.x-50,the_tower.position.y)
+					citizen.target_position=Vector2(the_tower.position.x-35,the_tower.position.y)
 				else:
 					#Si la nueva torre está a la izquierda.
-					citizen.target_position=Vector2(the_tower.position.x+50,the_tower.position.y)	
+					citizen.target_position=Vector2(the_tower.position.x+35,the_tower.position.y)	
 				
 #Función crear granero.
 func _create_barn():
@@ -648,10 +648,10 @@ func _create_barn():
 			#para construirlo.
 			if the_citizen.position.x < new_barn.position.x:
 				#Si el nuevo granero está a la derecha.
-				the_citizen.target_position=Vector2(new_barn.position.x-50,new_barn.position.y)
+				the_citizen.target_position=Vector2(new_barn.position.x-25,new_barn.position.y)
 			else:
 				#Si el nuevo granero está a la izquierda
-				the_citizen.target_position=Vector2(new_barn.position.x+50,new_barn.position.y)
+				the_citizen.target_position=Vector2(new_barn.position.x+25,new_barn.position.y)
 			#Identificamos el nuevo granero con la variable the_barn.
 			the_barn=new_barn
 			#Restamos 300 puntos de arcilla, 200 puntos de madera y 80 de hojas.
@@ -669,10 +669,10 @@ func _create_barn():
 			if citizen.selected && citizen!=the_citizen:
 				if citizen.position.x < the_barn.position.x:
 					#Si el nuevo granero está a la derecha.
-					citizen.target_position=Vector2(the_barn.position.x-50,the_barn.position.y)
+					citizen.target_position=Vector2(the_barn.position.x-25,the_barn.position.y)
 				else:
 					#Si el nuevo granero está a la izquierda.
-					citizen.target_position=Vector2(the_barn.position.x+50,the_barn.position.y)	
+					citizen.target_position=Vector2(the_barn.position.x+25,the_barn.position.y)	
 					
 
 #Función crear casa.				
