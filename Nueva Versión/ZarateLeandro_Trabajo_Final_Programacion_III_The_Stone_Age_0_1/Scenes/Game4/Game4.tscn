@@ -171,7 +171,22 @@ z_as_relative = false
 [node name="EnemyWarriors" type="Node2D" parent="."]
 
 [node name="EnemyWarrior" parent="EnemyWarriors" instance=ExtResource( 38 )]
-position = Vector2( 133, -29 )
+position = Vector2( -977, -542 )
+
+[node name="EnemyWarrior2" parent="EnemyWarriors" instance=ExtResource( 38 )]
+position = Vector2( -913, -493 )
+
+[node name="EnemyWarrior3" parent="EnemyWarriors" instance=ExtResource( 38 )]
+position = Vector2( -977, -436 )
+
+[node name="EnemyWarrior4" parent="EnemyWarriors" instance=ExtResource( 38 )]
+position = Vector2( -918, -372 )
+
+[node name="EnemyWarrior5" parent="EnemyWarriors" instance=ExtResource( 38 )]
+position = Vector2( -831, -552 )
+
+[node name="EnemyWarrior6" parent="EnemyWarriors" instance=ExtResource( 38 )]
+position = Vector2( -835, -410 )
 
 [node name="Tigers" type="Node2D" parent="."]
 z_as_relative = false

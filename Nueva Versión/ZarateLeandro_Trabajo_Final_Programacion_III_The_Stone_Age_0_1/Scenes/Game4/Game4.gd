@@ -24,13 +24,13 @@ var tower_b=load("res://Scenes/MouseIcons/tower_sb.png")
 var unit_count = 1
 
 #Puntos de cada uno de los recursos naturales a recolectar.
-var food_points = 200
-var leaves_points = 0
-var stone_points = 0
-var copper_points = 0
-var wood_points = 200
-var clay_points = 200
-var water_points = 0
+var food_points = 1000
+var leaves_points = 1000
+var stone_points = 1000
+var copper_points = 1000
+var wood_points = 1000
+var clay_points = 2000
+var water_points = 1000
 
 #Hitos anteriores ya cumplidos
 var group_dressed = false

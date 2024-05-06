@@ -122,6 +122,13 @@ var firstPoint = Vector2.ZERO
 var secondPoint = Vector2.ZERO
 var index = 0
 
+var AI_state=0
+
+#Variable enumerador que discrimina el tipo de objetivo.
+enum target_type {TOWER,BARN,FORT}
+
+export (target_type) var target
+
 #Polígono de navegación.
 onready var nav2d=get_tree().get_root().get_child(0).get_node("nav")
 
@@ -194,7 +201,7 @@ func _physics_process(delta):
 	if target_position!=Vector2.ZERO:
 		if position.distance_to(target_position) > 10:
 			#_move_to_target(target_position)
-			_move_along_path(SPEED*delta)
+			_move_along_path(SPEED*delta)			
 		else:
 			velocity=Vector2.ZERO
 	
@@ -222,6 +229,7 @@ func _physics_process(delta):
 				
 	#animar al personaje	
 	_animate()	
+	_attack()
 		
 	#Cambiar los cuadros de animación del player.
 	if velocity.length() > 0:
@@ -270,7 +278,7 @@ func move_towards(pos,point,delta):
 		path.remove(0)
 		initialPosition = position
 		
-func _move_along_path(distance):	
+func _move_along_path(distance):
 	var last_point=position
 	direction=last_point-firstPoint
 	velocity=(direction).normalized()
@@ -553,10 +561,54 @@ func _die():
 	queue_free()
 
 
+func _on_Area2D_body_entered(body):	
+	if "Unit" in body.name || "Warrior" in body.name && !("Enemy" in body.name):
+		body_entered=body
+		print("Body_Entered")
+		AI_state=1
+		
+func _on_Area2D_body_exited(body):
+	if "Unit" in body.name || "Warrior" in body.name && !("Enemy" in body.name):
+		print("Body_Exited")
+		body_entered=null
+		AI_state=0
+
+func _attack():
+	
+	if AI_state==0:
+		
+		if target == target_type.TOWER:
+			
+			if root.tower_node.get_child_count()>0:
+				target_position=root.tower_node.get_child(0).position
+				firstPoint=global_position
+				secondPoint=target_position
+				var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
+				path = arrPath
+				AI_state=2
+#			for i in range(0,root.tower_node.get_child_count()-1):
+#				if root.tower_node.get_child(i)!=root.get_child(0):
+#					if root.tower_node.get_child(i).position.distance_to(self)<root.tower_node.get_child(i-1).position.distance_to(self):
+#						target_position=root.tower_node.get_child(i).position		
+	else:
+		if body_entered!=null:
+			target_position=body_entered.position			
+			if can_shoot:
+				var bullet_target = target_position
+				shoot_node.look_at(bullet_target)				
+				var angle = shoot_node.rotation
+				var forward = Vector2(cos(angle),sin(angle))
+				bullet = bullet_scene.instance()
+				shoot_point.rotation = angle				
+				bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+				bullet.set_dir(forward)
+				bullet.rotation = angle
+				target_position=bullet_target	
+				var the_tilemap=get_tree().get_nodes_in_group("tilemap")
+				the_tilemap[0].add_child(bullet)
+				can_shoot=false
+			
+		
 
 
 
-
-
-func _on_Area2D_body_entered(body):
-	body_entered=body
