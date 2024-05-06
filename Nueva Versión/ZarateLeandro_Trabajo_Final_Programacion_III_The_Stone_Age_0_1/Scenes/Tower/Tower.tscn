@@ -36,7 +36,7 @@ autostart = true
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 scale = Vector2( 0.525, 0.814815 )
-polygon = PoolVector2Array( -40, 55, -29, 3, -13, -54, -17, -49, -7, -60, 0, -63, 14, -55, 22, -46, 18, -40, 29, 3, 40, 67, -20, 67 )
+polygon = PoolVector2Array( -40, 55, -34.2857, 2.45455, -17.1429, -66.2727, 20.9524, -66.2727, 32.381, 2.45455, 40, 67, -20, 67 )
 
 [connection signal="mouse_entered" from="." to="." method="_on_Tower_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_Tower_mouse_exited"]
