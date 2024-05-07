@@ -5,7 +5,7 @@ var bullet
 export var bullet_scene=preload("res://Scenes/Bullet/Bullet.tscn")
 
 #Velocidad
-export (float) var SPEED = 100.0
+export (float) var SPEED = 50.0
 #Máximo de Salud
 export (float) var MAX_HEALTH = 100.0
 
@@ -29,6 +29,8 @@ onready var sprite = get_node("scalable/sprite")
 
 onready var shoot_node = $shootNode
 onready var shoot_point = $shootNode/shootPoint
+
+onready var line = $Line2D
 
 
 #Variable que indica si el jugador debe moverse.
@@ -281,10 +283,10 @@ func move_towards(pos,point,delta):
 func _move_along_path(distance):
 	var last_point=position
 	direction=last_point-firstPoint
-	velocity=(direction).normalized()
+	velocity=direction.normalized()
 	while path.size():
 		var distance_between_points = last_point.distance_to(path[0])
-		if distance_between_points>7:
+		if distance<=distance_between_points:
 			last_point=lerp(last_point,path[0],distance/distance_between_points)
 			position=last_point
 			return
@@ -294,6 +296,7 @@ func _move_along_path(distance):
 		path.remove(0)
 		position=last_point
 		set_process(false)
+		
 		
 
 func _move_to_target(target):
@@ -564,35 +567,58 @@ func _die():
 func _on_Area2D_body_entered(body):	
 	if "Unit" in body.name || "Warrior" in body.name && !("Enemy" in body.name):
 		body_entered=body
-		print("Body_Entered")
 		AI_state=1
 		
+		
+
 func _on_Area2D_body_exited(body):
 	if "Unit" in body.name || "Warrior" in body.name && !("Enemy" in body.name):
-		print("Body_Exited")
 		body_entered=null
 		AI_state=0
 
-func _attack():
-	
-	if AI_state==0:
+
 		
-		if target == target_type.TOWER:
+
+
+
 			
+		
+
+
+func _attack():
+
+	if AI_state==0:
+
+		if target == target_type.TOWER:
+
 			if root.tower_node.get_child_count()>0:
 				target_position=root.tower_node.get_child(0).position
-				firstPoint=global_position
+				firstPoint=position
 				secondPoint=target_position
 				var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
+				firstPoint=arrPath[0]
 				path = arrPath
+				#line.points=arrPath
+				index=0
 				AI_state=2
 #			for i in range(0,root.tower_node.get_child_count()-1):
 #				if root.tower_node.get_child(i)!=root.get_child(0):
 #					if root.tower_node.get_child(i).position.distance_to(self)<root.tower_node.get_child(i-1).position.distance_to(self):
-#						target_position=root.tower_node.get_child(i).position		
-	else:
+#						target_position=root.tower_node.get_child(i).position
 		if body_entered!=null:
-			target_position=body_entered.position			
+			AI_state=1
+	elif AI_state==1:
+		if body_entered!=null:
+			target_position=body_entered.position
+			firstPoint=position
+			secondPoint=target_position
+			var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
+			firstPoint=arrPath[0]
+			path = arrPath			
+			#line.points=arrPath	
+			index=0		
+			AI_state=2
+
 			if can_shoot:
 				var bullet_target = target_position
 				shoot_node.look_at(bullet_target)				
@@ -606,9 +632,7 @@ func _attack():
 				target_position=bullet_target	
 				var the_tilemap=get_tree().get_nodes_in_group("tilemap")
 				the_tilemap[0].add_child(bullet)
-				can_shoot=false
-			
-		
+				can_shoot=false	
 
 
 

@@ -426,7 +426,7 @@ func _move_towards(pos,point,delta):
 		
 func _move_along_path(distance):	
 	var last_point=position
-	direction=last_point-firstPoint
+	direction=secondPoint-last_point
 	velocity=(direction).normalized()
 	while path.size():
 		var distance_between_points = last_point.distance_to(path[0])
@@ -510,7 +510,7 @@ func _unhandled_input(event):
 		var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
 		firstPoint = arrPath[0]
 		path = arrPath
-		index = 0	
+		index=0	
 				
 
 
