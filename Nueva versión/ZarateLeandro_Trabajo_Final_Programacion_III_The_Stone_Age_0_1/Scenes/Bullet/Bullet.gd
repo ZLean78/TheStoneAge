@@ -7,6 +7,7 @@ extends KinematicBody2D
 var dir = 0
 var speed = 400
 var start_position = Vector2.ZERO
+var owner_name=""
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -24,6 +25,8 @@ func _move_bullets(var _to_delta):
 	if collision != null:
 		if !("Tiger" in collision.collider.name) && !("Mammoth" in collision.collider.name):
 			queue_free()
+			
+		
 	
 #	if collision != null:
 #		if "Tiger" in collision.collider.name || "Mammoth" in collision.collider.name:
@@ -35,6 +38,7 @@ func _move_bullets(var _to_delta):
 	
 	if position.distance_to(start_position) > 400:
 		queue_free()
+	
 	
 			
 

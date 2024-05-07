@@ -93,7 +93,7 @@ var its_raining = false
 #Vector2 que indica el tamaño de la pantalla.
 var screensize = Vector2(ProjectSettings.get("display/window/size/width"),ProjectSettings.get("display/window/size/height"))
 
-#Indica si la unidad está tocando un tgre
+#Indica si la unidad está tocando un tigre
 var is_enemy_touching=false
 
 #Tigre que la unidad está tocando
@@ -262,7 +262,15 @@ func _get_damage(var the_beast):
 			bar._update_energy()
 		else:
 			_set_selected(false)			
-			is_deleted=true		
+			is_deleted=true	
+	if "Bullet" in the_beast.name && "Enemy" in the_beast.owner_name:
+		if energy_points>0:
+			energy_points-=10
+			bar._set_energy_points(energy_points)
+			bar._update_energy()
+		else:
+			_set_selected(false)			
+			is_deleted=true	
 	
 func move_towards(pos,point,delta):
 	var v = (point-pos).normalized()
@@ -296,7 +304,7 @@ func _move_to_target(target):
 	collision = move_and_collide(velocity)
 	
 	if collision != null:
-		if "Tiger" in collision.collider.name || "Mammoth" in collision.collider.name:
+		if "Tiger" in collision.collider.name || "Mammoth" in collision.collider.name || "Bullet" in collision.collider.name:
 			is_enemy_touching=true
 			
 	
@@ -316,6 +324,7 @@ func _unhandled_input(event):
 						bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
 						bullet.set_dir(forward)
 						bullet.rotation = angle
+						bullet.owner_name="Warrior"
 						target_position=bullet_target	
 						var the_tilemap=get_tree().get_nodes_in_group("tilemap")
 						the_tilemap[0].add_child(bullet)
@@ -562,3 +571,5 @@ func _die():
 
 func _on_Area2D_body_entered(body):
 	body_entered=body
+	
+

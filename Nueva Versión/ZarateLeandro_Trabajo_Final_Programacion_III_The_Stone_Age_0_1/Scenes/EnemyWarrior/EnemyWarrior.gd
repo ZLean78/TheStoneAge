@@ -577,22 +577,17 @@ func _on_Area2D_body_exited(body):
 		AI_state=0
 
 
-		
-
-
-
-			
-		
-
-
 func _attack():
-
 	if AI_state==0:
-
 		if target == target_type.TOWER:
-
 			if root.tower_node.get_child_count()>0:
-				target_position=root.tower_node.get_child(0).position
+				for i in range(0,root.tower_node.get_child_count()):
+					#if root.tower_node.get_child(i)!=root.get_child(0):
+					if i!=0:
+						if root.tower_node.get_child(i).position.distance_to(position)<root.tower_node.get_child(i-1).position.distance_to(position):
+							target_position=root.tower_node.get_child(i).position
+					else:
+						target_position=root.tower_node.get_child(0).position
 				firstPoint=position
 				secondPoint=target_position
 				var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
@@ -601,10 +596,6 @@ func _attack():
 				#line.points=arrPath
 				index=0
 				AI_state=2
-#			for i in range(0,root.tower_node.get_child_count()-1):
-#				if root.tower_node.get_child(i)!=root.get_child(0):
-#					if root.tower_node.get_child(i).position.distance_to(self)<root.tower_node.get_child(i-1).position.distance_to(self):
-#						target_position=root.tower_node.get_child(i).position
 		if body_entered!=null:
 			AI_state=1
 	elif AI_state==1:
@@ -618,7 +609,6 @@ func _attack():
 			#line.points=arrPath	
 			index=0		
 			AI_state=2
-
 			if can_shoot:
 				var bullet_target = target_position
 				shoot_node.look_at(bullet_target)				
@@ -629,6 +619,7 @@ func _attack():
 				bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
 				bullet.set_dir(forward)
 				bullet.rotation = angle
+				bullet.owner_name="Enemy_Warrior"
 				target_position=bullet_target	
 				var the_tilemap=get_tree().get_nodes_in_group("tilemap")
 				the_tilemap[0].add_child(bullet)

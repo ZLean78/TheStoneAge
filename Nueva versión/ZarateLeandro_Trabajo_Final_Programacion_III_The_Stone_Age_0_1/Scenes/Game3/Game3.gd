@@ -13,12 +13,12 @@ var townhall=load("res://Scenes/MouseIcons/townHall.png")
 var townhall_b=load("res://Scenes/MouseIcons/townHall_b.png")
 
 var unit_count = 1
-var food_points = 0
-var leaves_points = 0
-var stone_points = 0
-var wood_points = 0
-var clay_points = 0
-var water_points = 0
+var food_points = 2000
+var leaves_points = 2000
+var stone_points = 2000
+var wood_points = 2000
+var clay_points = 2000
+var water_points = 2000
 
 #Hitos anteriores ya cumplidos
 var group_dressed = false
