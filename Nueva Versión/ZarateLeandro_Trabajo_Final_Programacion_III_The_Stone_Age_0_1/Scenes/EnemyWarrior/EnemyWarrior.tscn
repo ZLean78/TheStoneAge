@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://Scenes/Bar/Bar.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Unit/UnitFrames.tres" type="SpriteFrames" id=2]
@@ -63,13 +63,17 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=4]
-extents = Vector2( 4, 3 )
+extents = Vector2( 9, 14.5 )
 
 [sub_resource type="CircleShape2D" id=5]
-radius = 190.553
+radius = 24.9098
+
+[sub_resource type="CircleShape2D" id=10]
+radius = 147.105
 
 [node name="EnemyWarrior" type="KinematicBody2D"]
-collision_mask = 14
+collision_mask = 6
+input_pickable = true
 script = ExtResource( 8 )
 
 [node name="WarriorMark" type="Sprite" parent="."]
@@ -121,18 +125,30 @@ frames = SubResource( 3 )
 animation = "bag_1"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 0, 9 )
+position = Vector2( 0, -1.5 )
 shape = SubResource( 4 )
 
 [node name="Area2D" type="Area2D" parent="."]
-collision_mask = 14
+collision_mask = 6
+input_pickable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2( 0.5, -1.5 )
 shape = SubResource( 5 )
 
+[node name="DetectionArea" type="Area2D" parent="."]
+collision_mask = 6
+input_pickable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+shape = SubResource( 10 )
+
 [node name="Line2D" type="Line2D" parent="."]
 
+[connection signal="mouse_entered" from="." to="." method="_on_EnemyWarrior_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_EnemyWarrior_mouse_exited"]
 [connection signal="timeout" from="all_timer" to="." method="_on_all_timer_timeout"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
 [connection signal="body_exited" from="Area2D" to="." method="_on_Area2D_body_exited"]
+[connection signal="body_entered" from="DetectionArea" to="." method="_on_DetectionArea_body_entered"]
+[connection signal="body_exited" from="DetectionArea" to="." method="_on_DetectionArea_body_exited"]

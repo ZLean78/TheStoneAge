@@ -22,10 +22,12 @@ func _move_spears(var _to_delta):
 	#var new_position=position.x+2
 	var collision = move_and_collide(speed*dir*_to_delta)
 	
-	if collision != null:		
-		if "Tiger" in collision.collider.name || "Mammoth" in collision.collider.name || "EnemyWarrior" in collision.collider.name || "EnemyUnit" in collision.collider.name:
-			collision.collider._get_damage(self)
+	if collision != null:
+		if ("Warrior" in collision.collider.name || "Unit" in collision.collider.name) && !"Enemy" in collision.collider.name:
+			collision.collider._get_damage(self)	
 		queue_free()
+	
+			
 			
 		
 	

@@ -56,6 +56,24 @@ func _physics_process(delta):
 		if(is_flipped==true):			
 			$Scalable.scale.x = 1
 			is_flipped = false
+			
+			
+func _get_damage(var the_beast):
+	if "Stone" in the_beast.name:
+		the_beast.queue_free()
+		if life>0:
+			life-=20
+	else:
+		queue_free()
+	
+	if "Bullet" in the_beast.name:
+		the_beast.queue_free()
+		if life>0:
+			life-=30
+	else:
+		queue_free()
+		
+		
 	
 func check_state():
 	

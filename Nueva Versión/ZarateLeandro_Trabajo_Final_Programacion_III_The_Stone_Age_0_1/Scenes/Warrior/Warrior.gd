@@ -263,14 +263,16 @@ func _get_damage(var the_beast):
 		else:
 			_set_selected(false)			
 			is_deleted=true	
-	if "Bullet" in the_beast.name && "Enemy" in the_beast.owner_name:
+	if "EnemySpear" in the_beast.name:
+		the_beast.queue_free()
 		if energy_points>0:
-			energy_points-=10
+			energy_points-=40
 			bar._set_energy_points(energy_points)
 			bar._update_energy()
 		else:
 			_set_selected(false)			
 			is_deleted=true	
+		
 	
 func move_towards(pos,point,delta):
 	var v = (point-pos).normalized()
@@ -304,7 +306,7 @@ func _move_to_target(target):
 	collision = move_and_collide(velocity)
 	
 	if collision != null:
-		if "Tiger" in collision.collider.name || "Mammoth" in collision.collider.name || "Bullet" in collision.collider.name:
+		if "Tiger" in collision.collider.name || "Mammoth" in collision.collider.name || "EnemySpear" in collision.collider.name:
 			is_enemy_touching=true
 			
 	
@@ -315,7 +317,7 @@ func _unhandled_input(event):
 			if get_tree().root.get_child(0).touching_enemy!=null:
 				if is_instance_valid(get_tree().root.get_child(0).touching_enemy):
 					if selected && can_shoot:
-						var bullet_target = get_tree().root.get_child(0).touching_enemy.position
+						var bullet_target = root.touching_enemy.position
 						shoot_node.look_at(bullet_target)				
 						var angle = shoot_node.rotation
 						var forward = Vector2(cos(angle),sin(angle))
@@ -330,7 +332,10 @@ func _unhandled_input(event):
 						the_tilemap[0].add_child(bullet)
 						can_shoot=false
 				else:
-					get_tree().root.get_child(0)._on_Game3_is_arrow()
+					if root.name=="Game3":
+						root._on_Game3_is_arrow()
+					elif root.name=="Game4":
+						root._on_Game4_is_arrow()
 		else:
 			firstPoint=global_position
 			

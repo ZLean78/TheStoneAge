@@ -1,8 +1,8 @@
 extends KinematicBody2D
 
 #Proyectil, piedra para lanzar al enemigo.
-var bullet
-export var bullet_scene=preload("res://Scenes/Bullet/Bullet.tscn")
+var spear
+export var spear_scene=preload("res://Scenes/EnemySpear/EnemySpear.tscn")
 
 #Velocidad
 export (float) var SPEED = 50.0
@@ -270,7 +270,16 @@ func _get_damage(var the_beast):
 			bar._update_energy()
 		else:
 					
-			is_deleted=true		
+			is_deleted=true
+	if "Bullet" in the_beast.name:
+		the_beast.queue_free()
+		if energy_points>0:
+			energy_points-=40
+			bar._set_energy_points(energy_points)
+			bar._update_energy()
+		else:
+			is_deleted=true	
+				
 	
 func move_towards(pos,point,delta):
 	var v = (point-pos).normalized()
@@ -565,16 +574,15 @@ func _die():
 
 
 func _on_Area2D_body_entered(body):	
-	if "Unit" in body.name || "Warrior" in body.name && !("Enemy" in body.name):
-		body_entered=body
-		AI_state=1
+	if "Bullet" in body.name || "Warrior" in body.name || "Unit" in body.name:
+		_get_damage(body)
 		
 		
 
 func _on_Area2D_body_exited(body):
-	if "Unit" in body.name || "Warrior" in body.name && !("Enemy" in body.name):
+	if "Warrior" in body.name || "Unit" in body.name:
 		body_entered=null
-		AI_state=0
+		
 
 
 func _attack():
@@ -610,20 +618,42 @@ func _attack():
 			index=0		
 			AI_state=2
 			if can_shoot:
-				var bullet_target = target_position
-				shoot_node.look_at(bullet_target)				
+				var spear_target = target_position
+				shoot_node.look_at(spear_target)				
 				var angle = shoot_node.rotation
 				var forward = Vector2(cos(angle),sin(angle))
-				bullet = bullet_scene.instance()
+				spear = spear_scene.instance()
 				shoot_point.rotation = angle				
-				bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-				bullet.set_dir(forward)
-				bullet.rotation = angle
-				bullet.owner_name="Enemy_Warrior"
-				target_position=bullet_target	
+				spear.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+				spear.set_dir(forward)
+				spear.rotation = angle
+				#spear.owner_name="Enemy_Warrior"
+				target_position=spear_target	
 				var the_tilemap=get_tree().get_nodes_in_group("tilemap")
-				the_tilemap[0].add_child(bullet)
+				the_tilemap[0].add_child(spear)
 				can_shoot=false	
 
 
 
+
+
+func _on_EnemyWarrior_mouse_entered():
+	get_tree().get_root().get_child(0)._on_Game4_is_sword()
+	get_tree().root.get_child(0).emit_signal("is_sword")
+	get_tree().root.get_child(0).touching_enemy=self
+
+
+func _on_EnemyWarrior_mouse_exited():
+	get_tree().get_root().get_child(0)._on_Game4_is_arrow()
+
+
+func _on_DetectionArea_body_entered(body):
+	if ("Unit" in body.name || "Warrior" in body.name && !("Enemy" in body.name)):
+		body_entered=body
+		AI_state=1
+
+
+func _on_DetectionArea_body_exited(body):
+	if "Unit" in body.name || "Warrior" in body.name && !("Enemy" in body.name):
+		body_entered=null
+		AI_state=0

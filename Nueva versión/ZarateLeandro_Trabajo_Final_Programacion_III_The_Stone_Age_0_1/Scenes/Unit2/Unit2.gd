@@ -468,7 +468,7 @@ func _unhandled_input(event):
 							target_position = get_tree().root.get_child(0).touching_enemy.position
 							shoot_node.look_at(target_position)				
 							var angle = shoot_node.rotation
-							var forward = Vector2(cos(angle),sin(angle))
+							#var forward = Vector2(cos(angle),sin(angle))
 							var new_stone = stone_scene.instance()
 							shoot_point.rotation = angle				
 							new_stone.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)

@@ -100,6 +100,7 @@ onready var tower_node = $Towers
 onready var barn_node = $Barn
 onready var nav2d=$nav
 onready var townhall_node=$TownHall
+onready var enemy_warriors_node=$EnemyWarriors
 
 var path=[]
 
@@ -354,6 +355,8 @@ func _process(_delta):
 		_check_coppers()
 		
 		_check_mouse_modes()
+		
+		_check_enemies()
 
 #Seleccionar una unidad.
 func select_unit(unit):
@@ -1333,3 +1336,8 @@ func _on_DevelopMetals_pressed():
 		is_metals_developed=true
 		develop_metals.visible=false
 		
+func _check_enemies():
+	for an_enemy in enemy_warriors_node.get_children():
+		if is_instance_valid(an_enemy):
+			if an_enemy.is_deleted:
+				an_enemy.queue_free()
