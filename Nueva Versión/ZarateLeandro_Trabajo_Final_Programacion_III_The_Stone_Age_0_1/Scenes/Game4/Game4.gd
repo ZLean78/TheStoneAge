@@ -847,14 +847,14 @@ func deselect_all():
 	while selected_units.size()>0:
 		selected_units[0]._set_selected(false)
 		
-func select_last():
+func _select_last():
 	for unit in selected_units:
 		if selected_units[selected_units.size()-1] == unit:
 			unit._set_selected(true)
 		else:
 			unit._set_selected(false)
 		
-func get_units_in_area(area):
+func _get_units_in_area(area):
 	var u=[]
 	for unit in all_units:
 		if unit.position.x>area[0].x and unit.position.x<area[1].x:
@@ -862,13 +862,13 @@ func get_units_in_area(area):
 				u.append(unit)
 	return u
 		
-func area_selected(obj):
+func _area_selected(obj):
 	var start=obj.start
 	var end=obj.end
 	var area=[]
 	area.append(Vector2(min(start.x,end.x),min(start.y,end.y)))
 	area.append(Vector2(max(start.x,end.x),max(start.y,end.y)))
-	var ut = get_units_in_area(area)
+	var ut = _get_units_in_area(area)
 	if not Input.is_key_pressed(KEY_SHIFT):
 		deselect_all()
 	for u in ut:

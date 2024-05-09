@@ -274,7 +274,7 @@ func _get_damage(var the_beast):
 	if "Bullet" in the_beast.name:
 		the_beast.queue_free()
 		if energy_points>0:
-			energy_points-=40
+			energy_points-=20
 			bar._set_energy_points(energy_points)
 			bar._update_energy()
 		else:
@@ -596,42 +596,19 @@ func _attack():
 							target_position=root.tower_node.get_child(i).position
 					else:
 						target_position=root.tower_node.get_child(0).position
-				firstPoint=position
-				secondPoint=target_position
-				var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
-				firstPoint=arrPath[0]
-				path = arrPath
-				#line.points=arrPath
-				index=0
+				_walk()
+				if position.distance_to(target_position):
+					_shoot()
 				AI_state=2
 		if body_entered!=null:
 			AI_state=1
 	elif AI_state==1:
 		if body_entered!=null:
 			target_position=body_entered.position
-			firstPoint=position
-			secondPoint=target_position
-			var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
-			firstPoint=arrPath[0]
-			path = arrPath			
-			#line.points=arrPath	
-			index=0		
-			AI_state=2
+			_walk()
 			if can_shoot:
-				var spear_target = target_position
-				shoot_node.look_at(spear_target)				
-				var angle = shoot_node.rotation
-				var forward = Vector2(cos(angle),sin(angle))
-				spear = spear_scene.instance()
-				shoot_point.rotation = angle				
-				spear.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-				spear.set_dir(forward)
-				spear.rotation = angle
-				#spear.owner_name="Enemy_Warrior"
-				target_position=spear_target	
-				var the_tilemap=get_tree().get_nodes_in_group("tilemap")
-				the_tilemap[0].add_child(spear)
-				can_shoot=false	
+				_shoot()
+				AI_state=2
 
 
 
@@ -657,3 +634,30 @@ func _on_DetectionArea_body_exited(body):
 	if "Unit" in body.name || "Warrior" in body.name && !("Enemy" in body.name):
 		body_entered=null
 		AI_state=0
+
+
+func _shoot():
+	var spear_target = target_position
+	shoot_node.look_at(spear_target)				
+	var angle = shoot_node.rotation
+	var forward = Vector2(cos(angle),sin(angle))
+	spear = spear_scene.instance()
+	shoot_point.rotation = angle				
+	spear.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+	spear.set_dir(forward)
+	spear.rotation = angle
+	#spear.owner_name="Enemy_Warrior"
+	target_position=spear_target	
+	var the_tilemap=get_tree().get_nodes_in_group("tilemap")
+	the_tilemap[0].add_child(spear)
+	can_shoot=false	
+
+func _walk():
+	firstPoint=position
+	secondPoint=target_position
+	var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
+	firstPoint=arrPath[0]
+	path = arrPath			
+	#line.points=arrPath	
+	index=0		
+	

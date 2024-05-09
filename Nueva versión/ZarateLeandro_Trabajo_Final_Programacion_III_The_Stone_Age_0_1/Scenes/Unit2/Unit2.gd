@@ -465,38 +465,12 @@ func _unhandled_input(event):
 				if is_instance_valid(get_tree().root.get_child(0).touching_enemy):
 					if selected && can_shoot:
 						if !is_warchief:
-							target_position = get_tree().root.get_child(0).touching_enemy.position
-							shoot_node.look_at(target_position)				
-							var angle = shoot_node.rotation
-							#var forward = Vector2(cos(angle),sin(angle))
-							var new_stone = stone_scene.instance()
-							shoot_point.rotation = angle				
-							new_stone.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-							if target_position.x<position.x:
-								new_stone.set_velocity(Vector2(-200,0))
-							else:
-								new_stone.set_velocity(Vector2(200,0))
-							new_stone.rotation = angle		
-							var the_tilemap=get_tree().get_nodes_in_group("tilemap")
-							the_tilemap[0].add_child(new_stone)
-							can_shoot=false
+							_shoot()
 						else:
 							for warrior in root.warriors.get_children():
 								if warrior.position.distance_to(position):
 									if warrior.can_shoot:
-										var bullet_target = root.touching_enemy.position
-										warrior.shoot_node.look_at(bullet_target)				
-										var angle = warrior.shoot_node.rotation
-										var forward = Vector2(cos(angle),sin(angle))
-										warrior.bullet = warrior.bullet_scene.instance()
-										warrior.shoot_point.rotation = angle				
-										warrior.bullet.position = Vector2(warrior.shoot_point.global_position.x,warrior.shoot_point.global_position.y)
-										warrior.bullet.set_dir(forward)
-										warrior.bullet.rotation = angle
-										target_position=bullet_target	
-										var the_tilemap=get_tree().get_nodes_in_group("tilemap")
-										the_tilemap[0].add_child(warrior.bullet)
-										warrior.can_shoot=false
+										warrior._shoot()
 				else:					
 					if get_tree().get_root().get_child(0).name == "Game3":
 						get_tree().get_root().get_child(0)._on_Game3_is_arrow()
@@ -506,14 +480,8 @@ func _unhandled_input(event):
 			firstPoint=global_position
 			
 	if event.is_action_released("RightClick"):		
-		secondPoint = target_position		
-		var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
-		firstPoint = arrPath[0]
-		path = arrPath
-		index=0	
-				
-
-
+		if !root.sword_mode:
+			_walk()
 			
 
 func _on_Unit_input_event(_viewport, event, _shape_idx):
@@ -521,12 +489,7 @@ func _on_Unit_input_event(_viewport, event, _shape_idx):
 		if event.is_pressed():			
 			if event.button_index == BUTTON_LEFT:
 				_set_selected(not selected)
-				root.select_last()
-				
-
-
-
-
+				root._select_last()
 
 func hurt(amount):
 	health-=amount
@@ -888,8 +851,7 @@ func _on_all_timer_timeout():
 				if heal_counter<=0:
 					can_heal_itself=true
 		
-			if can_heal_another && timer_count>3:
-				heal(body_entered)
+			
 			if can_heal_itself && timer_count>3:
 				self_heal()
 		
@@ -909,21 +871,20 @@ func _die():
 func _on_Area2D_body_entered(body):
 	body_entered=body
 	if is_warchief:
-		if "Unit" in body_entered.name || "Warrior" in body_entered.name:
-			can_heal_another=true
+		if ("Unit" in body_entered.name || "Warrior" in body_entered.name) && !"Enemy" in body_entered.name:
+			if all_timer.stop():
+				heal(body_entered)
 	
 func heal(_body):	
-	if "Unit" in _body.name || "Warrior" in _body.name:		
-		if _body.energy_points<_body.MAX_HEALTH:
-			_body.energy_points+=5
-			_body.bar._set_energy_points(energy_points)
-			_body.bar._update_energy()
-			
-			if _body.energy_points>_body.MAX_HEALTH:
-				_body.energy_points=_body.MAX_HEALTH
+	if _body.energy_points<_body.MAX_HEALTH:
+		_body.energy_points+=5
+		_body.bar._set_energy_points(energy_points)
+		_body.bar._update_energy()
 		
+		if _body.energy_points>_body.MAX_HEALTH:
+			_body.energy_points=_body.MAX_HEALTH
 		
-		_body.bar.visible=true
+	_body.bar.visible=true
 		
 			
 func self_heal():	
@@ -949,7 +910,28 @@ func _on_Area2D_body_exited(body):
 		can_heal_another=false
 
 
+func _shoot():
+	target_position = get_tree().root.get_child(0).touching_enemy.position
+	shoot_node.look_at(target_position)				
+	var angle = shoot_node.rotation
+	#var forward = Vector2(cos(angle),sin(angle))
+	var new_stone = stone_scene.instance()
+	shoot_point.rotation = angle				
+	new_stone.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+	if target_position.x<position.x:
+		new_stone.set_velocity(Vector2(-200,0))
+	else:
+		new_stone.set_velocity(Vector2(200,0))
+	new_stone.rotation = angle		
+	var the_tilemap=get_tree().get_nodes_in_group("tilemap")
+	the_tilemap[0].add_child(new_stone)
+	can_shoot=false
 
-
-			
+func _walk():
+	firstPoint = global_position
+	secondPoint = target_position		
+	var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
+	firstPoint = arrPath[0]
+	path = arrPath
+	index = 0				
 			

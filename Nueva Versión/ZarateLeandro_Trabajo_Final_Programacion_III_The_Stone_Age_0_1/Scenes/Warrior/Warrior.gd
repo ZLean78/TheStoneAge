@@ -266,7 +266,7 @@ func _get_damage(var the_beast):
 	if "EnemySpear" in the_beast.name:
 		the_beast.queue_free()
 		if energy_points>0:
-			energy_points-=40
+			energy_points-=20
 			bar._set_energy_points(energy_points)
 			bar._update_energy()
 		else:
@@ -313,39 +313,20 @@ func _move_to_target(target):
 
 func _unhandled_input(event):
 	if event.is_action_pressed("RightClick"):
-		if get_tree().root.get_child(0).sword_mode:
-			if get_tree().root.get_child(0).touching_enemy!=null:
-				if is_instance_valid(get_tree().root.get_child(0).touching_enemy):
+		if root.sword_mode:
+			if root.touching_enemy!=null:
+				if is_instance_valid(root.touching_enemy):
 					if selected && can_shoot:
-						var bullet_target = root.touching_enemy.position
-						shoot_node.look_at(bullet_target)				
-						var angle = shoot_node.rotation
-						var forward = Vector2(cos(angle),sin(angle))
-						bullet = bullet_scene.instance()
-						shoot_point.rotation = angle				
-						bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-						bullet.set_dir(forward)
-						bullet.rotation = angle
-						bullet.owner_name="Warrior"
-						target_position=bullet_target	
-						var the_tilemap=get_tree().get_nodes_in_group("tilemap")
-						the_tilemap[0].add_child(bullet)
-						can_shoot=false
+						_shoot()
 				else:
 					if root.name=="Game3":
 						root._on_Game3_is_arrow()
 					elif root.name=="Game4":
 						root._on_Game4_is_arrow()
 		else:
-			firstPoint=global_position
+			_walk()
 			
-	if event.is_action_released("RightClick"):	
-		if !get_tree().root.get_child(0).sword_mode:
-			secondPoint = target_position		
-			var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
-			firstPoint = arrPath[0]
-			path = arrPath
-			index = 0			
+	
 	
 					
 func _on_Unit_input_event(_viewport, event, _shape_idx):
@@ -353,7 +334,7 @@ func _on_Unit_input_event(_viewport, event, _shape_idx):
 		if event.is_pressed():			
 			if event.button_index == BUTTON_LEFT:
 				_set_selected(not selected)
-				root.select_last()
+				root._select_last()
 				
 
 
@@ -557,8 +538,10 @@ func _on_all_timer_timeout():
 	if body_entered!=null && is_instance_valid(body_entered):
 		#if "Tiger" in body_entered.name || "Mammoth" in body_entered.name:
 		_get_damage(body_entered)
-	if timer_count>3:
+	if timer_count>=3:
 		can_shoot=true
+	else:
+		can_shoot=false
 	if timer_count>4:
 		timer_count=0
 	all_timer.start()
@@ -568,13 +551,30 @@ func _on_all_timer_timeout():
 func _die():
 	queue_free()
 
-
-
-
-
-
-
 func _on_Area2D_body_entered(body):
 	body_entered=body
 	
 
+func _shoot():
+	var bullet_target = root.touching_enemy.position
+	shoot_node.look_at(bullet_target)				
+	var angle = shoot_node.rotation
+	var forward = Vector2(cos(angle),sin(angle))
+	bullet = bullet_scene.instance()
+	shoot_point.rotation = angle				
+	bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+	bullet.set_dir(forward)
+	bullet.rotation = angle
+	bullet.owner_name="Warrior"
+	#target_position=bullet_target	
+	var the_tilemap=get_tree().get_nodes_in_group("tilemap")
+	the_tilemap[0].add_child(bullet)
+	
+	
+func _walk():
+	firstPoint = global_position	
+	secondPoint = target_position		
+	var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
+	firstPoint = arrPath[0]
+	path = arrPath
+	index = 0		

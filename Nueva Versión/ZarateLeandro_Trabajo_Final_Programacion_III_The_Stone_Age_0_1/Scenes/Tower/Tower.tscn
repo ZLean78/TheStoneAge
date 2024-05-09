@@ -10,6 +10,8 @@ bg_color = Color( 0, 0, 1, 1 )
 radius = 63.2851
 
 [node name="Tower" type="StaticBody2D"]
+collision_layer = 8
+collision_mask = 11
 script = ExtResource( 2 )
 condition_max = 50
 
@@ -27,6 +29,8 @@ custom_styles/fg = SubResource( 1 )
 max_value = 50.0
 
 [node name="Area2D" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 11
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource( 2 )
