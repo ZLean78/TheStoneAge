@@ -536,15 +536,11 @@ func _set_erased(var _is_erased):
 #	
 func _on_all_timer_timeout():
 	timer_count+=1	
-	#if tiger!=null && is_instance_valid(tiger):
-		#_get_damage(tiger)
-	if body_entered!=null && is_instance_valid(body_entered):
-		#if "Tiger" in body_entered.name || "Mammoth" in body_entered.name:
-		_get_damage(body_entered)
 	
 	if timer_count>4:
 		can_shoot=true
 		timer_count=0
+
 	all_timer.start()
 	
 	
@@ -555,9 +551,8 @@ func _die():
 
 func _on_Area2D_body_entered(body):	
 	if (("Tower" in body.name || "Bullet" in body.name || "Warrior" in body.name || "Unit" in body.name)
-		&& !("Enemy" in body.name)):
-		body_entered=body
-		if ("Bullet" in body_entered.name || "Warrior" in body_entered.name || "Unit" in body.name):
+		&& !("Enemy" in body.name)):		
+		if is_instance_valid(body_entered):
 			_get_damage(body_entered)
 
 		
@@ -584,44 +579,42 @@ func _choose_target():
 				
 		
 func _state_machine():
-	match AI_state:
-		0:
-			if root.tower_node.get_child_count()>0:
-				target=root.tower_node.get_child(0)
-				target_position=target.position
-				print("cambio a estado 1")
-				AI_state=1	
-			else:
-				target_position=position
+	if AI_state==0:
+		if root.tower_node.get_child_count()>0:
+			_choose_target()
+			print("cambio a estado 1")
+			AI_state=1	
+		else:
+			target_position=position
 							
-		1:
+	elif AI_state==1:
+		_walk()	
 			
-			_walk()	
-			
-			if position.distance_to(target_position)<=100:
-				print("cambio a estado 2")				
-				AI_state=2
+		if position.distance_to(target_position)<=100:
+			print("cambio a estado 2")				
+			AI_state=2
 		
-		2:
-			if can_shoot:
-				_shoot()
+	elif AI_state==2:
+		if can_shoot:
+			_shoot()
 			
-			if body_entered!=null && is_instance_valid(body_entered):
-				if!("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name):
-					target_position=body_entered.position
-					print("cambio a estado 3")
-					AI_state=3
+		if body_entered!=null && is_instance_valid(body_entered):
+			if!("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name):
+				target_position=body_entered.position
+				print("cambio a estado 3")
+				AI_state=3
 			
-		3:
-			if is_instance_valid(body_entered):				
-				target=body_entered.position
-				if position.distance_to(body_entered.position)>150:
-					_walk()
-				else:
-					if can_shoot:
-						_shoot()
-				if position.distance_to(target_position)>400:
-					body_entered=false
+	elif AI_state==3:
+		if is_instance_valid(body_entered):				
+			target=body_entered.position
+			if position.distance_to(body_entered.position)>150:
+				_walk()
+			else:
+				if can_shoot:
+					_shoot()
+			if position.distance_to(target_position)>400:
+				body_entered=false
+				AI_state=0
 		
 			
 #func _attack():
@@ -677,15 +670,10 @@ func _on_EnemyWarrior_mouse_exited():
 func _on_DetectionArea_body_entered(body):
 	if ("Unit" in body.name || "Warrior" in body.name && !("Enemy" in body.name)):
 		body_entered=body
-		AI_state=1
-	else:
-		AI_state=0
+		AI_state=3
 
 
-func _on_DetectionArea_body_exited(body):
-	if "Unit" in body.name || "Warrior" in body.name && !("Enemy" in body.name):
-		body_entered=null
-		AI_state=0
+
 
 
 func _shoot():
@@ -702,7 +690,7 @@ func _shoot():
 	target_position=spear_target	
 	var the_tilemap=get_tree().get_nodes_in_group("tilemap")
 	the_tilemap[0].add_child(spear)
-	can_shoot=false	
+	can_shoot=false
 
 func _walk():	
 	firstPoint=position
@@ -710,6 +698,6 @@ func _walk():
 	var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
 	firstPoint=arrPath[0]
 	path = arrPath			
-	line.points=arrPath	
+	#line.points=arrPath	
 	index=0		
 	
