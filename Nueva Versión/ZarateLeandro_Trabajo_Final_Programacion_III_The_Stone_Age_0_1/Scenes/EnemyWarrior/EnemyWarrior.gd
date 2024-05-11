@@ -129,7 +129,8 @@ var AI_state=0
 #Variable enumerador que discrimina el tipo de objetivo.
 enum target_type {TOWER,BARN,FORT}
 
-export (target_type) var target
+var target=null
+export (target_type) var target_t
 
 #Polígono de navegación.
 onready var nav2d=get_tree().get_root().get_child(0).get_node("nav")
@@ -193,31 +194,16 @@ func _physics_process(delta):
 	position.x = clamp(position.x,-1028,screensize.x)
 	position.y = clamp(position.y,-608,screensize.y)	
 	
-	if selected:
-		if box.visible == false:
-			box.visible = true
-	else:
-		if box.visible == true:
-			box.visible = false
+	#if AI_state==2 || AI_state==2 || AI_state==3:
+	if(position.distance_to(target_position)>30):
+		_move_along_path(SPEED*delta)	
 	
-	if target_position!=Vector2.ZERO:
-		if position.distance_to(target_position) > 10:
-			#_move_to_target(target_position)
-			_move_along_path(SPEED*delta)			
-		else:
-			velocity=Vector2.ZERO
+		
 	
-	
-	"""if move_p:
-		path = get_tree().root.get_child(0).get_node("nav").get_simple_path(position,target_position)
-		velocity=(target_position-position)
-		initialPosition = position
-		move_p = false
-	if path.size()>0:
-		move_towards(initialPosition,path[0],delta)
-	else:
-		velocity=Vector2(0,0)"""	
-	
+	#Máquina de estados para las acciones.
+	_state_machine()
+	#animar al personaje	
+	_animate()
 	# Orientar al warrior.
 	if velocity.x<0:
 		if(is_flipped==false):			
@@ -229,9 +215,8 @@ func _physics_process(delta):
 			is_flipped = false
 	
 				
-	#animar al personaje	
-	_animate()	
-	_attack()
+		
+	
 		
 	#Cambiar los cuadros de animación del player.
 	if velocity.length() > 0:
@@ -240,11 +225,6 @@ func _physics_process(delta):
 			sprite.play()
 	else:
 		sprite.stop()
-	
-	
-		
-
-		
 		
 	if(all_timer.is_stopped()):
 		all_timer.start()
@@ -291,10 +271,10 @@ func move_towards(pos,point,delta):
 		
 func _move_along_path(distance):
 	var last_point=position
-	direction=last_point-firstPoint
+	direction=target_position-firstPoint
 	velocity=direction.normalized()
-	while path.size():
-		var distance_between_points = last_point.distance_to(path[0])
+	while path.size():	
+		var distance_between_points = last_point.distance_to(path[0])	
 		if distance<=distance_between_points:
 			last_point=lerp(last_point,path[0],distance/distance_between_points)
 			position=last_point
@@ -561,9 +541,9 @@ func _on_all_timer_timeout():
 	if body_entered!=null && is_instance_valid(body_entered):
 		#if "Tiger" in body_entered.name || "Mammoth" in body_entered.name:
 		_get_damage(body_entered)
-	if timer_count>3:
-		can_shoot=true
+	
 	if timer_count>4:
+		can_shoot=true
 		timer_count=0
 	all_timer.start()
 	
@@ -574,41 +554,111 @@ func _die():
 
 
 func _on_Area2D_body_entered(body):	
-	if "Bullet" in body.name || "Warrior" in body.name || "Unit" in body.name:
-		_get_damage(body)
+	if (("Tower" in body.name || "Bullet" in body.name || "Warrior" in body.name || "Unit" in body.name)
+		&& !("Enemy" in body.name)):
+		body_entered=body
+		if ("Bullet" in body_entered.name || "Warrior" in body_entered.name || "Unit" in body.name):
+			_get_damage(body_entered)
+
 		
 		
-
-func _on_Area2D_body_exited(body):
-	if "Warrior" in body.name || "Unit" in body.name:
-		body_entered=null
 		
-
-
-func _attack():
-	if AI_state==0:
-		if target == target_type.TOWER:
+#
+#func _on_Area2D_body_exited(body):
+#	if ("Warrior" in body.name || "Unit" in body.name) && !("Enemy" in body.name):
+#		body_entered=null
+		
+		
+func _choose_target():
+	if target_t == target_type.TOWER:
+		if root.tower_node.get_child_count()>0:
+			for i in range(0,root.tower_node.get_child_count()):
+				if i!=0:
+					if root.tower_node.get_child(i).position.distance_to(position)<root.tower_node.get_child(i-1).position.distance_to(position):
+						target=root.tower_node.get_child(i)
+						target_position=root.tower_node.get_child(i).position
+				else:
+					target=root.tower_node.get_child(0)
+					target_position=root.tower_node.get_child(0).position					
+				
+				
+		
+func _state_machine():
+	match AI_state:
+		0:
 			if root.tower_node.get_child_count()>0:
-				for i in range(0,root.tower_node.get_child_count()):
-					#if root.tower_node.get_child(i)!=root.get_child(0):
-					if i!=0:
-						if root.tower_node.get_child(i).position.distance_to(position)<root.tower_node.get_child(i-1).position.distance_to(position):
-							target_position=root.tower_node.get_child(i).position
-					else:
-						target_position=root.tower_node.get_child(0).position
-				_walk()
-				if position.distance_to(target_position):
-					_shoot()
+				target=root.tower_node.get_child(0)
+				target_position=target.position
+				print("cambio a estado 1")
+				AI_state=1	
+			else:
+				target_position=position
+							
+		1:
+			
+			_walk()	
+			
+			if position.distance_to(target_position)<=100:
+				print("cambio a estado 2")				
 				AI_state=2
-		if body_entered!=null:
-			AI_state=1
-	elif AI_state==1:
-		if body_entered!=null:
-			target_position=body_entered.position
-			_walk()
+		
+		2:
 			if can_shoot:
 				_shoot()
-				AI_state=2
+			
+			if body_entered!=null && is_instance_valid(body_entered):
+				if!("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name):
+					target_position=body_entered.position
+					print("cambio a estado 3")
+					AI_state=3
+			
+		3:
+			if is_instance_valid(body_entered):				
+				target=body_entered.position
+				if position.distance_to(body_entered.position)>150:
+					_walk()
+				else:
+					if can_shoot:
+						_shoot()
+				if position.distance_to(target_position)>400:
+					body_entered=false
+		
+			
+#func _attack():
+#	if AI_state==0:
+#		if target_t == target_type.TOWER:
+#			if root.tower_node.get_child_count()>0:
+#				for i in range(0,root.tower_node.get_child_count()):
+#					#if root.tower_node.get_child(i)!=root.get_child(0):
+#					if i!=0:
+#						if root.tower_node.get_child(i).position.distance_to(position)<root.tower_node.get_child(i-1).position.distance_to(position):
+#							target=root.tower_node.get_child(i)
+#							target_position=root.tower_node.get_child(i).position
+#					else:
+#						target=root.tower_node.get_child(0)
+#						target_position=root.tower_node.get_child(0).position					
+#
+#					if target!=null && is_instance_valid(target) && position.distance_to(target.position)<50:
+#						_shoot()
+#					_walk()					
+#					AI_state=2					
+#		if body_entered!=null && is_instance_valid(body_entered):
+#			if!("Enemy" in body_entered.name):
+#				AI_state=1
+#	elif AI_state==1:
+#		if is_instance_valid(body_entered):
+#			target_position=body_entered.position
+#			if position.distance_to(body_entered.position)>50:
+#				_walk()
+#			else:
+#				_shoot()
+			AI_state=2
+	
+#	if target!=null:
+#		print(target.name)
+
+		
+				
 
 
 
@@ -628,6 +678,8 @@ func _on_DetectionArea_body_entered(body):
 	if ("Unit" in body.name || "Warrior" in body.name && !("Enemy" in body.name)):
 		body_entered=body
 		AI_state=1
+	else:
+		AI_state=0
 
 
 func _on_DetectionArea_body_exited(body):
@@ -652,12 +704,12 @@ func _shoot():
 	the_tilemap[0].add_child(spear)
 	can_shoot=false	
 
-func _walk():
+func _walk():	
 	firstPoint=position
 	secondPoint=target_position
 	var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
 	firstPoint=arrPath[0]
 	path = arrPath			
-	#line.points=arrPath	
+	line.points=arrPath	
 	index=0		
 	

@@ -72,7 +72,7 @@ radius = 24.9098
 radius = 147.105
 
 [node name="EnemyWarrior" type="KinematicBody2D"]
-collision_mask = 6
+collision_mask = 14
 input_pickable = true
 script = ExtResource( 8 )
 
@@ -129,7 +129,7 @@ position = Vector2( 0, -1.5 )
 shape = SubResource( 4 )
 
 [node name="Area2D" type="Area2D" parent="."]
-collision_mask = 6
+collision_mask = 14
 input_pickable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
@@ -137,7 +137,7 @@ position = Vector2( 0.5, -1.5 )
 shape = SubResource( 5 )
 
 [node name="DetectionArea" type="Area2D" parent="."]
-collision_mask = 6
+collision_mask = 14
 input_pickable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
@@ -149,6 +149,5 @@ shape = SubResource( 10 )
 [connection signal="mouse_exited" from="." to="." method="_on_EnemyWarrior_mouse_exited"]
 [connection signal="timeout" from="all_timer" to="." method="_on_all_timer_timeout"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
-[connection signal="body_exited" from="Area2D" to="." method="_on_Area2D_body_exited"]
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_DetectionArea_body_entered"]
 [connection signal="body_exited" from="DetectionArea" to="." method="_on_DetectionArea_body_exited"]

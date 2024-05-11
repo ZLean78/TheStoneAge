@@ -9,6 +9,7 @@ onready var timer=$Timer
 #onready var all_timer=get_tree().root.get_child(0).get_node("food_timer")
 onready var bar=$Bar
 var mouse_entered=false
+var body_entered=null
 
 
 # Called when the node enters the scene tree for the first time.
@@ -25,6 +26,7 @@ func _tower_build():
 
 
 func _on_Area2D_body_entered(body):
+	body_entered=body
 	if "Unit" in body.name:
 		body.tower_entered=true
 	if "EnemySpear" in body.name:
@@ -36,6 +38,7 @@ func _on_Area2D_body_entered(body):
 
 func _on_Area2D_body_exited(body):
 	if "Unit" in body.name:
+		body_entered=null
 		body.tower_entered=false
 
 
