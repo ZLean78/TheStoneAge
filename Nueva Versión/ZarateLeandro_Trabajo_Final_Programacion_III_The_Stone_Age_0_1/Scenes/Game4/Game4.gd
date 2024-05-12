@@ -60,6 +60,7 @@ onready var tree = get_tree().root.get_child(0)
 onready var food_timer = tree.get_node("food_timer")
 onready var enemy_timer = tree.get_node("enemy_timer")
 onready var timer_label = tree.get_node("UI/Base/TimerLabel")
+onready var state_label = tree.get_node("UI/Base/StateLabel")
 onready var food_label = tree.get_node("UI/Base/Rectangle/FoodLabel")
 onready var prompts_label = tree.get_node("UI/Base/Rectangle/PromptsLabel")
 onready var leaves_label = tree.get_node("UI/Base/Rectangle/LeavesLabel")
@@ -327,7 +328,10 @@ func _process(_delta):
 	
 		#Etiqueta de tiempo restante para la amenaza enemiga
 		#y etiquetas de recursos recolectados.
-		timer_label.text = "ATAQUE ENEMIGO: " + str(int(enemy_timer.time_left))
+		for enemy in enemy_warriors_node.get_children():
+			timer_label.text = "CONTADOR: " + str(int(enemy.timer_count))
+			
+			
 		food_label.text = str(int(food_points))
 		leaves_label.text = str(int(leaves_points))	
 		stone_label.text = str(int(stone_points))	
@@ -335,6 +339,9 @@ func _process(_delta):
 		clay_label.text = str(int(clay_points))
 		wood_label.text = str(int(wood_points))
 		water_label.text = str(int(water_points))
+		
+		for enemy_warrior in enemy_warriors_node.get_children():
+			state_label.text= "Distancia: " + str(enemy_warrior.position.distance_to(enemy_warrior.target_position))
 	
 		#Comprobar las unidades existentes para ver si alguna está muerta.
 		_check_units()
@@ -1341,3 +1348,5 @@ func _check_enemies():
 		if is_instance_valid(an_enemy):
 			if an_enemy.is_deleted:
 				an_enemy.queue_free()
+				
+		

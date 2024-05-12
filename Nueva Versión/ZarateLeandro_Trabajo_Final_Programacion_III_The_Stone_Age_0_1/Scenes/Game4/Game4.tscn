@@ -546,6 +546,13 @@ text = "ATAQUE ENEMIGO:
 000"
 align = 1
 
+[node name="StateLabel" type="Label" parent="UI/Base"]
+margin_left = 1010.0
+margin_top = -493.0
+margin_right = 1241.0
+margin_bottom = -443.0
+align = 1
+
 [node name="NextSceneButton" type="TextureButton" parent="UI/Base"]
 visible = false
 margin_left = 490.0

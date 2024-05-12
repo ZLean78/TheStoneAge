@@ -23,17 +23,19 @@ func _process(_delta):
 func _tower_build():
 	if condition<condition_max:
 		condition+=3
+		
+func _get_damage(body):
+	if "EnemySpear" in body.name:
+		condition-=3
+		if condition<0:
+			queue_free()
 
 
 func _on_Area2D_body_entered(body):
 	body_entered=body
 	if "Unit" in body.name:
 		body.tower_entered=true
-	if "EnemySpear" in body.name:
-		body.queue_free()
-		condition-=3
-		if condition<0:
-			queue_free()
+	
 
 
 func _on_Area2D_body_exited(body):

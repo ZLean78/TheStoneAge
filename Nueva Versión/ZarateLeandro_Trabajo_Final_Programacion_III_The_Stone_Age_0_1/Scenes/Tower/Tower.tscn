@@ -10,7 +10,7 @@ bg_color = Color( 0, 0, 1, 1 )
 radius = 63.2851
 
 [sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 9.5, 52 )
+extents = Vector2( 9.5, 52.5 )
 
 [node name="Tower" type="StaticBody2D"]
 collision_layer = 8
@@ -46,7 +46,7 @@ scale = Vector2( 0.525, 0.814815 )
 polygon = PoolVector2Array( -40, 55, -34.2857, 2.45455, -17.1429, -66.2727, 20.9524, -66.2727, 32.381, 2.45455, 40, 67, -20, 67 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 0.5, -1 )
+position = Vector2( 1.5, -0.5 )
 shape = SubResource( 3 )
 
 [connection signal="mouse_entered" from="." to="." method="_on_Tower_mouse_entered"]
