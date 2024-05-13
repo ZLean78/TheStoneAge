@@ -43,7 +43,7 @@ animations = [ {
 "speed": 7.0
 } ]
 
-[sub_resource type="NavigationPolygon" id=3]
+[sub_resource type="NavigationPolygon" id=9]
 vertices = PoolVector2Array( 364, 160, 1026, 585, -1021, 598, 354, 160, 1024, -621, 364, 155, -1021, -611, 354, 155 )
 polygons = [ PoolIntArray( 0, 1, 2, 3 ), PoolIntArray( 4, 1, 0, 5 ), PoolIntArray( 6, 4, 5, 7 ), PoolIntArray( 2, 6, 7, 3 ) ]
 outlines = [ PoolVector2Array( -1021, -611, -1021, 598, 1026, 585, 1024, -621 ), PoolVector2Array( 354, 155, 364, 155, 364, 160, 354, 160 ) ]
@@ -125,7 +125,7 @@ position = Vector2( 167, 526 )
 
 [node name="polygon" type="NavigationPolygonInstance" parent="nav"]
 position = Vector2( 0, 13 )
-navpoly = SubResource( 3 )
+navpoly = SubResource( 9 )
 
 [node name="UI" type="CanvasLayer" parent="."]
 

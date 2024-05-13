@@ -10,6 +10,11 @@ export (float) var SPEED = 100.0
 #Máximo de Salud
 export (float) var MAX_HEALTH = 100.0
 
+
+#MÁXIMO Y MÍNIMO DE ENEGÍA QUE LA UNIDAD PUEDE PERDER.
+export (float) var MAX_ENERGY_LOSS
+export (float) var MIN_ENERGY_LOSS
+
 #variable que indica el nodo raíz.
 onready var root=get_tree().root.get_child(0)
 
@@ -26,7 +31,7 @@ onready var box = $Selected
 onready var bar = $Bar
 onready var all_timer = $all_timer
 onready var sprite = get_node("scalable/sprite")
-onready var bag_sprite = get_node("scalable/bag_sprite")
+onready var bag_sprite = $scalable/bag_sprite
 onready var shoot_node = $shootNode
 onready var shoot_point = $shootNode/shootPoint
 
@@ -194,8 +199,7 @@ func _ready():
 	connect("was_selected",get_tree().root.get_child(0),"select_unit")
 	connect("was_deselected",get_tree().root.get_child(0),"deselect_unit")
 	emit_signal("health_change",energy_points)
-	has_bag=true
-	is_dressed=true
+	
 	if(!is_dressed):
 		if !is_girl:
 			sprite.animation = "male_idle1"
@@ -206,6 +210,11 @@ func _ready():
 			sprite.animation = "male_idle1_d"
 		if is_girl:
 			sprite.animation = "female_idle1_d"
+			
+	if(!has_bag):
+		bag_sprite.visible=false
+	else:
+		bag_sprite.visible=true
 	
 	
 	box.visible = false
@@ -375,11 +384,24 @@ func _collect_pickable(var _pickable):
 				else:
 					root.water_points+=4
 				
-					
-
+func _get_rain_damage():	
+	if(root.its_raining && !pickable_touching):
+		if timer_count==0:
+			if(energy_points>0):
+				if(!is_dressed):
+					energy_points-=MAX_ENERGY_LOSS
+				else:
+					energy_points-=MIN_ENERGY_LOSS
+					#the_unit.get_child(4)._decrease_energy()
+				bar._set_energy_points(energy_points)
+				bar._update_energy()
+			else:
+				_set_selected(false)			
+				is_deleted=true				
 
 		
 func _get_damage(var the_beast):
+	
 	if "Tiger" in the_beast.name && the_beast.visible && is_enemy_touching:
 		if is_warchief:
 			if(energy_points>0):
@@ -847,7 +869,10 @@ func _check_pine_tree_touching():
 	_set_pine_tree_touching(pine_tree_touching)
 #	
 func _on_all_timer_timeout():
-	timer_count+=1	
+	if its_raining:
+		_get_rain_damage()
+	
+	timer_count+=1
 	if body_entered!=null && is_instance_valid(body_entered):
 		_get_damage(body_entered)
 		if is_warchief:
@@ -941,3 +966,4 @@ func _walk():
 	path = arrPath
 	index = 0				
 			
+	

@@ -98,6 +98,10 @@ func _ready():
 	#all_units.append(tree.find_node("Unit"))
 	all_units = get_tree().get_nodes_in_group("units")
 	
+	for a_unit in all_units:
+		a_unit.is_dressed=false
+		a_unit.has_bag=false
+	
 	#Creamos la segunda unidad (una mujer), aparte de la original (que es hombre).
 	_create_unit();
 	
@@ -160,8 +164,8 @@ func _create_unit():
 		if(group_dressed):
 			new_Unit.is_dressed=true	
 		if(group_has_bag):
-			new_Unit.has_bag=true	
-			new_Unit.get_child(3).visible = true
+			new_Unit.has_bag=true				
+			new_Unit.get_node("scalable/bag_sprite").visible = true
 		tile_map.add_child(new_Unit)		
 		food_points-=15	
 		all_units.append(new_Unit)
@@ -177,7 +181,7 @@ func _add_bag():
 	for a_unit in all_units:
 		if(!a_unit.has_bag):
 			a_unit.has_bag = true	
-			a_unit.get_child(3).visible=true	
+			a_unit.get_node("scalable/bag_sprite").visible=true	
 			
 
 

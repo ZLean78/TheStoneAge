@@ -9,7 +9,7 @@
 [ext_resource path="res://Scenes/Unit/bag_2.png" type="Texture" id=7]
 [ext_resource path="res://Scenes/Warrior/WarriorMark.png" type="Texture" id=8]
 
-[sub_resource type="CanvasItemMaterial" id=2]
+[sub_resource type="CanvasItemMaterial" id=7]
 
 [sub_resource type="Shader" id=5]
 code = "shader_type canvas_item;
@@ -47,7 +47,7 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=1]
+[sub_resource type="RectangleShape2D" id=8]
 extents = Vector2( 4, 3 )
 
 [sub_resource type="CircleShape2D" id=4]
@@ -58,10 +58,12 @@ collision_layer = 2
 collision_mask = 3
 input_pickable = true
 script = ExtResource( 2 )
+MAX_ENERGY_LOSS = 15.0
+MIN_ENERGY_LOSS = 10.0
 
 [node name="Selected" type="Sprite" parent="."]
 visible = false
-material = SubResource( 2 )
+material = SubResource( 7 )
 position = Vector2( 0, 11 )
 scale = Vector2( 0.63281, 0.49219 )
 texture = ExtResource( 4 )
@@ -94,13 +96,13 @@ scale = Vector2( 1.58333, 1.25 )
 frames = ExtResource( 3 )
 animation = "male_idle3_d"
 
-[node name="bag_sprite" type="AnimatedSprite" parent="scalable"]
+[node name="bag_sprite" type="AnimatedSprite" parent="scalable" groups=["bag_sprite"]]
 frames = SubResource( 3 )
 animation = "bag_1"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, 9 )
-shape = SubResource( 1 )
+shape = SubResource( 8 )
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 2
