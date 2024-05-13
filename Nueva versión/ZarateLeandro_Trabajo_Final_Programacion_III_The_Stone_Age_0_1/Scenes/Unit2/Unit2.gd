@@ -460,27 +460,33 @@ func _move_to_target(target):
 
 func _unhandled_input(event):
 	if event.is_action_pressed("RightClick"):
-		if get_tree().root.get_child(0).sword_mode:
-			if get_tree().root.get_child(0).touching_enemy!=null:
-				if is_instance_valid(get_tree().root.get_child(0).touching_enemy):
-					if selected && can_shoot:
-						if !is_warchief:
-							_shoot()
-						else:
-							for warrior in root.warriors.get_children():
-								if warrior.position.distance_to(position):
-									if warrior.can_shoot:
-										warrior._shoot()
-				else:					
-					if get_tree().get_root().get_child(0).name == "Game3":
-						get_tree().get_root().get_child(0)._on_Game3_is_arrow()
-					if get_tree().get_root().get_child(0).name == "Game2":
-						get_tree().get_root().get_child(0)._on_Game2_is_arrow()
+		if root.name!="Game":
+			if get_tree().root.get_child(0).sword_mode:
+				if get_tree().root.get_child(0).touching_enemy!=null:
+					if is_instance_valid(get_tree().root.get_child(0).touching_enemy):
+						if selected && can_shoot:
+							if !is_warchief:
+								_shoot()
+							else:
+								for warrior in root.warriors.get_children():
+									if warrior.position.distance_to(position):
+										if warrior.can_shoot:
+											warrior._shoot()
+					else:					
+						if get_tree().get_root().get_child(0).name == "Game3":
+							get_tree().get_root().get_child(0)._on_Game3_is_arrow()
+						if get_tree().get_root().get_child(0).name == "Game2":
+							get_tree().get_root().get_child(0)._on_Game2_is_arrow()
+			else:
+				firstPoint=global_position
 		else:
 			firstPoint=global_position
 			
-	if event.is_action_released("RightClick"):		
-		if !root.sword_mode:
+	if event.is_action_released("RightClick"):
+		if root.name!="Game":		
+			if !root.sword_mode:
+				_walk()
+		else:
 			_walk()
 			
 

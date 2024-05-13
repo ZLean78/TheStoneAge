@@ -39,7 +39,7 @@ onready var add_bag = tree.get_node("UI/Base/Rectangle/AddBag")
 onready var next_scene_button = tree.get_node("UI/Base/NextSceneButton")
 
 #Variable unidad ciudadano original a partir de la cual se crean todas las demás.
-export (PackedScene) var Unit
+export (PackedScene) var Unit2
 
 #Arreglos para las unidades en general, para las seleccionadas
 #y las que están a resguardo de la lluvia.
@@ -51,6 +51,8 @@ var sheltered=[]
 #de los que se pueden recolectar recursos.
 var all_plants=[]
 var all_trees=[]
+
+
 
 #Variables a eliminar del sistema de selección anterior del programa
 #var dragging = false
@@ -73,6 +75,7 @@ signal is_basket
 signal is_arrow
 var arrow_mode=false
 var basket_mode=false
+
 
 #/////////////////////////////////////////
 #FUNCIONES PRINCIPALES MAIN
@@ -107,7 +110,7 @@ func _ready():
 	basket_mode=false
 
 #Función _process(_delta)
-func _process(_delta):
+func _process(delta):
 	
 	if(!its_raining):
 		timer_label.text = "PELIGRO EN: " + str(int(rain_timer.time_left))
@@ -125,7 +128,7 @@ func _process(_delta):
 	
 		a_unit._set_its_raining(its_raining)
 		
-		#a_unit.move_unit(a_unit.target_position)
+
 		
 
 		
@@ -147,7 +150,7 @@ func _unhandled_input(event):
 #Crear unidad.
 func _create_unit():
 	if food_points >=15:
-		var new_Unit = Unit.instance()
+		var new_Unit = Unit2.instance()
 		new_Unit.position = Vector2(-800,-500)
 		unit_count+=1		
 		if(unit_count%2==0):
@@ -185,9 +188,17 @@ func deselect_all():
 	while selected_units.size()>0:
 		selected_units[0]._set_selected(false)
 		
+#FUNCIÓN PARA SELECCIONAR O DESSELECCIONAR LA ÚLTIMA UNIDAD AL HACER CLIC SOBRE ELLA.
+func _select_last():
+	for unit in selected_units:
+		if selected_units[selected_units.size()-1] == unit:
+			unit._set_selected(true)
+		else:
+			unit._set_selected(false)
+		
 #FUNCIÓN PARA SELECCIONAR Y DESSELECCIONAR UNA UNIDAD CON UN CLICK.
 #(Debe ser mejorada, ya que selecciona o desselecciona todas las unidades superpuestas).
-func was_pressed(obj):
+func _was_pressed(obj):
 	for unit in selected_units:
 		if unit.name == obj.name:
 			unit._set_selected(false)
@@ -198,7 +209,7 @@ func was_pressed(obj):
 
 			
 #IDENTIFICAR LAS UNIDADES EN EL ÁREA DE SELECCIÓN DEL RECTÁNGULO.	
-func get_units_in_area(area):
+func _get_units_in_area(area):
 	var u=[]
 	for unit in all_units:
 		if unit.position.x>area[0].x and unit.position.x<area[1].x:
@@ -207,13 +218,13 @@ func get_units_in_area(area):
 	return u
 		
 #MARCAR LAS UNIDADES SELECCIONADAS.
-func area_selected(obj):
+func _area_selected(obj):
 	var start=obj.start
 	var end=obj.end
 	var area=[]
 	area.append(Vector2(min(start.x,end.x),min(start.y,end.y)))
 	area.append(Vector2(max(start.x,end.x),max(start.y,end.y)))
-	var ut = get_units_in_area(area)
+	var ut = _get_units_in_area(area)
 	if not Input.is_key_pressed(KEY_SHIFT):
 		deselect_all()
 	for u in ut:

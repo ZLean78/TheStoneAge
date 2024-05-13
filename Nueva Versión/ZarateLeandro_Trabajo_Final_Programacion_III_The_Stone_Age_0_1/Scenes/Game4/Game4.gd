@@ -419,6 +419,10 @@ func _unhandled_input(event):
 						obstacles.append(a_fort)
 				
 				for an_obstacle in obstacles:
+					
+					if !is_instance_valid(an_obstacle):
+						obstacles.erase(an_obstacle)
+					
 					if an_obstacle.mouse_entered:
 						is_mouse_entered=true
 						break
