@@ -21,7 +21,7 @@ var group_has_bag = false
 
 #Nodos de escenario.
 onready var tree = get_tree().root.get_child(0)
-onready var food_timer = tree.get_node("food_timer")
+onready var all_timer = tree.get_node("AllTimer")
 onready var camera = tree.get_node("Camera")
 onready var rain_timer = tree.get_node("Rain_Timer")
 onready var tile_map
@@ -133,6 +133,7 @@ func _process(delta):
 		a_unit._set_its_raining(its_raining)
 		
 
+	_check_units()
 		
 
 		
@@ -260,6 +261,21 @@ func start_move_selection(obj):
 		if un.selected:
 			un.move_unit(obj.move_to_point)
 			
+
+#Función comprobar unidades.
+func _check_units():
+	#Para cada unidad en el arreglo all_units...
+	for a_unit in all_units:
+		#Si la unidad ha sido marcada para borrar y todavía es una instancia válida,
+		#es decir, no ha sido eliminada con queue_free().
+		if a_unit.is_deleted && is_instance_valid(a_unit):
+			#Si el nombre incluye la palabra "Unit", es un ciudadano. 
+			if "Unit" in a_unit.name:
+				#Buscamos la unidad en all_units y la removemos del arreglo.
+				var the_unit=all_units[all_units.find(a_unit,0)]
+				all_units.remove(all_units.find(a_unit,0))
+				#Le ordenamos a la unidad que muera.
+				the_unit._die()
 	
 #FUNCIÓN 'RAIN POUR'. LLAMA A LA LLUVIA CUANDO SE CUMPLE EL TIEMPO DEL TEMPORIZADOR
 #'RAIN TIMER'. SI NO ESTÁ LLOVIENDO, HACE QUE LLUEVA Y VICEVERSA.
@@ -275,7 +291,7 @@ func _rain_pour():
 func _on_Rain_Timer_timeout():	
 	_rain_pour()
 	if(its_raining):
-		rain_timer.wait_time = 100
+		rain_timer.wait_time = 30
 	else:
 		rain_timer.wait_time = 30
 
@@ -316,10 +332,11 @@ func _on_CreateCitizen_pressed():
 	_create_unit()
 
 #///////////////////////////////////////////////////////////////////
-#SEÑAL DE TIEMPO TRANSCURRIDO DE TEMPORIZADOR 'FOOD TIMER', LLAMADO ASÍ POR
-#ESTAR PENSADO PARA TEMPORIZAR LA RECOLECCIÖN DE COMIDA PERO USADO LUEGO
-#GENERALMENTE PARA LLAMAR A OTRAS FUNCIONES DE LAS QUE SÓLO QUEDA 'CHECK VICTORY'.
-func _on_food_timer_timeout():
+#SEÑAL DE TIEMPO TRANSCURRIDO DE TEMPORIZADOR 'ALL TIMER'. SE LO UTILIZA
+#PARA REALIZAR COMPROBACIONES CADA SEGUNDO QUE PERMITAN EJECUTAR O NO FUNCIONES.
+#Dentro de la clase principal 'Game', se lo utiliza para comprobar si ha habido victoria 
+#o derrota del jugador.
+func _on_AllTimer_timeout():
 	if(all_units.size()>-1):
 		_check_victory()
 		
@@ -335,3 +352,6 @@ func _check_victory():
 
 func _on_NextSceneButton_pressed():
 	get_tree().change_scene("res://Scenes/Game2/Game2.tscn")
+
+
+

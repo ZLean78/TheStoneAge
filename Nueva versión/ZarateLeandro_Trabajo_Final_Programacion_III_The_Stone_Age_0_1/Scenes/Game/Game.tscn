@@ -86,7 +86,7 @@ script = ExtResource( 19 )
 [node name="Unit2" parent="." groups=["units"] instance=ExtResource( 15 )]
 position = Vector2( -829, -472 )
 
-[node name="food_timer" type="Timer" parent="."]
+[node name="AllTimer" type="Timer" parent="."]
 autostart = true
 
 [node name="FruitTrees" type="Node2D" parent="."]
@@ -250,7 +250,7 @@ expand = true
 
 [connection signal="is_arrow" from="." to="." method="_on_Game_is_arrow"]
 [connection signal="is_basket" from="." to="." method="_on_Game_is_basket"]
-[connection signal="timeout" from="food_timer" to="." method="_on_food_timer_timeout"]
+[connection signal="timeout" from="AllTimer" to="." method="_on_AllTimer_timeout"]
 [connection signal="timeout" from="Rain_Timer" to="." method="_on_Rain_Timer_timeout"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/AddClothes" to="." method="_on_AddClothes_pressed"]

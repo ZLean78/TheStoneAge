@@ -385,20 +385,26 @@ func _collect_pickable(var _pickable):
 					root.water_points+=4
 				
 func _get_rain_damage():	
-	if(root.its_raining && !pickable_touching):
-		if timer_count==0:
-			if(energy_points>0):
-				if(!is_dressed):
-					energy_points-=MAX_ENERGY_LOSS
+	if root.its_raining:
+		if !(is_sheltered):
+			if timer_count==0:
+				if(energy_points>0):
+					if(!is_dressed):
+						energy_points-=MAX_ENERGY_LOSS
+					else:
+						energy_points-=MIN_ENERGY_LOSS
+						#the_unit.get_child(4)._decrease_energy()
+					bar._set_energy_points(energy_points)
+					bar._update_energy()
 				else:
-					energy_points-=MIN_ENERGY_LOSS
-					#the_unit.get_child(4)._decrease_energy()
-				bar._set_energy_points(energy_points)
-				bar._update_energy()
-			else:
-				_set_selected(false)			
-				is_deleted=true				
-
+					_set_selected(false)			
+					is_deleted=true
+		else:				
+			if timer_count==0:
+				if(energy_points<MAX_HEALTH):
+					energy_points+=MAX_ENERGY_LOSS
+					bar._set_energy_points(energy_points)
+					bar._update_energy()
 		
 func _get_damage(var the_beast):
 	
@@ -798,9 +804,9 @@ func _animate():
 	
 
 
-func _on_fruit_tree_fruit_tree_entered():	
-	can_add = true	
-	is_sheltered = true
+#func _on_fruit_tree_fruit_tree_entered():	
+#	can_add = true	
+#	is_sheltered = true
 	
 	
 func _on_fruit_tree_fruit_tree_exited():
