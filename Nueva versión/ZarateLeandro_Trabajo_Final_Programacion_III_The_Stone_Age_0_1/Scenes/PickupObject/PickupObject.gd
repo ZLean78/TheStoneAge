@@ -18,8 +18,6 @@ func _physics_process(_delta):
 
 func _on_Area2D_body_entered(body):
 	if("Unit" in body.name):
-		if type=="fruit_tree":
-			body.is_sheltered=true
 		touching = true
 		body._set_pickable_touching(true)
 		body._set_pickable(self)
@@ -32,8 +30,6 @@ func _on_Area2D_body_entered(body):
 
 func _on_Area2D_body_exited(body):
 	if("Unit" in body.name):
-		if type=="fruit_tree":
-			body.is_sheltered=false
 		touching = false
 		body._set_pickable_touching(false)
 		body._set_pickable(null)

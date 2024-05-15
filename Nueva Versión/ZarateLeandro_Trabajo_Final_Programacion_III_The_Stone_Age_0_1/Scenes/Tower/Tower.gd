@@ -1,4 +1,4 @@
-extends Node2D
+extends StaticBody2D
 
 
 export var condition=0
@@ -6,6 +6,7 @@ export var condition_max=0
 onready var root=get_tree().root.get_child(0)
 onready var units=get_tree().root.get_child(0).get_node("Units")
 onready var timer=$Timer
+onready var polygon=$CollisionPolygon2D
 #onready var all_timer=get_tree().root.get_child(0).get_node("food_timer")
 onready var bar=$Bar
 var mouse_entered=false
@@ -28,7 +29,10 @@ func _get_damage(body):
 	if "EnemySpear" in body.name:
 		condition-=3
 		if condition<0:
+			polygon.visible=false
 			queue_free()
+			root.emit_signal("remove_building")
+			
 
 
 func _on_Area2D_body_entered(body):

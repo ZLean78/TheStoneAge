@@ -175,6 +175,8 @@ signal is_claypot
 signal is_hand
 signal is_axe
 
+signal remove_building
+
 
 #signal is_house
 #signal is_fort
@@ -420,21 +422,21 @@ func _unhandled_input(event):
 				
 				for an_obstacle in obstacles:
 					
-					if !is_instance_valid(an_obstacle):
-						obstacles.erase(an_obstacle)
+					if is_instance_valid(an_obstacle):
+						
 					
-					if an_obstacle.mouse_entered:
-						is_mouse_entered=true
-						break
-					else:
-						is_mouse_entered=false	
+						if an_obstacle.mouse_entered:
+							is_mouse_entered=true
+							break
+						else:
+							is_mouse_entered=false	
 
 
-					if an_obstacle.position.distance_to(get_global_mouse_position())<130:
-						is_too_close=true
-						break
-					else:
-						is_too_close=false
+						if an_obstacle.position.distance_to(get_global_mouse_position())<130:
+							is_too_close=true
+							break
+						else:
+							is_too_close=false
 
 
 
@@ -1255,16 +1257,18 @@ func _on_GiveAttackOrder_pressed():
 
 func _update_path(new_obstacle):	
 	var citizens=units.get_children()
-	var the_citizen=null
+	var the_citizen=null	
 	var new_polygon=PoolVector2Array()
 	var col_polygon=new_obstacle.get_node("CollisionPolygon2D").get_polygon()
+	var the_polygon=new_obstacle.get_node("CollisionPolygon2D")
 	
-	for vector in col_polygon:
-		new_polygon.append(vector + new_obstacle.position)		
+	if the_polygon.visible:
+		for vector in col_polygon:
+			new_polygon.append(vector + new_obstacle.position)		
 	
-	var navi_polygon=nav2d.get_node("polygon").get_navigation_polygon()
-	navi_polygon.add_outline(new_polygon)
-	navi_polygon.make_polygons_from_outlines()	
+		var navi_polygon=nav2d.get_node("polygon").get_navigation_polygon()
+		navi_polygon.add_outline(new_polygon)
+		navi_polygon.make_polygons_from_outlines()	
 	
 	for citizen in citizens:
 		if citizen.selected:
@@ -1354,3 +1358,31 @@ func _check_enemies():
 				an_enemy.queue_free()
 				
 		
+func _rebake_navigation():
+	nav2d.get_node("polygon").enabled=false
+	var navi_polygon=nav2d.get_node("polygon").get_navigation_polygon()
+	navi_polygon.clear_outlines()
+	navi_polygon.clear_polygons()
+	
+	navi_polygon.add_outline(PoolVector2Array([Vector2(-1028,-608),Vector2(1028,-608),Vector2(1028,608),Vector2(-1028,608)]))
+		
+	for a_house in houses.get_children():
+		if is_instance_valid(a_house):
+			_update_path(a_house)
+			
+	for a_townhall in townhall_node.get_children():
+		if is_instance_valid(a_townhall):
+			_update_path(a_townhall)
+		
+	for a_tower in tower_node.get_children():
+		if is_instance_valid(a_tower):
+			_update_path(a_tower)
+		
+	navi_polygon.make_polygons_from_outlines()	
+	nav2d.get_node("polygon").enabled=true
+	
+
+
+
+func _on_Game4_remove_building():
+	_rebake_navigation()

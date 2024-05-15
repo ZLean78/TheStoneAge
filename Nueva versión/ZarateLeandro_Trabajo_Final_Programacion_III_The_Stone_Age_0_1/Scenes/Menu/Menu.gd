@@ -3,4 +3,4 @@ extends Node2D
 
 
 func _on_Start_pressed():
-	get_tree().change_scene("res://Scenes/Game/Game.tscn")
+	get_tree().change_scene("res://Scenes/Game4/Game4.tscn")

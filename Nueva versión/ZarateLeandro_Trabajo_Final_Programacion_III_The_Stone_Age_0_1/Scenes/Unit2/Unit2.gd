@@ -10,11 +10,6 @@ export (float) var SPEED = 100.0
 #Máximo de Salud
 export (float) var MAX_HEALTH = 100.0
 
-
-#MÁXIMO Y MÍNIMO DE ENEGÍA QUE LA UNIDAD PUEDE PERDER.
-export (float) var MAX_ENERGY_LOSS
-export (float) var MIN_ENERGY_LOSS
-
 #variable que indica el nodo raíz.
 onready var root=get_tree().root.get_child(0)
 
@@ -31,14 +26,14 @@ onready var box = $Selected
 onready var bar = $Bar
 onready var all_timer = $all_timer
 onready var sprite = get_node("scalable/sprite")
-onready var bag_sprite = $scalable/bag_sprite
+onready var bag_sprite = get_node("scalable/bag_sprite")
 onready var shoot_node = $shootNode
 onready var shoot_point = $shootNode/shootPoint
 
 #Marca de jefe guerrero.
 onready var warchief_mark= $WarchiefMark
 
-onready var agent=$NavigationAgent2D
+
 
 
 #Variable que indica si el jugador debe moverse.
@@ -199,7 +194,8 @@ func _ready():
 	connect("was_selected",get_tree().root.get_child(0),"select_unit")
 	connect("was_deselected",get_tree().root.get_child(0),"deselect_unit")
 	emit_signal("health_change",energy_points)
-	
+	has_bag=true
+	is_dressed=true
 	if(!is_dressed):
 		if !is_girl:
 			sprite.animation = "male_idle1"
@@ -210,11 +206,6 @@ func _ready():
 			sprite.animation = "male_idle1_d"
 		if is_girl:
 			sprite.animation = "female_idle1_d"
-			
-	if(!has_bag):
-		bag_sprite.visible=false
-	else:
-		bag_sprite.visible=true
 	
 	
 	box.visible = false
@@ -255,7 +246,7 @@ func _physics_process(delta):
 			box.visible = false
 	
 	if target_position!=Vector2.ZERO:
-		if position.distance_to(target_position) > 10:
+		if position.distance_to(target_position) > 10:			
 			#_move_to_target(target_position)
 			_move_along_path(SPEED*delta)
 			#_move_towards(position,target_position,delta)
@@ -384,30 +375,11 @@ func _collect_pickable(var _pickable):
 				else:
 					root.water_points+=4
 				
-func _get_rain_damage():	
-	if root.its_raining:
-		if !(is_sheltered):
-			if timer_count==0:
-				if(energy_points>0):
-					if(!is_dressed):
-						energy_points-=MAX_ENERGY_LOSS
-					else:
-						energy_points-=MIN_ENERGY_LOSS
-						#the_unit.get_child(4)._decrease_energy()
-					bar._set_energy_points(energy_points)
-					bar._update_energy()
-				else:
-					_set_selected(false)			
-					is_deleted=true
-		else:				
-			if timer_count==0:
-				if(energy_points<MAX_HEALTH):
-					energy_points+=MAX_ENERGY_LOSS
-					bar._set_energy_points(energy_points)
-					bar._update_energy()
+					
+
+
 		
 func _get_damage(var the_beast):
-	
 	if "Tiger" in the_beast.name && the_beast.visible && is_enemy_touching:
 		if is_warchief:
 			if(energy_points>0):
@@ -488,33 +460,27 @@ func _move_to_target(target):
 
 func _unhandled_input(event):
 	if event.is_action_pressed("RightClick"):
-		if root.name!="Game":
-			if get_tree().root.get_child(0).sword_mode:
-				if get_tree().root.get_child(0).touching_enemy!=null:
-					if is_instance_valid(get_tree().root.get_child(0).touching_enemy):
-						if selected && can_shoot:
-							if !is_warchief:
-								_shoot()
-							else:
-								for warrior in root.warriors.get_children():
-									if warrior.position.distance_to(position):
-										if warrior.can_shoot:
-											warrior._shoot()
-					else:					
-						if get_tree().get_root().get_child(0).name == "Game3":
-							get_tree().get_root().get_child(0)._on_Game3_is_arrow()
-						if get_tree().get_root().get_child(0).name == "Game2":
-							get_tree().get_root().get_child(0)._on_Game2_is_arrow()
-			else:
-				firstPoint=global_position
+		if get_tree().root.get_child(0).sword_mode:
+			if get_tree().root.get_child(0).touching_enemy!=null:
+				if is_instance_valid(get_tree().root.get_child(0).touching_enemy):
+					if selected && can_shoot:
+						if !is_warchief:
+							_shoot()
+						else:
+							for warrior in root.warriors.get_children():
+								if warrior.position.distance_to(position):
+									if warrior.can_shoot:
+										warrior._shoot()
+				else:					
+					if get_tree().get_root().get_child(0).name == "Game3":
+						get_tree().get_root().get_child(0)._on_Game3_is_arrow()
+					if get_tree().get_root().get_child(0).name == "Game2":
+						get_tree().get_root().get_child(0)._on_Game2_is_arrow()
 		else:
 			firstPoint=global_position
 			
-	if event.is_action_released("RightClick"):
-		if root.name!="Game":		
-			if !root.sword_mode:
-				_walk()
-		else:
+	if event.is_action_released("RightClick"):		
+		if !root.sword_mode:
 			_walk()
 			
 
@@ -804,9 +770,9 @@ func _animate():
 	
 
 
-#func _on_fruit_tree_fruit_tree_entered():	
-#	can_add = true	
-#	is_sheltered = true
+func _on_fruit_tree_fruit_tree_entered():	
+	can_add = true	
+	is_sheltered = true
 	
 	
 func _on_fruit_tree_fruit_tree_exited():
@@ -875,10 +841,7 @@ func _check_pine_tree_touching():
 	_set_pine_tree_touching(pine_tree_touching)
 #	
 func _on_all_timer_timeout():
-	if its_raining:
-		_get_rain_damage()
-	
-	timer_count+=1
+	timer_count+=1	
 	if body_entered!=null && is_instance_valid(body_entered):
 		_get_damage(body_entered)
 		if is_warchief:
@@ -972,4 +935,3 @@ func _walk():
 	path = arrPath
 	index = 0				
 			
-	

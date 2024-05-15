@@ -9,8 +9,8 @@ bg_color = Color( 0, 0, 1, 1 )
 [sub_resource type="CircleShape2D" id=2]
 radius = 63.2851
 
-[sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 9.5, 52.5 )
+[sub_resource type="CircleShape2D" id=3]
+radius = 51.6962
 
 [node name="Tower" type="StaticBody2D"]
 collision_layer = 8
@@ -48,6 +48,11 @@ polygon = PoolVector2Array( -40, 55, -34.2857, 2.45455, -17.1429, -66.2727, 20.9
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 1.5, -0.5 )
 shape = SubResource( 3 )
+
+[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+avoidance_enabled = true
 
 [connection signal="mouse_entered" from="." to="." method="_on_Tower_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_Tower_mouse_exited"]

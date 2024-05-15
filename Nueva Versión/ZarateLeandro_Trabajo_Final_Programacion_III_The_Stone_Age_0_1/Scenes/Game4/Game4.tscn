@@ -171,7 +171,7 @@ z_as_relative = false
 [node name="EnemyWarriors" type="Node2D" parent="."]
 
 [node name="EnemyWarrior" parent="EnemyWarriors" instance=ExtResource( 38 )]
-position = Vector2( -977, -542 )
+position = Vector2( -973, -553 )
 
 [node name="EnemyWarrior2" parent="EnemyWarriors" instance=ExtResource( 38 )]
 position = Vector2( -913, -493 )
@@ -217,7 +217,7 @@ position = Vector2( 100, 123 )
 position = Vector2( 824, 231 )
 
 [node name="PineTree2" parent="PineTrees" instance=ExtResource( 14 )]
-position = Vector2( 956, -501 )
+position = Vector2( 927, -532 )
 
 [node name="PineTree3" parent="PineTrees" instance=ExtResource( 14 )]
 position = Vector2( -826, 411 )
@@ -569,6 +569,7 @@ expand = true
 [connection signal="is_hand" from="." to="." method="_on_Game4_is_hand"]
 [connection signal="is_pick_mattock" from="." to="." method="_on_Game4_is_pick_mattock"]
 [connection signal="is_sword" from="." to="." method="_on_Game4_is_sword"]
+[connection signal="remove_building" from="." to="." method="_on_Game4_remove_building"]
 [connection signal="timeout" from="enemy_timer" to="." method="_on_tiger_timer_timeout"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateWarriorUnit" to="." method="_on_CreateWarriorUnit_pressed"]

@@ -21,7 +21,7 @@ var group_has_bag = false
 
 #Nodos de escenario.
 onready var tree = get_tree().root.get_child(0)
-onready var all_timer = tree.get_node("AllTimer")
+onready var food_timer = tree.get_node("food_timer")
 onready var camera = tree.get_node("Camera")
 onready var rain_timer = tree.get_node("Rain_Timer")
 onready var tile_map
@@ -39,7 +39,7 @@ onready var add_bag = tree.get_node("UI/Base/Rectangle/AddBag")
 onready var next_scene_button = tree.get_node("UI/Base/NextSceneButton")
 
 #Variable unidad ciudadano original a partir de la cual se crean todas las demás.
-export (PackedScene) var Unit2
+export (PackedScene) var Unit
 
 #Arreglos para las unidades en general, para las seleccionadas
 #y las que están a resguardo de la lluvia.
@@ -51,8 +51,6 @@ var sheltered=[]
 #de los que se pueden recolectar recursos.
 var all_plants=[]
 var all_trees=[]
-
-
 
 #Variables a eliminar del sistema de selección anterior del programa
 #var dragging = false
@@ -76,7 +74,6 @@ signal is_arrow
 var arrow_mode=false
 var basket_mode=false
 
-
 #/////////////////////////////////////////
 #FUNCIONES PRINCIPALES MAIN
 
@@ -98,10 +95,6 @@ func _ready():
 	#all_units.append(tree.find_node("Unit"))
 	all_units = get_tree().get_nodes_in_group("units")
 	
-	for a_unit in all_units:
-		a_unit.is_dressed=false
-		a_unit.has_bag=false
-	
 	#Creamos la segunda unidad (una mujer), aparte de la original (que es hombre).
 	_create_unit();
 	
@@ -114,7 +107,7 @@ func _ready():
 	basket_mode=false
 
 #Función _process(_delta)
-func _process(delta):
+func _process(_delta):
 	
 	if(!its_raining):
 		timer_label.text = "PELIGRO EN: " + str(int(rain_timer.time_left))
@@ -132,8 +125,7 @@ func _process(delta):
 	
 		a_unit._set_its_raining(its_raining)
 		
-
-	_check_units()
+		#a_unit.move_unit(a_unit.target_position)
 		
 
 		
@@ -155,7 +147,7 @@ func _unhandled_input(event):
 #Crear unidad.
 func _create_unit():
 	if food_points >=15:
-		var new_Unit = Unit2.instance()
+		var new_Unit = Unit.instance()
 		new_Unit.position = Vector2(-800,-500)
 		unit_count+=1		
 		if(unit_count%2==0):
@@ -165,8 +157,8 @@ func _create_unit():
 		if(group_dressed):
 			new_Unit.is_dressed=true	
 		if(group_has_bag):
-			new_Unit.has_bag=true				
-			new_Unit.get_node("scalable/bag_sprite").visible = true
+			new_Unit.has_bag=true	
+			new_Unit.get_child(3).visible = true
 		tile_map.add_child(new_Unit)		
 		food_points-=15	
 		all_units.append(new_Unit)
@@ -182,7 +174,7 @@ func _add_bag():
 	for a_unit in all_units:
 		if(!a_unit.has_bag):
 			a_unit.has_bag = true	
-			a_unit.get_node("scalable/bag_sprite").visible=true	
+			a_unit.get_child(3).visible=true	
 			
 
 
@@ -193,17 +185,9 @@ func deselect_all():
 	while selected_units.size()>0:
 		selected_units[0]._set_selected(false)
 		
-#FUNCIÓN PARA SELECCIONAR O DESSELECCIONAR LA ÚLTIMA UNIDAD AL HACER CLIC SOBRE ELLA.
-func _select_last():
-	for unit in selected_units:
-		if selected_units[selected_units.size()-1] == unit:
-			unit._set_selected(true)
-		else:
-			unit._set_selected(false)
-		
 #FUNCIÓN PARA SELECCIONAR Y DESSELECCIONAR UNA UNIDAD CON UN CLICK.
 #(Debe ser mejorada, ya que selecciona o desselecciona todas las unidades superpuestas).
-func _was_pressed(obj):
+func was_pressed(obj):
 	for unit in selected_units:
 		if unit.name == obj.name:
 			unit._set_selected(false)
@@ -214,7 +198,7 @@ func _was_pressed(obj):
 
 			
 #IDENTIFICAR LAS UNIDADES EN EL ÁREA DE SELECCIÓN DEL RECTÁNGULO.	
-func _get_units_in_area(area):
+func get_units_in_area(area):
 	var u=[]
 	for unit in all_units:
 		if unit.position.x>area[0].x and unit.position.x<area[1].x:
@@ -223,13 +207,13 @@ func _get_units_in_area(area):
 	return u
 		
 #MARCAR LAS UNIDADES SELECCIONADAS.
-func _area_selected(obj):
+func area_selected(obj):
 	var start=obj.start
 	var end=obj.end
 	var area=[]
 	area.append(Vector2(min(start.x,end.x),min(start.y,end.y)))
 	area.append(Vector2(max(start.x,end.x),max(start.y,end.y)))
-	var ut = _get_units_in_area(area)
+	var ut = get_units_in_area(area)
 	if not Input.is_key_pressed(KEY_SHIFT):
 		deselect_all()
 	for u in ut:
@@ -261,21 +245,6 @@ func start_move_selection(obj):
 		if un.selected:
 			un.move_unit(obj.move_to_point)
 			
-
-#Función comprobar unidades.
-func _check_units():
-	#Para cada unidad en el arreglo all_units...
-	for a_unit in all_units:
-		#Si la unidad ha sido marcada para borrar y todavía es una instancia válida,
-		#es decir, no ha sido eliminada con queue_free().
-		if a_unit.is_deleted && is_instance_valid(a_unit):
-			#Si el nombre incluye la palabra "Unit", es un ciudadano. 
-			if "Unit" in a_unit.name:
-				#Buscamos la unidad en all_units y la removemos del arreglo.
-				var the_unit=all_units[all_units.find(a_unit,0)]
-				all_units.remove(all_units.find(a_unit,0))
-				#Le ordenamos a la unidad que muera.
-				the_unit._die()
 	
 #FUNCIÓN 'RAIN POUR'. LLAMA A LA LLUVIA CUANDO SE CUMPLE EL TIEMPO DEL TEMPORIZADOR
 #'RAIN TIMER'. SI NO ESTÁ LLOVIENDO, HACE QUE LLUEVA Y VICEVERSA.
@@ -291,7 +260,7 @@ func _rain_pour():
 func _on_Rain_Timer_timeout():	
 	_rain_pour()
 	if(its_raining):
-		rain_timer.wait_time = 30
+		rain_timer.wait_time = 100
 	else:
 		rain_timer.wait_time = 30
 
@@ -332,11 +301,10 @@ func _on_CreateCitizen_pressed():
 	_create_unit()
 
 #///////////////////////////////////////////////////////////////////
-#SEÑAL DE TIEMPO TRANSCURRIDO DE TEMPORIZADOR 'ALL TIMER'. SE LO UTILIZA
-#PARA REALIZAR COMPROBACIONES CADA SEGUNDO QUE PERMITAN EJECUTAR O NO FUNCIONES.
-#Dentro de la clase principal 'Game', se lo utiliza para comprobar si ha habido victoria 
-#o derrota del jugador.
-func _on_AllTimer_timeout():
+#SEÑAL DE TIEMPO TRANSCURRIDO DE TEMPORIZADOR 'FOOD TIMER', LLAMADO ASÍ POR
+#ESTAR PENSADO PARA TEMPORIZAR LA RECOLECCIÖN DE COMIDA PERO USADO LUEGO
+#GENERALMENTE PARA LLAMAR A OTRAS FUNCIONES DE LAS QUE SÓLO QUEDA 'CHECK VICTORY'.
+func _on_food_timer_timeout():
 	if(all_units.size()>-1):
 		_check_victory()
 		
@@ -352,6 +320,3 @@ func _check_victory():
 
 func _on_NextSceneButton_pressed():
 	get_tree().change_scene("res://Scenes/Game2/Game2.tscn")
-
-
-
