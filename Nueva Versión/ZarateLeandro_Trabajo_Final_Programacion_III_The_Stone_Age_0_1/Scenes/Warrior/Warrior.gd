@@ -336,11 +336,6 @@ func _on_Unit_input_event(_viewport, event, _shape_idx):
 				_set_selected(not selected)
 				root._select_last()
 				
-
-
-
-
-
 #func hurt(amount):
 #	health-=amount
 #	#esto podría ir en un setter

@@ -163,7 +163,7 @@ z_as_relative = false
 
 [node name="Unit2" parent="Units" groups=["units"] instance=ExtResource( 12 )]
 process_priority = 1
-position = Vector2( 654, 331 )
+position = Vector2( 1027, 402 )
 
 [node name="Warriors" type="Node2D" parent="."]
 z_as_relative = false

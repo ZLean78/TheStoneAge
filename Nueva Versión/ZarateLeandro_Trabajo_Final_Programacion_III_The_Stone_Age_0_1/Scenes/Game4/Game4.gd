@@ -599,10 +599,10 @@ func _create_tower():
 			#para construirla.
 			if the_citizen.position.x < new_tower.position.x:
 				#Si la nueva torre está a la derecha.
-				the_citizen.target_position=Vector2(new_tower.position.x-35,new_tower.position.y)
+				the_citizen.target_position=Vector2(new_tower.position.x-30,new_tower.position.y)
 			else:
 				#Si la nueva torre está a la izquierda
-				the_citizen.target_position=Vector2(new_tower.position.x+35,new_tower.position.y)
+				the_citizen.target_position=Vector2(new_tower.position.x+30,new_tower.position.y)
 			#Identificamos la nueva casa con la variable the_house.
 			the_tower=new_tower
 			#Restamos 100 puntos de piedra, 80 puntos de madera y veinte de hojas.
@@ -1367,10 +1367,27 @@ func _rebake_navigation():
 	navi_polygon.clear_outlines()
 	navi_polygon.clear_polygons()
 	
-	#Agregar rectángulo general.
-	navi_polygon.add_outline(PoolVector2Array([Vector2(-1028,-608),Vector2(1028,-608),Vector2(1028,608),Vector2(-1028,608)]))
+	#Agregar límite general y cueva.
+	navi_polygon.add_outline(PoolVector2Array([
+	Vector2(-1024,-608),
+	Vector2(1024,-608),
+	Vector2(1024,244),
+	Vector2(843,244),
+	Vector2(833,406),
+	Vector2(873,406),
+	Vector2(897,334),
+	Vector2(938,334),
+	Vector2(945,405),
+	Vector2(1024,406),	
+	Vector2(1024,608),
+	Vector2(-1024,608)]))
+	
 	#Agregar lago.
-	navi_polygon.add_outline(PoolVector2Array([Vector2(-287,-27),Vector2(-82,-27),Vector2(-82,32),Vector2(-287,32)]))	
+	navi_polygon.add_outline(PoolVector2Array([
+	Vector2(-287,-27),
+	Vector2(-82,-27),
+	Vector2(-82,32),
+	Vector2(-287,32)]))	
 		
 	for a_house in houses.get_children():
 		if is_instance_valid(a_house):

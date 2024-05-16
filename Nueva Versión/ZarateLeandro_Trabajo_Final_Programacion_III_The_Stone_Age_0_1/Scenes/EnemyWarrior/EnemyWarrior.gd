@@ -565,10 +565,14 @@ func _on_Area2D_body_entered(body):
 	if (("Tower" in body.name || "Bullet" in body.name || "Warrior" in body.name || "Unit" in body.name)
 		&& !("Enemy" in body.name)):		
 		if is_instance_valid(body_entered):
+			if "Warrior" in body.name || "Unit" in body.name:
+				body.is_enemy_touching=true
 			_get_damage(body_entered)
 
 		
-		
+func _on_Area2D_body_exited(body):
+	if "Warrior" in body.name || "Unit" in body.name:
+		body.is_enemy_touching=false	
 		
 #
 #func _on_Area2D_body_exited(body):
@@ -584,6 +588,9 @@ func _choose_target():
 					if root.tower_node.get_child(i).position.distance_to(position)<root.tower_node.get_child(i-1).position.distance_to(position):
 						target=root.tower_node.get_child(i)
 						target_position=root.tower_node.get_child(i).position
+#						if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
+#							target=root.tower_node.get_child(i)
+#							target_position=root.tower_node.get_child(i).position
 				else:
 					target=root.tower_node.get_child(0)
 					target_position=root.tower_node.get_child(0).position
@@ -622,12 +629,7 @@ func _state_machine():
 				print("vuelta a estado 0")
 				AI_state=0
 			
-			if body_entered!=null && is_instance_valid(body_entered):
-				print("se ha detectado un cuerpo")
-				if !("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name):
-					target_position=body_entered.position
-					print("cambio a estado 2")
-					AI_state=2	
+		
 		2:
 			if !(is_instance_valid(body_entered)):
 				print("vuelta a estado 0")
@@ -637,9 +639,19 @@ func _state_machine():
 		3:
 			target_position=self.position
 	
+	if body_entered!=null && is_instance_valid(body_entered):
+		print("se ha detectado un cuerpo")
+		if !("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name):
+			target_position=body_entered.position
+			print("cambio a estado 2")
+			AI_state=2	
+	
+	
 	if position.distance_to(target_position)<=50 && target_position!=self.position:
 		if can_shoot:
 			_shoot()
+			
+	
 
 func _on_EnemyWarrior_mouse_entered():
 	get_tree().get_root().get_child(0)._on_Game4_is_sword()
@@ -655,10 +667,6 @@ func _on_DetectionArea_body_entered(body):
 	if ("Unit" in body.name || "Warrior" in body.name && !("Enemy" in body.name)):
 		body_entered=body
 		
-
-
-
-
 
 func _shoot():
 	var spear_target = target_position
@@ -689,3 +697,6 @@ func _walk():
 
 func _on_DetectionArea_body_exited(body):
 	body_entered=false
+
+
+

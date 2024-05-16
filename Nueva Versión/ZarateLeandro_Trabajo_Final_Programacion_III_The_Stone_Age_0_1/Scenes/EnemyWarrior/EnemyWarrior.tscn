@@ -151,5 +151,6 @@ shape = SubResource( 10 )
 [connection signal="mouse_exited" from="." to="." method="_on_EnemyWarrior_mouse_exited"]
 [connection signal="timeout" from="all_timer" to="." method="_on_all_timer_timeout"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_Area2D_body_exited"]
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_DetectionArea_body_entered"]
 [connection signal="body_exited" from="DetectionArea" to="." method="_on_DetectionArea_body_exited"]

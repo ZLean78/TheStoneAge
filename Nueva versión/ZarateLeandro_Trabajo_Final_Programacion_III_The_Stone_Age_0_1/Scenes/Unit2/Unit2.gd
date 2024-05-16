@@ -411,7 +411,26 @@ func _get_damage(var the_beast):
 			bar._update_energy()
 		else:
 			_set_selected(false)			
-			is_deleted=true							
+			is_deleted=true
+	if "EnemySpear" in the_beast.name:
+		the_beast.queue_free()
+		if energy_points>0:
+			energy_points-=20
+			bar._set_energy_points(energy_points)
+			bar._update_energy()
+		else:
+			_set_selected(false)			
+			is_deleted=true
+	if "EnemyWarrior" in the_beast.name && is_enemy_touching:
+		if energy_points>0:
+			energy_points-=20
+			bar._set_energy_points(energy_points)
+			bar._update_energy()
+		else:
+			_set_selected(false)			
+			is_deleted=true
+					
+								
 
 
 	
@@ -447,16 +466,7 @@ func _move_to_target(target):
 	velocity=(direction).normalized()
 	var collision = move_and_collide(velocity*to_delta*SPEED)
 	
-	
-	
-		
-#func move_unit(point):
-#	to_move = point
-#	move_p = true
-#
-	
-	
-	
+
 
 func _unhandled_input(event):
 	if event.is_action_pressed("RightClick"):
@@ -897,11 +907,6 @@ func self_heal():
 			energy_points=MAX_HEALTH
 			can_heal_itself=false
 			heal_counter=60
-		
-		
-
-
-
 
 
 func _on_Area2D_body_exited(body):
