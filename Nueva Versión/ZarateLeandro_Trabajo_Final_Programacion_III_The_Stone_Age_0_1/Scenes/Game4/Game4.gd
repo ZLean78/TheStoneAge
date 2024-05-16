@@ -91,7 +91,7 @@ onready var copper1 = tree.get_node("Coppers/Copper")
 onready var copper2 = tree.get_node("Coppers/Copper2")
 onready var lake = tree.get_node("Lake")
 onready var spawn_position = $SpawnPosition
-onready var tiger_spawn = $TigerSpawn
+onready var enemy_spawn = $EnemySpawn
 #onready var tiger_target = $TigerTarget
 onready var units = $Units
 onready var warriors = $Warriors
@@ -203,6 +203,9 @@ var touching_enemy
 #Variables de fila y columna para formación de unidades (civiles y militares).
 var row=0
 var column=0
+
+#Contador para ataque enemigo. Se cambia desde el timer "all_timer".
+var attack_counter=50
 
 func _ready():
 	
@@ -331,7 +334,7 @@ func _process(_delta):
 		#Etiqueta de tiempo restante para la amenaza enemiga
 		#y etiquetas de recursos recolectados.
 		for enemy in enemy_warriors_node.get_children():
-			timer_label.text = "CONTADOR: " + str(int(enemy.timer_count))
+			timer_label.text = "PELIGRO EN: " + str(int(attack_counter))
 			
 			
 		food_label.text = str(int(food_points))
@@ -1364,7 +1367,10 @@ func _rebake_navigation():
 	navi_polygon.clear_outlines()
 	navi_polygon.clear_polygons()
 	
+	#Agregar rectángulo general.
 	navi_polygon.add_outline(PoolVector2Array([Vector2(-1028,-608),Vector2(1028,-608),Vector2(1028,608),Vector2(-1028,608)]))
+	#Agregar lago.
+	navi_polygon.add_outline(PoolVector2Array([Vector2(-287,-27),Vector2(-82,-27),Vector2(-82,32),Vector2(-287,32)]))	
 		
 	for a_house in houses.get_children():
 		if is_instance_valid(a_house):
@@ -1386,3 +1392,16 @@ func _rebake_navigation():
 
 func _on_Game4_remove_building():
 	_rebake_navigation()
+
+
+func _on_enemy_timer_timeout():
+	if attack_counter>0:
+		attack_counter-=1	
+	
+	if attack_counter<=0:
+		for an_enemy in enemy_warriors_node.get_children():
+			if an_enemy.AI_state==3:
+				an_enemy.AI_state=0
+
+
+

@@ -155,9 +155,12 @@ signal was_deselected
 
 
 func _ready():
-	connect("was_selected",get_tree().root.get_child(0),"select_unit")
-	connect("was_deselected",get_tree().root.get_child(0),"deselect_unit")
+	
+	#connect("was_selected",get_tree().root.get_child(0),"select_unit")
+	#connect("was_deselected",get_tree().root.get_child(0),"deselect_unit")
 	emit_signal("health_change",energy_points)
+	
+	AI_state=3
 	
 	is_dressed=true
 	if(!is_dressed):
@@ -201,10 +204,7 @@ func _physics_process(delta):
 		
 		if position.distance_to(target_position) > MAX_DISTANCE:
 			_walk()				
-		else:
-			if can_shoot:
-				_shoot()
-				print("disparó")	
+		
 	
 		
 	
@@ -586,56 +586,60 @@ func _choose_target():
 						target_position=root.tower_node.get_child(i).position
 				else:
 					target=root.tower_node.get_child(0)
-					target_position=root.tower_node.get_child(0).position					
-				
+					target_position=root.tower_node.get_child(0).position
+		elif root.warriors.get_child_count()>0:					
+			for i in range(0,root.warriors.get_child_count()):
+				if i!=0:
+					if root.warriors.get_child(i).position.distance_to(position)<root.warriors.get_child(i-1).position.distance_to(position):
+						target=root.warriors.get_child(i)
+						target_position=root.warriors.get_child(i).position
+				else:
+					target=root.warriors.get_child(0)
+					target_position=root.warriors.get_child(0).position	
+		else:
+			if root.units.get_child_count()>0:
+				for i in range(0,root.units.get_child_count()):
+					if i!=0:
+						if root.units.get_child(i).position.distance_to(position)<root.units.get_child(i-1).position.distance_to(position):
+							target=root.units.get_child(i)
+							target_position=root.units.get_child(i).position
+					else:
+						target=root.units.get_child(0)
+						target_position=root.units.get_child(0).position	
+					
 
-
-
-
-				
 
 func _state_machine():
 	match AI_state:
 		0:
-			if root.tower_node.get_child_count()>0:
-				_choose_target()
-				print("cambio a estado 1")
-				AI_state=1	
-			else:
-				target_position=position
+			_choose_target()
+			print("Cambio a estado 1.")
+			AI_state=1
 		1:
-			if is_instance_valid(target):
+			if target!=null && is_instance_valid(target):
 				target_position=target.position
 			else:
 				print("vuelta a estado 0")
 				AI_state=0
+			
 			if body_entered!=null && is_instance_valid(body_entered):
 				print("se ha detectado un cuerpo")
 				if !("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name):
 					target_position=body_entered.position
 					print("cambio a estado 2")
 					AI_state=2	
-				
-							
 		2:
 			if !(is_instance_valid(body_entered)):
 				print("vuelta a estado 0")
 				AI_state=0
 			else:			
 				target=body_entered.position
-				
-			
-				
-
-			
-
-
-		
-				
-
-
-
-
+		3:
+			target_position=self.position
+	
+	if position.distance_to(target_position)<=50 && target_position!=self.position:
+		if can_shoot:
+			_shoot()
 
 func _on_EnemyWarrior_mouse_entered():
 	get_tree().get_root().get_child(0)._on_Game4_is_sword()
