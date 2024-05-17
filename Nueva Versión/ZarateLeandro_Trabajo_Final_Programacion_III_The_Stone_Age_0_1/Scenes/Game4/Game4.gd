@@ -823,7 +823,7 @@ func _create_warrior_unit(cost = 0):
 func _check_victory():
 	if tower_node.get_child_count()>0:
 		var first_tower = tower_node.get_child(0)
-		if first_tower.condition==first_tower.condition_max:
+		if first_tower.condition>=first_tower.condition_max:
 			is_first_tower_built=true
 			
 	
