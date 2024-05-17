@@ -1400,6 +1400,14 @@ func _rebake_navigation():
 	for a_tower in tower_node.get_children():
 		if is_instance_valid(a_tower):
 			_update_path(a_tower)
+			
+	for a_barn in barn_node.get_children():
+		if is_instance_valid(a_barn):
+			_update_path(a_barn)
+			
+	for a_fort in fort_node.get_children():
+		if is_instance_valid(a_fort):
+			_update_path(a_fort)
 		
 	navi_polygon.make_polygons_from_outlines()	
 	nav2d.get_node("polygon").enabled=true
