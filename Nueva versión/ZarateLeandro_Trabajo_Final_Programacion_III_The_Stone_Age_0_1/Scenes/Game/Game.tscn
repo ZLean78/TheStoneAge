@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://Sprites/game/tiles/grass/simple/grass.png" type="Texture" id=1]
 [ext_resource path="res://Scenes/Unit/Unit.tscn" type="PackedScene" id=2]
@@ -14,9 +14,11 @@
 [ext_resource path="res://Scenes/Game/rain3.png" type="Texture" id=12]
 [ext_resource path="res://Scenes/Game/food.png" type="Texture" id=13]
 [ext_resource path="res://Scenes/Game2/NextStageButton.png" type="Texture" id=14]
+[ext_resource path="res://Scenes/Game/SelectDraw.gd" type="Script" id=15]
 [ext_resource path="res://Scenes/Plant/Plant.tscn" type="PackedScene" id=16]
 [ext_resource path="res://Scenes/Unit/male1_d.png" type="Texture" id=17]
 [ext_resource path="res://Scenes/Unit/bag_3.png" type="Texture" id=18]
+[ext_resource path="res://Scenes/Lake/Lake.tscn" type="PackedScene" id=19]
 
 [sub_resource type="TileSet" id=1]
 0/name = "grass.png 0"
@@ -43,9 +45,9 @@ animations = [ {
 } ]
 
 [sub_resource type="NavigationPolygon" id=3]
-vertices = PoolVector2Array( 364, 160, 1026, 585, -1021, 598, 354, 160, 1024, -621, 364, 155, -1021, -611, 354, 155 )
-polygons = [ PoolIntArray( 0, 1, 2, 3 ), PoolIntArray( 4, 1, 0, 5 ), PoolIntArray( 6, 4, 5, 7 ), PoolIntArray( 2, 6, 7, 3 ) ]
-outlines = [ PoolVector2Array( -1021, -611, -1021, 598, 1026, 585, 1024, -621 ), PoolVector2Array( 354, 155, 364, 155, 364, 160, 354, 160 ) ]
+vertices = PoolVector2Array( 364, 155, 354, 155, -62, 14, -63, -34, 364, 160, 1026, 585, -1021, 598, 354, 160, 1024, -621, -1021, -611, -284, 12, -284, -37 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ), PoolIntArray( 4, 5, 6, 7 ), PoolIntArray( 8, 5, 4, 0 ), PoolIntArray( 9, 8, 0, 3 ), PoolIntArray( 2, 1, 7, 6, 10 ), PoolIntArray( 10, 6, 9, 11 ), PoolIntArray( 9, 3, 11 ) ]
+outlines = [ PoolVector2Array( -1021, -611, -1021, 598, 1026, 585, 1024, -621 ), PoolVector2Array( 354, 155, 364, 155, 364, 160, 354, 160 ), PoolVector2Array( -284, -37, -63, -34, -62, 14, -284, 12 ) ]
 
 [node name="Game" type="Node2D"]
 script = ExtResource( 3 )
@@ -60,6 +62,9 @@ tile_data = PoolIntArray( -1179680, 0, 0, -1179679, 0, 0, -1179678, 0, 0, -11796
 
 [node name="Cave" parent="TileMap" instance=ExtResource( 6 )]
 position = Vector2( 928, 485 )
+
+[node name="Lake" parent="TileMap" instance=ExtResource( 19 )]
+position = Vector2( -180, -2 )
 
 [node name="Camera" type="Camera2D" parent="."]
 position = Vector2( -1024, -600 )
@@ -122,6 +127,9 @@ position = Vector2( 167, 526 )
 [node name="polygon" type="NavigationPolygonInstance" parent="nav"]
 position = Vector2( 0, 13 )
 navpoly = SubResource( 3 )
+
+[node name="SelectDraw" type="Node2D" parent="."]
+script = ExtResource( 15 )
 
 [node name="UI" type="CanvasLayer" parent="."]
 

@@ -131,7 +131,7 @@ func _process(_delta):
 		
 #UNHANDLED INPUT
 func _unhandled_input(event):
-	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
+	if event.is_action_pressed("RightClick"):
 		for i in range(0,selected_units.size()):			
 			if i==0:
 				selected_units[i].target_position=get_global_mouse_position()
@@ -156,10 +156,13 @@ func _create_unit():
 			new_Unit.is_girl=false
 		if(group_dressed):
 			new_Unit.is_dressed=true	
+		
+		tile_map.add_child(new_Unit)	
+		
 		if(group_has_bag):
 			new_Unit.has_bag=true	
-			new_Unit.get_child(3).visible = true
-		tile_map.add_child(new_Unit)		
+			new_Unit.bag_sprite.visible = true	
+		
 		food_points-=15	
 		all_units.append(new_Unit)
 
@@ -174,14 +177,14 @@ func _add_bag():
 	for a_unit in all_units:
 		if(!a_unit.has_bag):
 			a_unit.has_bag = true	
-			a_unit.get_child(3).visible=true	
+			a_unit.bag_sprite.visible=true	
 			
 
 
 
 #FUNCIÓN QUE DESSELECCIONA TODAS LAS UNIDADES.	
 #(Utiliza el arreglo 'selected units').	
-func deselect_all():
+func _deselect_all():
 	while selected_units.size()>0:
 		selected_units[0]._set_selected(false)
 		
@@ -207,7 +210,7 @@ func get_units_in_area(area):
 	return u
 		
 #MARCAR LAS UNIDADES SELECCIONADAS.
-func area_selected(obj):
+func _area_selected(obj):
 	var start=obj.start
 	var end=obj.end
 	var area=[]
@@ -215,7 +218,7 @@ func area_selected(obj):
 	area.append(Vector2(max(start.x,end.x),max(start.y,end.y)))
 	var ut = get_units_in_area(area)
 	if not Input.is_key_pressed(KEY_SHIFT):
-		deselect_all()
+		_deselect_all()
 	for u in ut:
 		u.selected = not u.selected
 		
@@ -227,16 +230,35 @@ func area_selected(obj):
 #seleccionadas a las que ya estaban seleccionadas,
 #sino desseleccionar las seleccionadas y seleccionar las que 
 #estamos seleccionadndo).
-func select_unit(unit):
+#func select_unit(unit):
+#	if not selected_units.has(unit):
+#		selected_units.append(unit)
+#	#print("selected %s" % unit.name)
+#
+#
+#func deselect_unit(unit):
+#	if selected_units.has(unit):
+#		selected_units.erase(unit)
+##	#print("deselected %s" % unit.name)
+
+
+		
+func _select_unit(unit):
 	if not selected_units.has(unit):
 		selected_units.append(unit)
 	#print("selected %s" % unit.name)
+	#create_buttons()
 
-
-func deselect_unit(unit):
+func _deselect_unit(unit):
 	if selected_units.has(unit):
 		selected_units.erase(unit)
-#	#print("deselected %s" % unit.name)
+		
+func _select_last():
+	for unit in selected_units:
+		if selected_units[selected_units.size()-1] == unit:
+			unit._set_selected(true)
+		else:
+			unit._set_selected(false)
 
 
 ##MOVER LA SELECCIÓN DE UNIDADES.

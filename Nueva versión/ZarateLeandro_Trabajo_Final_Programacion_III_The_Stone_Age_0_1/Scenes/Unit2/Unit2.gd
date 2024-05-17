@@ -191,8 +191,8 @@ signal was_deselected
 
 
 func _ready():
-	connect("was_selected",get_tree().root.get_child(0),"select_unit")
-	connect("was_deselected",get_tree().root.get_child(0),"deselect_unit")
+	connect("was_selected",get_tree().root.get_child(0),"_select_unit")
+	connect("was_deselected",get_tree().root.get_child(0),"_deselect_unit")
 	emit_signal("health_change",energy_points)
 	has_bag=true
 	is_dressed=true

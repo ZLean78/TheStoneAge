@@ -95,7 +95,18 @@ var pickable_touching = false
 #Variable que indica el pickable que la unidad está tocando
 var pickable = null
 
-#!!!!
+#Variables origen y destino de navegación.
+var firstPoint = Vector2.ZERO
+var secondPoint = Vector2.ZERO
+var index = 0
+
+#//////////////////////////////
+#ONREADY VARS
+
+#Podígono de navegación
+onready var nav2d=get_tree().get_root().get_child(0).get_node("nav")
+
+
 onready var all_timer = $all_timer
 
 onready var sprite = get_node("scalable/sprite")
@@ -119,8 +130,8 @@ signal was_deselected
 
 
 func _ready():
-	connect("was_selected",get_tree().root.get_child(0),"select_unit")
-	connect("was_deselected",get_tree().root.get_child(0),"deselect_unit")
+	connect("was_selected",get_tree().root.get_child(0),"_select_unit")
+	connect("was_deselected",get_tree().root.get_child(0),"_deselect_unit")
 	#emit_signal("health_change",health)
 	if(!is_dressed):
 		if !is_girl:
@@ -168,7 +179,7 @@ func _physics_process(delta):
 	
 	if target_position!=Vector2.ZERO:
 		if position.distance_to(target_position) > 10:
-			_move_to_target(target_position)
+			_move_along_path(SPEED*delta)
 		else:
 			target_position=position
 			velocity=Vector2.ZERO
@@ -288,10 +299,30 @@ func _move_to_target(target):
 	velocity=(direction).normalized()
 	var collision = move_and_collide(velocity*to_delta*SPEED)
 	
-	
+func _move_along_path(distance):	
+	var last_point=position
+	direction=secondPoint-last_point
+	velocity=(direction).normalized()
+	while path.size():
+		var distance_between_points = last_point.distance_to(path[0])
+		if distance_between_points>7:
+			last_point=lerp(last_point,path[0],distance/distance_between_points)
+			position=last_point
+			return
+		
+		distance-=distance_between_points
+		last_point=path[0]
+		path.remove(0)
+		position=last_point
+		set_process(false)	
 		
 		
-	
+func _unhandled_input(event):
+	if event.is_action_pressed("RightClick"):
+		firstPoint=global_position
+			
+	if event.is_action_released("RightClick"):		
+		_walk()	
 	
 
 func _on_Unit_input_event(_viewport, event, _shape_idx):
@@ -597,21 +628,18 @@ func _set_erased(var _is_erased):
 	is_erased=_is_erased
 	
 
-#	
-
-
-
-
-
-
-
-	
-
-
 func _on_all_timer_timeout():
 	timer_count=0
 	_get_damage()
 	if pickable!=null:
 		_collect_pickable(pickable)
 	
-	
+
+
+func _walk():
+	firstPoint = global_position
+	secondPoint = target_position		
+	var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
+	firstPoint = arrPath[0]
+	path = arrPath
+	index = 0		

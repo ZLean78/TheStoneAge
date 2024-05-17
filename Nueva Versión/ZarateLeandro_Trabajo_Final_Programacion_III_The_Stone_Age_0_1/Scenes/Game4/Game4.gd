@@ -371,14 +371,14 @@ func _process(_delta):
 		_check_enemies()
 
 #Seleccionar una unidad.
-func select_unit(unit):
+func _select_unit(unit):
 	if not selected_units.has(unit):
 		selected_units.append(unit)
 	#print("selected %s" % unit.name)
 	#create_buttons()
 
 #Deseleccionar una unidad.
-func deselect_unit(unit):
+func _deselect_unit(unit):
 	if selected_units.has(unit):
 		selected_units.erase(unit)
 		
@@ -859,7 +859,7 @@ func _on_CreateCitizen_pressed():
 		_create_unit(15)
 
 	
-func deselect_all():
+func _deselect_all():
 	while selected_units.size()>0:
 		selected_units[0]._set_selected(false)
 		
@@ -886,7 +886,7 @@ func _area_selected(obj):
 	area.append(Vector2(max(start.x,end.x),max(start.y,end.y)))
 	var ut = _get_units_in_area(area)
 	if not Input.is_key_pressed(KEY_SHIFT):
-		deselect_all()
+		_deselect_all()
 	for u in ut:
 		u.selected = not u.selected
 		

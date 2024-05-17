@@ -213,17 +213,28 @@ func _process(_delta):
 	
 	
 			
-			
-
 		
-func select_unit(unit):
+func _select_unit(unit):
 	if not selected_units.has(unit):
 		selected_units.append(unit)
-		
+	#print("selected %s" % unit.name)
+	#create_buttons()
 
-func deselect_unit(unit):
+func _deselect_unit(unit):
 	if selected_units.has(unit):
-		selected_units.erase(unit)
+		selected_units.erase(unit)			
+
+		
+func _deselect_all():
+	while selected_units.size()>0:
+		selected_units[0]._set_selected(false)
+		
+func _select_last():
+	for unit in selected_units:
+		if selected_units[selected_units.size()-1] == unit:
+			unit._set_selected(true)
+		else:
+			unit._set_selected(false)
 		
 func _unhandled_input(event):
 	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
@@ -446,16 +457,7 @@ func _on_tiger_timer_timeout():
 				a_tiger.target_position=tiger_spawn.position
 
 		
-func deselect_all():
-	while selected_units.size()>0:
-		selected_units[0]._set_selected(false)
-		
-func select_last():
-	for unit in selected_units:
-		if selected_units[selected_units.size()-1] == unit:
-			unit._set_selected(true)
-		else:
-			unit._set_selected(false)
+
 		
 func get_units_in_area(area):
 	var u=[]
@@ -465,7 +467,7 @@ func get_units_in_area(area):
 				u.append(unit)
 	return u
 
-func area_selected(obj):
+func _area_selected(obj):
 	var start=obj.start
 	var end=obj.end
 	var area=[]
@@ -473,7 +475,7 @@ func area_selected(obj):
 	area.append(Vector2(max(start.x,end.x),max(start.y,end.y)))
 	var ut = get_units_in_area(area)
 	if not Input.is_key_pressed(KEY_SHIFT):
-		deselect_all()
+		_deselect_all()
 	for u in ut:
 		u.selected = not u.selected
 		
@@ -630,10 +632,6 @@ func _check_units():
 		if a_unit.is_deleted:
 			var the_unit=all_units[all_units.find(a_unit,0)]
 			all_units.remove(all_units.find(a_unit,0))
-			for a_tiger in all_tigers:
-				if is_instance_valid(a_tiger):
-					if a_tiger.unit == the_unit:
-						a_tiger.unit = null
 			the_unit._die()
 	
 	
