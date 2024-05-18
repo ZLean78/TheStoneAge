@@ -581,20 +581,67 @@ func _on_Area2D_body_exited(body):
 		
 		
 func _choose_target():
-	if target_t == target_type.TOWER:
-		if root.tower_node.get_child_count()>0:
-			for i in range(0,root.tower_node.get_child_count()):
-				if i!=0:
-					if root.tower_node.get_child(i).position.distance_to(position)<root.tower_node.get_child(i-1).position.distance_to(position):
-						target=root.tower_node.get_child(i)
-						target_position=root.tower_node.get_child(i).position
-#						if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
-#							target=root.tower_node.get_child(i)
-#							target_position=root.tower_node.get_child(i).position
-				else:
-					target=root.tower_node.get_child(0)
-					target_position=root.tower_node.get_child(0).position
-		elif root.warriors.get_child_count()>0:					
+	if root.tower_node.get_child_count()>0 || root.barn_node.get_child_count()>0 || root.fort_node.get_child_count()>0:
+		if target_t == target_type.TOWER:
+			if root.tower_node.get_child_count()>0:
+				for i in range(0,root.tower_node.get_child_count()):
+					if i!=0:
+						if root.tower_node.get_child(i).position.distance_to(position)<root.tower_node.get_child(i-1).position.distance_to(position):
+							target=root.tower_node.get_child(i)
+							target_position=root.tower_node.get_child(i).position
+#							if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
+#								target=root.tower_node.get_child(i)
+#								target_position=root.tower_node.get_child(i).position
+					else:
+						target=root.tower_node.get_child(0)
+						target_position=root.tower_node.get_child(0).position
+#		elif root.warriors.get_child_count()>0:					
+#			for i in range(0,root.warriors.get_child_count()):
+#				if i!=0:
+#					if root.warriors.get_child(i).position.distance_to(position)<root.warriors.get_child(i-1).position.distance_to(position):
+#						target=root.warriors.get_child(i)
+#						target_position=root.warriors.get_child(i).position
+#				else:
+#					target=root.warriors.get_child(0)
+#					target_position=root.warriors.get_child(0).position	
+#		else:
+#			if root.units.get_child_count()>0:
+#				for i in range(0,root.units.get_child_count()):
+#					if i!=0:
+#						if root.units.get_child(i).position.distance_to(position)<root.units.get_child(i-1).position.distance_to(position):
+#							target=root.units.get_child(i)
+#							target_position=root.units.get_child(i).position
+#					else:
+#						target=root.units.get_child(0)
+#						target_position=root.units.get_child(0).position	
+		elif target_t==target_type.BARN:				
+			if root.barn_node.get_child_count()>0:
+				for i in range(0,root.barn_node.get_child_count()):
+					if i!=0:
+						if root.barn_node.get_child(i).position.distance_to(position)<root.barn_node.get_child(i-1).position.distance_to(position):
+							target=root.barn_node.get_child(i)
+							target_position=root.barn_node.get_child(i).position
+#							if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
+#								target=root.tower_node.get_child(i)
+#								target_position=root.tower_node.get_child(i).position
+					else:
+						target=root.barn_node.get_child(0)
+						target_position=root.barn_node.get_child(0).position
+		elif target_t==target_type.FORT:
+			if root.fort_node.get_child_count()>0:
+				for i in range(0,root.fort_node.get_child_count()):
+					if i!=0:
+						if root.fort_node.get_child(i).position.distance_to(position)<root.fort_node.get_child(i-1).position.distance_to(position):
+							target=root.fort_node.get_child(i)
+							target_position=root.fort_node.get_child(i).position
+#							if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
+#								target=root.tower_node.get_child(i)
+#								target_position=root.tower_node.get_child(i).position
+					else:
+						target=root.fort_node.get_child(0)
+						target_position=root.fort_node.get_child(0).position
+	else:
+		if root.warriors.get_child_count()>0:					
 			for i in range(0,root.warriors.get_child_count()):
 				if i!=0:
 					if root.warriors.get_child(i).position.distance_to(position)<root.warriors.get_child(i-1).position.distance_to(position):
@@ -613,8 +660,6 @@ func _choose_target():
 					else:
 						target=root.units.get_child(0)
 						target_position=root.units.get_child(0).position	
-					
-
 
 func _state_machine():
 	match AI_state:

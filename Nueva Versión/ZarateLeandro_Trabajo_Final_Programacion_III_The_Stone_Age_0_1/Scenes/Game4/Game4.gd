@@ -116,6 +116,7 @@ export (PackedScene) var TownHall
 export (PackedScene) var Fort
 export (PackedScene) var Tower
 export (PackedScene) var Barn
+export (PackedScene) var EnemyWarrior
 
 
 #Arreglos para controlar los distintos grupos de entidades.
@@ -206,6 +207,8 @@ var column=0
 
 #Contador para ataque enemigo. Se cambia desde el timer "all_timer".
 var attack_counter=50
+
+var victory_obtained=false
 
 func _ready():
 	
@@ -554,6 +557,10 @@ func _create_fort():
 				else:
 					#Si el nuevo fuerte está a la izquierda.
 					citizen.target_position=Vector2(the_fort.position.x+60,the_fort.position.y)
+	#Ataque enemigo por obtención de mejora.				
+	if !victory_obtained:
+		_make_attack()
+	
 				
 #Función crear torre de vigilancia
 func _create_tower():
@@ -624,6 +631,9 @@ func _create_tower():
 				else:
 					#Si la nueva torre está a la izquierda.
 					citizen.target_position=Vector2(the_tower.position.x+35,the_tower.position.y)	
+	#Ataque enemigo por obtención de mejora.				
+	if !victory_obtained:
+		_make_attack()
 				
 #Función crear granero.
 func _create_barn():
@@ -692,7 +702,9 @@ func _create_barn():
 				else:
 					#Si el nuevo granero está a la izquierda.
 					citizen.target_position=Vector2(the_barn.position.x+25,the_barn.position.y)	
-					
+	#Ataque enemigo por obtención de mejora.				
+	if !victory_obtained:
+		_make_attack()
 
 #Función crear casa.				
 func _create_house():
@@ -840,6 +852,7 @@ func _check_victory():
 	
 	if (is_pottery_developed && is_carpentry_developed && is_mining_developed && 
 	 is_metals_developed && is_first_tower_built && is_barn_built && is_fort_built):
+		victory_obtained=true
 		prompts_label.text = "¡Has ganado!"	
 		next_scene_button.visible = true
 	elif(all_units.size()==0 && food_points<15):
@@ -1104,11 +1117,7 @@ func _check_units():
 				#Llamamos a la función die de la unidad,
 				#para que sea eliminada definitivamente.
 				the_unit._die()
-	
-
-
-
-
+				
 
 func _on_MakeWarchief_pressed():
 	#La unidad seleccionada se convierte en jefe si es que se selecciona sólo una.
@@ -1330,6 +1339,9 @@ func _on_DevelopPottery_pressed():
 		wood_points-=150
 		is_pottery_developed=true
 		develop_pottery.visible=false
+		#Ataque enemigo por mejora.
+		if !victory_obtained:
+			_make_attack()
 
 
 func _on_DevelopCarpentry_pressed():
@@ -1337,6 +1349,9 @@ func _on_DevelopCarpentry_pressed():
 		wood_points-=500
 		is_carpentry_developed=true
 		develop_carpentry.visible=false
+		#Ataque enemigo por mejora.
+		if !victory_obtained:
+			_make_attack()
 
 
 func _on_DevelopMining_pressed():
@@ -1345,6 +1360,9 @@ func _on_DevelopMining_pressed():
 		copper_points-=200
 		is_mining_developed=true
 		develop_mining.visible=false
+		#Ataque enemigo por mejora.
+		if !victory_obtained:
+			_make_attack()
 
 
 func _on_DevelopMetals_pressed():
@@ -1353,6 +1371,10 @@ func _on_DevelopMetals_pressed():
 		copper_points-=150
 		is_metals_developed=true
 		develop_metals.visible=false
+		#Ataque enemigo por mejora.
+		if !victory_obtained:
+			_make_attack()
+		
 		
 func _check_enemies():
 	for an_enemy in enemy_warriors_node.get_children():
@@ -1419,14 +1441,27 @@ func _on_Game4_remove_building():
 	_rebake_navigation()
 
 
-func _on_enemy_timer_timeout():
-	if attack_counter>0:
-		attack_counter-=1	
-	
-	if attack_counter<=0:
-		for an_enemy in enemy_warriors_node.get_children():
-			if an_enemy.AI_state==3:
-				an_enemy.AI_state=0
+#func _on_enemy_timer_timeout():
+#	if attack_counter>0:
+#		attack_counter-=1	
+#
+#	if attack_counter<=0:
+#		for an_enemy in enemy_warriors_node.get_children():
+#			if an_enemy.AI_state==3:
+#				an_enemy.AI_state=0
 
-
+func _make_attack():
+	for i in range(0,8):
+		var new_enemy_warrior=EnemyWarrior.instance()
+		if i<3:
+			new_enemy_warrior.target_t=new_enemy_warrior.target_type.TOWER
+		elif i>=3 && i<6:
+			new_enemy_warrior.target_t=new_enemy_warrior.target_type.BARN
+		elif i>=6:
+			new_enemy_warrior.target_t=new_enemy_warrior.target_type.FORT
+		
+		enemy_warriors_node.add_child(new_enemy_warrior)
+		new_enemy_warrior.position=enemy_spawn.position
+		new_enemy_warrior.AI_state=0
+			 
 
