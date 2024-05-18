@@ -111,7 +111,7 @@ var is_deleted=false
 #Para detección de daño. Cuerpo que ingresa al área 2D
 var body_entered
 
-var can_shoot = true
+#var can_shoot = true
 
 var to_delta = 0.0
 
@@ -316,7 +316,8 @@ func _unhandled_input(event):
 		if root.sword_mode:
 			if root.touching_enemy!=null:
 				if is_instance_valid(root.touching_enemy):
-					if selected && can_shoot:
+					#if selected && can_shoot:
+					if selected:
 						_shoot()
 				else:
 					if root.name=="Game3":
@@ -527,18 +528,18 @@ func _set_erased(var _is_erased):
 
 #	
 func _on_all_timer_timeout():
-	timer_count+=1	
+	#timer_count+=1	
 	#if tiger!=null && is_instance_valid(tiger):
 		#_get_damage(tiger)
 	if body_entered!=null && is_instance_valid(body_entered):
 		#if "Tiger" in body_entered.name || "Mammoth" in body_entered.name:
 		_get_damage(body_entered)
-	if timer_count>=3:
-		can_shoot=true
-	else:
-		can_shoot=false
-	if timer_count>4:
-		timer_count=0
+#	if timer_count>=3:
+#		can_shoot=true
+#	else:
+#		can_shoot=false
+#	if timer_count>4:
+#		timer_count=0
 	all_timer.start()
 	
 	
@@ -555,15 +556,20 @@ func _shoot():
 	shoot_node.look_at(bullet_target)				
 	var angle = shoot_node.rotation
 	var forward = Vector2(cos(angle),sin(angle))
-	bullet = bullet_scene.instance()
-	shoot_point.rotation = angle				
-	bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-	bullet.set_dir(forward)
-	bullet.rotation = angle
-	bullet.owner_name="Warrior"
-	#target_position=bullet_target	
 	var the_tilemap=get_tree().get_nodes_in_group("tilemap")
-	the_tilemap[0].add_child(bullet)
+	var spear_count=0
+	for tilemap_child in the_tilemap[0].get_children():
+		if "Bullet" in tilemap_child.name:
+			spear_count+=1
+	if spear_count<2:
+		bullet = bullet_scene.instance()
+		shoot_point.rotation = angle				
+		bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+		bullet.set_dir(forward)
+		bullet.rotation = angle
+		bullet.owner_name="Warrior"
+		#target_position=bullet_target		
+		the_tilemap[0].add_child(bullet)
 	
 	
 func _walk():
@@ -573,3 +579,5 @@ func _walk():
 	firstPoint = arrPath[0]
 	path = arrPath
 	index = 0		
+
+

@@ -542,18 +542,18 @@ func _set_erased(var _is_erased):
 
 
 #	
-func _on_all_timer_timeout():
-	timer_count+=1	
-	
-	if timer_count>2:
-		can_shoot=true
-	
-	
-	if timer_count>4:
-		timer_count=0
-		
-			
-	all_timer.start()
+#func _on_all_timer_timeout():
+#	timer_count+=1	
+#
+#	if timer_count>2:
+#		can_shoot=true
+#
+#
+#	if timer_count>4:
+#		timer_count=0
+#
+#
+#	all_timer.start()
 	
 	
 
@@ -693,8 +693,8 @@ func _state_machine():
 	
 	
 	if position.distance_to(target_position)<=50 && target_position!=self.position:
-		if can_shoot:
-			_shoot()
+		_shoot()
+		
 			
 	
 
@@ -714,20 +714,26 @@ func _on_DetectionArea_body_entered(body):
 		
 
 func _shoot():
+	var the_tilemap=get_tree().get_nodes_in_group("tilemap")
 	var spear_target = target_position
 	shoot_node.look_at(spear_target)				
 	var angle = shoot_node.rotation
 	var forward = Vector2(cos(angle),sin(angle))
-	spear = spear_scene.instance()
-	shoot_point.rotation = angle				
-	spear.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-	spear.set_dir(forward)
-	spear.rotation = angle
-	#spear.owner_name="Enemy_Warrior"
-	target_position=spear_target	
-	var the_tilemap=get_tree().get_nodes_in_group("tilemap")
-	the_tilemap[0].add_child(spear)
-	can_shoot=false
+	var spear_count=0
+	for tilemap_child in the_tilemap[0].get_children():
+		if "EnemySpear" in tilemap_child.name:
+			spear_count+=1
+	if spear_count==0:		
+		spear = spear_scene.instance()
+		shoot_point.rotation = angle				
+		spear.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+		spear.set_dir(forward)
+		spear.rotation = angle
+		#spear.owner_name="Enemy_Warrior"
+		target_position=spear_target	
+	
+		the_tilemap[0].add_child(spear)
+		
 
 func _walk():	
 	firstPoint=position
@@ -742,6 +748,5 @@ func _walk():
 
 func _on_DetectionArea_body_exited(body):
 	body_entered=false
-
 
 
