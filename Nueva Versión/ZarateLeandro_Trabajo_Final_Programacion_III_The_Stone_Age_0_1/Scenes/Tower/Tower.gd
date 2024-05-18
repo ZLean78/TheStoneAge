@@ -9,9 +9,17 @@ onready var timer=$Timer
 onready var polygon=$CollisionPolygon2D
 #onready var all_timer=get_tree().root.get_child(0).get_node("food_timer")
 onready var bar=$Bar
+onready var shoot_point=$ShootPoint
+onready var shoot_point2=$ShootPoint2
 var mouse_entered=false
 var body_entered=null
+var target_position=Vector2.ZERO
 
+export (float) var MIN_DISTANCE=0
+
+#Proyectil, piedra para lanzar al enemigo.
+var spear
+export var spear_scene=preload("res://Scenes/Bullet/Bullet.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -20,6 +28,7 @@ func _ready():
 
 func _process(_delta):
 	bar.value=condition
+	_detect_enemies()
 	
 func _tower_build():
 	if condition<condition_max:
@@ -61,3 +70,50 @@ func _on_Tower_mouse_entered():
 
 func _on_Tower_mouse_exited():
 	mouse_entered=false
+	
+func _detect_enemies():
+	for an_enemy in root.enemy_warriors_node.get_children():
+		if is_instance_valid(an_enemy):
+			if position.distance_to(an_enemy.position)<MIN_DISTANCE:
+				target_position=an_enemy.position
+				_shoot()
+				
+func _shoot():
+	var the_tilemap=get_tree().get_nodes_in_group("tilemap")
+	var spear_target = target_position
+		
+	
+	if spear_target.x>position.x:
+		shoot_point.look_at(spear_target)		
+		var angle = shoot_point.rotation
+		var forward = Vector2(cos(angle),sin(angle))
+		var spear_count=0
+		for tilemap_child in the_tilemap[0].get_children():
+			if "Bullet" in tilemap_child.name:
+				spear_count+=1
+		if spear_count==0:		
+			spear = spear_scene.instance()
+			shoot_point.rotation = angle	
+			spear.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+			spear.set_dir(forward)
+			spear.rotation = angle
+			#spear.owner_name="Enemy_Warrior"
+			#target_position=spear_target		
+			the_tilemap[0].add_child(spear)
+	else:
+		shoot_point2.look_at(spear_target)	
+		var angle = shoot_point2.rotation
+		var forward = Vector2(cos(angle),sin(angle))
+		var spear_count=0
+		for tilemap_child in the_tilemap[0].get_children():
+			if "Bullet" in tilemap_child.name:
+				spear_count+=1
+		if spear_count==0:		
+			spear = spear_scene.instance()
+			shoot_point2.rotation = angle	
+			spear.position = Vector2(shoot_point2.global_position.x,shoot_point2.global_position.y)
+			spear.set_dir(forward)
+			spear.rotation = angle
+			#spear.owner_name="Enemy_Warrior"
+			#target_position=spear_target		
+			the_tilemap[0].add_child(spear)

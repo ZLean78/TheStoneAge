@@ -479,8 +479,7 @@ func _unhandled_input(event):
 						else:
 							for warrior in root.warriors.get_children():
 								if warrior.position.distance_to(position):
-									if warrior.can_shoot:
-										warrior._shoot()
+									warrior._shoot()
 				else:					
 					if get_tree().get_root().get_child(0).name == "Game3":
 						get_tree().get_root().get_child(0)._on_Game3_is_arrow()

@@ -8,6 +8,7 @@ onready var units=get_tree().root.get_child(0).get_node("Units")
 onready var timer=$Timer
 #onready var all_timer=get_tree().root.get_child(0).get_node("food_timer")
 onready var bar=$Bar
+onready var polygon=$CollisionPolygon2D 
 var mouse_entered=false
 
 
@@ -32,6 +33,14 @@ func _on_Area2D_body_entered(body):
 func _on_Area2D_body_exited(body):
 	if "Unit" in body.name:
 		body.barn_entered=false
+		
+func _get_damage(body):
+	if "EnemySpear" in body.name:
+		condition-=3
+		if condition<0:
+			polygon.visible=false
+			queue_free()
+			root.emit_signal("remove_building")
 
 
 func _on_Timer_timeout():

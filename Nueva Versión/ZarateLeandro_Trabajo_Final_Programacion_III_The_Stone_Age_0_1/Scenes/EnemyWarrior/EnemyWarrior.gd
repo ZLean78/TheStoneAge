@@ -730,7 +730,7 @@ func _shoot():
 		spear.set_dir(forward)
 		spear.rotation = angle
 		#spear.owner_name="Enemy_Warrior"
-		target_position=spear_target	
+		#target_position=spear_target	
 	
 		the_tilemap[0].add_child(spear)
 		
