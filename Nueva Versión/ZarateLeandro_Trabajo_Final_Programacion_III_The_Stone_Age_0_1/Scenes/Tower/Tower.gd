@@ -28,20 +28,28 @@ func _ready():
 
 func _process(_delta):
 	bar.value=condition
+	if body_entered!=null:
+		_get_damage(body_entered)
 	_detect_enemies()
 	
 func _tower_build():
 	if condition<condition_max:
 		condition+=3
 		
+
+
 func _get_damage(body):
-	if "EnemySpear" in body.name:
-		condition-=3
-		if condition<0:
-			polygon.visible=false
-			queue_free()
-			root.emit_signal("remove_building")
-			
+	if is_instance_valid(body):
+		if "EnemySpear" in body.name:
+			condition-=3
+			if condition<0:
+				polygon.visible=false
+				if root.get_node("Towers").get_child_count()<=0:
+					root.is_first_tower_built=false
+				queue_free()
+				root.emit_signal("remove_building")
+	else:
+		body_entered=null
 
 
 func _on_Area2D_body_entered(body):
