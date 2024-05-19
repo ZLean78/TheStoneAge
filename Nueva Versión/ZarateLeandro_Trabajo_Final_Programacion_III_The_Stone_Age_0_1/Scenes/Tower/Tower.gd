@@ -14,6 +14,7 @@ onready var shoot_point2=$ShootPoint2
 var mouse_entered=false
 var body_entered=null
 var target_position=Vector2.ZERO
+var can_shoot=false
 
 export (float) var MIN_DISTANCE=0
 
@@ -69,6 +70,8 @@ func _on_Timer_timeout():
 	for citizen in units.get_children():
 		if citizen.tower_entered && citizen.position.distance_to(self.position)<50:
 			_tower_build()
+	if can_shoot==false:
+		can_shoot=true
 	timer.start()
 
 
@@ -84,7 +87,8 @@ func _detect_enemies():
 		if is_instance_valid(an_enemy):
 			if position.distance_to(an_enemy.position)<MIN_DISTANCE:
 				target_position=an_enemy.position
-				_shoot()
+				if can_shoot:
+					_shoot()
 				
 func _shoot():
 	var the_tilemap=get_tree().get_nodes_in_group("tilemap")
@@ -92,6 +96,7 @@ func _shoot():
 		
 	
 	if spear_target.x>position.x:
+		
 		shoot_point.look_at(spear_target)		
 		var angle = shoot_point.rotation
 		var forward = Vector2(cos(angle),sin(angle))
@@ -109,6 +114,7 @@ func _shoot():
 			#target_position=spear_target		
 			the_tilemap[0].add_child(spear)
 	else:
+		
 		shoot_point2.look_at(spear_target)	
 		var angle = shoot_point2.rotation
 		var forward = Vector2(cos(angle),sin(angle))
@@ -125,3 +131,5 @@ func _shoot():
 			#spear.owner_name="Enemy_Warrior"
 			#target_position=spear_target		
 			the_tilemap[0].add_child(spear)
+	can_shoot=false
+
