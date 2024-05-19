@@ -10,7 +10,6 @@ onready var polygon=$CollisionPolygon2D
 #onready var all_timer=get_tree().root.get_child(0).get_node("food_timer")
 onready var bar=$Bar
 onready var shoot_point=$ShootPoint
-onready var shoot_point2=$ShootPoint2
 var mouse_entered=false
 var body_entered=null
 var target_position=Vector2.ZERO
@@ -92,44 +91,22 @@ func _detect_enemies():
 				
 func _shoot():
 	var the_tilemap=get_tree().get_nodes_in_group("tilemap")
-	var spear_target = target_position
-		
-	
-	if spear_target.x>position.x:
-		
-		shoot_point.look_at(spear_target)		
-		var angle = shoot_point.rotation
-		var forward = Vector2(cos(angle),sin(angle))
-		var spear_count=0
-		for tilemap_child in the_tilemap[0].get_children():
-			if "Bullet" in tilemap_child.name:
-				spear_count+=1
-		if spear_count==0:		
-			spear = spear_scene.instance()
-			shoot_point.rotation = angle	
-			spear.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-			spear.set_dir(forward)
-			spear.rotation = angle
-			#spear.owner_name="Enemy_Warrior"
-			#target_position=spear_target		
-			the_tilemap[0].add_child(spear)
-	else:
-		
-		shoot_point2.look_at(spear_target)	
-		var angle = shoot_point2.rotation
-		var forward = Vector2(cos(angle),sin(angle))
-		var spear_count=0
-		for tilemap_child in the_tilemap[0].get_children():
-			if "Bullet" in tilemap_child.name:
-				spear_count+=1
-		if spear_count==0:		
-			spear = spear_scene.instance()
-			shoot_point2.rotation = angle	
-			spear.position = Vector2(shoot_point2.global_position.x,shoot_point2.global_position.y)
-			spear.set_dir(forward)
-			spear.rotation = angle
-			#spear.owner_name="Enemy_Warrior"
-			#target_position=spear_target		
-			the_tilemap[0].add_child(spear)
+	var spear_target = target_position		
+	shoot_point.look_at(spear_target)		
+	var angle = shoot_point.rotation
+	var forward = Vector2(cos(angle),sin(angle))
+	var spear_count=0
+	for tilemap_child in the_tilemap[0].get_children():
+		if "Bullet" in tilemap_child.name:
+			spear_count+=1
+	if spear_count==0:		
+		spear = spear_scene.instance()
+		shoot_point.rotation = angle	
+		spear.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+		spear.set_dir(forward)
+		spear.rotation = angle
+		#spear.owner_name="Enemy_Warrior"
+		#target_position=spear_target		
+		the_tilemap[0].add_child(spear)		
 	can_shoot=false
 

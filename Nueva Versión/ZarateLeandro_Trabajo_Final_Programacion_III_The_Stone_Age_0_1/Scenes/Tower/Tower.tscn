@@ -44,10 +44,7 @@ scale = Vector2( 0.525, 0.814815 )
 polygon = PoolVector2Array( -40, 55, -34.2857, 2.45455, -17.1429, -66.2727, 20.9524, -66.2727, 32.381, 2.45455, 40, 67, -20, 67 )
 
 [node name="ShootPoint" type="Position2D" parent="."]
-position = Vector2( 24, -30 )
-
-[node name="ShootPoint2" type="Position2D" parent="."]
-position = Vector2( -25, -31 )
+position = Vector2( 3, -29 )
 
 [connection signal="mouse_entered" from="." to="." method="_on_Tower_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_Tower_mouse_exited"]
