@@ -37,6 +37,7 @@ onready var rectangle = tree.get_node("UI/Base/Rectangle")
 onready var add_clothes = tree.get_node("UI/Base/Rectangle/AddClothes")
 onready var add_bag = tree.get_node("UI/Base/Rectangle/AddBag")
 onready var next_scene_button = tree.get_node("UI/Base/NextSceneButton")
+onready var exit_confirmation = $UI/Base/ExitConfirmation
 
 #Variable unidad ciudadano original a partir de la cual se crean todas las demás.
 export (PackedScene) var Unit
@@ -140,7 +141,10 @@ func _unhandled_input(event):
 					selected_units[i].target_position=Vector2(selected_units[0].target_position.x,selected_units[i-1].target_position.y+20)
 				else:
 					selected_units[i].target_position=Vector2(selected_units[i-1].target_position.x+20,selected_units[i-1].target_position.y)
-
+	if event.is_action_pressed("EscapeKey"):
+		exit_confirmation.popup()
+		exit_confirmation.get_ok().text="Aceptar"
+		exit_confirmation.get_cancel().text="Cancelar"
 #///////////////////////////////////////////////////////////////////////////
 #FUNCIONES DE CREACIÓN Y CONFIGURACIÓN DE UNIDADES
 
@@ -342,3 +346,7 @@ func _check_victory():
 
 func _on_NextSceneButton_pressed():
 	get_tree().change_scene("res://Scenes/Game2/Game2.tscn")
+
+
+func _on_ExitConfirmation_confirmed():
+	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")

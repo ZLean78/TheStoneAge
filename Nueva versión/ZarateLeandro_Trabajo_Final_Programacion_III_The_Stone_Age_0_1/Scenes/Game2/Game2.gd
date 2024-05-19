@@ -61,6 +61,7 @@ onready var fruit_trees=$FruitTrees
 onready var pine_trees=$PineTrees
 onready var plants=$Plants
 onready var next_scene_button=tree.get_node("UI/Base/NextSceneButton")
+onready var exit_confirmation=$UI/Base/ExitConfirmation
 #onready var navigator = $Tigers/nav
 
 var cave
@@ -246,7 +247,12 @@ func _unhandled_input(event):
 					selected_units[i].target_position=Vector2(selected_units[0].target_position.x,selected_units[i-1].target_position.y+20)
 				else:
 					selected_units[i].target_position=Vector2(selected_units[i-1].target_position.x+20,selected_units[i-1].target_position.y)
-	
+	if event.is_action_pressed("EscapeKey"):
+			#Si el cursor está en modo flecha.
+			if arrow_mode:
+				exit_confirmation.popup()
+				exit_confirmation.get_ok().text="Aceptar"
+				exit_confirmation.get_cancel().text="Cancelar"
 	
 func _create_unit(cost = 0):
 	var new_Unit = Unit2.instance()
@@ -642,3 +648,7 @@ func _check_units():
 
 func _on_NextSceneButton_pressed():
 	get_tree().change_scene("res://Scenes/Game3/Game3.tscn")
+
+
+func _on_ExitConfirmation_confirmed():
+	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")

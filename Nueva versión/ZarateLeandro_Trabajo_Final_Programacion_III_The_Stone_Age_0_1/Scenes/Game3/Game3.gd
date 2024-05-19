@@ -71,6 +71,7 @@ onready var warriors = $Warriors
 onready var houses = $Houses
 onready var nav2d = $nav
 onready var townhall_node=$TownHall
+onready var exit_confirmation=$UI/Base/ExitConfirmation
 var path=[]
 
 var cave
@@ -335,6 +336,10 @@ func _unhandled_input(event):
 			if house_mode || townhall_mode:
 				#Ponemos el cursor en modo flecha para cancelar la construcción de una casa.
 				_on_Game3_is_arrow()
+			else:
+				exit_confirmation.popup()	
+				exit_confirmation.get_ok().text="Aceptar"
+				exit_confirmation.get_cancel().text="Cancelar"
 
 func _create_townhall():
 	var citizens=units.get_children()
@@ -965,3 +970,7 @@ func _check_mouse_modes():
 		_on_Game3_is_house()
 	if townhall_mode:
 		_on_Game3_is_townhall()
+
+
+func _on_ExitConfirmation_confirmed():
+	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://Sprites/game/tiles/grass/simple/grass.png" type="Texture" id=1]
 [ext_resource path="res://Scenes/Unit/Unit.tscn" type="PackedScene" id=2]
@@ -48,6 +48,21 @@ animations = [ {
 vertices = PoolVector2Array( 364, 155, 354, 155, -62, 14, -63, -34, 364, 160, 1026, 585, -1021, 598, 354, 160, 1024, -621, -1021, -611, -284, 12, -284, -37 )
 polygons = [ PoolIntArray( 0, 1, 2, 3 ), PoolIntArray( 4, 5, 6, 7 ), PoolIntArray( 8, 5, 4, 0 ), PoolIntArray( 9, 8, 0, 3 ), PoolIntArray( 2, 1, 7, 6, 10 ), PoolIntArray( 10, 6, 9, 11 ), PoolIntArray( 9, 3, 11 ) ]
 outlines = [ PoolVector2Array( -1021, -611, -1021, 598, 1026, 585, 1024, -621 ), PoolVector2Array( 354, 155, 364, 155, 364, 160, 354, 160 ), PoolVector2Array( -284, -37, -63, -34, -62, 14, -284, 12 ) ]
+
+[sub_resource type="Shader" id=6]
+code = "shader_type canvas_item;
+render_mode blend_mix;
+
+void fragment(){
+	vec4 current_color = texture(TEXTURE,UV);
+	
+	
+	COLOR=vec4(0.0,0.7,1.0,1.0);
+}"
+
+[sub_resource type="ShaderMaterial" id=5]
+resource_local_to_scene = true
+shader = SubResource( 6 )
 
 [node name="Game" type="Node2D"]
 script = ExtResource( 3 )
@@ -252,6 +267,27 @@ margin_bottom = -199.0
 texture_normal = ExtResource( 14 )
 expand = true
 
+[node name="ExitConfirmation" type="ConfirmationDialog" parent="UI/Base"]
+visible = true
+material = SubResource( 5 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -138.0
+margin_top = -99.0
+margin_right = 21.0
+margin_bottom = 27.0
+rect_min_size = Vector2( 150, 52.5 )
+rect_scale = Vector2( 1.7363, 1.66238 )
+rect_clip_content = true
+window_title = "Por favor, confirma..."
+resizable = true
+dialog_text = "¿Deseas salir de la partida?
+Advertencia: se perderá todo
+el progreso."
+dialog_autowrap = true
+
 [connection signal="is_arrow" from="." to="." method="_on_Game_is_arrow"]
 [connection signal="is_basket" from="." to="." method="_on_Game_is_basket"]
 [connection signal="timeout" from="food_timer" to="." method="_on_food_timer_timeout"]
@@ -260,3 +296,4 @@ expand = true
 [connection signal="pressed" from="UI/Base/Rectangle/AddClothes" to="." method="_on_AddClothes_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/AddBag" to="." method="_on_AddBag_pressed"]
 [connection signal="pressed" from="UI/Base/NextSceneButton" to="." method="_on_NextSceneButton_pressed"]
+[connection signal="confirmed" from="UI/Base/ExitConfirmation" to="." method="_on_ExitConfirmation_confirmed"]

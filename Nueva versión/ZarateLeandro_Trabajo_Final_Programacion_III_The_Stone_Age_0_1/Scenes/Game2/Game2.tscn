@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://Scenes/Cave/Cave.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Plant/Plant.tscn" type="PackedScene" id=2]
@@ -47,6 +47,21 @@
 vertices = PoolVector2Array( 1023, -634, 1027, 601, 1025, 241, 1024, 406, 837, 243, -84, 29, -84, -27, -1023, -634, -291, -28, -1015, 602, -291, 29, 827, 405, 941, 406, 888, 329, 940, 331, 871, 403 )
 polygons = [ PoolIntArray( 0, 1, 2 ), PoolIntArray( 3, 2, 1 ), PoolIntArray( 0, 2, 4, 5, 6 ), PoolIntArray( 7, 0, 6, 8 ), PoolIntArray( 9, 7, 8, 10 ), PoolIntArray( 1, 9, 10, 5, 11 ), PoolIntArray( 12, 3, 1 ), PoolIntArray( 13, 14, 12, 15 ), PoolIntArray( 5, 4, 11 ), PoolIntArray( 12, 1, 11, 15 ) ]
 outlines = [ PoolVector2Array( -1023, -634, -1015, 602, 1027, 601, 1023, -634 ), PoolVector2Array( -291, -28, -291, 29, -84, 29, -84, -27 ), PoolVector2Array( 1025, 241, 837, 243, 827, 405, 871, 403, 888, 329, 940, 331, 941, 406, 1024, 406 ) ]
+
+[sub_resource type="Shader" id=4]
+code = "shader_type canvas_item;
+render_mode blend_mix;
+
+void fragment(){
+	vec4 current_color = texture(TEXTURE,UV);
+	
+	
+	COLOR=vec4(0.0,0.7,1.0,1.0);
+}"
+
+[sub_resource type="ShaderMaterial" id=5]
+resource_local_to_scene = true
+shader = SubResource( 4 )
 
 [node name="Game2" type="Node2D"]
 position = Vector2( -4, -11 )
@@ -402,6 +417,25 @@ margin_bottom = -199.0
 texture_normal = ExtResource( 11 )
 expand = true
 
+[node name="ExitConfirmation" type="ConfirmationDialog" parent="UI/Base"]
+material = SubResource( 5 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -138.0
+margin_top = -99.0
+margin_right = 21.0
+margin_bottom = 27.0
+rect_min_size = Vector2( 150, 52.5 )
+rect_scale = Vector2( 1.7363, 1.66238 )
+rect_clip_content = true
+resizable = true
+dialog_text = "¿Deseas salir de la partida?
+Advertencia: se perderá todo
+el progreso."
+dialog_autowrap = true
+
 [connection signal="is_arrow" from="." to="." method="_on_Game2_is_arrow"]
 [connection signal="is_axe" from="." to="." method="_on_Game2_is_axe"]
 [connection signal="is_basket" from="." to="." method="_on_Game2_is_basket"]
@@ -417,3 +451,4 @@ expand = true
 [connection signal="pressed" from="UI/Base/Rectangle/MakeClaypot" to="." method="_on_MakeClaypot_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/DevelopAgriculture" to="." method="_on_DevelopAgriculture_pressed"]
 [connection signal="pressed" from="UI/Base/NextSceneButton" to="." method="_on_NextSceneButton_pressed"]
+[connection signal="confirmed" from="UI/Base/ExitConfirmation" to="." method="_on_ExitConfirmation_confirmed"]

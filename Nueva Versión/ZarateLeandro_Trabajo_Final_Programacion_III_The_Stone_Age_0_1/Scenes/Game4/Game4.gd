@@ -102,6 +102,7 @@ onready var barn_node = $Barn
 onready var nav2d=$nav
 onready var townhall_node=$TownHall
 onready var enemy_warriors_node=$EnemyWarriors
+onready var exit_confirmation=$UI/Base/ExitConfirmation
 
 var path=[]
 
@@ -509,7 +510,10 @@ func _unhandled_input(event):
 			if house_mode || fort_mode || tower_mode || barn_mode:
 				#Ponemos el cursor en modo flecha para cancelar la construcción de una casa.
 				_on_Game4_is_arrow()
-				
+			elif arrow_mode:
+				exit_confirmation.popup()
+				exit_confirmation.get_ok().text="Aceptar"
+				exit_confirmation.get_cancel().text="Cancelar"
 
 
 
@@ -1465,3 +1469,8 @@ func _make_attack():
 		new_enemy_warrior.AI_state=0
 			 
 
+
+
+func _on_ExitConfirmation_confirmed():
+	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
+	
