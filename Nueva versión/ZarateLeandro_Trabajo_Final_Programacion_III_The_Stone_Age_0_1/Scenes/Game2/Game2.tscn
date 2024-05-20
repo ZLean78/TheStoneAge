@@ -61,7 +61,7 @@ void fragment(){
 [sub_resource type="ShaderMaterial" id=11]
 shader = SubResource( 12 )
 
-[sub_resource type="Shader" id=9]
+[sub_resource type="Shader" id=13]
 code = "shader_type canvas_item;
 render_mode blend_mix;
 
@@ -73,7 +73,7 @@ void fragment(){
 }"
 
 [sub_resource type="ShaderMaterial" id=8]
-shader = SubResource( 9 )
+shader = SubResource( 13 )
 
 [sub_resource type="Shader" id=4]
 code = "shader_type canvas_item;
@@ -448,6 +448,7 @@ window_title = "¡Alerta!"
 dialog_text = "¡Has ganado!"
 
 [node name="ReplayConfirmation" type="ColorRect" parent="UI/Base"]
+visible = false
 material = SubResource( 8 )
 anchor_left = 0.5
 anchor_top = -2.217

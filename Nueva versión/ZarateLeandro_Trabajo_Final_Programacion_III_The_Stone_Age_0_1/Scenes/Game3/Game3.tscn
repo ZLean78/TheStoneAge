@@ -65,7 +65,7 @@ void fragment(){
 [sub_resource type="ShaderMaterial" id=11]
 shader = SubResource( 10 )
 
-[sub_resource type="Shader" id=8]
+[sub_resource type="Shader" id=13]
 code = "shader_type canvas_item;
 render_mode blend_mix;
 
@@ -76,8 +76,8 @@ void fragment(){
 	COLOR=vec4(0.7,0.0,0.0,1.0);
 }"
 
-[sub_resource type="ShaderMaterial" id=9]
-shader = SubResource( 8 )
+[sub_resource type="ShaderMaterial" id=14]
+shader = SubResource( 13 )
 
 [sub_resource type="Shader" id=6]
 code = "shader_type canvas_item;
@@ -494,22 +494,54 @@ rect_clip_content = true
 window_title = "¡Alerta!"
 dialog_text = "¡Has ganado!"
 
-[node name="ReplayConfirmation" type="ConfirmationDialog" parent="UI/Base"]
-material = SubResource( 9 )
+[node name="ReplayConfirmation" type="ColorRect" parent="UI/Base"]
+visible = false
+material = SubResource( 14 )
+anchor_left = 0.5
+anchor_top = -2.217
+anchor_right = 0.5
+anchor_bottom = -2.217
+margin_left = -78.0
+margin_top = -47.96
+margin_right = 103.0
+margin_bottom = 42.04
+rect_clip_content = true
+focus_mode = 2
+
+[node name="ReplayOk" type="Button" parent="UI/Base/ReplayConfirmation"]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -90.5
-margin_top = -29.0
-margin_right = 90.5
-margin_bottom = 46.0
-rect_min_size = Vector2( 150, 52.5 )
-rect_clip_content = true
-window_title = "Por favor, Confirma..."
-dialog_text = "Has sido derrotado.
+margin_left = -73.0
+margin_top = 13.0
+margin_right = -12.0
+margin_bottom = 33.0
+text = "Aceptar"
+
+[node name="ReplayCancel" type="Button" parent="UI/Base/ReplayConfirmation"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 10.0
+margin_top = 13.0
+margin_right = 76.0
+margin_bottom = 33.0
+text = "Cancelar"
+
+[node name="Label" type="Label" parent="UI/Base/ReplayConfirmation"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -64.0
+margin_top = -38.0
+margin_right = 67.0
+margin_bottom = 10.0
+text = "Has sido derrotado.
 ¿Deseas volver a jugar?"
-dialog_autowrap = true
+autowrap = true
 
 [node name="ExitConfirmation" type="ConfirmationDialog" parent="UI/Base"]
 material = SubResource( 7 )
@@ -549,5 +581,6 @@ autostart = true
 [connection signal="pressed" from="UI/Base/Rectangle/GiveAttackOrder" to="." method="_on_GiveAttackOrder_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/MakeWarchief" to="." method="_on_MakeWarchief_pressed"]
 [connection signal="confirmed" from="UI/Base/NextSceneConfirmation" to="." method="_on_NextSceneConfirmation_confirmed"]
-[connection signal="confirmed" from="UI/Base/ReplayConfirmation" to="." method="_on_ReplayConfirmation_confirmed"]
+[connection signal="pressed" from="UI/Base/ReplayConfirmation/ReplayOk" to="." method="_on_ReplayOk_pressed"]
+[connection signal="pressed" from="UI/Base/ReplayConfirmation/ReplayCancel" to="." method="_on_ReplayCancel_pressed"]
 [connection signal="confirmed" from="UI/Base/ExitConfirmation" to="." method="_on_ExitConfirmation_confirmed"]

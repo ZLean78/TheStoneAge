@@ -514,9 +514,12 @@ func _unhandled_input(event):
 				#Ponemos el cursor en modo flecha para cancelar la construcción de una casa.
 				_on_Game4_is_arrow()
 			elif arrow_mode:
-				exit_confirmation.popup()
-				exit_confirmation.get_ok().text="Aceptar"
-				exit_confirmation.get_cancel().text="Cancelar"
+				if(all_units.size()==0 && food_points<15) || is_warchief_dead:
+					replay_confirmation.visible=true
+				else:
+					exit_confirmation.popup()
+					exit_confirmation.get_ok().text="Aceptar"
+					exit_confirmation.get_cancel().text="cancelar"
 
 
 
@@ -1474,12 +1477,17 @@ func _make_attack():
 
 func _on_ExitConfirmation_confirmed():
 	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
-	
-
-
-func _on_ReplayConfirmation_confirmed():
-	get_tree().change_scene("res://Scenes/Game4/Game4.tscn")
 
 
 func _on_NextSceneConfirmation_confirmed():
 	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
+
+
+func _on_ReplayCancel_pressed():
+	exit_confirmation.popup()
+	exit_confirmation.get_ok().text="Aceptar"
+	exit_confirmation.get_cancel().text="Cancelar"
+
+
+func _on_ReplayOk_pressed():
+	get_tree().change_scene("res://Scenes/Game4/Game4.tscn")

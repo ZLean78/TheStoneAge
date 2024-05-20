@@ -341,9 +341,13 @@ func _unhandled_input(event):
 				#Ponemos el cursor en modo flecha para cancelar la construcción de una casa.
 				_on_Game3_is_arrow()
 			else:
-				exit_confirmation.popup()	
-				exit_confirmation.get_ok().text="Aceptar"
-				exit_confirmation.get_cancel().text="Cancelar"
+				if(all_units.size()==0 && food_points<15) || is_warchief_dead:
+					replay_confirmation.visible=true
+				else:
+					exit_confirmation.popup()
+					exit_confirmation.get_ok().text="Aceptar"
+					exit_confirmation.get_cancel().text="cancelar"
+	
 
 func _create_townhall():
 	var citizens=units.get_children()
@@ -520,14 +524,13 @@ func _check_victory():
 		next_scene_confirmation.get_ok().text="Siguiente Escena"
 	elif(all_units.size()==0 && food_points<15):
 		prompts_label.text = "Has sido derrotado."
-		replay_confirmation.popup()
-		replay_confirmation.get_ok().text = "Aceptar"
-		replay_confirmation.get_cancel().text = "Cancelar"
+		replay_confirmation.visible=true
 	else:
 		for a_unit in all_units:
 			if "Unit" in a_unit.name && a_unit.is_warchief && a_unit.is_deleted:
 				is_warchief_dead=true
-				prompts_label.text = "Has sido derrotado. Tu jefe ha muerto."	
+				prompts_label.text = "Has sido derrotado. Tu jefe ha muerto."
+				replay_confirmation.visible=true	
 		
 #func collect_pickable(var _pickable):
 #	for a_unit in all_units:
@@ -990,3 +993,11 @@ func _on_ReplayConfirmation_confirmed():
 
 func _on_NextSceneConfirmation_confirmed():
 	get_tree().change_scene("res://Scenes/Game4/Game4.tscn")
+
+
+func _on_ReplayOk_pressed():
+	get_tree().change_scene("res://Scenes/Game3/Game3.tscn")
+
+
+func _on_ReplayCancel_pressed():
+	replay_confirmation.visible=false

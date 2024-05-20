@@ -249,11 +249,17 @@ func _unhandled_input(event):
 				else:
 					selected_units[i].target_position=Vector2(selected_units[i-1].target_position.x+20,selected_units[i-1].target_position.y)
 	if event.is_action_pressed("EscapeKey"):
-			#Si el cursor está en modo flecha.
-			if arrow_mode:
+		#Si el cursor está en modo flecha.
+		if arrow_mode:
+			if(all_units.size()==0 && food_points<15):
+				replay_confirmation.visible=true
+			else:
 				exit_confirmation.popup()
 				exit_confirmation.get_ok().text="Aceptar"
-				exit_confirmation.get_cancel().text="Cancelar"
+				exit_confirmation.get_cancel().text="cancelar"
+		else:
+			_on_Game2_is_arrow()
+			
 	
 func _create_unit(cost = 0):
 	var new_Unit = Unit2.instance()
