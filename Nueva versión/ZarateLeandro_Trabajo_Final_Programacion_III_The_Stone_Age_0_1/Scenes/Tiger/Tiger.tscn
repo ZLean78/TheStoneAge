@@ -26,6 +26,7 @@ height = 0.0
 
 [node name="Tiger" type="KinematicBody2D"]
 collision_mask = 14
+input_pickable = true
 script = ExtResource( 2 )
 
 [node name="ProgressBar" type="ProgressBar" parent="."]

@@ -865,7 +865,7 @@ func _check_victory():
 		victory_obtained=true
 		prompts_label.text = "¡Has ganado!"	
 		next_scene_confirmation.popup()
-		next_scene_confirmation.get_ok().text="Siguiente Escena"
+		
 	elif(all_units.size()==0 && food_points<15):
 		prompts_label.text = "Has sido derrotado."
 		replay_confirmation.popup()

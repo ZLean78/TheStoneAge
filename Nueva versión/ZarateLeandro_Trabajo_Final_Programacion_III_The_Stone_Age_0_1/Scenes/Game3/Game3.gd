@@ -521,7 +521,7 @@ func _check_victory():
 	if is_townhall_created:
 		prompts_label.text = "¡Has ganado!"	
 		next_scene_confirmation.popup()
-		next_scene_confirmation.get_ok().text="Siguiente Escena"
+		
 	elif(all_units.size()==0 && food_points<15):
 		prompts_label.text = "Has sido derrotado."
 		replay_confirmation.visible=true
@@ -1000,4 +1000,6 @@ func _on_ReplayOk_pressed():
 
 
 func _on_ReplayCancel_pressed():
-	replay_confirmation.visible=false
+	exit_confirmation.popup()
+	exit_confirmation.get_ok().text="Aceptar"
+	exit_confirmation.get_cancel().text="Cancelar"

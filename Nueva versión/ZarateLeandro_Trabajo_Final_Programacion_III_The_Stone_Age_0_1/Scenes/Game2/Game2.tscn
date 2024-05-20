@@ -47,20 +47,6 @@ vertices = PoolVector2Array( 1023, -634, 1027, 601, 1025, 241, 1024, 406, 837, 2
 polygons = [ PoolIntArray( 0, 1, 2 ), PoolIntArray( 3, 2, 1 ), PoolIntArray( 0, 2, 4, 5, 6 ), PoolIntArray( 7, 0, 6, 8 ), PoolIntArray( 9, 7, 8, 10 ), PoolIntArray( 1, 9, 10, 5, 11 ), PoolIntArray( 12, 3, 1 ), PoolIntArray( 13, 14, 12, 15 ), PoolIntArray( 5, 4, 11 ), PoolIntArray( 12, 1, 11, 15 ) ]
 outlines = [ PoolVector2Array( -1023, -634, -1015, 602, 1027, 601, 1023, -634 ), PoolVector2Array( -291, -28, -291, 29, -84, 29, -84, -27 ), PoolVector2Array( 1025, 241, 837, 243, 827, 405, 871, 403, 888, 329, 940, 331, 941, 406, 1024, 406 ) ]
 
-[sub_resource type="Shader" id=12]
-code = "shader_type canvas_item;
-render_mode blend_mix;
-
-void fragment(){
-	vec4 current_color = texture(TEXTURE,UV);
-	
-	
-	COLOR=vec4(0.0,0.7,1.0,1.0);
-}"
-
-[sub_resource type="ShaderMaterial" id=11]
-shader = SubResource( 12 )
-
 [sub_resource type="Shader" id=13]
 code = "shader_type canvas_item;
 render_mode blend_mix;
@@ -89,6 +75,20 @@ void fragment(){
 [sub_resource type="ShaderMaterial" id=5]
 resource_local_to_scene = true
 shader = SubResource( 4 )
+
+[sub_resource type="Shader" id=12]
+code = "shader_type canvas_item;
+render_mode blend_mix;
+
+void fragment(){
+	vec4 current_color = texture(TEXTURE,UV);
+	
+	
+	COLOR=vec4(0.0,0.7,1.0,1.0);
+}"
+
+[sub_resource type="ShaderMaterial" id=11]
+shader = SubResource( 12 )
 
 [node name="Game2" type="Node2D"]
 position = Vector2( -4, -11 )
@@ -236,6 +236,7 @@ anchor_right = 0.995
 margin_top = 600.0
 margin_right = 8.40002
 margin_bottom = 720.0
+focus_mode = 1
 
 [node name="Rectangle" type="NinePatchRect" parent="UI/Base"]
 anchor_right = 1.0
@@ -433,20 +434,6 @@ text = "ATAQUE ENEMIGO:
 000"
 align = 1
 
-[node name="NextSceneConfirmation" type="AcceptDialog" parent="UI/Base"]
-material = SubResource( 11 )
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -121.0
-margin_top = -35.0
-margin_right = 121.0
-margin_bottom = 35.0
-rect_clip_content = true
-window_title = "¡Alerta!"
-dialog_text = "¡Has ganado!"
-
 [node name="ReplayConfirmation" type="ColorRect" parent="UI/Base"]
 visible = false
 material = SubResource( 8 )
@@ -516,6 +503,20 @@ Advertencia: se perderá todo
 el progreso."
 dialog_autowrap = true
 
+[node name="NextSceneConfirmation" type="AcceptDialog" parent="UI/Base"]
+material = SubResource( 11 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -121.0
+margin_top = -35.0
+margin_right = 121.0
+margin_bottom = 35.0
+rect_clip_content = true
+window_title = "¡Alerta!"
+dialog_text = "¡Has ganado!"
+
 [connection signal="is_arrow" from="." to="." method="_on_Game2_is_arrow"]
 [connection signal="is_axe" from="." to="." method="_on_Game2_is_axe"]
 [connection signal="is_basket" from="." to="." method="_on_Game2_is_basket"]
@@ -530,7 +531,7 @@ dialog_autowrap = true
 [connection signal="pressed" from="UI/Base/Rectangle/DiscoverFire" to="." method="_on_DiscoverFire_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/MakeClaypot" to="." method="_on_MakeClaypot_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/DevelopAgriculture" to="." method="_on_DevelopAgriculture_pressed"]
-[connection signal="confirmed" from="UI/Base/NextSceneConfirmation" to="." method="_on_NextSceneConfirmation_confirmed"]
 [connection signal="pressed" from="UI/Base/ReplayConfirmation/ReplayOk" to="." method="_on_ReplayOk_pressed"]
 [connection signal="pressed" from="UI/Base/ReplayConfirmation/ReplayCancel" to="." method="_on_ReplayCancel_pressed"]
 [connection signal="confirmed" from="UI/Base/ExitConfirmation" to="." method="_on_ExitConfirmation_confirmed"]
+[connection signal="confirmed" from="UI/Base/NextSceneConfirmation" to="." method="_on_NextSceneConfirmation_confirmed"]

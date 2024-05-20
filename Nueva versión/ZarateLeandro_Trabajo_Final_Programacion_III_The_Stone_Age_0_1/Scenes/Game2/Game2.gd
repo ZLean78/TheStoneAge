@@ -287,7 +287,7 @@ func _check_victory():
 	if is_fire_discovered && is_wheel_invented && is_stone_weapons_developed && is_claypot_made && is_agriculture_developed:
 		prompts_label.text = "¡Has ganado!"
 		next_scene_confirmation.popup()
-		next_scene_confirmation.get_ok().text="Siguiente Escena"	
+			
 		
 	elif(all_units.size()==0 && food_points<15):
 		prompts_label.text = "Has sido derrotado."	
@@ -667,4 +667,6 @@ func _on_ReplayOk_pressed():
 
 
 func _on_ReplayCancel_pressed():
-	replay_confirmation.visible=false
+	exit_confirmation.popup()
+	exit_confirmation.get_ok().text="Aceptar"
+	exit_confirmation.get_cancel().text="Cancelar"

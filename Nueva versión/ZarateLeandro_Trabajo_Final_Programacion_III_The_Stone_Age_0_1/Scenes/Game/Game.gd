@@ -348,7 +348,8 @@ func _check_victory():
 	if(cave.sheltered_units>=12):
 		prompts_label.text = "Has ganado."
 		next_scene_confirmation.popup()
-		next_scene_confirmation.get_ok().text="Siguiente Escena"	
+		
+		
 
 
 
