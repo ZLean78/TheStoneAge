@@ -36,8 +36,9 @@ onready var leaves_label = tree.get_node("UI/Base/Rectangle/LeavesLabel")
 onready var rectangle = tree.get_node("UI/Base/Rectangle")
 onready var add_clothes = tree.get_node("UI/Base/Rectangle/AddClothes")
 onready var add_bag = tree.get_node("UI/Base/Rectangle/AddBag")
-onready var next_scene_button = tree.get_node("UI/Base/NextSceneButton")
+onready var next_scene_confirmation = tree.get_node("UI/Base/NextSceneConfirmation")
 onready var exit_confirmation = $UI/Base/ExitConfirmation
+onready var replay_confirmation = $UI/Base/ReplayConfirmation
 
 #Variable unidad ciudadano original a partir de la cual se crean todas las demás.
 export (PackedScene) var Unit
@@ -339,14 +340,23 @@ func _on_food_timer_timeout():
 func _check_victory():
 	if(all_units.size()==0 && food_points<15):
 		prompts_label.text = "Has sido derrotado."	
+		replay_confirmation.popup()
+		replay_confirmation.get_ok().text = "Aceptar"
+		replay_confirmation.get_cancel().text = "Cancelar"
 	if(cave.sheltered_units>=12):
 		prompts_label.text = "Has ganado."
-		next_scene_button.visible=true	
+		next_scene_confirmation.popup()
+		next_scene_confirmation.get_ok().text="Siguiente Escena"	
 
-
-func _on_NextSceneButton_pressed():
-	get_tree().change_scene("res://Scenes/Game2/Game2.tscn")
 
 
 func _on_ExitConfirmation_confirmed():
 	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
+
+
+func _on_ReplayConfirmation_confirmed():
+	get_tree().change_scene("res://Scenes/Game/Game.tscn")
+
+
+func _on_NextSceneConfirmation_confirmed():
+	get_tree().change_scene("res://Scenes/Game2/Game2.tscn")

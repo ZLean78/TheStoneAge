@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=28 format=2]
 
 [ext_resource path="res://Sprites/game/tiles/grass/simple/grass.png" type="Texture" id=1]
 [ext_resource path="res://Scenes/Unit/Unit.tscn" type="PackedScene" id=2]
@@ -13,7 +13,6 @@
 [ext_resource path="res://Scenes/Game/rain2.png" type="Texture" id=11]
 [ext_resource path="res://Scenes/Game/rain3.png" type="Texture" id=12]
 [ext_resource path="res://Scenes/Game/food.png" type="Texture" id=13]
-[ext_resource path="res://Scenes/Game2/NextStageButton.png" type="Texture" id=14]
 [ext_resource path="res://Scenes/Game/SelectDraw.gd" type="Script" id=15]
 [ext_resource path="res://Scenes/Plant/Plant.tscn" type="PackedScene" id=16]
 [ext_resource path="res://Scenes/Unit/male1_d.png" type="Texture" id=17]
@@ -45,9 +44,37 @@ animations = [ {
 } ]
 
 [sub_resource type="NavigationPolygon" id=3]
-vertices = PoolVector2Array( 364, 155, 354, 155, -62, 14, -63, -34, 364, 160, 1026, 585, -1021, 598, 354, 160, 1024, -621, -1021, -611, -284, 12, -284, -37 )
-polygons = [ PoolIntArray( 0, 1, 2, 3 ), PoolIntArray( 4, 5, 6, 7 ), PoolIntArray( 8, 5, 4, 0 ), PoolIntArray( 9, 8, 0, 3 ), PoolIntArray( 2, 1, 7, 6, 10 ), PoolIntArray( 10, 6, 9, 11 ), PoolIntArray( 9, 3, 11 ) ]
-outlines = [ PoolVector2Array( -1021, -611, -1021, 598, 1026, 585, 1024, -621 ), PoolVector2Array( 354, 155, 364, 155, 364, 160, 354, 160 ), PoolVector2Array( -284, -37, -63, -34, -62, 14, -284, 12 ) ]
+vertices = PoolVector2Array( 364, 155, 354, 155, -62, 14, -63, -34, 1024, -621, 1025.68, 389.591, 964.559, 395.815, 914, 396, 364, 160, 897, 411, 858, 414, -1021, -611, 952, 558, 1028, 556, 1030, 594, 870, 550, -1021, 598, 836, 550, 837, 472, 354, 160, -284, -37, -284, 12, 876, 490, 916, 452, 948, 462 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ), PoolIntArray( 4, 5, 6, 7, 8, 0 ), PoolIntArray( 8, 7, 9, 10 ), PoolIntArray( 11, 4, 0, 3 ), PoolIntArray( 12, 13, 14 ), PoolIntArray( 15, 12, 14, 16, 17 ), PoolIntArray( 8, 10, 18 ), PoolIntArray( 2, 1, 19 ), PoolIntArray( 11, 3, 20 ), PoolIntArray( 16, 11, 20, 21 ), PoolIntArray( 22, 23, 24, 12, 15 ), PoolIntArray( 17, 16, 21, 2, 19 ), PoolIntArray( 17, 19, 8, 18 ) ]
+outlines = [ PoolVector2Array( -1021, -611, -1021, 598, 1030, 594, 1028, 556, 952, 558, 948, 462, 916, 452, 876, 490, 870, 550, 836, 550, 837, 472, 858, 414, 897, 411, 914, 396, 964.559, 395.815, 1025.68, 389.591, 1024, -621 ), PoolVector2Array( 354, 155, 364, 155, 364, 160, 354, 160 ), PoolVector2Array( -284, -37, -63, -34, -62, 14, -284, 12 ) ]
+
+[sub_resource type="Shader" id=12]
+code = "shader_type canvas_item;
+render_mode blend_mix;
+
+void fragment(){
+	vec4 current_color = texture(TEXTURE,UV);
+	
+	
+	COLOR=vec4(0.0,0.7,1.0,1.0);
+}"
+
+[sub_resource type="ShaderMaterial" id=11]
+shader = SubResource( 12 )
+
+[sub_resource type="Shader" id=9]
+code = "shader_type canvas_item;
+render_mode blend_mix;
+
+void fragment(){
+	vec4 current_color = texture(TEXTURE,UV);
+	
+	
+	COLOR=vec4(0.7,0.0,0.0,1.0);
+}"
+
+[sub_resource type="ShaderMaterial" id=8]
+shader = SubResource( 9 )
 
 [sub_resource type="Shader" id=6]
 code = "shader_type canvas_item;
@@ -258,17 +285,38 @@ align = 2
 [node name="draw_rect" type="ColorRect" parent="UI/Base"]
 color = Color( 0.0666667, 0.286275, 0.701961, 0.831373 )
 
-[node name="NextSceneButton" type="TextureButton" parent="UI/Base"]
-visible = false
-margin_left = 490.0
-margin_top = -269.0
-margin_right = 732.0
-margin_bottom = -199.0
-texture_normal = ExtResource( 14 )
-expand = true
+[node name="NextSceneConfirmation" type="AcceptDialog" parent="UI/Base"]
+material = SubResource( 11 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -121.0
+margin_top = -35.0
+margin_right = 121.0
+margin_bottom = 35.0
+rect_clip_content = true
+window_title = "¡Alerta!"
+dialog_text = "¡Has ganado!"
+
+[node name="ReplayConfirmation" type="ConfirmationDialog" parent="UI/Base"]
+material = SubResource( 8 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -90.5
+margin_top = -29.0
+margin_right = 90.5
+margin_bottom = 46.0
+rect_min_size = Vector2( 150, 52.5 )
+rect_clip_content = true
+window_title = "Por favor, Confirma..."
+dialog_text = "Has sido derrotado.
+¿Deseas volver a jugar?"
+dialog_autowrap = true
 
 [node name="ExitConfirmation" type="ConfirmationDialog" parent="UI/Base"]
-visible = true
 material = SubResource( 5 )
 anchor_left = 0.5
 anchor_top = 0.5
@@ -295,5 +343,6 @@ dialog_autowrap = true
 [connection signal="pressed" from="UI/Base/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/AddClothes" to="." method="_on_AddClothes_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/AddBag" to="." method="_on_AddBag_pressed"]
-[connection signal="pressed" from="UI/Base/NextSceneButton" to="." method="_on_NextSceneButton_pressed"]
+[connection signal="confirmed" from="UI/Base/NextSceneConfirmation" to="." method="_on_NextSceneConfirmation_confirmed"]
+[connection signal="confirmed" from="UI/Base/ReplayConfirmation" to="." method="_on_ReplayConfirmation_confirmed"]
 [connection signal="confirmed" from="UI/Base/ExitConfirmation" to="." method="_on_ExitConfirmation_confirmed"]

@@ -60,8 +60,9 @@ onready var tiger = preload("res://Scenes/Tiger/Tiger.tscn")
 onready var fruit_trees=$FruitTrees
 onready var pine_trees=$PineTrees
 onready var plants=$Plants
-onready var next_scene_button=tree.get_node("UI/Base/NextSceneButton")
+onready var next_scene_confirmation=$UI/Base/NextSceneConfirmation
 onready var exit_confirmation=$UI/Base/ExitConfirmation
+onready var replay_confirmation=$UI/Base/ReplayConfirmation
 #onready var navigator = $Tigers/nav
 
 var cave
@@ -279,10 +280,13 @@ func _create_unit(cost = 0):
 func _check_victory():
 	if is_fire_discovered && is_wheel_invented && is_stone_weapons_developed && is_claypot_made && is_agriculture_developed:
 		prompts_label.text = "¡Has ganado!"
-		next_scene_button.visible=true	
+		next_scene_confirmation.popup()
+		next_scene_confirmation.get_ok().text="Siguiente Escena"	
 		
 	elif(all_units.size()==0 && food_points<15):
 		prompts_label.text = "Has sido derrotado."	
+		replay_confirmation.visible=true
+		
 		
 #func collect_pickable(var _pickable):
 #	for a_unit in all_units:
@@ -644,11 +648,17 @@ func _check_units():
 
 
 
+func _on_ExitConfirmation_confirmed():
+	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
 
 
-func _on_NextSceneButton_pressed():
+func _on_NextSceneConfirmation_confirmed():
 	get_tree().change_scene("res://Scenes/Game3/Game3.tscn")
 
 
-func _on_ExitConfirmation_confirmed():
-	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
+func _on_ReplayOk_pressed():
+	get_tree().change_scene("res://Scenes/Game2/Game2.tscn")
+
+
+func _on_ReplayCancel_pressed():
+	replay_confirmation.visible=false

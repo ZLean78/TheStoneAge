@@ -55,7 +55,7 @@ onready var make_warchief = tree.get_node("UI/Base/Rectangle/MakeWarchief")
 onready var create_house = tree.get_node("UI/Base/Rectangle/CreateHouse")
 onready var create_townhall = tree.get_node("UI/Base/Rectangle/CreateTownHall")
 onready var create_warrior = tree.get_node("UI/Base/Rectangle/CreateWarriorUnit")
-onready var next_scene_button = tree.get_node("UI/Base/NextSceneButton")
+
 onready var camera = tree.get_node("Camera")
 onready var tiger_timer = tree.get_node("tiger_timer")
 onready var tile_map = tree.get_node("TileMap")
@@ -71,7 +71,11 @@ onready var warriors = $Warriors
 onready var houses = $Houses
 onready var nav2d = $nav
 onready var townhall_node=$TownHall
+onready var next_scene_confirmation = $UI/Base/NextSceneConfirmation
 onready var exit_confirmation=$UI/Base/ExitConfirmation
+onready var replay_confirmation=$UI/Base/ReplayConfirmation
+
+
 var path=[]
 
 var cave
@@ -512,9 +516,13 @@ func _check_victory():
 	
 	if is_townhall_created:
 		prompts_label.text = "¡Has ganado!"	
-		next_scene_button.visible = true
+		next_scene_confirmation.popup()
+		next_scene_confirmation.get_ok().text="Siguiente Escena"
 	elif(all_units.size()==0 && food_points<15):
 		prompts_label.text = "Has sido derrotado."
+		replay_confirmation.popup()
+		replay_confirmation.get_ok().text = "Aceptar"
+		replay_confirmation.get_cancel().text = "Cancelar"
 	else:
 		for a_unit in all_units:
 			if "Unit" in a_unit.name && a_unit.is_warchief && a_unit.is_deleted:
@@ -962,8 +970,8 @@ func _update_path(new_obstacle):
 		path.invert()
 
 
-func _on_NextSceneButton_pressed():
-	get_tree().change_scene("res://Scenes/Game4/Game4.tscn")
+
+	
 	
 func _check_mouse_modes():
 	if house_mode:
@@ -974,3 +982,11 @@ func _check_mouse_modes():
 
 func _on_ExitConfirmation_confirmed():
 	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
+
+
+func _on_ReplayConfirmation_confirmed():
+	get_tree().change_scene("res://Scenes/Game3/Game3.tscn")
+
+
+func _on_NextSceneConfirmation_confirmed():
+	get_tree().change_scene("res://Scenes/Game4/Game4.tscn")
