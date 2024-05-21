@@ -286,7 +286,7 @@ func _create_unit(cost = 0):
 func _check_victory():
 	if is_fire_discovered && is_wheel_invented && is_stone_weapons_developed && is_claypot_made && is_agriculture_developed:
 		prompts_label.text = "¡Has ganado!"
-		next_scene_confirmation.popup()
+		next_scene_confirmation.visible=true
 			
 		
 	elif(all_units.size()==0 && food_points<15):
@@ -658,9 +658,6 @@ func _on_ExitConfirmation_confirmed():
 	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
 
 
-func _on_NextSceneConfirmation_confirmed():
-	get_tree().change_scene("res://Scenes/Game3/Game3.tscn")
-
 
 func _on_ReplayOk_pressed():
 	get_tree().change_scene("res://Scenes/Game2/Game2.tscn")
@@ -670,3 +667,7 @@ func _on_ReplayCancel_pressed():
 	exit_confirmation.popup()
 	exit_confirmation.get_ok().text="Aceptar"
 	exit_confirmation.get_cancel().text="Cancelar"
+
+
+func _on_NextSceneOk_pressed():
+	get_tree().change_scene("res://Scenes/Game3/Game3.tscn")

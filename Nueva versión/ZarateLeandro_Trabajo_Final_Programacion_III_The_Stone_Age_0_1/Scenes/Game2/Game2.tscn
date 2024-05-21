@@ -76,7 +76,7 @@ void fragment(){
 resource_local_to_scene = true
 shader = SubResource( 4 )
 
-[sub_resource type="Shader" id=12]
+[sub_resource type="Shader" id=14]
 code = "shader_type canvas_item;
 render_mode blend_mix;
 
@@ -87,8 +87,8 @@ void fragment(){
 	COLOR=vec4(0.0,0.7,1.0,1.0);
 }"
 
-[sub_resource type="ShaderMaterial" id=11]
-shader = SubResource( 12 )
+[sub_resource type="ShaderMaterial" id=15]
+shader = SubResource( 14 )
 
 [node name="Game2" type="Node2D"]
 position = Vector2( -4, -11 )
@@ -503,19 +503,41 @@ Advertencia: se perderá todo
 el progreso."
 dialog_autowrap = true
 
-[node name="NextSceneConfirmation" type="AcceptDialog" parent="UI/Base"]
-material = SubResource( 11 )
+[node name="NextSceneConfirmation" type="ColorRect" parent="UI/Base"]
+visible = false
+material = SubResource( 15 )
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -121.0
-margin_top = -35.0
-margin_right = 121.0
-margin_bottom = 35.0
+margin_left = -96.0
+margin_top = -366.0
+margin_right = 146.0
+margin_bottom = -296.0
 rect_clip_content = true
-window_title = "¡Alerta!"
-dialog_text = "¡Has ganado!"
+
+[node name="Label" type="Label" parent="UI/Base/NextSceneConfirmation"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -52.0
+margin_top = -27.0
+margin_right = 51.0
+margin_bottom = -2.0
+text = "¡Has ganado!"
+align = 1
+
+[node name="NextSceneOk" type="Button" parent="UI/Base/NextSceneConfirmation"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -55.0
+margin_top = 1.0
+margin_right = 52.0
+margin_bottom = 26.0
+text = "Siguiente Escena"
 
 [connection signal="is_arrow" from="." to="." method="_on_Game2_is_arrow"]
 [connection signal="is_axe" from="." to="." method="_on_Game2_is_axe"]
@@ -534,4 +556,4 @@ dialog_text = "¡Has ganado!"
 [connection signal="pressed" from="UI/Base/ReplayConfirmation/ReplayOk" to="." method="_on_ReplayOk_pressed"]
 [connection signal="pressed" from="UI/Base/ReplayConfirmation/ReplayCancel" to="." method="_on_ReplayCancel_pressed"]
 [connection signal="confirmed" from="UI/Base/ExitConfirmation" to="." method="_on_ExitConfirmation_confirmed"]
-[connection signal="confirmed" from="UI/Base/NextSceneConfirmation" to="." method="_on_NextSceneConfirmation_confirmed"]
+[connection signal="pressed" from="UI/Base/NextSceneConfirmation/NextSceneOk" to="." method="_on_NextSceneOk_pressed"]

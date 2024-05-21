@@ -347,7 +347,7 @@ func _check_victory():
 		replay_confirmation.visible=true
 	if(cave.sheltered_units>=12):
 		prompts_label.text = "Has ganado."
-		next_scene_confirmation.popup()
+		next_scene_confirmation.visible=true
 		
 		
 
@@ -355,11 +355,7 @@ func _check_victory():
 
 func _on_ExitConfirmation_confirmed():
 	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
-
-
-func _on_NextSceneConfirmation_confirmed():
-	get_tree().change_scene("res://Scenes/Game2/Game2.tscn")
-
+	
 
 func _on_ReplayOk_pressed():
 	get_tree().change_scene("res://Scenes/Game/Game.tscn")
@@ -369,3 +365,7 @@ func _on_ReplayCancel_pressed():
 	exit_confirmation.popup()
 	exit_confirmation.get_ok().text="Aceptar"
 	exit_confirmation.get_cancel().text="Cancelar"
+
+
+func _on_NextSceneOk_pressed():
+	get_tree().change_scene("res://Scenes/Game2/Game2.tscn")

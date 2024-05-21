@@ -249,6 +249,7 @@ func _process(_delta):
 		wood_label.text = str(int(wood_points))
 		water_label.text = str(int(water_points))
 	
+	
 		_check_units()
 		_check_mammoths()
 		_check_houses()
@@ -263,6 +264,7 @@ func _process(_delta):
 				is_tiger_countdown=true	
 	
 	
+		
 
 		
 func _select_unit(unit):
@@ -347,6 +349,7 @@ func _unhandled_input(event):
 					exit_confirmation.popup()
 					exit_confirmation.get_ok().text="Aceptar"
 					exit_confirmation.get_cancel().text="cancelar"
+		
 	
 
 func _create_townhall():
@@ -520,7 +523,8 @@ func _check_victory():
 	
 	if is_townhall_created:
 		prompts_label.text = "¡Has ganado!"	
-		next_scene_confirmation.popup()
+		next_scene_confirmation.visible=true
+		
 		
 	elif(all_units.size()==0 && food_points<15):
 		prompts_label.text = "Has sido derrotado."
@@ -991,10 +995,6 @@ func _on_ReplayConfirmation_confirmed():
 	get_tree().change_scene("res://Scenes/Game3/Game3.tscn")
 
 
-func _on_NextSceneConfirmation_confirmed():
-	get_tree().change_scene("res://Scenes/Game4/Game4.tscn")
-
-
 func _on_ReplayOk_pressed():
 	get_tree().change_scene("res://Scenes/Game3/Game3.tscn")
 
@@ -1003,3 +1003,7 @@ func _on_ReplayCancel_pressed():
 	exit_confirmation.popup()
 	exit_confirmation.get_ok().text="Aceptar"
 	exit_confirmation.get_cancel().text="Cancelar"
+
+
+func _on_NextSceneOk_pressed():
+	get_tree().change_scene("res://Scenes/Game4/Game4.tscn")

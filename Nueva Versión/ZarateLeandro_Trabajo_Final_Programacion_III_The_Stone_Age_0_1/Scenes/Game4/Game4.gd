@@ -864,19 +864,17 @@ func _check_victory():
 	 is_metals_developed && is_first_tower_built && is_barn_built && is_fort_built):
 		victory_obtained=true
 		prompts_label.text = "¡Has ganado!"	
-		next_scene_confirmation.popup()
+		next_scene_confirmation.visible=true
 		
 	elif(all_units.size()==0 && food_points<15):
 		prompts_label.text = "Has sido derrotado."
-		replay_confirmation.popup()
-		replay_confirmation.get_ok().text="Aceptar"
-		replay_confirmation.get_cancel().text="Cancelar"
+		replay_confirmation.visible=true
 	else:
 		for a_unit in all_units:
 			if "Unit" in a_unit.name && a_unit.is_warchief && a_unit.is_deleted:
 				is_warchief_dead=true
 				prompts_label.text = "Has sido derrotado. Tu jefe ha muerto."	
-		
+				replay_confirmation.visible=true
 
 		
 #Botón de creación de unidad. 
@@ -1479,10 +1477,6 @@ func _on_ExitConfirmation_confirmed():
 	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
 
 
-func _on_NextSceneConfirmation_confirmed():
-	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
-
-
 func _on_ReplayCancel_pressed():
 	exit_confirmation.popup()
 	exit_confirmation.get_ok().text="Aceptar"
@@ -1491,3 +1485,7 @@ func _on_ReplayCancel_pressed():
 
 func _on_ReplayOk_pressed():
 	get_tree().change_scene("res://Scenes/Game4/Game4.tscn")
+
+
+func _on_NextSceneOk_pressed():
+	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
