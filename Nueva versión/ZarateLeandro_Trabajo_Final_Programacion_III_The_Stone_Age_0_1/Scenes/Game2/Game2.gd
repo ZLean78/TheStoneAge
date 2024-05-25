@@ -660,7 +660,7 @@ func _on_ExitConfirmation_confirmed():
 
 
 func _on_ReplayOk_pressed():
-	get_tree().change_scene("res://Scenes/Game2/Game2.tscn")
+	get_tree().reload_current_scene()
 
 
 func _on_ReplayCancel_pressed():

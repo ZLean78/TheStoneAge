@@ -1,42 +1,42 @@
 extends Node2D
 
 #Variables de íconos del mouse.
-var basket=load("res://Scenes/MouseIcons/basket.png")
-var arrow=load("res://Scenes/MouseIcons/arrow.png")
+#var basket=load("res://Scenes/MouseIcons/basket.png")
+#var arrow=load("res://Scenes/MouseIcons/arrow.png")
 
 #Conteo de unidades ciudadanos.
 var unit_count = 1
 
 #Puntos de recursos de la comunidad.
-var food_points = 15
-var leaves_points = 0
+#var food_points = 15
+#var leaves_points = 0
 
 #Condiciones que afectan a toda la comunidad
 var its_raining = false
-var group_dressed = false
-var group_has_bag = false
+#var group_dressed = false
+#var group_has_bag = false
 
 #Variables de referencia a cada uno de los nodos del árbol con los que vamos
 #a trabajar en este script.
 
 #Nodos de escenario.
-onready var tree = get_tree().root.get_child(0)
-onready var food_timer = tree.get_node("food_timer")
-onready var camera = tree.get_node("Camera")
-onready var rain_timer = tree.get_node("Rain_Timer")
-onready var tile_map
-onready var cave=tree.find_node("Cave")
+onready var tree = Globals.current_scene
+onready var food_timer = $food_timer
+onready var camera = $Camera
+onready var rain_timer = $Rain_Timer
+onready var tile_map = $TileMap
+onready var cave = $TileMap/Cave
 
 #Nodos de interfaz UI
-onready var timer_label = tree.get_node("UI/Base/TimerLabel")
-onready var food_label = tree.get_node("UI/Base/Rectangle/FoodLabel")
-onready var prompts_label = tree.get_node("UI/Base/Rectangle/PromptsLabel")
-onready var leaves_label = tree.get_node("UI/Base/Rectangle/LeavesLabel")
-#onready var developments_label = tree.get_node("UI/Base/Rectangle/DevelopmentsLabel")
-onready var rectangle = tree.get_node("UI/Base/Rectangle")
-onready var add_clothes = tree.get_node("UI/Base/Rectangle/AddClothes")
-onready var add_bag = tree.get_node("UI/Base/Rectangle/AddBag")
-onready var next_scene_confirmation = tree.get_node("UI/Base/NextSceneConfirmation")
+onready var timer_label = $UI/Base/TimerLabel
+onready var food_label = $UI/Base/Rectangle/FoodLabel
+onready var prompts_label = $UI/Base/Rectangle/PromptsLabel
+onready var leaves_label = $UI/Base/Rectangle/LeavesLabel
+
+onready var rectangle = $UI/Base/Rectangle
+onready var add_clothes = $UI/Base/Rectangle/AddClothes
+onready var add_bag = $UI/Base/Rectangle/AddBag
+onready var next_scene_confirmation = $UI/Base/NextSceneConfirmation
 onready var exit_confirmation = $UI/Base/ExitConfirmation
 onready var replay_confirmation = $UI/Base/ReplayConfirmation
 
@@ -61,7 +61,7 @@ var all_trees=[]
 #var select_rectangle = RectangleShape2D.new()
 
 
-#onready var select_draw = get_tree().root.find_node("SelectDraw")
+onready var select_draw = get_node("SelectDraw")
 
 #Variable booleana para conocer si el objeto en función está invertido en x o y (?).
 var is_flipped = false
@@ -82,19 +82,20 @@ var basket_mode=false
 #Función _ready()
 func _ready():
 	
-	#Asignamos el nodo TileMap.
-	tile_map=tree.find_node("TileMap")
+	
 	
 	#Asignamos los arboles frutales.
-	all_trees.append(tree.find_node("fruit_tree"))
-	all_trees.append(tree.find_node("fruit_tree2"))
-	all_trees.append(tree.find_node("fruit_tree3"))
-	all_trees.append(tree.find_node("fruit_tree4"))
-	all_trees.append(tree.find_node("fruit_tree5"))
-	all_trees.append(tree.find_node("fruit_tree6"))
-	all_plants.append(tree.find_node("Plant"));
-	all_plants.append(tree.find_node("Plant2"));
-	#all_units.append(tree.find_node("Unit"))
+	all_trees.append($FruitTrees/fruit_tree)
+	all_trees.append($FruitTrees/fruit_tree2)
+	all_trees.append($FruitTrees/fruit_tree3)
+	all_trees.append($FruitTrees/fruit_tree4)
+	all_trees.append($FruitTrees/fruit_tree5)
+	all_trees.append($FruitTrees/fruit_tree6)
+	
+	#Asignamos las plantas
+	all_plants.append($Plants/Plant)
+	all_plants.append($Plants/Plant2)
+		
 	all_units = get_tree().get_nodes_in_group("units")
 	
 	#Creamos la segunda unidad (una mujer), aparte de la original (que es hombre).
@@ -115,8 +116,8 @@ func _process(_delta):
 		timer_label.text = "PELIGRO EN: " + str(int(rain_timer.time_left))
 	else:
 		timer_label.text = "LA LLUVIA CESARÁ EN: " + str(int(rain_timer.time_left))
-	food_label.text = str(int(food_points))
-	leaves_label.text = str(int(leaves_points))	
+	food_label.text = str(int(Globals.food_points))
+	leaves_label.text = str(int(Globals.leaves_points))	
 	camera._set_its_raining(its_raining)
 			
 	for a_unit in all_units:
@@ -144,7 +145,7 @@ func _unhandled_input(event):
 					selected_units[i].target_position=Vector2(selected_units[i-1].target_position.x+20,selected_units[i-1].target_position.y)
 	if event.is_action_pressed("EscapeKey"):
 		if arrow_mode:
-			if(all_units.size()==0 && food_points<15):
+			if(all_units.size()==0 && Globals.food_points<15):
 				replay_confirmation.visible=true
 			else:
 				exit_confirmation.popup()
@@ -155,7 +156,7 @@ func _unhandled_input(event):
 
 #Crear unidad.
 func _create_unit():
-	if food_points >=15:
+	if Globals.food_points >=15:
 		var new_Unit = Unit.instance()
 		new_Unit.position = Vector2(-800,-500)
 		unit_count+=1		
@@ -163,16 +164,16 @@ func _create_unit():
 			new_Unit.is_girl=true
 		else:
 			new_Unit.is_girl=false
-		if(group_dressed):
+		if(Globals.group_dressed):
 			new_Unit.is_dressed=true	
 		
 		tile_map.add_child(new_Unit)	
 		
-		if(group_has_bag):
+		if(Globals.group_has_bag):
 			new_Unit.has_bag=true	
 			new_Unit.bag_sprite.visible = true	
 		
-		food_points-=15	
+		Globals.food_points-=15	
 		all_units.append(new_Unit)
 
 #Vestir las unidades.		
@@ -297,32 +298,32 @@ func _on_Rain_Timer_timeout():
 
 #Señal de que el botón de agregar ropa ha sido presionado.
 func _on_AddClothes_pressed():
-	if leaves_points >=70:
-		leaves_points-=70
+	if Globals.leaves_points >=70:
+		Globals.leaves_points-=70
 		_dress_units()
-		group_dressed = true
+		Globals.group_dressed = true
 		add_clothes.visible = false
 	
 
 #Señal de que el botón de agregar bolso de hojas ha sido presionado.
 func _on_AddBag_pressed():
-	if leaves_points >=50:
-		leaves_points-=50
+	if Globals.leaves_points >=50:
+		Globals.leaves_points-=50
 		_add_bag()
-		group_has_bag = true
+		Globals.group_has_bag = true
 		add_bag.visible = false
 
 
 #SEÑALES PARA CAMBIAR EL ASPECTO DEL CURSOR DEL MOUSE.
 #A canasta...
 func _on_Game_is_basket():
-	Input.set_custom_mouse_cursor(basket)
+	Input.set_custom_mouse_cursor(Globals.basket)
 	basket_mode=true
 	arrow_mode=false
 
 #A flecha...
 func _on_Game_is_arrow():
-	Input.set_custom_mouse_cursor(arrow)
+	Input.set_custom_mouse_cursor(Globals.arrow)
 	arrow_mode=true
 	basket_mode=false
 	
@@ -342,7 +343,7 @@ func _on_food_timer_timeout():
 #////////////////////////////////////////////////////////////////////////////////////
 #FUNCIÓN 'CHECK VICTORY' para evaluar condiciones de derrota o victoria.
 func _check_victory():
-	if(all_units.size()==0 && food_points<15):
+	if(all_units.size()==0 && Globals.food_points<15):
 		prompts_label.text = "Has sido derrotado."	
 		replay_confirmation.visible=true
 	if(cave.sheltered_units>=12):
@@ -354,11 +355,11 @@ func _check_victory():
 
 
 func _on_ExitConfirmation_confirmed():
-	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
+	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
 	
 
 func _on_ReplayOk_pressed():
-	get_tree().change_scene("res://Scenes/Game/Game.tscn")
+	Globals.reload_current_scene()
 
 
 func _on_ReplayCancel_pressed():
@@ -368,4 +369,4 @@ func _on_ReplayCancel_pressed():
 
 
 func _on_NextSceneOk_pressed():
-	get_tree().change_scene("res://Scenes/Game2/Game2.tscn")
+	Globals.go_to_scene("res://Scenes/Game2/Game2.tscn")

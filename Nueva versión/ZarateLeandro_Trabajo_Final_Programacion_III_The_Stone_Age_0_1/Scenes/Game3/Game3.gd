@@ -996,7 +996,7 @@ func _on_ReplayConfirmation_confirmed():
 
 
 func _on_ReplayOk_pressed():
-	get_tree().change_scene("res://Scenes/Game3/Game3.tscn")
+	get_tree().reload_current_scene()
 
 
 func _on_ReplayCancel_pressed():

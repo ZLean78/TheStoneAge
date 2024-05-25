@@ -1484,7 +1484,7 @@ func _on_ReplayCancel_pressed():
 
 
 func _on_ReplayOk_pressed():
-	get_tree().change_scene("res://Scenes/Game4/Game4.tscn")
+	get_tree().reload_current_scene()
 
 
 func _on_NextSceneOk_pressed():

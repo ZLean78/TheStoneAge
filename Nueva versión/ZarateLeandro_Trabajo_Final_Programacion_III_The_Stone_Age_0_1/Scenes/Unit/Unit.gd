@@ -104,7 +104,7 @@ var index = 0
 #ONREADY VARS
 
 #Podígono de navegación
-onready var nav2d=get_tree().get_root().get_child(0).get_node("nav")
+onready var nav2d=Globals.current_scene.get_node("nav")
 
 
 onready var all_timer = $all_timer
@@ -130,8 +130,8 @@ signal was_deselected
 
 
 func _ready():
-	connect("was_selected",get_tree().root.get_child(0),"_select_unit")
-	connect("was_deselected",get_tree().root.get_child(0),"_deselect_unit")
+	connect("was_selected",Globals.current_scene,"_select_unit")
+	connect("was_deselected",Globals.current_scene,"_deselect_unit")
 	#emit_signal("health_change",health)
 	if(!is_dressed):
 		if !is_girl:
@@ -257,7 +257,7 @@ func _collect_pickable(_pickable):
 				_pickable.empty=true	
 		
 func _get_damage():
-	if(get_tree().root.get_child(0).its_raining && !pickable_touching):
+	if(Globals.current_scene.its_raining && !pickable_touching):
 		if timer_count==0:
 			if(energy_points>0):
 				if(!is_dressed):
@@ -278,7 +278,7 @@ func _get_damage():
 #					if(all_units.size()<=1 && food_points<15):
 #					$The_Canvas._set_phrase("Has sido derrotado.")				
 					
-	elif(get_tree().root.get_child(0).its_raining && pickable_touching):
+	elif(Globals.current_scene.its_raining && pickable_touching):
 		if timer_count==0:
 			if(energy_points<100):
 				energy_points+=1

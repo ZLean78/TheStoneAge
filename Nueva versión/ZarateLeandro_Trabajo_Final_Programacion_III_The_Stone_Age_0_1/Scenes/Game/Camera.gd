@@ -44,7 +44,7 @@ onready var tree = get_tree().root.get_child(0)
 
 #onready var rectd = tree.find_node("draw_rect")
 
-onready var select_draw = tree.find_node("SelectDraw")
+#onready var select_draw
 
 var its_raining=false
 
@@ -55,6 +55,7 @@ func _ready():
 	#rectd.visible=true
 	connect("area_selected",get_parent(),"_area_selected",[self])
 	#connect("start_move_selection",get_parent(),"start_move_selection",[self])
+	#select_draw = Globals.current_scene.select_draw
 	pass
 
 func _process(delta):
@@ -87,14 +88,14 @@ func _process(delta):
 		if startV.distance_to(mousePos)>20:
 			end = mousePosGlobal
 			endV = mousePos
-			select_draw.update_status(start,mousePosGlobal+Vector2(6,12),is_dragging)
+			Globals.current_scene.select_draw.update_status(start,mousePosGlobal+Vector2(6,12),is_dragging)
 			#var drag_end = mousePos
 	if Input.is_action_just_released("ui_left_mouse_button"):
 		if startV.distance_to(mousePos)>20:
 			end = mousePosGlobal
 			endV = mousePos
 			is_dragging = false
-			select_draw.update_status(start,mousePosGlobal,is_dragging)				
+			Globals.current_scene.select_draw.update_status(start,mousePosGlobal,is_dragging)				
 			emit_signal("area_selected")
 		else:
 			end = start
