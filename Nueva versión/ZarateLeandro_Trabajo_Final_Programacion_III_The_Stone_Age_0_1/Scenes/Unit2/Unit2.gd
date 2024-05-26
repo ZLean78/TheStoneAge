@@ -10,11 +10,13 @@ export (float) var SPEED = 100.0
 #Máximo de Salud
 export (float) var MAX_HEALTH = 100.0
 
-#variable que indica el nodo raíz.
-onready var root=get_tree().root.get_child(0)
+#Nodo de la escena actual.
+var tree
+
+
 
 #Temporizador de comida, agrega un punto de comida por segundo cuando la unidad toca un árbol frutal.
-onready var food_timer = root.find_node("food_timer")
+onready var food_timer
 
 
 #Variable que indica si está seleccionada la unidad.
@@ -170,7 +172,7 @@ var secondPoint = Vector2.ZERO
 var index = 0
 
 #Podígono de navegación
-onready var nav2d=get_tree().get_root().get_child(0).get_node("nav")
+onready var nav2d
 
 #Variables para curarse o curar a otro
 var health=MAX_HEALTH
@@ -191,9 +193,14 @@ signal was_deselected
 
 
 func _ready():
-	connect("was_selected",get_tree().root.get_child(0),"_select_unit")
-	connect("was_deselected",get_tree().root.get_child(0),"_deselect_unit")
+	tree=Globals.current_scene
+	food_timer=tree.food_timer
+	nav2d=tree.get_node("nav")
+	connect("was_selected",tree,"_select_unit")
+	connect("was_deselected",tree,"_deselect_unit")
 	emit_signal("health_change",energy_points)
+	
+	
 	has_bag=true
 	is_dressed=true
 	if(!is_dressed):
@@ -214,6 +221,12 @@ func _ready():
 	#label.text = name
 	#randomize()
 	#bar.value = randi() % 90 + 10
+	
+
+	
+	
+func _deferred_start():
+	call_deferred("_ready")
 	
 
 func _set_selected(value):
@@ -306,74 +319,74 @@ func _collect_pickable(var _pickable):
 				if _pickable.type=="fruit_tree":
 					if(has_bag):
 						if(_pickable.points>=4):
-							root.food_points +=4
+							Globals.food_points +=4
 							_pickable.points-=4
 						else:
-							root.food_points += _pickable.points
+							Globals.food_points += _pickable.points
 							_pickable.points = 0
 					else:					
-						root.food_points +=1
+						Globals.food_points +=1
 						_pickable.points-=1
 						#if _pickable.points <= 0:
 						#_pickable.empty = true
 				elif _pickable.type == "pine_tree":
-					if(root.is_stone_weapons_developed):
+					if(tree.is_stone_weapons_developed):
 						if(_pickable.points>=4):
-							root.wood_points +=4
+							tree.wood_points +=4
 							_pickable.points-=4
 						else:
-							root.wood_points += _pickable.points
+							tree.wood_points += _pickable.points
 							_pickable.points = 0
 					else:					
-						root.wood_points +=1
+						tree.wood_points +=1
 						_pickable.points-=1
 				elif _pickable.type == "plant":
 					if(has_bag):
 						if(_pickable.points>=4):
-							root.leaves_points +=4
+							tree.leaves_points +=4
 							_pickable.points-=4
 						else:
-							root.leaves_points+=_pickable.points
+							tree.leaves_points+=_pickable.points
 							_pickable.points=0
 					else:
-						root.leaves_points+=1
+						tree.leaves_points+=1
 						_pickable.points-=1
 				elif _pickable.type == "quarry":
-					if(root.is_stone_weapons_developed):
+					if(tree.is_stone_weapons_developed):
 						if(_pickable.points>=4):
-							root.stone_points+=4
+							tree.stone_points+=4
 							_pickable.points-=4
 						else:
-							root.stone_points+=_pickable.points
+							tree.stone_points+=_pickable.points
 							_pickable.points=0
 					else:
-						root.stone_points+=1
+						tree.stone_points+=1
 						_pickable.points-=1
 				elif _pickable.type == "copper":
-					if(root.is_stone_weapons_developed):
+					if(tree.is_stone_weapons_developed):
 						if(_pickable.points>=4):
-							root.copper_points+=4
+							tree.copper_points+=4
 							_pickable.points-=4
 						else:
-							root.copper_points+=_pickable.points
+							tree.copper_points+=_pickable.points
 							_pickable.points=0
 					else:
-						root.copper_points+=1
+						tree.copper_points+=1
 						_pickable.points-=1
 			if _pickable.points <= 0:
 				_pickable.empty = true	
 	else:
 		if _pickable.touching && pickable_touching:
 			if _pickable.type == "puddle" && puddle_touching:
-				root.clay_points+=4
+				tree.clay_points+=4
 			elif _pickable.type == "lake" && lake_touching:
-				if root.name == "Game2":
-					if root.is_claypot_made:
-						root.water_points+=4
+				if tree.name == "Game2":
+					if tree.is_claypot_made:
+						tree.water_points+=4
 					else:
-						root.prompts_label.text="Debes desarrollar el cuenco de barro \n para poder transportar agua."
+						tree.prompts_label.text="Debes desarrollar el cuenco de barro \n para poder transportar agua."
 				else:
-					root.water_points+=4
+					tree.water_points+=4
 				
 					
 
@@ -470,26 +483,26 @@ func _move_to_target(target):
 
 func _unhandled_input(event):
 	if event.is_action_pressed("RightClick"):
-		if get_tree().root.get_child(0).sword_mode:
-			if get_tree().root.get_child(0).touching_enemy!=null:
-				if is_instance_valid(get_tree().root.get_child(0).touching_enemy):
+		if tree.sword_mode:
+			if tree.touching_enemy!=null:
+				if is_instance_valid(tree.touching_enemy):
 					if selected && can_shoot:
 						if !is_warchief:
 							_shoot()
 						else:
-							for warrior in root.warriors.get_children():
+							for warrior in tree.warriors.get_children():
 								if warrior.position.distance_to(position):
 									warrior._shoot()
 				else:					
-					if get_tree().get_root().get_child(0).name == "Game3":
-						get_tree().get_root().get_child(0)._on_Game3_is_arrow()
-					if get_tree().get_root().get_child(0).name == "Game2":
-						get_tree().get_root().get_child(0)._on_Game2_is_arrow()
+					if tree.name == "Game3":
+						tree._on_Game3_is_arrow()
+					if tree.name == "Game2":
+						tree._on_Game2_is_arrow()
 		else:
 			firstPoint=global_position
 			
 	if event.is_action_released("RightClick"):		
-		if !root.sword_mode:
+		if !tree.sword_mode:
 			_walk()
 			
 
@@ -498,7 +511,7 @@ func _on_Unit_input_event(_viewport, event, _shape_idx):
 		if event.is_pressed():			
 			if event.button_index == BUTTON_LEFT:
 				_set_selected(not selected)
-				root._select_last()
+				tree._select_last()
 
 func hurt(amount):
 	health-=amount
@@ -915,7 +928,7 @@ func _on_Area2D_body_exited(body):
 
 
 func _shoot():
-	target_position = get_tree().root.get_child(0).touching_enemy.position
+	target_position = tree.touching_enemy.position
 	shoot_node.look_at(target_position)				
 	var angle = shoot_node.rotation
 	#var forward = Vector2(cos(angle),sin(angle))

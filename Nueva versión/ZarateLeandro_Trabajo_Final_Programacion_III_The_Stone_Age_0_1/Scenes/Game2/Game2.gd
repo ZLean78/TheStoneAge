@@ -1,12 +1,12 @@
 extends Node2D
 
-var basket=load("res://Scenes/MouseIcons/basket.png")
-var arrow=load("res://Scenes/MouseIcons/arrow.png")
-var pick_mattock=load("res://Scenes/MouseIcons/pick_mattock.png")
-var sword=load("res://Scenes/MouseIcons/sword.png")
-var claypot=load("res://Scenes/MouseIcons/claypot.png")
-var hand=load("res://Scenes/MouseIcons/hand.png")
-var axe=load("res://Scenes/MouseIcons/axe.png")
+#var basket=load("res://Scenes/MouseIcons/basket.png")
+#var arrow=load("res://Scenes/MouseIcons/arrow.png")
+#var pick_mattock=load("res://Scenes/MouseIcons/pick_mattock.png")
+#var sword=load("res://Scenes/MouseIcons/sword.png")
+#var claypot=load("res://Scenes/MouseIcons/claypot.png")
+#var hand=load("res://Scenes/MouseIcons/hand.png")
+#var axe=load("res://Scenes/MouseIcons/axe.png")
 
 var unit_count = 1
 var food_points = 0
@@ -28,7 +28,7 @@ var is_claypot_made = false
 var is_agriculture_developed = false
 
 
-onready var tree = get_tree().root.get_child(0)
+onready var tree = Globals.current_scene
 onready var food_timer = tree.get_node("food_timer")
 onready var timer_label = tree.get_node("UI/Base/TimerLabel")
 onready var food_label = tree.get_node("UI/Base/Rectangle/FoodLabel")
@@ -63,7 +63,9 @@ onready var plants=$Plants
 onready var next_scene_confirmation=$UI/Base/NextSceneConfirmation
 onready var exit_confirmation=$UI/Base/ExitConfirmation
 onready var replay_confirmation=$UI/Base/ReplayConfirmation
-#onready var navigator = $Tigers/nav
+
+#Nodo que dibuja el rectángulo de selección de la cámara.
+onready var select_draw=$SelectDraw
 
 var cave
 
@@ -565,7 +567,7 @@ func _on_DevelopAgriculture_pressed():
 
 
 func _on_Game2_is_arrow():
-	Input.set_custom_mouse_cursor(arrow)
+	Input.set_custom_mouse_cursor(Globals.arrow)
 	arrow_mode=true
 	basket_mode=false
 	mattock_mode=false
@@ -576,7 +578,7 @@ func _on_Game2_is_arrow():
 
 
 func _on_Game2_is_basket():
-	Input.set_custom_mouse_cursor(basket)
+	Input.set_custom_mouse_cursor(Globals.basket)
 	basket_mode=true
 	arrow_mode=false
 	mattock_mode=false
@@ -586,7 +588,7 @@ func _on_Game2_is_basket():
 	axe_mode=false
 	
 func _on_Game2_is_pick_mattock():
-	Input.set_custom_mouse_cursor(pick_mattock)
+	Input.set_custom_mouse_cursor(Globals.pick_mattock)
 	mattock_mode=true
 	basket_mode=false
 	arrow_mode=false
@@ -597,7 +599,7 @@ func _on_Game2_is_pick_mattock():
 
 
 func _on_Game2_is_sword():
-	Input.set_custom_mouse_cursor(sword)
+	Input.set_custom_mouse_cursor(Globals.sword)
 	sword_mode=true
 	mattock_mode=false
 	basket_mode=false
@@ -609,7 +611,7 @@ func _on_Game2_is_sword():
 
 
 func _on_Game2_is_hand():
-	Input.set_custom_mouse_cursor(hand)
+	Input.set_custom_mouse_cursor(Globals.hand)
 	hand_mode=true
 	mattock_mode=false
 	basket_mode=false
@@ -621,7 +623,7 @@ func _on_Game2_is_hand():
 
 
 func _on_Game2_is_claypot():
-	Input.set_custom_mouse_cursor(claypot)
+	Input.set_custom_mouse_cursor(Globals.claypot)
 	claypot_mode=true
 	arrow_mode=false
 	basket_mode=false
@@ -632,7 +634,7 @@ func _on_Game2_is_claypot():
 
 
 func _on_Game2_is_axe():
-	Input.set_custom_mouse_cursor(axe)
+	Input.set_custom_mouse_cursor(Globals.axe)
 	axe_mode=true
 	arrow_mode=false
 	basket_mode=false

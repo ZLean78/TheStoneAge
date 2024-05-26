@@ -40,7 +40,7 @@ var is_dragging=false
 
 #var move_to_point=Vector2()
 
-
+onready var tree=Globals.current_scene
 
 #onready var rectd = tree.find_node("draw_rect")
 
@@ -88,14 +88,14 @@ func _process(delta):
 		if startV.distance_to(mousePos)>20:
 			end = mousePosGlobal
 			endV = mousePos
-			Globals.current_scene.select_draw.update_status(start,mousePosGlobal+Vector2(6,12),is_dragging)
+			tree.select_draw.update_status(start,mousePosGlobal+Vector2(6,12),is_dragging)
 			#var drag_end = mousePos
 	if Input.is_action_just_released("ui_left_mouse_button"):
 		if startV.distance_to(mousePos)>20:
 			end = mousePosGlobal
 			endV = mousePos
 			is_dragging = false
-			Globals.current_scene.select_draw.update_status(start,mousePosGlobal,is_dragging)				
+			tree.select_draw.update_status(start,mousePosGlobal,is_dragging)				
 			emit_signal("area_selected")
 		else:
 			end = start

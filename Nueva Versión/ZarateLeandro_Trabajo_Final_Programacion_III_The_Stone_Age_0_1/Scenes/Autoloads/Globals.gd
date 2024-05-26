@@ -6,7 +6,21 @@ var root
 #Variables de íconos del mouse.
 var basket=load("res://Scenes/MouseIcons/basket.png")
 var arrow=load("res://Scenes/MouseIcons/arrow.png")
-
+var pick_mattock=load("res://Scenes/MouseIcons/pick_mattock.png")
+var sword=load("res://Scenes/MouseIcons/sword.png")
+var claypot=load("res://Scenes/MouseIcons/claypot.png")
+var hand=load("res://Scenes/MouseIcons/hand.png")
+var axe=load("res://Scenes/MouseIcons/axe.png")
+var house=load("res://Scenes/MouseIcons/house.png")
+var house_b=load("res://Scenes/MouseIcons/house_b.png")
+var townhall=load("res://Scenes/MouseIcons/townHall.png")
+var townhall_b=load("res://Scenes/MouseIcons/townHall_b.png")
+var fort=load("res://Scenes/MouseIcons/fort_s.png")
+var fort_b=load("res://Scenes/MouseIcons/fort_sb.png")
+var barn=load("res://Scenes/MouseIcons/barn_s.png")
+var barn_b=load("res://Scenes/MouseIcons/barn_sb.png")
+var tower=load("res://Scenes/MouseIcons/tower_s.png")
+var tower_b=load("res://Scenes/MouseIcons/tower_sb.png")
 
 
 
