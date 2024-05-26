@@ -7,7 +7,7 @@ var root
 var basket=load("res://Scenes/MouseIcons/basket.png")
 var arrow=load("res://Scenes/MouseIcons/arrow.png")
 
-var select_draw
+
 
 
 #Puntos de recursos de la comunidad.

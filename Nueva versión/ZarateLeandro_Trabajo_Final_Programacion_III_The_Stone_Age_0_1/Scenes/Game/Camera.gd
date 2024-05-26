@@ -40,7 +40,7 @@ var is_dragging=false
 
 #var move_to_point=Vector2()
 
-onready var tree = get_tree().root.get_child(0)
+
 
 #onready var rectd = tree.find_node("draw_rect")
 

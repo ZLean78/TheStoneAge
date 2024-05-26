@@ -7,9 +7,6 @@ extends Node2D
 #Conteo de unidades ciudadanos.
 var unit_count = 1
 
-#Puntos de recursos de la comunidad.
-#var food_points = 15
-#var leaves_points = 0
 
 #Condiciones que afectan a toda la comunidad
 var its_raining = false
@@ -40,6 +37,9 @@ onready var next_scene_confirmation = $UI/Base/NextSceneConfirmation
 onready var exit_confirmation = $UI/Base/ExitConfirmation
 onready var replay_confirmation = $UI/Base/ReplayConfirmation
 
+#Nodo que dibuja el rectángulo de selección de la cámara.
+onready var select_draw=$SelectDraw
+
 #Variable unidad ciudadano original a partir de la cual se crean todas las demás.
 export (PackedScene) var Unit
 
@@ -61,7 +61,7 @@ var all_trees=[]
 #var select_rectangle = RectangleShape2D.new()
 
 
-onready var select_draw = get_node("SelectDraw")
+
 
 #Variable booleana para conocer si el objeto en función está invertido en x o y (?).
 var is_flipped = false

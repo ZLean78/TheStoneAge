@@ -40,7 +40,7 @@ func _on_Area2D_body_exited(body):
 		
 
 func _on_Area2D_mouse_entered():
-	var tree = get_tree().root.get_child(0)
+	var tree = Globals.current_scene
 	if tree.name == "Game":
 		if type == "fruit_tree":
 			get_parent().get_parent().emit_signal("is_basket")
@@ -92,7 +92,7 @@ func _on_Area2D_mouse_entered():
 
 
 func _on_Area2D_mouse_exited():
-	var tree = get_tree().root.get_child(0)
+	var tree = Globals.current_scene
 	if tree.name == "Game":
 		if type == "fruit_tree" or type == "plant":
 			get_parent().get_parent().emit_signal("is_arrow")
