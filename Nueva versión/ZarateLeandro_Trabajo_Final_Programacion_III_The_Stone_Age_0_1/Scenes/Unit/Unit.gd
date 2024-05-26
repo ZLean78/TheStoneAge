@@ -167,6 +167,9 @@ func _physics_process(delta):
 	
 	to_delta=delta
 	
+	position.x = clamp(position.x,0,screensize.x)
+	position.y = clamp(position.y,0,screensize.y)	
+	
 	if selected:
 		if box.visible == false:
 			box.visible = true
@@ -174,8 +177,7 @@ func _physics_process(delta):
 		if box.visible == true:
 			box.visible = false
 			
-#	position.x = clamp(position.x,0,screensize.x)
-#	position.y = clamp(position.y,0,screensize.y)	
+
 	
 	if target_position!=Vector2.ZERO:
 		if position.distance_to(target_position) > 10:

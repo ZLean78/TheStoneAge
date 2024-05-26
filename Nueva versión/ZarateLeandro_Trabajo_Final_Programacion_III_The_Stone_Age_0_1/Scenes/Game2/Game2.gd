@@ -8,13 +8,15 @@ extends Node2D
 #var hand=load("res://Scenes/MouseIcons/hand.png")
 #var axe=load("res://Scenes/MouseIcons/axe.png")
 
+#Contador de unidades.
 var unit_count = 1
-var food_points = 0
-var leaves_points = 0
-var stone_points = 0
-var wood_points = 0
-var clay_points = 0
-var water_points = 0
+
+#var food_points = 0
+#var leaves_points = 0
+#var stone_points = 0
+#var wood_points = 0
+#var clay_points = 0
+#var water_points = 0
 
 #Hitos anteriores ya cumplidos
 var group_dressed = false
@@ -199,12 +201,12 @@ func _process(_delta):
 		timer_label.text = "¡CUIDADO, HAY TIGRES!"
 	
 	
-	food_label.text = str(int(food_points))
-	leaves_label.text = str(int(leaves_points))	
-	stone_label.text = str(int(stone_points))	
-	clay_label.text = str(int(clay_points))
-	wood_label.text = str(int(wood_points))
-	water_label.text = str(int(water_points))
+	food_label.text = str(int(Globals.food_points))
+	leaves_label.text = str(int(Globals.leaves_points))	
+	stone_label.text = str(int(Globals.stone_points))	
+	clay_label.text = str(int(Globals.clay_points))
+	wood_label.text = str(int(Globals.wood_points))
+	water_label.text = str(int(Globals.water_points))
 	
 	_check_units()	
 	_check_victory()
@@ -241,7 +243,7 @@ func _select_last():
 			unit._set_selected(false)
 		
 func _unhandled_input(event):
-	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
+	if event.is_action_pressed("RightClick"):
 		for i in range(0,selected_units.size()):			
 			if i==0:
 				selected_units[i].target_position=get_global_mouse_position()
@@ -253,7 +255,7 @@ func _unhandled_input(event):
 	if event.is_action_pressed("EscapeKey"):
 		#Si el cursor está en modo flecha.
 		if arrow_mode:
-			if(all_units.size()==0 && food_points<15):
+			if(all_units.size()==0 && Globals.food_points<15):
 				replay_confirmation.visible=true
 			else:
 				exit_confirmation.popup()
@@ -275,7 +277,7 @@ func _create_unit(cost = 0):
 	if(group_has_bag):
 		new_Unit.has_bag=true	
 		new_Unit.get_child(3).visible = true
-	food_points -= cost
+	Globals.food_points -= cost
 	new_Unit.position = spawn_position.position
 	for unit in units.get_children():
 		if new_Unit.position==unit.position:
@@ -291,7 +293,7 @@ func _check_victory():
 		next_scene_confirmation.visible=true
 			
 		
-	elif(all_units.size()==0 && food_points<15):
+	elif(all_units.size()==0 && Globals.food_points<15):
 		prompts_label.text = "Has sido derrotado."	
 		replay_confirmation.visible=true
 		
@@ -393,7 +395,7 @@ func _check_victory():
 		
 	
 func _on_CreateCitizen_pressed():
-	if food_points>=15:
+	if Globals.food_points>=15:
 		_create_unit(15)
 		
 
@@ -526,10 +528,10 @@ func move_group():
 	
 
 func _on_DevelopStoneWeapons_pressed():
-	if stone_points>=70 && wood_points>=70 && leaves_points >=50:
-		stone_points-=70
-		wood_points-=70
-		leaves_points-=50
+	if Globals.stone_points>=70 && Globals.wood_points>=70 && Globals.leaves_points >=50:
+		Globals.stone_points-=70
+		Globals.wood_points-=70
+		Globals.leaves_points-=50
 		is_stone_weapons_developed=true	
 		develop_stone_weapons.visible = false	
 		
@@ -537,31 +539,31 @@ func _on_DevelopStoneWeapons_pressed():
 
 
 func _on_InventWheel_pressed():
-	if stone_points >=70 && wood_points>=40:
-		stone_points-=70
-		wood_points-=40
+	if Globals.stone_points >=70 && Globals.wood_points>=40:
+		Globals.stone_points-=70
+		Globals.wood_points-=40
 		is_wheel_invented=true
 		invent_wheel.visible = false
 
 func _on_DiscoverFire_pressed():
-	if wood_points >=60 && stone_points>=40:
-		wood_points-=60
-		stone_points-=40
+	if Globals.wood_points >=60 && Globals.stone_points>=40:
+		Globals.wood_points-=60
+		Globals.stone_points-=40
 		is_fire_discovered=true
 		discover_fire.visible = false
 		
 func _on_MakeClaypot_pressed():
-	if clay_points>=85:
-		clay_points-=85
+	if Globals.clay_points>=85:
+		Globals.clay_points-=85
 		is_claypot_made=true
 		make_claypot.visible=false
 
 
 func _on_DevelopAgriculture_pressed():
-	if food_points>=70 && leaves_points>=70 && water_points>=70:
-		food_points-=70
-		leaves_points-=70
-		water_points-=70
+	if Globals.food_points>=70 && Globals.leaves_points>=70 && Globals.water_points>=70:
+		Globals.food_points-=70
+		Globals.leaves_points-=70
+		Globals.water_points-=70
 		is_agriculture_developed=true
 		develop_agriculture.visible=false
 

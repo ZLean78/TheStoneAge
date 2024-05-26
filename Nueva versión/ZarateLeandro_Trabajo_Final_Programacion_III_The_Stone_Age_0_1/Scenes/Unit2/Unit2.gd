@@ -260,9 +260,7 @@ func _physics_process(delta):
 	
 	if target_position!=Vector2.ZERO:
 		if position.distance_to(target_position) > 10:			
-			#_move_to_target(target_position)
 			_move_along_path(SPEED*delta)
-			#_move_towards(position,target_position,delta)
 		else:
 			target_position=position
 			velocity=Vector2.ZERO
@@ -286,7 +284,7 @@ func _physics_process(delta):
 		
 	#Cambiar los cuadros de animación del player.
 	if velocity.length() > 0:
-		#velocity = velocity.normalized() * SPEED
+		velocity = velocity.normalized() * SPEED
 		if(!sprite.is_playing()):
 			sprite.play()
 	else:
@@ -294,7 +292,7 @@ func _physics_process(delta):
 	
 	
 		
-	#revisar si está tocando un árbol
+	#revisar si está tocando un árbol o una planta.
 	_check_fruit_tree_touching()
 	_check_plant_touching()
 	_check_pine_tree_touching()
@@ -307,7 +305,7 @@ func _physics_process(delta):
 		
 		
 	if(all_timer.is_stopped()):
-		all_timer.start()
+		timer_count-=1
 		
 	
 		
@@ -332,61 +330,61 @@ func _collect_pickable(var _pickable):
 				elif _pickable.type == "pine_tree":
 					if(tree.is_stone_weapons_developed):
 						if(_pickable.points>=4):
-							tree.wood_points +=4
+							Globals.wood_points +=4
 							_pickable.points-=4
 						else:
-							tree.wood_points += _pickable.points
+							Globals.wood_points += _pickable.points
 							_pickable.points = 0
 					else:					
-						tree.wood_points +=1
+						Globals.wood_points +=1
 						_pickable.points-=1
 				elif _pickable.type == "plant":
 					if(has_bag):
 						if(_pickable.points>=4):
-							tree.leaves_points +=4
+							Globals.leaves_points +=4
 							_pickable.points-=4
 						else:
-							tree.leaves_points+=_pickable.points
+							Globals.leaves_points+=_pickable.points
 							_pickable.points=0
 					else:
-						tree.leaves_points+=1
+						Globals.leaves_points+=1
 						_pickable.points-=1
 				elif _pickable.type == "quarry":
 					if(tree.is_stone_weapons_developed):
 						if(_pickable.points>=4):
-							tree.stone_points+=4
+							Globals.stone_points+=4
 							_pickable.points-=4
 						else:
-							tree.stone_points+=_pickable.points
+							Globals.stone_points+=_pickable.points
 							_pickable.points=0
 					else:
-						tree.stone_points+=1
+						Globals.stone_points+=1
 						_pickable.points-=1
 				elif _pickable.type == "copper":
 					if(tree.is_stone_weapons_developed):
 						if(_pickable.points>=4):
-							tree.copper_points+=4
+							Globals.copper_points+=4
 							_pickable.points-=4
 						else:
-							tree.copper_points+=_pickable.points
+							Globals.copper_points+=_pickable.points
 							_pickable.points=0
 					else:
-						tree.copper_points+=1
+						Globals.copper_points+=1
 						_pickable.points-=1
 			if _pickable.points <= 0:
 				_pickable.empty = true	
 	else:
 		if _pickable.touching && pickable_touching:
 			if _pickable.type == "puddle" && puddle_touching:
-				tree.clay_points+=4
+				Globals.clay_points+=4
 			elif _pickable.type == "lake" && lake_touching:
 				if tree.name == "Game2":
 					if tree.is_claypot_made:
-						tree.water_points+=4
+						Globals.water_points+=4
 					else:
 						tree.prompts_label.text="Debes desarrollar el cuenco de barro \n para poder transportar agua."
 				else:
-					tree.water_points+=4
+					Globals.water_points+=4
 				
 					
 
@@ -480,7 +478,6 @@ func _move_to_target(target):
 	var collision = move_and_collide(velocity*to_delta*SPEED)
 	
 
-
 func _unhandled_input(event):
 	if event.is_action_pressed("RightClick"):
 		if tree.sword_mode:
@@ -500,18 +497,19 @@ func _unhandled_input(event):
 						tree._on_Game2_is_arrow()
 		else:
 			firstPoint=global_position
-			
+
+
 	if event.is_action_released("RightClick"):		
 		if !tree.sword_mode:
 			_walk()
-			
+
 
 func _on_Unit_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton:
 		if event.is_pressed():			
 			if event.button_index == BUTTON_LEFT:
 				_set_selected(not selected)
-				tree._select_last()
+				#tree._select_last()
 
 func hurt(amount):
 	health-=amount

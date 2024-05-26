@@ -54,11 +54,11 @@ func _on_Area2D_mouse_entered():
 		elif type == "pine_tree":
 			get_parent().get_parent().emit_signal("is_axe")
 		elif type == "quarry":
-			get_tree().root.get_child(0).emit_signal("is_pick_mattock")	
+			tree.emit_signal("is_pick_mattock")	
 		elif type == "puddle":
-			get_tree().root.get_child(0).emit_signal("is_hand")	
+			tree.emit_signal("is_hand")	
 		elif type == "lake":
-			get_tree().root.get_child(0).emit_signal("is_claypot")	
+			tree.emit_signal("is_claypot")	
 	if tree.name == "Game3":
 		if !tree.house_mode && !tree.townhall_mode:
 			if type == "fruit_tree":
@@ -68,11 +68,11 @@ func _on_Area2D_mouse_entered():
 			elif type == "pine_tree":
 				get_parent().get_parent().emit_signal("is_axe")
 			elif type == "quarry":
-				get_tree().root.get_child(0).emit_signal("is_pick_mattock")	
+				tree.emit_signal("is_pick_mattock")	
 			elif type == "puddle":
-				get_tree().root.get_child(0).emit_signal("is_hand")	
+				tree.emit_signal("is_hand")	
 			elif type == "lake":
-				get_tree().root.get_child(0).emit_signal("is_claypot")
+				tree.emit_signal("is_claypot")
 	if tree.name == "Game4":
 		if !tree.house_mode && !tree.fort_mode && !tree.tower_mode && !tree.barn_mode:
 			if type == "fruit_tree":

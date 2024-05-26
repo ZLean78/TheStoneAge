@@ -91,7 +91,6 @@ void fragment(){
 shader = SubResource( 14 )
 
 [node name="Game2" type="Node2D"]
-position = Vector2( -4, -11 )
 script = ExtResource( 6 )
 Unit2 = ExtResource( 12 )
 
@@ -135,7 +134,7 @@ position = Vector2( 37, 98 )
 process_priority = 1
 z_as_relative = false
 
-[node name="Unit2" parent="Units" groups=["units"] instance=ExtResource( 12 )]
+[node name="Unit2" parent="Units" instance=ExtResource( 12 )]
 process_priority = 1
 position = Vector2( 654, 331 )
 

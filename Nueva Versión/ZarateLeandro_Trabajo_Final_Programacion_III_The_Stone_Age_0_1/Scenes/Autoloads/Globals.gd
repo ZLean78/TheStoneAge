@@ -27,6 +27,10 @@ var tower_b=load("res://Scenes/MouseIcons/tower_sb.png")
 #Puntos de recursos de la comunidad.
 var food_points = 15
 var leaves_points = 0
+var stone_points = 0
+var wood_points = 0
+var clay_points = 0
+var water_points = 0
 
 #Condiciones que afectan a toda la comunidad
 var group_dressed = false
