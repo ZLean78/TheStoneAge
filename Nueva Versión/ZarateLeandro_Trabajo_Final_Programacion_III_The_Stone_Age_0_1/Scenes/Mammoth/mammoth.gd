@@ -8,10 +8,11 @@ var velocity=Vector2()
 var is_dead=false
 var speed=50.0
 var life=120
+var tree
 onready var progress_bar=$ProgressBar
 export var is_flipped:bool
-onready var warriors=get_tree().get_root().get_child(0).get_node("Warriors")
-onready var citizens=get_tree().get_root().get_child(0).get_node("Units")
+onready var warriors
+onready var citizens
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -20,6 +21,9 @@ onready var citizens=get_tree().get_root().get_child(0).get_node("Units")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	tree=Globals.current_scene
+	warriors=tree.get_node("Warriors")
+	citizens=tree.get_node("Units")
 	start_position=position
 	progress_bar.value = life
 	if is_flipped==false:

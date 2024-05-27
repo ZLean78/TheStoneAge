@@ -9,8 +9,8 @@ export (float) var SPEED = 100.0
 #Máximo de Salud
 export (float) var MAX_HEALTH = 100.0
 
-#variable que indica el nodo raíz.
-onready var root=get_tree().root.get_child(0)
+#variable que indica el nodo principal de la escena.
+var tree
 
 #Temporizador de comida, agrega un punto de comida por segundo cuando la unidad toca un árbol frutal.
 
@@ -123,7 +123,7 @@ var secondPoint = Vector2.ZERO
 var index = 0
 
 #Polígono de navegación.
-onready var nav2d=get_tree().get_root().get_child(0).get_node("nav")
+onready var nav2d
 
 #var colliding_body: KinematicBody2D
 
@@ -143,9 +143,12 @@ signal was_deselected
 
 
 func _ready():
-	connect("was_selected",get_tree().root.get_child(0),"_select_unit")
-	connect("was_deselected",get_tree().root.get_child(0),"_deselect_unit")
+	connect("was_selected",Globals.current_scene,"_select_unit")
+	connect("was_deselected",Globals.current_scene,"_deselect_unit")
 	emit_signal("health_change",energy_points)
+	
+	tree=Globals.current_scene
+	nav2d=tree.get_node("nav")
 	
 	is_dressed=true
 	if(!is_dressed):
@@ -173,9 +176,9 @@ func _set_selected(value):
 		#label.visible = value
 		bar.visible = value
 		if selected:
-			emit_signal("was_selected",self)
+			emit_signal("was_selected",tree)
 		else:
-			emit_signal("was_deselected",self)
+			emit_signal("was_deselected",tree)
 
 	
 
@@ -313,17 +316,17 @@ func _move_to_target(target):
 
 func _unhandled_input(event):
 	if event.is_action_pressed("RightClick"):
-		if root.sword_mode:
-			if root.touching_enemy!=null:
-				if is_instance_valid(root.touching_enemy):
+		if tree.sword_mode:
+			if tree.touching_enemy!=null:
+				if is_instance_valid(tree.touching_enemy):
 					#if selected && can_shoot:
 					if selected:
 						_shoot()
 				else:
-					if root.name=="Game3":
-						root._on_Game3_is_arrow()
-					elif root.name=="Game4":
-						root._on_Game4_is_arrow()
+					if tree.name=="Game3":
+						tree._on_Game3_is_arrow()
+					elif tree.name=="Game4":
+						tree._on_Game4_is_arrow()
 		else:
 			_walk()
 			
@@ -335,7 +338,7 @@ func _on_Unit_input_event(_viewport, event, _shape_idx):
 		if event.is_pressed():			
 			if event.button_index == BUTTON_LEFT:
 				_set_selected(not selected)
-				root._select_last()
+				tree._select_last()
 				
 #func hurt(amount):
 #	health-=amount
@@ -552,7 +555,7 @@ func _on_Area2D_body_entered(body):
 	
 
 func _shoot():
-	var bullet_target = root.touching_enemy.position
+	var bullet_target = tree.touching_enemy.position
 	shoot_node.look_at(bullet_target)				
 	var angle = shoot_node.rotation
 	var forward = Vector2(cos(angle),sin(angle))

@@ -12,13 +12,15 @@ var house_b=load("res://Scenes/MouseIcons/house_b.png")
 var townhall=load("res://Scenes/MouseIcons/townHall.png")
 var townhall_b=load("res://Scenes/MouseIcons/townHall_b.png")
 
+#Contador de unidades 
 var unit_count = 1
-var food_points = 2000
-var leaves_points = 2000
-var stone_points = 2000
-var wood_points = 2000
-var clay_points = 2000
-var water_points = 2000
+
+#var food_points = 2000
+#var leaves_points = 2000
+#var stone_points = 2000
+#var wood_points = 2000
+#var clay_points = 2000
+#var water_points = 2000
 
 #Hitos anteriores ya cumplidos
 var group_dressed = false
@@ -37,7 +39,7 @@ var is_townhall_created = false
 var is_warchief_dead = false
 
 
-onready var tree = get_tree().root.get_child(0)
+onready var tree = Globals.current_scene
 onready var food_timer = tree.get_node("food_timer")
 onready var timer_label = tree.get_node("UI/Base/TimerLabel")
 onready var food_label = tree.get_node("UI/Base/Rectangle/FoodLabel")
@@ -103,10 +105,12 @@ var obstacles=[]
 var dragging = false
 var selected = []
 var drag_start = Vector2.ZERO
-#var select_rectangle = RectangleShape2D.new()
+
+#Nodo que dibuja el rectángulo de selección de la cámara.
+onready var select_draw=$SelectDraw
 
 
-onready var draw_rect = get_tree().root.find_node("draw_rect")
+#onready var draw_rect = get_tree().root.find_node("draw_rect")
 
 var is_flipped = false
 
@@ -242,12 +246,12 @@ func _process(_delta):
 	if !is_warchief_dead:
 	
 		timer_label.text = "ATAQUE ENEMIGO: " + str(int(tiger_timer.time_left))
-		food_label.text = str(int(food_points))
-		leaves_label.text = str(int(leaves_points))	
-		stone_label.text = str(int(stone_points))	
-		clay_label.text = str(int(clay_points))
-		wood_label.text = str(int(wood_points))
-		water_label.text = str(int(water_points))
+		food_label.text = str(int(Globals.food_points))
+		leaves_label.text = str(int(Globals.leaves_points))	
+		stone_label.text = str(int(Globals.stone_points))	
+		clay_label.text = str(int(Globals.clay_points))
+		wood_label.text = str(int(Globals.wood_points))
+		water_label.text = str(int(Globals.water_points))
 	
 	
 		_check_units()
@@ -343,7 +347,7 @@ func _unhandled_input(event):
 				#Ponemos el cursor en modo flecha para cancelar la construcción de una casa.
 				_on_Game3_is_arrow()
 			else:
-				if(all_units.size()==0 && food_points<15) || is_warchief_dead:
+				if(all_units.size()==0 && Globals.food_points<15) || is_warchief_dead:
 					replay_confirmation.visible=true
 				else:
 					exit_confirmation.popup()
@@ -362,7 +366,7 @@ func _create_townhall():
 			the_citizen=citizen
 	
 	if the_citizen!=null:
-		if wood_points>=80 && leaves_points>=90 && clay_points>=100 && !is_mouse_entered && !is_too_close:					
+		if Globals.wood_points>=80 && Globals.leaves_points>=90 && Globals.clay_points>=100 && !is_mouse_entered && !is_too_close:					
 			var new_townhall=TownHall.instance()
 			new_townhall.condition_max=80
 			#the_citizen.agent.set_target_location(get_global_mouse_position())
@@ -375,9 +379,9 @@ func _create_townhall():
 				#Si el nuevo centro cívico está a la izquierda.
 				the_citizen.target_position=Vector2(new_townhall.position.x+125,new_townhall.position.y)
 			the_townhall=new_townhall
-			wood_points-=80
-			leaves_points-=90
-			clay_points-=100
+			Globals.wood_points-=80
+			Globals.leaves_points-=90
+			Globals.clay_points-=100
 			print("Se construyó un centro cívico.")
 			#Actualizamos el mapa de navegación con el nuevo centro cívico.
 			_update_path(new_townhall)	
@@ -418,7 +422,7 @@ func _create_house():
 	#Si el ciudadano seleccionado para construir la casa no es nulo.			
 	if the_citizen!=null:
 		#Si tenemos al menos 20 puntos de madera y 40 de arcilla.
-		if wood_points>=20 && clay_points>=40 && !is_mouse_entered && !is_too_close:
+		if Globals.wood_points>=20 && Globals.clay_points>=40 && !is_mouse_entered && !is_too_close:
 			#Instanciamos la nueva casa.					
 			var new_house=House.instance()
 			#Ubicamos la nueva casa en la posición global del mouse.
@@ -444,8 +448,8 @@ func _create_house():
 			#Identificamos la nueva casa con la variable the_house.
 			the_house=new_house
 			#Restamos 20 puntos de madera y 40 de arcilla.
-			wood_points-=20
-			clay_points-=40
+			Globals.wood_points-=20
+			Globals.clay_points-=40
 			#Mensaje de comprobación para la consola.
 			print("Se construyó una casa.")
 	
@@ -489,7 +493,7 @@ func _create_unit(cost = 0):
 	if(group_has_bag):
 		new_Unit.has_bag=true	
 		new_Unit.get_child(3).visible = true
-	food_points -= cost
+	Globals.food_points -= cost
 	new_Unit.position = spawn_position.position
 	for unit in units.get_children():
 		if new_Unit.position==unit.position:
@@ -510,7 +514,7 @@ func _create_warrior_unit(cost = 0):
 	if(group_has_bag):
 		new_Unit.has_bag=true	
 		new_Unit.get_child(3).visible = true
-	food_points -= cost
+	Globals.food_points -= cost
 	units.add_child(new_Unit)
 	all_units.append(new_Unit)
 			
@@ -526,7 +530,7 @@ func _check_victory():
 		next_scene_confirmation.visible=true
 		
 		
-	elif(all_units.size()==0 && food_points<15):
+	elif(all_units.size()==0 && Globals.food_points<15):
 		prompts_label.text = "Has sido derrotado."
 		replay_confirmation.visible=true
 	else:
@@ -633,7 +637,7 @@ func _check_victory():
 		
 	
 func _on_CreateCitizen_pressed():
-	if food_points>=15:
+	if Globals.food_points>=15:
 		_create_unit(15)
 		
 
@@ -901,7 +905,7 @@ func _on_MakeWarchief_pressed():
 
 func _on_CreateWarriorUnit_pressed():
 	var warriors_count=0
-	if food_points>=30 && wood_points>=20 && stone_points>=10:
+	if Globals.food_points>=30 && Globals.wood_points>=20 && Globals.stone_points>=10:
 		var new_warrior = Warrior.instance()
 		new_warrior.position = spawn_position.position
 		for warrior in warriors.get_children():
@@ -916,9 +920,9 @@ func _on_CreateWarriorUnit_pressed():
 		
 		warriors.add_child(new_warrior)
 		all_units.append(new_warrior)
-		food_points-=30
-		wood_points-=20
-		stone_points-=10
+		Globals.food_points-=30
+		Globals.wood_points-=20
+		Globals.stone_points-=10
 	
 	if warriors_count>=3:
 		prompts_label.text="Cuando consideres que tienes suficientes guerreros,\nenvíalos a pelear contra los mamuts,\nal noroeste del lago."

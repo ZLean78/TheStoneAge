@@ -6,7 +6,7 @@ func _unhandled_input(_event):
 		get_tree().quit()
 
 func _on_Start_pressed():
-	Globals.go_to_scene("res://Scenes/Game2/Game2.tscn")
+	Globals.go_to_scene("res://Scenes/Game3/Game3.tscn")
 
 
 func _on_Quit_pressed():

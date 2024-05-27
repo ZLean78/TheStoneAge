@@ -95,7 +95,6 @@ void fragment(){
 shader = SubResource( 10 )
 
 [node name="Game3" type="Node2D"]
-position = Vector2( -4, -11 )
 script = ExtResource( 10 )
 Unit2 = ExtResource( 2 )
 Warrior = ExtResource( 16 )
@@ -150,7 +149,7 @@ navpoly = SubResource( 2 )
 
 [node name="Units" type="Node2D" parent="."]
 
-[node name="Unit2" parent="Units" groups=["units"] instance=ExtResource( 2 )]
+[node name="Unit2" parent="Units" instance=ExtResource( 2 )]
 position = Vector2( 669, 347 )
 
 [node name="Tigers" type="Node2D" parent="."]
