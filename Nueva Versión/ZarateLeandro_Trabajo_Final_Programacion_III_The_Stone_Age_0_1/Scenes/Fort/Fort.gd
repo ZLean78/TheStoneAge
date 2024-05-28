@@ -3,8 +3,8 @@ extends Node2D
 
 export var condition=0
 export var condition_max=0
-onready var root=get_tree().root.get_child(0)
-onready var units=get_tree().root.get_child(0).get_node("Units")
+onready var tree
+onready var units
 onready var timer=$Timer
 #onready var all_timer=get_tree().root.get_child(0).get_node("food_timer")
 onready var bar=$Bar
@@ -12,7 +12,9 @@ onready var polygon=$CollisionPolygon2D
 var mouse_entered=false
 var body_entered
 
-
+func _ready():
+	tree=Globals.current_scene
+	units=tree.units
 
 func _process(_delta):
 	bar.value=condition
@@ -37,9 +39,9 @@ func _get_damage(body):
 			condition-=3
 			if condition<0:
 				polygon.visible=false
-				root.is_fort_built=false
+				tree.is_fort_built=false
 				queue_free()
-				root.emit_signal("remove_building")
+				tree.emit_signal("remove_building")
 	else:
 		body_entered=null
 

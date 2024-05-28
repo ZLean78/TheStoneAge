@@ -2,35 +2,35 @@ extends Node2D
 
 #Íconos que indican los diferentes modos del mouse para llevar
 #a cabo distintas acciones.
-var basket=load("res://Scenes/MouseIcons/basket.png")
-var arrow=load("res://Scenes/MouseIcons/arrow.png")
-var pick_mattock=load("res://Scenes/MouseIcons/pick_mattock.png")
-var sword=load("res://Scenes/MouseIcons/sword.png")
-var claypot=load("res://Scenes/MouseIcons/claypot.png")
-var hand=load("res://Scenes/MouseIcons/hand.png")
-var axe=load("res://Scenes/MouseIcons/axe.png")
-var house=load("res://Scenes/MouseIcons/house.png")
-var house_b=load("res://Scenes/MouseIcons/house_b.png")
-var townhall=load("res://Scenes/MouseIcons/townHall.png")
-var townhall_b=load("res://Scenes/MouseIcons/townHall_b.png")
-var fort=load("res://Scenes/MouseIcons/fort_s.png")
-var fort_b=load("res://Scenes/MouseIcons/fort_sb.png")
-var barn=load("res://Scenes/MouseIcons/barn_s.png")
-var barn_b=load("res://Scenes/MouseIcons/barn_sb.png")
-var tower=load("res://Scenes/MouseIcons/tower_s.png")
-var tower_b=load("res://Scenes/MouseIcons/tower_sb.png")
+#var basket=load("res://Scenes/MouseIcons/basket.png")
+#var arrow=load("res://Scenes/MouseIcons/arrow.png")
+#var pick_mattock=load("res://Scenes/MouseIcons/pick_mattock.png")
+#var sword=load("res://Scenes/MouseIcons/sword.png")
+#var claypot=load("res://Scenes/MouseIcons/claypot.png")
+#var hand=load("res://Scenes/MouseIcons/hand.png")
+#var axe=load("res://Scenes/MouseIcons/axe.png")
+#var house=load("res://Scenes/MouseIcons/house.png")
+#var house_b=load("res://Scenes/MouseIcons/house_b.png")
+#var townhall=load("res://Scenes/MouseIcons/townHall.png")
+#var townhall_b=load("res://Scenes/MouseIcons/townHall_b.png")
+#var fort=load("res://Scenes/MouseIcons/fort_s.png")
+#var fort_b=load("res://Scenes/MouseIcons/fort_sb.png")
+#var barn=load("res://Scenes/MouseIcons/barn_s.png")
+#var barn_b=load("res://Scenes/MouseIcons/barn_sb.png")
+#var tower=load("res://Scenes/MouseIcons/tower_s.png")
+#var tower_b=load("res://Scenes/MouseIcons/tower_sb.png")
 
 #Contador de unidades civiles.
 var unit_count = 1
 
 #Puntos de cada uno de los recursos naturales a recolectar.
-var food_points = 1000
-var leaves_points = 1000
-var stone_points = 1000
-var copper_points = 1000
-var wood_points = 1000
-var clay_points = 2000
-var water_points = 1000
+#var food_points = 1000
+#var leaves_points = 1000
+#var stone_points = 1000
+#var copper_points = 1000
+#var wood_points = 1000
+#var clay_points = 2000
+#var water_points = 1000
 
 #Hitos anteriores ya cumplidos
 var group_dressed = false
@@ -56,7 +56,7 @@ var is_fort_built=false
 
 
 
-onready var tree = get_tree().root.get_child(0)
+onready var tree = Globals.current_scene
 onready var food_timer = tree.get_node("food_timer")
 onready var enemy_timer = tree.get_node("enemy_timer")
 onready var timer_label = tree.get_node("UI/Base/TimerLabel")
@@ -157,9 +157,8 @@ var selected = []
 var drag_start = Vector2.ZERO
 #var select_rectangle = RectangleShape2D.new()
 
-#Nodo con sprite de rectángulo azul que se redimensiona para
-#dibujar el rectángulo de selección.
-onready var draw_rect = get_tree().root.find_node("draw_rect")
+#Nodo que dibuja el rectángulo de selección de la cámara.
+onready var select_draw=$SelectDraw
 
 #Indica si están invertidos o no los transform de las unidades.
 var is_flipped = false
@@ -344,13 +343,13 @@ func _process(_delta):
 			timer_label.text = "PELIGRO EN: " + str(int(attack_counter))
 			
 			
-		food_label.text = str(int(food_points))
-		leaves_label.text = str(int(leaves_points))	
-		stone_label.text = str(int(stone_points))	
-		copper_label.text = str(int(copper_points))
-		clay_label.text = str(int(clay_points))
-		wood_label.text = str(int(wood_points))
-		water_label.text = str(int(water_points))
+		food_label.text = str(int(Globals.food_points))
+		leaves_label.text = str(int(Globals.leaves_points))	
+		stone_label.text = str(int(Globals.stone_points))	
+		copper_label.text = str(int(Globals.copper_points))
+		clay_label.text = str(int(Globals.clay_points))
+		wood_label.text = str(int(Globals.wood_points))
+		water_label.text = str(int(Globals.water_points))
 		
 		for enemy_warrior in enemy_warriors_node.get_children():
 			state_label.text= "Distancia: " + str(enemy_warrior.position.distance_to(enemy_warrior.target_position))
@@ -514,7 +513,7 @@ func _unhandled_input(event):
 				#Ponemos el cursor en modo flecha para cancelar la construcción de una casa.
 				_on_Game4_is_arrow()
 			elif arrow_mode:
-				if(all_units.size()==0 && food_points<15) || is_warchief_dead:
+				if(all_units.size()==0 && Globals.food_points<15) || is_warchief_dead:
 					replay_confirmation.visible=true
 				else:
 					exit_confirmation.popup()
@@ -533,7 +532,7 @@ func _create_fort():
 			the_citizen=citizen
 
 	if the_citizen!=null:
-		if wood_points>=300 && stone_points>=200 && leaves_points>=40 && !is_mouse_entered && !is_too_close:					
+		if Globals.wood_points>=300 && Globals.stone_points>=200 && Globals.leaves_points>=40 && !is_mouse_entered && !is_too_close:					
 			var new_fort=Fort.instance()
 			#the_citizen.agent.set_target_location(get_global_mouse_position())
 			new_fort.position = get_global_mouse_position()
@@ -552,9 +551,9 @@ func _create_fort():
 				#Si el nuevo fuerte está a la izquierda
 				the_citizen.target_position=Vector2(new_fort.position.x+60,new_fort.position.y)
 			the_fort=new_fort
-			wood_points-=300
-			stone_points-=200
-			leaves_points-=40
+			Globals.wood_points-=300
+			Globals.stone_points-=200
+			Globals.leaves_points-=40
 			
 			print("Se construyó un fuerte.")	
 
@@ -597,7 +596,7 @@ func _create_tower():
 	#Si el ciudadano seleccionado para construir la torre no es nulo.		
 	if the_citizen!=null:
 		#Si tenemos al menos 100 puntos de piedra, 80 puntos de madera y 20 de hojas.
-		if stone_points>=100 && wood_points>=80 && leaves_points>=20 && !is_mouse_entered && !is_too_close:					
+		if Globals.stone_points>=100 && Globals.wood_points>=80 && Globals.leaves_points>=20 && !is_mouse_entered && !is_too_close:					
 			#Instanciamos la nueva torre.
 			var new_tower=Tower.instance()
 			#Máximo de puntos de la barra de constitución de una torre.
@@ -623,9 +622,9 @@ func _create_tower():
 			#Identificamos la nueva casa con la variable the_house.
 			the_tower=new_tower
 			#Restamos 100 puntos de piedra, 80 puntos de madera y veinte de hojas.
-			stone_points-=100
-			wood_points-=80
-			leaves_points-=20
+			Globals.stone_points-=100
+			Globals.wood_points-=80
+			Globals.leaves_points-=20
 			#Mensaje de comprobación para la consola.
 			print("Se construyó una torre.")
 	
@@ -670,7 +669,7 @@ func _create_barn():
 	#Si el ciudadano seleccionado para construir el granero no es nulo.		
 	if the_citizen!=null:
 		#Si tenemos al menos 300 puntos de arcilla, 200 puntos de madera y 80 de hojas.
-		if clay_points>=300 && wood_points>=200 && leaves_points>=80 && !is_mouse_entered && !is_too_close:					
+		if Globals.clay_points>=300 && Globals.wood_points>=200 && Globals.leaves_points>=80 && !is_mouse_entered && !is_too_close:					
 			#Instanciamos el nuevo granero.
 			var new_barn=Barn.instance()
 			
@@ -694,9 +693,9 @@ func _create_barn():
 			#Identificamos el nuevo granero con la variable the_barn.
 			the_barn=new_barn
 			#Restamos 300 puntos de arcilla, 200 puntos de madera y 80 de hojas.
-			clay_points-=300
-			wood_points-=200
-			leaves_points-=80
+			Globals.clay_points-=300
+			Globals.wood_points-=200
+			Globals.leaves_points-=80
 			#Mensaje de comprobación para la consola.
 			print("Se construyó un granero.")
 	
@@ -743,7 +742,7 @@ func _create_house():
 	#Si el ciudadano seleccionado para construir la casa no es nulo.		
 	if the_citizen!=null:
 		#Si tenemos al menos 20 puntos de madera y 40 de arcilla.
-		if wood_points>=20 && clay_points>=40 && !is_mouse_entered && !is_too_close:					
+		if Globals.wood_points>=20 && Globals.clay_points>=40 && !is_mouse_entered && !is_too_close:					
 			#Instanciamos la nueva casa.
 			var new_house=House.instance()
 			#Máximo de puntos de la barra de constitución de una casa.
@@ -768,8 +767,8 @@ func _create_house():
 			#Identificamos la nueva casa con la variable the_house.
 			the_house=new_house
 			#Restamos 20 puntos de madera y cuarenta de arcilla.
-			wood_points-=20
-			clay_points-=40
+			Globals.wood_points-=20
+			Globals.clay_points-=40
 			#Mensaje de comprobación para la consola.			
 			print("Se construyó una casa.")
 
@@ -812,7 +811,7 @@ func _create_unit(cost = 0):
 		new_Unit.has_bag=true	
 		new_Unit.get_child(3).visible = true
 	#Restamos el costo de la unidad a los puntos de comida.
-	food_points -= cost
+	Globals.food_points -= cost
 	#Creamos la unidad en la posición spawn_position.
 	new_Unit.position = spawn_position.position
 	#Pero si ya hay otra unidad en esa posición,
@@ -838,7 +837,7 @@ func _create_warrior_unit(cost = 0):
 	if(group_has_bag):
 		new_Unit.has_bag=true	
 		new_Unit.get_child(3).visible = true
-	food_points -= cost
+	Globals.food_points -= cost
 	units.add_child(new_Unit)
 	all_units.append(new_Unit)
 			
@@ -866,7 +865,7 @@ func _check_victory():
 		prompts_label.text = "¡Has ganado!"	
 		next_scene_confirmation.visible=true
 		
-	elif(all_units.size()==0 && food_points<15):
+	elif(all_units.size()==0 && Globals.food_points<15):
 		prompts_label.text = "Has sido derrotado."
 		replay_confirmation.visible=true
 	else:
@@ -880,7 +879,7 @@ func _check_victory():
 #Botón de creación de unidad. 
 #Llama al método create unit con un costo de 15 puntos.	
 func _on_CreateCitizen_pressed():
-	if food_points>=15:
+	if Globals.food_points>=15:
 		_create_unit(15)
 
 	
@@ -924,7 +923,7 @@ func _area_selected(obj):
 		
 
 func _on_Game4_is_arrow():
-	Input.set_custom_mouse_cursor(arrow)
+	Input.set_custom_mouse_cursor(Globals.arrow)
 	arrow_mode=true
 	basket_mode=false
 	mattock_mode=false
@@ -941,7 +940,7 @@ func _on_Game4_is_arrow():
 
 func _on_Game4_is_basket():
 	if !house_mode && !fort_mode:
-		Input.set_custom_mouse_cursor(basket)
+		Input.set_custom_mouse_cursor(Globals.basket)
 		basket_mode=true
 		arrow_mode=false
 		mattock_mode=false
@@ -956,7 +955,7 @@ func _on_Game4_is_basket():
 	
 func _on_Game4_is_pick_mattock():
 	if !house_mode && !fort_mode:
-		Input.set_custom_mouse_cursor(pick_mattock)
+		Input.set_custom_mouse_cursor(Globals.pick_mattock)
 		mattock_mode=true
 		basket_mode=false
 		arrow_mode=false
@@ -971,7 +970,7 @@ func _on_Game4_is_pick_mattock():
 
 func _on_Game4_is_sword():
 	if !house_mode && !fort_mode:
-		Input.set_custom_mouse_cursor(sword)
+		Input.set_custom_mouse_cursor(Globals.sword)
 		sword_mode=true
 		mattock_mode=false
 		basket_mode=false
@@ -986,7 +985,7 @@ func _on_Game4_is_sword():
 
 func _on_Game4_is_hand():
 	if !house_mode && !fort_mode:
-		Input.set_custom_mouse_cursor(hand)
+		Input.set_custom_mouse_cursor(Globals.hand)
 		hand_mode=true
 		mattock_mode=false
 		basket_mode=false
@@ -1002,7 +1001,7 @@ func _on_Game4_is_hand():
 
 func _on_Game4_is_claypot():
 	if !house_mode && !fort_mode:
-		Input.set_custom_mouse_cursor(claypot)
+		Input.set_custom_mouse_cursor(Globals.claypot)
 		claypot_mode=true
 		arrow_mode=false
 		basket_mode=false
@@ -1017,7 +1016,7 @@ func _on_Game4_is_claypot():
 
 func _on_Game4_is_axe():
 	if !house_mode && !fort_mode:
-		Input.set_custom_mouse_cursor(axe)
+		Input.set_custom_mouse_cursor(Globals.axe)
 		axe_mode=true
 		arrow_mode=false
 		basket_mode=false
@@ -1032,9 +1031,9 @@ func _on_Game4_is_axe():
 	
 func _on_Game4_is_house():
 	if is_mouse_entered || is_too_close:
-		Input.set_custom_mouse_cursor(house_b)
+		Input.set_custom_mouse_cursor(Globals.house_b)
 	else:
-		Input.set_custom_mouse_cursor(house)
+		Input.set_custom_mouse_cursor(Globals.house)
 	house_mode=true
 	arrow_mode=false
 	basket_mode=false
@@ -1049,9 +1048,9 @@ func _on_Game4_is_house():
 				
 func _on_Game4_is_fort():
 	if is_mouse_entered || is_too_close:
-		Input.set_custom_mouse_cursor(fort_b)
+		Input.set_custom_mouse_cursor(Globals.fort_b)
 	else:
-		Input.set_custom_mouse_cursor(fort)
+		Input.set_custom_mouse_cursor(Globals.fort)
 	fort_mode=true	
 	arrow_mode=false
 	basket_mode=false
@@ -1066,9 +1065,9 @@ func _on_Game4_is_fort():
 
 func _on_Game4_is_tower():
 	if is_mouse_entered || is_too_close:
-		Input.set_custom_mouse_cursor(tower_b)
+		Input.set_custom_mouse_cursor(Globals.tower_b)
 	else:
-		Input.set_custom_mouse_cursor(tower)
+		Input.set_custom_mouse_cursor(Globals.tower)
 	tower_mode=true	
 	arrow_mode=false
 	basket_mode=false
@@ -1083,9 +1082,9 @@ func _on_Game4_is_tower():
 	
 func _on_Game4_is_barn():
 	if is_mouse_entered || is_too_close:
-		Input.set_custom_mouse_cursor(barn_b)
+		Input.set_custom_mouse_cursor(Globals.barn_b)
 	else:
-		Input.set_custom_mouse_cursor(barn)
+		Input.set_custom_mouse_cursor(Globals.barn)
 	barn_mode=true
 	arrow_mode=false
 	basket_mode=false
@@ -1237,7 +1236,7 @@ func _on_CreateWarriorUnit_pressed():
 	#var warriors_count=0
 	#Si tenemos al menos 30 puntos de comida,
 	#20 de madera y 10 de piedra.
-	if food_points>=30 && wood_points>=20 && stone_points>=10:
+	if Globals.food_points>=30 && Globals.wood_points>=20 && Globals.stone_points>=10:
 		#Instanciamos el nuevo guerrero.
 		var new_warrior = Warrior.instance()
 		#Situamos el guerrero en la posición spawn_position.
@@ -1259,9 +1258,9 @@ func _on_CreateWarriorUnit_pressed():
 		#Agregamos el guerrero al arreglo all_units.
 		all_units.append(new_warrior)
 		#Restamos los puntos del costo del guerrero.
-		food_points-=30
-		wood_points-=20
-		stone_points-=10
+		Globals.food_points-=30
+		Globals.wood_points-=20
+		Globals.stone_points-=10
 	
 	
 
@@ -1340,9 +1339,9 @@ func _check_mouse_modes():
 
 
 func _on_DevelopPottery_pressed():
-	if clay_points>=400 && wood_points>=150:
-		clay_points-=400
-		wood_points-=150
+	if Globals.clay_points>=400 && Globals.wood_points>=150:
+		Globals.clay_points-=400
+		Globals.wood_points-=150
 		is_pottery_developed=true
 		develop_pottery.visible=false
 		#Ataque enemigo por mejora.
@@ -1351,8 +1350,8 @@ func _on_DevelopPottery_pressed():
 
 
 func _on_DevelopCarpentry_pressed():
-	if wood_points>=500:
-		wood_points-=500
+	if Globals.wood_points>=500:
+		Globals.wood_points-=500
 		is_carpentry_developed=true
 		develop_carpentry.visible=false
 		#Ataque enemigo por mejora.
@@ -1361,9 +1360,9 @@ func _on_DevelopCarpentry_pressed():
 
 
 func _on_DevelopMining_pressed():
-	if stone_points>=300 && copper_points>=200:
-		stone_points-=300
-		copper_points-=200
+	if Globals.stone_points>=300 && Globals.copper_points>=200:
+		Globals.stone_points-=300
+		Globals.copper_points-=200
 		is_mining_developed=true
 		develop_mining.visible=false
 		#Ataque enemigo por mejora.
@@ -1372,9 +1371,9 @@ func _on_DevelopMining_pressed():
 
 
 func _on_DevelopMetals_pressed():
-	if stone_points>=250 && copper_points>=150:
-		stone_points-=250
-		copper_points-=150
+	if Globals.stone_points>=250 && Globals.copper_points>=150:
+		Globals.stone_points-=250
+		Globals.copper_points-=150
 		is_metals_developed=true
 		develop_metals.visible=false
 		#Ataque enemigo por mejora.
@@ -1474,7 +1473,7 @@ func _make_attack():
 
 
 func _on_ExitConfirmation_confirmed():
-	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
+	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
 
 
 func _on_ReplayCancel_pressed():
@@ -1488,4 +1487,4 @@ func _on_ReplayOk_pressed():
 
 
 func _on_NextSceneOk_pressed():
-	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
+	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")

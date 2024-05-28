@@ -1,16 +1,16 @@
 extends Node2D
 
-var basket=load("res://Scenes/MouseIcons/basket.png")
-var arrow=load("res://Scenes/MouseIcons/arrow.png")
-var pick_mattock=load("res://Scenes/MouseIcons/pick_mattock.png")
-var sword=load("res://Scenes/MouseIcons/sword.png")
-var claypot=load("res://Scenes/MouseIcons/claypot.png")
-var hand=load("res://Scenes/MouseIcons/hand.png")
-var axe=load("res://Scenes/MouseIcons/axe.png")
-var house=load("res://Scenes/MouseIcons/house.png")
-var house_b=load("res://Scenes/MouseIcons/house_b.png")
-var townhall=load("res://Scenes/MouseIcons/townHall.png")
-var townhall_b=load("res://Scenes/MouseIcons/townHall_b.png")
+#var basket=load("res://Scenes/MouseIcons/basket.png")
+#var arrow=load("res://Scenes/MouseIcons/arrow.png")
+#var pick_mattock=load("res://Scenes/MouseIcons/pick_mattock.png")
+#var sword=load("res://Scenes/MouseIcons/sword.png")
+#var claypot=load("res://Scenes/MouseIcons/claypot.png")
+#var hand=load("res://Scenes/MouseIcons/hand.png")
+#var axe=load("res://Scenes/MouseIcons/axe.png")
+#var house=load("res://Scenes/MouseIcons/house.png")
+#var house_b=load("res://Scenes/MouseIcons/house_b.png")
+#var townhall=load("res://Scenes/MouseIcons/townHall.png")
+#var townhall_b=load("res://Scenes/MouseIcons/townHall_b.png")
 
 #Contador de unidades 
 var unit_count = 1
@@ -748,7 +748,7 @@ func start_move_selection(obj):
 
 
 func _on_Game3_is_arrow():
-	Input.set_custom_mouse_cursor(arrow)
+	Input.set_custom_mouse_cursor(Globals.arrow)
 	arrow_mode=true
 	basket_mode=false
 	mattock_mode=false
@@ -762,7 +762,7 @@ func _on_Game3_is_arrow():
 
 func _on_Game3_is_basket():
 	if !house_mode && !townhall_mode:
-		Input.set_custom_mouse_cursor(basket)
+		Input.set_custom_mouse_cursor(Globals.basket)
 		basket_mode=true
 		arrow_mode=false
 		mattock_mode=false
@@ -775,7 +775,7 @@ func _on_Game3_is_basket():
 	
 func _on_Game3_is_pick_mattock():
 	if !house_mode && !townhall_mode:
-		Input.set_custom_mouse_cursor(pick_mattock)
+		Input.set_custom_mouse_cursor(Globals.pick_mattock)
 		mattock_mode=true
 		basket_mode=false
 		arrow_mode=false
@@ -788,7 +788,7 @@ func _on_Game3_is_pick_mattock():
 
 func _on_Game3_is_sword():
 	if !house_mode && !townhall_mode:
-		Input.set_custom_mouse_cursor(sword)
+		Input.set_custom_mouse_cursor(Globals.sword)
 		sword_mode=true
 		mattock_mode=false
 		basket_mode=false
@@ -801,7 +801,7 @@ func _on_Game3_is_sword():
 
 func _on_Game3_is_hand():
 	if !house_mode && !townhall_mode:
-		Input.set_custom_mouse_cursor(hand)
+		Input.set_custom_mouse_cursor(Globals.hand)
 		hand_mode=true
 		mattock_mode=false
 		basket_mode=false
@@ -815,7 +815,7 @@ func _on_Game3_is_hand():
 
 func _on_Game3_is_claypot():
 	if !house_mode && !townhall_mode:
-		Input.set_custom_mouse_cursor(claypot)
+		Input.set_custom_mouse_cursor(Globals.claypot)
 		claypot_mode=true
 		arrow_mode=false
 		basket_mode=false
@@ -828,7 +828,7 @@ func _on_Game3_is_claypot():
 
 func _on_Game3_is_axe():
 	if !house_mode && !townhall_mode:
-		Input.set_custom_mouse_cursor(axe)
+		Input.set_custom_mouse_cursor(Globals.axe)
 		axe_mode=true
 		arrow_mode=false
 		basket_mode=false
@@ -841,9 +841,9 @@ func _on_Game3_is_axe():
 	
 func _on_Game3_is_house():
 	if is_mouse_entered || is_too_close:
-		Input.set_custom_mouse_cursor(house_b)
+		Input.set_custom_mouse_cursor(Globals.house_b)
 	else:
-		Input.set_custom_mouse_cursor(house)
+		Input.set_custom_mouse_cursor(Globals.house)
 	house_mode=true
 	arrow_mode=false
 	basket_mode=false
@@ -857,9 +857,9 @@ func _on_Game3_is_house():
 	
 func _on_Game3_is_townhall():
 	if is_mouse_entered || is_too_close:
-		Input.set_custom_mouse_cursor(townhall_b)
+		Input.set_custom_mouse_cursor(Globals.townhall_b)
 	else:
-		Input.set_custom_mouse_cursor(townhall)	
+		Input.set_custom_mouse_cursor(Globals.townhall)	
 	townhall_mode=true
 	arrow_mode=false
 	basket_mode=false

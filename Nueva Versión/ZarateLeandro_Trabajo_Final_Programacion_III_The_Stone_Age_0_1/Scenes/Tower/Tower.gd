@@ -3,8 +3,8 @@ extends StaticBody2D
 
 export var condition=0
 export var condition_max=0
-onready var root=get_tree().root.get_child(0)
-onready var units=get_tree().root.get_child(0).get_node("Units")
+onready var tree
+onready var units
 onready var timer=$Timer
 onready var polygon=$CollisionPolygon2D
 #onready var all_timer=get_tree().root.get_child(0).get_node("food_timer")
@@ -23,7 +23,8 @@ export var spear_scene=preload("res://Scenes/Bullet/Bullet.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	tree=Globals.current_scene
+	units=tree.units
 
 
 func _process(_delta):
@@ -44,10 +45,10 @@ func _get_damage(body):
 			condition-=3
 			if condition<0:
 				polygon.visible=false
-				if root.get_node("Towers").get_child_count()<=0:
-					root.is_first_tower_built=false
+				if tree.tower_node.get_child_count()<=0:
+					tree.is_first_tower_built=false
 				queue_free()
-				root.emit_signal("remove_building")
+				tree.emit_signal("remove_building")
 	else:
 		body_entered=null
 
@@ -82,7 +83,7 @@ func _on_Tower_mouse_exited():
 	mouse_entered=false
 	
 func _detect_enemies():
-	for an_enemy in root.enemy_warriors_node.get_children():
+	for an_enemy in tree.enemy_warriors_node.get_children():
 		if is_instance_valid(an_enemy):
 			if position.distance_to(an_enemy.position)<MIN_DISTANCE:
 				target_position=an_enemy.position

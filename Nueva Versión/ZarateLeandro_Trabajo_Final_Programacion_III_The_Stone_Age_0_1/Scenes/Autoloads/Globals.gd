@@ -31,6 +31,7 @@ var stone_points = 0
 var wood_points = 0
 var clay_points = 0
 var water_points = 0
+var copper_points = 0
 
 #Condiciones que afectan a toda la comunidad
 var group_dressed = false

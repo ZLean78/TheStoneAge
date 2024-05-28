@@ -9,8 +9,8 @@ export (float) var SPEED = 50.0
 #Máximo de Salud
 export (float) var MAX_HEALTH = 100.0
 
-#variable que indica el nodo raíz.
-onready var root=get_tree().root.get_child(0)
+#variable que indica el nodo principal de la escena.
+onready var tree
 
 #Temporizador de comida, agrega un punto de comida por segundo cuando la unidad toca un árbol frutal.
 
@@ -135,7 +135,7 @@ export (float) var MIN_DISTANCE
 export (float) var MAX_DISTANCE
 
 #Polígono de navegación.
-onready var nav2d=get_tree().get_root().get_child(0).get_node("nav")
+onready var nav2d
 
 #var colliding_body: KinematicBody2D
 
@@ -155,7 +155,8 @@ signal was_deselected
 
 
 func _ready():
-	
+	tree=Globals.current_scene
+	nav2d=tree.get_node("nav")
 	#connect("was_selected",get_tree().root.get_child(0),"select_unit")
 	#connect("was_deselected",get_tree().root.get_child(0),"deselect_unit")
 	emit_signal("health_change",energy_points)
@@ -584,64 +585,64 @@ func _on_Area2D_body_exited(body):
 		
 		
 func _choose_target():
-	if target_t == target_type.TOWER && root.tower_node.get_child_count()>0:
-		for i in range(0,root.tower_node.get_child_count()):
+	if target_t == target_type.TOWER && tree.tower_node.get_child_count()>0:
+		for i in range(0,tree.tower_node.get_child_count()):
 			if i!=0:
-				if root.tower_node.get_child(i).position.distance_to(position)<root.tower_node.get_child(i-1).position.distance_to(position):
-					target=root.tower_node.get_child(i)
-					target_position=root.tower_node.get_child(i).position
+				if tree.tower_node.get_child(i).position.distance_to(position)<tree.tower_node.get_child(i-1).position.distance_to(position):
+					target=tree.tower_node.get_child(i)
+					target_position=tree.tower_node.get_child(i).position
 #					if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
 #						target=root.tower_node.get_child(i)
 #						target_position=root.tower_node.get_child(i).position
 			else:
-				target=root.tower_node.get_child(0)
-				target_position=root.tower_node.get_child(0).position
-	elif target_t==target_type.BARN && root.barn_node.get_child_count()>0:				
-		for i in range(0,root.barn_node.get_child_count()):
+				target=tree.tower_node.get_child(0)
+				target_position=tree.tower_node.get_child(0).position
+	elif target_t==target_type.BARN && tree.barn_node.get_child_count()>0:				
+		for i in range(0,tree.barn_node.get_child_count()):
 			if i!=0:
-				if root.barn_node.get_child(i).position.distance_to(position)<root.barn_node.get_child(i-1).position.distance_to(position):
-					target=root.barn_node.get_child(i)
-					target_position=root.barn_node.get_child(i).position
+				if tree.barn_node.get_child(i).position.distance_to(position)<tree.barn_node.get_child(i-1).position.distance_to(position):
+					target=tree.barn_node.get_child(i)
+					target_position=tree.barn_node.get_child(i).position
 #					if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
 #						target=root.tower_node.get_child(i)
 #						target_position=root.tower_node.get_child(i).position
 			else:
-				target=root.barn_node.get_child(0)
-				target_position=root.barn_node.get_child(0).position
-	elif target_t==target_type.FORT && root.fort_node.get_child_count()>0:
-		for i in range(0,root.fort_node.get_child_count()):
+				target=tree.barn_node.get_child(0)
+				target_position=tree.barn_node.get_child(0).position
+	elif target_t==target_type.FORT && tree.fort_node.get_child_count()>0:
+		for i in range(0,tree.fort_node.get_child_count()):
 			if i!=0:
-				if root.fort_node.get_child(i).position.distance_to(position)<root.fort_node.get_child(i-1).position.distance_to(position):
-					target=root.fort_node.get_child(i)
-					target_position=root.fort_node.get_child(i).position
+				if tree.fort_node.get_child(i).position.distance_to(position)<tree.fort_node.get_child(i-1).position.distance_to(position):
+					target=tree.fort_node.get_child(i)
+					target_position=tree.fort_node.get_child(i).position
 #					if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
 #						target=root.tower_node.get_child(i)
 #						target_position=root.tower_node.get_child(i).position
 			else:
-				target=root.fort_node.get_child(0)
-				target_position=root.fort_node.get_child(0).position
-	elif ((target_t == target_type.TOWER && root.tower_node.get_child_count()==0)||
-		(target_t==target_type.BARN && root.barn_node.get_child_count()==0)||
-		(target_t==target_type.FORT && root.fort_node.get_child_count()==0)):
-		if root.warriors.get_child_count()>0:					
-			for i in range(0,root.warriors.get_child_count()):
+				target=tree.fort_node.get_child(0)
+				target_position=tree.fort_node.get_child(0).position
+	elif ((target_t == target_type.TOWER && tree.tower_node.get_child_count()==0)||
+		(target_t==target_type.BARN && tree.barn_node.get_child_count()==0)||
+		(target_t==target_type.FORT && tree.fort_node.get_child_count()==0)):
+		if tree.warriors.get_child_count()>0:					
+			for i in range(0,tree.warriors.get_child_count()):
 				if i!=0:
-					if root.warriors.get_child(i).position.distance_to(position)<root.warriors.get_child(i-1).position.distance_to(position):
-						target=root.warriors.get_child(i)
-						target_position=root.warriors.get_child(i).position
+					if tree.warriors.get_child(i).position.distance_to(position)<tree.warriors.get_child(i-1).position.distance_to(position):
+						target=tree.warriors.get_child(i)
+						target_position=tree.warriors.get_child(i).position
 				else:
-					target=root.warriors.get_child(0)
-					target_position=root.warriors.get_child(0).position	
+					target=tree.warriors.get_child(0)
+					target_position=tree.warriors.get_child(0).position	
 		else:
-			if root.units.get_child_count()>0:
-				for i in range(0,root.units.get_child_count()):
+			if tree.units.get_child_count()>0:
+				for i in range(0,tree.units.get_child_count()):
 					if i!=0:
-						if root.units.get_child(i).position.distance_to(position)<root.units.get_child(i-1).position.distance_to(position):
-							target=root.units.get_child(i)
-							target_position=root.units.get_child(i).position
+						if tree.units.get_child(i).position.distance_to(position)<tree.units.get_child(i-1).position.distance_to(position):
+							target=tree.units.get_child(i)
+							target_position=tree.units.get_child(i).position
 					else:
-						target=root.units.get_child(0)
-						target_position=root.units.get_child(0).position	
+						target=tree.units.get_child(0)
+						target_position=tree.units.get_child(0).position	
 
 func _state_machine():
 	match AI_state:
@@ -682,13 +683,13 @@ func _state_machine():
 	
 
 func _on_EnemyWarrior_mouse_entered():
-	get_tree().get_root().get_child(0)._on_Game4_is_sword()
-	get_tree().root.get_child(0).emit_signal("is_sword")
-	get_tree().root.get_child(0).touching_enemy=self
+	tree._on_Game4_is_sword()
+	tree.emit_signal("is_sword")
+	tree.touching_enemy=self
 
 
 func _on_EnemyWarrior_mouse_exited():
-	get_tree().get_root().get_child(0)._on_Game4_is_arrow()
+	tree._on_Game4_is_arrow()
 
 
 func _on_DetectionArea_body_entered(body):
