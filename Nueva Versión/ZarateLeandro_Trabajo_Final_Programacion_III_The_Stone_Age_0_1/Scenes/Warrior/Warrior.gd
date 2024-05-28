@@ -143,8 +143,10 @@ signal was_deselected
 
 
 func _ready():
-	connect("was_selected",Globals.current_scene,"_select_unit")
-	connect("was_deselected",Globals.current_scene,"_deselect_unit")
+	tree=Globals.current_scene
+	nav2d=tree.get_node("nav")
+	connect("was_selected",tree,"_select_unit")
+	connect("was_deselected",tree,"_deselect_unit")
 	emit_signal("health_change",energy_points)
 	
 	tree=Globals.current_scene
@@ -176,9 +178,9 @@ func _set_selected(value):
 		#label.visible = value
 		bar.visible = value
 		if selected:
-			emit_signal("was_selected",tree)
+			emit_signal("was_selected",self)
 		else:
-			emit_signal("was_deselected",tree)
+			emit_signal("was_deselected",self)
 
 	
 

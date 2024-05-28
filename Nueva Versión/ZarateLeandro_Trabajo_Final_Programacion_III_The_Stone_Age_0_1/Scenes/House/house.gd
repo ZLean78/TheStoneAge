@@ -3,15 +3,17 @@ extends StaticBody2D
 
 export var condition=0
 export var condition_max=0
-onready var root=get_tree().root.get_child(0)
-onready var units=get_tree().root.get_child(0).get_node("Units")
+onready var tree
+onready var units
 onready var timer=$Timer
 #onready var all_timer=get_tree().root.get_child(0).get_node("food_timer")
 onready var bar=$Bar
 var mouse_entered=false
 
 
-	
+func _ready():
+	tree=Globals.current_scene	
+	units=tree.get_node("Units")
 	
 func _process(_delta):
 	bar.value=condition

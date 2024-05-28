@@ -992,11 +992,11 @@ func _check_mouse_modes():
 
 
 func _on_ExitConfirmation_confirmed():
-	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
+	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
 
 
 func _on_ReplayConfirmation_confirmed():
-	get_tree().change_scene("res://Scenes/Game3/Game3.tscn")
+	Globals.go_to_scene("res://Scenes/Game3/Game3.tscn")
 
 
 func _on_ReplayOk_pressed():
@@ -1010,4 +1010,4 @@ func _on_ReplayCancel_pressed():
 
 
 func _on_NextSceneOk_pressed():
-	get_tree().change_scene("res://Scenes/Game4/Game4.tscn")
+	Globals.go_to_scene("res://Scenes/Game4/Game4.tscn")

@@ -107,9 +107,9 @@ func _on_Area2D_body_entered(body):
 		body.queue_free()	
 	
 	if life <=0:
-		get_tree().root.get_child(0).food_points+=90
-		get_tree().root.get_child(0).wood_points+=60
-		get_tree().root.get_child(0).stone_points+=40
+		Globals.food_points+=90
+		Globals.wood_points+=60
+		Globals.stone_points+=40
 		is_dead=true
 		queue_free()
 			
@@ -122,14 +122,14 @@ func _on_Area2D_body_exited(body):
 		body.is_enemy_touching=false
 
 func _on_Mammoth_mouse_entered():
-	get_tree().get_root().get_child(0)._on_Game3_is_sword()
-	get_tree().root.get_child(0).emit_signal("is_sword")
-	get_tree().root.get_child(0).touching_enemy=self
+	tree._on_Game3_is_sword()
+	tree.emit_signal("is_sword")
+	tree.touching_enemy=self
 
 
 
 func _on_Mammoth_mouse_exited():
-	get_tree().get_root().get_child(0)._on_Game3_is_arrow()
+	tree._on_Game3_is_arrow()
 
 
 

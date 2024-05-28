@@ -659,7 +659,7 @@ func _check_units():
 
 
 func _on_ExitConfirmation_confirmed():
-	get_tree().change_scene("res://Scenes/Menu/Menu.tscn")
+	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
 
 
 
@@ -674,4 +674,4 @@ func _on_ReplayCancel_pressed():
 
 
 func _on_NextSceneOk_pressed():
-	get_tree().change_scene("res://Scenes/Game3/Game3.tscn")
+	Globals.go_to_scene("res://Scenes/Game3/Game3.tscn")
