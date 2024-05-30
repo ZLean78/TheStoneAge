@@ -231,33 +231,18 @@ autostart = true
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="Base" type="Control" parent="UI"]
-anchor_right = 0.995
-margin_top = 600.0
-margin_right = 8.40002
-margin_bottom = 720.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -100.0
+margin_right = 800.0
 focus_mode = 1
 
 [node name="Rectangle" type="NinePatchRect" parent="UI/Base"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-size_flags_horizontal = 2
 size_flags_vertical = 0
 texture = ExtResource( 4 )
-
-[node name="draw_rect" type="ColorRect" parent="UI/Base/Rectangle"]
-show_behind_parent = true
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 640.0
-margin_top = -360.0
-margin_right = -640.0
-margin_bottom = -480.0
-grow_horizontal = 2
-grow_vertical = 2
-input_pass_on_modal_close_click = false
-size_flags_horizontal = 2
-size_flags_vertical = 2
-color = Color( 0.0627451, 0.27451, 0.835294, 0.768627 )
 
 [node name="CreateCitizen" type="TextureButton" parent="UI/Base/Rectangle"]
 margin_left = 1060.0
@@ -271,15 +256,16 @@ texture_normal = ExtResource( 8 )
 
 [node name="PromptsLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 220.0
-margin_top = 6.00006
-margin_right = 662.0
-margin_bottom = 122.0
+margin_top = 6.0
+margin_right = 610.0
+margin_bottom = 105.0
 text = "Recoge lodo, agua, alimentos, madera, piedra y hojas
 para cumplir con cada uno de los hitos
 marcados al seleccionar la
 entrada de la cueva. Escapa de los tigres dientes de sable
 o arrójales piedras haciendo
 clic derecho sobre ellos estandoa gran distancia.."
+autowrap = true
 
 [node name="FoodTexture" type="TextureRect" parent="UI/Base/Rectangle"]
 margin_left = 17.0
@@ -425,10 +411,10 @@ margin_bottom = 100.0
 text = "0"
 
 [node name="TimerLabel" type="Label" parent="UI/Base"]
-margin_left = 1007.0
-margin_top = -569.0
-margin_right = 1238.0
-margin_bottom = -519.0
+margin_left = 1100.0
+margin_top = -600.0
+margin_right = 1100.0
+margin_bottom = -600.0
 text = "ATAQUE ENEMIGO:
 000"
 align = 1

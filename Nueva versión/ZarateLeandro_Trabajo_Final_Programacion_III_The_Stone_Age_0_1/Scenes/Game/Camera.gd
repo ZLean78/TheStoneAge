@@ -64,20 +64,20 @@ func _process(delta):
 				 - int(Input.is_action_pressed("ui_left")))
 	var inpy = (int(Input.is_action_pressed("ui_down"))
 				 - int(Input.is_action_pressed("ui_up")))
-	position.x=lerp(position.x,position.x+inpx*speed*zoom.x,speed*delta)
-	position.y=lerp(position.y,position.y+inpy*speed*zoom.y,speed*delta)
+	position.x=lerp(position.x,position.x+inpx*panSpeed*zoom.x,panSpeed*delta)
+	position.y=lerp(position.y,position.y+inpy*panSpeed*zoom.y,panSpeed*delta)
 
 	#movimiento de cámara con mouse
 	#if Input.is_key_pressed(KEY_CONTROL):
 	#chequear posición del mouse
 	if mousePos.x < marginX:
-		position.x=lerp(position.x,position.x-abs(mousePos.x-marginX)/marginX*panSpeed*zoom.x,panSpeed*delta)
+		position.x=lerp(position.x,position.x-abs(mousePos.x-marginX)/marginX*(panSpeed/10)*zoom.x,(panSpeed/10)*delta)
 	elif mousePos.x > ProjectSettings.get("display/window/size/width") - marginX:
-		position.x=lerp(position.x,position.x+abs(mousePos.x-ProjectSettings.get("display/window/size/width")+marginX)/marginX*panSpeed*zoom.x,panSpeed*delta)
+		position.x=lerp(position.x,position.x+abs(mousePos.x-ProjectSettings.get("display/window/size/width")+marginX)/marginX*(panSpeed/10)*zoom.x,(panSpeed/10)*delta)
 	if mousePos.y < marginY:
-		position.y=lerp(position.y,position.y-abs(mousePos.y-marginY)/marginY*panSpeed*zoom.y,panSpeed*delta)
+		position.y=lerp(position.y,position.y-abs(mousePos.y-marginY)/marginY*(panSpeed/10)*zoom.y,(panSpeed/10)*delta)
 	elif mousePos.y > ProjectSettings.get("display/window/size/height") - marginY:
-		position.y=lerp(position.y,position.y+abs(mousePos.y-ProjectSettings.get("display/window/size/height")+marginY)/marginY*panSpeed*zoom.y,panSpeed*delta)
+		position.y=lerp(position.y,position.y+abs(mousePos.y-ProjectSettings.get("display/window/size/height")+marginY)/marginY*(panSpeed/10)*zoom.y,(panSpeed/10)*delta)
 
 	if Input.is_action_just_pressed("ui_left_mouse_button"):
 		if get_parent().arrow_mode:

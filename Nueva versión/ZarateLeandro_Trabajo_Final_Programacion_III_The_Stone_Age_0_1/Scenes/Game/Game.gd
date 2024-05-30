@@ -122,8 +122,8 @@ func _process(_delta):
 			
 	for a_unit in all_units:
 		
-		a_unit.position.x = clamp(a_unit.position.x,-1028,screensize.x)
-		a_unit.position.y = clamp(a_unit.position.y,-608,screensize.y)
+		#a_unit.position.x = clamp(a_unit.position.x,-1028,screensize.x)
+		#a_unit.position.y = clamp(a_unit.position.y,-608,screensize.y)
 	
 	
 		a_unit._set_its_raining(its_raining)
@@ -151,6 +151,10 @@ func _unhandled_input(event):
 				exit_confirmation.popup()
 				exit_confirmation.get_ok().text="Aceptar"
 				exit_confirmation.get_cancel().text="cancelar"
+	if event.is_action_pressed("PrintScreen"):
+		var image = get_viewport().get_texture().get_data()
+		image.flip_y()
+		image.save_png("res://captures/image.png")
 #///////////////////////////////////////////////////////////////////////////
 #FUNCIONES DE CREACIÓN Y CONFIGURACIÓN DE UNIDADES
 
