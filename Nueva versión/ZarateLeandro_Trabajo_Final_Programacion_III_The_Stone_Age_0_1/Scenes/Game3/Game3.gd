@@ -199,6 +199,8 @@ func _ready():
 	all_quarries.append(quarry1)
 	all_quarries.append(quarry2)
 	
+	$UI.add_child(Globals.settings)
+	
 	for i in range(0,11):
 		_create_unit();
 	
@@ -353,7 +355,8 @@ func _unhandled_input(event):
 					exit_confirmation.popup()
 					exit_confirmation.get_ok().text="Aceptar"
 					exit_confirmation.get_cancel().text="cancelar"
-		
+		if event.is_action_pressed("Settings"):
+			Globals.settings.visible=!Globals.settings.visible
 	
 
 func _create_townhall():
@@ -992,14 +995,17 @@ func _check_mouse_modes():
 
 
 func _on_ExitConfirmation_confirmed():
+	$UI.remove_child(Globals.settings)
 	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
 
 
-func _on_ReplayConfirmation_confirmed():
-	Globals.go_to_scene("res://Scenes/Game3/Game3.tscn")
+#func _on_ReplayConfirmation_confirmed():
+#	$UI.remove_child(Globals.settings)
+#	Globals.go_to_scene("res://Scenes/Game3/Game3.tscn")
 
 
 func _on_ReplayOk_pressed():
+	$UI.remove_child(Globals.settings)
 	get_tree().reload_current_scene()
 
 
@@ -1010,4 +1016,5 @@ func _on_ReplayCancel_pressed():
 
 
 func _on_NextSceneOk_pressed():
+	$UI.remove_child(Globals.settings)
 	Globals.go_to_scene("res://Scenes/Game4/Game4.tscn")

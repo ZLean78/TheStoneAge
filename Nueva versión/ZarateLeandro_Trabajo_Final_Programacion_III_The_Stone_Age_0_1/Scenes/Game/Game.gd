@@ -62,7 +62,6 @@ var all_trees=[]
 
 
 
-
 #Variable booleana para conocer si el objeto en función está invertido en x o y (?).
 var is_flipped = false
 
@@ -108,6 +107,9 @@ func _ready():
 	emit_signal("is_arrow")
 	arrow_mode=true
 	basket_mode=false
+	
+	
+	$UI.add_child(Globals.settings)
 
 #Función _process(_delta)
 func _process(_delta):
@@ -155,6 +157,9 @@ func _unhandled_input(event):
 		var image = get_viewport().get_texture().get_data()
 		image.flip_y()
 		image.save_png("res://captures/image.png")
+	if event.is_action_pressed("Settings"):
+		Globals.settings.visible=!Globals.settings.visible
+	
 #///////////////////////////////////////////////////////////////////////////
 #FUNCIONES DE CREACIÓN Y CONFIGURACIÓN DE UNIDADES
 
@@ -359,10 +364,12 @@ func _check_victory():
 
 
 func _on_ExitConfirmation_confirmed():
+	$UI.remove_child(Globals.settings)
 	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
 	
 
 func _on_ReplayOk_pressed():
+	$UI.remove_child(Globals.settings)
 	Globals.reload_current_scene()
 
 
@@ -373,4 +380,5 @@ func _on_ReplayCancel_pressed():
 
 
 func _on_NextSceneOk_pressed():
+	$UI.remove_child(Globals.settings)
 	Globals.go_to_scene("res://Scenes/Game2/Game2.tscn")

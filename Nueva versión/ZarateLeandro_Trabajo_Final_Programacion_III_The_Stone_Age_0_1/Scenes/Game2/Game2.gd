@@ -162,6 +162,8 @@ func _ready():
 
 #	all_quarries.append(quarry1)
 #	all_quarries.append(quarry2)
+
+	$UI.add_child(Globals.settings)
 	
 	_create_unit();
 	
@@ -263,6 +265,8 @@ func _unhandled_input(event):
 				exit_confirmation.get_cancel().text="cancelar"
 		else:
 			_on_Game2_is_arrow()
+	if event.is_action_pressed("Settings"):
+		Globals.settings.visible=!Globals.settings.visible
 			
 	
 func _create_unit(cost = 0):
@@ -659,11 +663,13 @@ func _check_units():
 
 
 func _on_ExitConfirmation_confirmed():
+	$UI.remove_child(Globals.settings)
 	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
 
 
 
 func _on_ReplayOk_pressed():
+	$UI.remove_child(Globals.settings)
 	get_tree().reload_current_scene()
 
 
@@ -674,4 +680,5 @@ func _on_ReplayCancel_pressed():
 
 
 func _on_NextSceneOk_pressed():
+	$UI.remove_child(Globals.settings)
 	Globals.go_to_scene("res://Scenes/Game3/Game3.tscn")

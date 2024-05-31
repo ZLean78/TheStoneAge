@@ -22,7 +22,7 @@ var barn_b=load("res://Scenes/MouseIcons/barn_sb.png")
 var tower=load("res://Scenes/MouseIcons/tower_s.png")
 var tower_b=load("res://Scenes/MouseIcons/tower_sb.png")
 
-
+#var settings=load("res://Scenes/Settings/Settings.tscn")
 
 #Puntos de recursos de la comunidad.
 var food_points = 15
@@ -37,11 +37,18 @@ var copper_points = 0
 var group_dressed = false
 var group_has_bag = false
 
+var screen_size:Vector2
+
+var settings_scene=load("res://Scenes/Settings/Settings.tscn")
+var settings=settings_scene.instance()
 
 func _ready():
 	root=get_tree().root
 	current_scene = root.get_child(root.get_child_count()-1)
+	screen_size=Vector2(1280,720)
 	
+
+
 	
 
 func go_to_scene(path):
