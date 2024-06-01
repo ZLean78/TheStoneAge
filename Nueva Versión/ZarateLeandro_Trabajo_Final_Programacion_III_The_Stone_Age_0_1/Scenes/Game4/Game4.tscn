@@ -209,7 +209,7 @@ position = Vector2( 719, 387 )
 [node name="Warriors" type="Node2D" parent="."]
 z_as_relative = false
 
-[node name="EnemyWarriors" type="Node2D" parent="."]
+[node name="EnemyWarriors" type="YSort" parent="."]
 
 [node name="Tigers" type="Node2D" parent="."]
 z_as_relative = false

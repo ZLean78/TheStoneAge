@@ -1461,7 +1461,7 @@ func _on_Game4_remove_building():
 #				an_enemy.AI_state=0
 
 func _make_attack():
-	for i in range(0,8):
+	for i in range(0,9):
 		var new_enemy_warrior=EnemyWarrior.instance()
 		if i<3:
 			new_enemy_warrior.target_t=new_enemy_warrior.target_type.TOWER
@@ -1474,7 +1474,20 @@ func _make_attack():
 		new_enemy_warrior.position=enemy_spawn.position
 		new_enemy_warrior.AI_state=0
 			 
-
+	#Formación de las unidades.
+	for i in range(0,9):
+		if i==0:
+			enemy_warriors_node.get_child(i).position = Vector2(enemy_spawn.position.x+50,enemy_spawn.position.y+50)
+			#all_units[i].position = Vector2(camera.get_viewport().size.x/6,camera.get_viewport().size.y/4)
+		else:
+			if i<4:
+				enemy_warriors_node.get_child(i).position =	Vector2(enemy_warriors_node.get_child(i-1).position.x+20,enemy_warriors_node.get_child(i-1).position.y)
+			elif i>=4 && i<8:
+				if i==4:
+					enemy_warriors_node.get_child(i).position =	Vector2(enemy_warriors_node.get_child(0).position.x,enemy_warriors_node.get_child(i-1).position.y+20)
+				else:
+					enemy_warriors_node.get_child(i).position = Vector2(enemy_warriors_node.get_child(i-1).position.x+20,enemy_warriors_node.get_child(i-1).position.y)
+			
 
 
 func _on_ExitConfirmation_confirmed():

@@ -141,7 +141,12 @@ onready var nav2d
 
 #var body_velocity=Vector2.ZERO
 
+#Variables para evitar encimarse.
+const move_threshold=5.0
+var last_distance_to_target = Vector2.ZERO
+var current_distance_to_target = Vector2.ZERO
 
+onready var stop_timer=$StopTimer
 
 #Señal de cambio de salud (incremento o decremento).
 signal health_change
@@ -238,8 +243,9 @@ func _physics_process(delta):
 	if(all_timer.is_stopped()):
 		all_timer.start()
 
-
-
+	if get_slide_count() && stop_timer.is_stopped():
+		stop_timer.start()
+		last_distance_to_target = position.distance_to(target)
 		
 func _get_damage(var the_beast):
 	if "Tiger" in the_beast.name && the_beast.visible && is_enemy_touching:
@@ -739,3 +745,10 @@ func _on_DetectionArea_body_exited(body):
 func _on_all_timer_timeout():
 	if !can_shoot:
 		can_shoot=true
+
+
+func _on_StopTimer_timeout():
+	if get_slide_count():
+		current_distance_to_target = position.distance_to(target)
+		if last_distance_to_target < current_distance_to_target + move_threshold:
+			target = position
