@@ -456,7 +456,7 @@ func _unhandled_input(event):
 		#Botón derecho del mouse, mueve a las unidades.
 		if event.is_action_pressed("RightClick"):
 			#Si el cursor no está en modo casa, fuerte, torre o granero.
-			if !house_mode && !fort_mode && !tower_mode && !barn_mode:
+			if arrow_mode:
 				#Movemos a las unidades y las hacemos formar.
 				for i in range(0,selected_units.size()):
 					if i==0:
@@ -470,6 +470,9 @@ func _unhandled_input(event):
 			if house_mode || fort_mode || tower_mode || barn_mode:
 				#Ponemos el cursor en modo flecha para cancelar la construcción de una casa.
 				_on_Game4_is_arrow()
+			if basket_mode || axe_mode || mattock_mode:
+				for i in range(0,selected_units.size()):
+					selected_units[i].target_position=get_global_mouse_position()
 
 		#Botón izquierdo del mouse. En este procedimiento se utiliza para
 		#construir casas y otros edificios.

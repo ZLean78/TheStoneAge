@@ -246,14 +246,18 @@ func _select_last():
 		
 func _unhandled_input(event):
 	if event.is_action_pressed("RightClick"):
-		for i in range(0,selected_units.size()):			
-			if i==0:
-				selected_units[i].target_position=get_global_mouse_position()
-			else:
-				if i%4==0:
-					selected_units[i].target_position=Vector2(selected_units[0].target_position.x,selected_units[i-1].target_position.y+20)
+		if arrow_mode:
+			for i in range(0,selected_units.size()):			
+				if i==0:
+					selected_units[i].target_position=get_global_mouse_position()
 				else:
-					selected_units[i].target_position=Vector2(selected_units[i-1].target_position.x+20,selected_units[i-1].target_position.y)
+					if i%4==0:
+						selected_units[i].target_position=Vector2(selected_units[0].target_position.x,selected_units[i-1].target_position.y+20)
+					else:
+						selected_units[i].target_position=Vector2(selected_units[i-1].target_position.x+20,selected_units[i-1].target_position.y)
+		if basket_mode || axe_mode || mattock_mode:
+			for i in range(0,selected_units.size()):
+				selected_units[i].target_position=get_global_mouse_position()
 	if event.is_action_pressed("EscapeKey"):
 		#Si el cursor está en modo flecha.
 		if arrow_mode:

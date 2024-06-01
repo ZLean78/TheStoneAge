@@ -311,7 +311,7 @@ func _unhandled_input(event):
 						is_too_close=false		
 		
 		if event.is_action_pressed("RightClick"):
-			if !house_mode:
+			if arrow_mode:
 				for i in range(0,selected_units.size()):
 					if i==0:
 						selected_units[i].target_position=get_global_mouse_position()
@@ -322,6 +322,9 @@ func _unhandled_input(event):
 							selected_units[i].target_position=Vector2(selected_units[i-1].target_position.x+20,selected_units[i-1].target_position.y)
 			if house_mode || townhall_mode:
 				_on_Game3_is_arrow()
+			if basket_mode || axe_mode || mattock_mode:
+				for i in range(0,selected_units.size()):
+					selected_units[i].target_position=get_global_mouse_position()
 		
 		if event is InputEventMouseButton && event.is_action_pressed("LeftClick"):
 			if house_mode:
