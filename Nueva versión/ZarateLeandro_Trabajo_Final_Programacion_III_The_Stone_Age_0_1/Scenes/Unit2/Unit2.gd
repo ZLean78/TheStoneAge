@@ -180,6 +180,8 @@ var heal_counter=60
 var can_heal_itself=false
 var can_heal_another
 
+var is_timer_timeout=false
+
 
 #Señal de cambio de salud (incremento o decremento).
 signal health_change
@@ -862,49 +864,59 @@ func _check_pine_tree_touching():
 #	
 func _on_all_timer_timeout():
 	timer_count+=1	
-	if body_entered!=null && is_instance_valid(body_entered):
-		_get_damage(body_entered)
-		if is_warchief:
+	
+#	if body_entered!=null && is_instance_valid(body_entered):
+#		if "tiger" in body_entered.name || "mammoth" in body_entered.name || "enemy" in body_entered.name:
+#			_get_damage(body_entered)
+#		if is_warchief:
+#			if !("enemy" in body_entered.name) && "unit" in body_entered.name || "warrior" in body_entered.name:
+#				heal(body_entered)
 		
-			if energy_points<MAX_HEALTH && heal_counter>0:
-				heal_counter-=1
-				if heal_counter<=0:
-					can_heal_itself=true
+	if energy_points<MAX_HEALTH && heal_counter>0:
+		heal_counter-=1
+		if heal_counter<=0:
+			can_heal_itself=true
 		
 			
-			if can_heal_itself && timer_count>3:
-				self_heal()
-		
+		if can_heal_itself && timer_count>3:
+			self_heal()
+	
+	
+	
 	if pickable!=null:
 		_collect_pickable(pickable)
 	if timer_count>3:
 		can_shoot=true
+		
 	if timer_count>4:
 		timer_count=0
 		
 	all_timer.start()
+	
 	
 
 func _die():
 	queue_free()
 
 func _on_Area2D_body_entered(body):
-	body_entered=body
-	if is_warchief:
-		if ("Unit" in body_entered.name || "Warrior" in body_entered.name) && !"Enemy" in body_entered.name:
-			if all_timer.stop():
-				heal(body_entered)
 	
-func heal(_body):	
-	if _body.energy_points<_body.MAX_HEALTH:
-		_body.energy_points+=5
-		_body.bar._set_energy_points(energy_points)
-		_body.bar._update_energy()
+	if is_warchief:
+		if ("Unit" in body.name || "Warrior" in body.name) && !("Enemy" in body.name):
+			can_heal_another=true
+			heal(body)
+	
+func heal(_body):
+	if timer_count==2 && can_heal_another:
+		print("curando")	
+		if _body.energy_points<_body.MAX_HEALTH:
+			_body.energy_points+=0.1
+			_body.bar._set_energy_points(energy_points)
+			_body.bar._update_energy()
 		
-		if _body.energy_points>_body.MAX_HEALTH:
-			_body.energy_points=_body.MAX_HEALTH
+			if _body.energy_points>_body.MAX_HEALTH:
+				_body.energy_points=_body.MAX_HEALTH
 		
-	_body.bar.visible=true
+		_body.bar.visible=true
 		
 			
 func self_heal():	
@@ -919,10 +931,7 @@ func self_heal():
 			heal_counter=60
 
 
-func _on_Area2D_body_exited(body):
-	body_entered=body
-	if "Unit" in body_entered.name || "Warrior" in body_entered.name:
-		can_heal_another=false
+
 
 
 func _shoot():
@@ -950,3 +959,7 @@ func _walk():
 	path = arrPath
 	index = 0				
 			
+
+
+func _on_Area2D_body_exited(body):
+	can_heal_another=false

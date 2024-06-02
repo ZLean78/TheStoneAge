@@ -33,9 +33,9 @@ onready var leaves_label = $UI/Base/Rectangle/LeavesLabel
 onready var rectangle = $UI/Base/Rectangle
 onready var add_clothes = $UI/Base/Rectangle/AddClothes
 onready var add_bag = $UI/Base/Rectangle/AddBag
-onready var next_scene_confirmation = $UI/Base/NextSceneConfirmation
+onready var next_scene_confirmation = $UI/Base/Rectangle/NextSceneConfirmation
 onready var exit_confirmation = $UI/Base/ExitConfirmation
-onready var replay_confirmation = $UI/Base/ReplayConfirmation
+onready var replay_confirmation = $UI/Base/Rectangle/ReplayConfirmation
 
 #Nodo que dibuja el rectángulo de selección de la cámara.
 onready var select_draw=$SelectDraw
@@ -374,7 +374,7 @@ func _on_ExitConfirmation_confirmed():
 
 func _on_ReplayOk_pressed():
 	$UI.remove_child(Globals.settings)
-	Globals.reload_current_scene()
+	Globals.go_to_scene("res://Scenes/Game/Game.tscn")
 
 
 func _on_ReplayCancel_pressed():

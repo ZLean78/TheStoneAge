@@ -272,7 +272,7 @@ func _get_damage():
 			else:
 				visible=false
 				_set_selected(false)			
-				get_tree().root.get_child(0).all_units.erase(self)	
+				Globals.current_scene.all_units.erase(self)	
 				_set_erased(true)
 					
 #				else:
