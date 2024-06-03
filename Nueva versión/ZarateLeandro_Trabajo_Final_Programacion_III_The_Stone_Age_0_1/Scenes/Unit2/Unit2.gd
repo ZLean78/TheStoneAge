@@ -50,7 +50,7 @@ var initialPosition = Vector2()
 #Puntos de comida de la unidad.
 var food_points = 0
 #Salud.
-var energy_points = MAX_HEALTH
+export (float) var energy_points = 1
 #Variable que indica si se está arrastrando el mouse sobre la unidad.
 var dragging = true
 
@@ -175,7 +175,7 @@ var index = 0
 onready var nav2d
 
 #Variables para curarse o curar a otro
-var health=MAX_HEALTH
+#var health=MAX_HEALTH
 var heal_counter=60
 var can_heal_itself=false
 var can_heal_another
@@ -200,7 +200,7 @@ func _ready():
 	nav2d=tree.get_node("nav")
 	connect("was_selected",tree,"_select_unit")
 	connect("was_deselected",tree,"_deselect_unit")
-	emit_signal("health_change",energy_points)
+	#emit_signal("health_change",energy_points)
 	
 	
 	has_bag=true
@@ -224,7 +224,8 @@ func _ready():
 	#randomize()
 	#bar.value = randi() % 90 + 10
 	
-
+	bar._set_energy_points(energy_points)
+	bar._update_energy()
 	
 	
 func _deferred_start():
@@ -299,6 +300,10 @@ func _physics_process(delta):
 	_check_plant_touching()
 	_check_pine_tree_touching()
 	
+
+	
+
+	
 #	if(Input.is_action_just_pressed("shoot") && selected):
 #		bullet = bullet_scene.instance()
 #		bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
@@ -306,8 +311,8 @@ func _physics_process(delta):
 #		get_parent().add_child(bullet)
 		
 		
-	if(all_timer.is_stopped()):
-		timer_count-=1
+#	if(all_timer.is_stopped()):
+#		timer_count-=1
 		
 	
 		
@@ -513,19 +518,19 @@ func _on_Unit_input_event(_viewport, event, _shape_idx):
 				_set_selected(not selected)
 				#tree._select_last()
 
-func hurt(amount):
-	health-=amount
-	#esto podría ir en un setter
-	if health <= 0:
-		if !dead:
-			emit_signal("im_dead")
-			dead = true
-			set_physics_process(false) 
-		health = 0
-		return
-	elif health > 100:
-		health = 100
-	emit_signal("health_change",health)
+#func hurt(amount):
+#	health-=amount
+#	#esto podría ir en un setter
+#	if health <= 0:
+#		if !dead:
+#			emit_signal("im_dead")
+#			dead = true
+#			set_physics_process(false) 
+#		health = 0
+#		return
+#	elif health > 100:
+#		health = 100
+#	emit_signal("health_change",health)
 
 
 func _on_Target_Position_body_entered(_body):
@@ -863,6 +868,8 @@ func _check_pine_tree_touching():
 	_set_pine_tree_touching(pine_tree_touching)
 #	
 func _on_all_timer_timeout():
+	if body_entered!=null:
+		heal(body_entered)
 	timer_count+=1	
 	
 #	if body_entered!=null && is_instance_valid(body_entered):
@@ -872,14 +879,14 @@ func _on_all_timer_timeout():
 #			if !("enemy" in body_entered.name) && "unit" in body_entered.name || "warrior" in body_entered.name:
 #				heal(body_entered)
 		
-	if energy_points<MAX_HEALTH && heal_counter>0:
-		heal_counter-=1
-		if heal_counter<=0:
-			can_heal_itself=true
-		
-			
-		if can_heal_itself && timer_count>3:
-			self_heal()
+#	if energy_points<MAX_HEALTH && heal_counter>0:
+#		heal_counter-=1
+#		if heal_counter<=0:
+#			can_heal_itself=true
+#
+#
+#		if can_heal_itself && timer_count>3:
+#			self_heal()
 	
 	
 	
@@ -902,17 +909,19 @@ func _on_Area2D_body_entered(body):
 	
 	if is_warchief:
 		if ("Unit" in body.name || "Warrior" in body.name) && !("Enemy" in body.name):
+			body_entered=body
 			can_heal_another=true
-			heal(body)
 	
 func heal(_body):
-	if timer_count==2 && can_heal_another:
-		print("curando")	
+	if is_warchief:
+		#print(to_delta)	
 		if _body.energy_points<_body.MAX_HEALTH:
-			_body.energy_points+=0.1
-			_body.bar._set_energy_points(energy_points)
+			#if timer_count==0:
+			_body.energy_points+=5
+			print("unt energy" + str(_body.energy_points))
+			_body.bar._set_energy_points(_body.energy_points)
 			_body.bar._update_energy()
-		
+	
 			if _body.energy_points>_body.MAX_HEALTH:
 				_body.energy_points=_body.MAX_HEALTH
 		
@@ -963,3 +972,4 @@ func _walk():
 
 func _on_Area2D_body_exited(body):
 	can_heal_another=false
+	body_entered=null
