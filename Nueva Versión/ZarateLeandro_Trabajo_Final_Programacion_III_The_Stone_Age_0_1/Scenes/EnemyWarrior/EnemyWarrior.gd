@@ -209,13 +209,12 @@ func _physics_process(delta):
 		_move_along_path(SPEED*delta)
 		
 		if position.distance_to(target_position) > MAX_DISTANCE:
-			_walk()				
-		
-	
-		
+			_walk()	
 	
 	#Máquina de estados para las acciones.
 	_state_machine()
+	
+	
 	#animar al personaje	
 	_animate()
 	# Orientar al warrior.
