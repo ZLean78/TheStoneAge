@@ -33,6 +33,15 @@ var clay_points = 2000
 var water_points = 2000
 var copper_points = 2000
 
+#Puntos de recursos del pueblo enemigo:
+var e_food_points = 0
+var e_leaves_points = 0
+var e_stone_points = 0
+var e_wood_points = 0
+var e_clay_points = 0
+var e_water_points = 0
+var e_copper_points = 0
+
 #Condiciones que afectan a toda la comunidad
 var group_dressed = false
 var group_has_bag = false

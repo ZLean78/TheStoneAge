@@ -218,7 +218,7 @@ func _ready():
 	tree=Globals.current_scene
 	food_timer=tree.food_timer
 	fruit_trees_node=tree.get_node("FruitTrees")
-	pine_trees_node=tree.get("PineTrees")
+	pine_trees_node=tree.get_node("PineTrees")
 	plants_node=tree.get_node("Plants")
 	quarries_node=tree.get_node("Quarries")
 	copper_node=tree.get_node("Coppers")
@@ -361,70 +361,70 @@ func _collect_pickable(var _pickable):
 				if _pickable.type=="fruit_tree":
 					if(has_bag):
 						if(_pickable.points>=4):
-							Globals.food_points +=4
+							Globals.e_food_points +=4
 							_pickable.points-=4
 						else:
-							Globals.food_points += _pickable.points
+							Globals.e_food_points += _pickable.points
 							_pickable.points = 0
 					else:					
-						Globals.food_points +=1
+						Globals.e_food_points +=1
 						_pickable.points-=1
 						#if _pickable.points <= 0:
 						#_pickable.empty = true
 				elif _pickable.type == "pine_tree":
 					if(tree.is_stone_weapons_developed):
 						if(_pickable.points>=4):
-							Globals.wood_points +=4
+							Globals.e_wood_points +=4
 							_pickable.points-=4
 						else:
-							Globals.wood_points += _pickable.points
+							Globals.e_wood_points += _pickable.points
 							_pickable.points = 0
 					else:					
-						Globals.wood_points +=1
+						Globals.e_wood_points +=1
 						_pickable.points-=1
 				elif _pickable.type == "plant":
 					if(has_bag):
 						if(_pickable.points>=4):
-							Globals.leaves_points +=4
+							Globals.e_leaves_points +=4
 							_pickable.points-=4
 						else:
-							Globals.leaves_points+=_pickable.points
+							Globals.e_leaves_points+=_pickable.points
 							_pickable.points=0
 					else:
-						Globals.leaves_points+=1
+						Globals.e_leaves_points+=1
 						_pickable.points-=1
 				elif _pickable.type == "quarry":
 					if(tree.is_stone_weapons_developed):
 						if(_pickable.points>=4):
-							Globals.stone_points+=4
+							Globals.e_stone_points+=4
 							_pickable.points-=4
 						else:
-							Globals.stone_points+=_pickable.points
+							Globals.e_stone_points+=_pickable.points
 							_pickable.points=0
 					else:
-						Globals.stone_points+=1
+						Globals.e_stone_points+=1
 						_pickable.points-=1
 				elif _pickable.type == "copper":
 					if(tree.is_stone_weapons_developed):
 						if(_pickable.points>=4):
-							Globals.copper_points+=4
+							Globals.e_copper_points+=4
 							_pickable.points-=4
 						else:
-							Globals.copper_points+=_pickable.points
+							Globals.e_copper_points+=_pickable.points
 							_pickable.points=0
 					else:
-						Globals.copper_points+=1
+						Globals.e_copper_points+=1
 						_pickable.points-=1
 			if _pickable.points <= 0:
 				_pickable.empty = true	
 	else:
 		if _pickable.touching && pickable_touching:
 			if _pickable.type == "puddle" && puddle_touching:
-				Globals.clay_points+=4
+				Globals.e_clay_points+=4
 			elif _pickable.type == "lake" && lake_touching:
 				if tree.name == "Game2":
 					if tree.is_claypot_made:
-						Globals.water_points+=4
+						Globals.e_water_points+=4
 					else:
 						tree.prompts_label.text="Debes desarrollar el cuenco de barro \n para poder transportar agua."
 				else:
@@ -1031,26 +1031,30 @@ func _choose_target():
 		for i in range(0,pine_trees_node.get_child_count()):
 			if i!=0:
 				if pine_trees_node.get_child(i).position.distance_to(position)<pine_trees_node.get_child(i-1).position.distance_to(position):
-					target=pine_trees_node.get_child(i)
-					target_position=pine_trees_node.get_child(i).position
-#					if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
-#						target=root.tower_node.get_child(i)
-#						target_position=root.tower_node.get_child(i).position
+					if !pine_trees_node.get_child(i).empty:
+						target=pine_trees_node.get_child(i)
+						target_position=pine_trees_node.get_child(i).position
+#						if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
+#							target=root.tower_node.get_child(i)
+#							target_position=root.tower_node.get_child(i).position
 			else:
-				target=pine_trees_node.get_child(0)
-				target_position=pine_trees_node.get_child(0).position
+				if !pine_trees_node.get_child(i).empty:
+					target=pine_trees_node.get_child(0)
+					target_position=pine_trees_node.get_child(0).position
 	elif target_t==target_type.PLANT && plants_node.get_child_count()>0:
 		for i in range(0,plants_node.get_child_count()):
 			if i!=0:
 				if plants_node.get_child(i).position.distance_to(position)<plants_node.get_child(i-1).position.distance_to(position):
-					target=plants_node.get_child(i)
-					target_position=plants_node.get_child(i).position
+					if !plants_node.get_child(i).empty:
+						target=plants_node.get_child(i)
+						target_position=plants_node.get_child(i).position
 #					if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
 #						target=root.tower_node.get_child(i)
 #						target_position=root.tower_node.get_child(i).position
 			else:
-				target=plants_node.get_child(0)
-				target_position=plants_node.get_child(0).position
+				if !plants_node.get_child(i).empty:
+					target=plants_node.get_child(0)
+					target_position=plants_node.get_child(0).position
 	
 	
 

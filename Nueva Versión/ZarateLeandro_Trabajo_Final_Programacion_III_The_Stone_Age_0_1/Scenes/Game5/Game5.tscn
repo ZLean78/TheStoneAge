@@ -206,7 +206,6 @@ z_as_relative = false
 [node name="Unit2" parent="Units" instance=ExtResource( 1 )]
 process_priority = 1
 position = Vector2( 719, 387 )
-energy_points = 1.0
 
 [node name="Warriors" type="Node2D" parent="."]
 z_as_relative = false
@@ -226,21 +225,27 @@ position = Vector2( -841, -542 )
 
 [node name="EnemyCitizen4" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -937, -428 )
+target_t = 1
 
 [node name="EnemyCitizen5" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -994, -363 )
+target_t = 1
 
 [node name="EnemyCitizen6" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -870, -378 )
+target_t = 1
 
 [node name="EnemyCitizen7" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -855, -324 )
+target_t = 2
 
 [node name="EnemyCitizen8" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -930, -225 )
+target_t = 2
 
 [node name="EnemyCitizen9" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -969, -303 )
+target_t = 2
 
 [node name="Tigers" type="Node2D" parent="."]
 z_as_relative = false

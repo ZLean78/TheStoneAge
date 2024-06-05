@@ -353,8 +353,14 @@ func _process(_delta):
 		wood_label.text = str(int(Globals.wood_points))
 		water_label.text = str(int(Globals.water_points))
 		
-		for enemy_warrior in enemy_warriors_node.get_children():
-			state_label.text= "Distancia: " + str(enemy_warrior.position.distance_to(enemy_warrior.target_position))
+		state_label.text= ("Inventario Enemigo: \n" +
+		"Comida: " + str(Globals.e_food_points) +
+		"\nHojas: " + str(Globals.e_leaves_points) +
+		"\nMadera: " + str(Globals.e_wood_points) +
+		"\nArcilla: " + str(Globals.e_clay_points) +
+		"\nAgua: " + str(Globals.e_water_points) +
+		"\nPiedra: " + str(Globals.e_stone_points) +
+		"\nCobre: " + str(Globals.e_copper_points)) 
 	
 		#Comprobar las unidades existentes para ver si alguna está muerta.
 		_check_units()
