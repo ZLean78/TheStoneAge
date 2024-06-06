@@ -102,6 +102,7 @@ onready var barn_node = $Barn
 onready var nav2d=$nav
 onready var townhall_node=$TownHall
 onready var enemy_warriors_node=$EnemyWarriors
+onready var enemy_citizens_node=$EnemyCitizens
 onready var next_scene_confirmation = $UI/Base/NextSceneConfirmation
 onready var exit_confirmation=$UI/Base/ExitConfirmation
 onready var replay_confirmation=$UI/Base/ReplayConfirmation
@@ -240,6 +241,10 @@ func _ready():
 	#en la escena principal al arreglo all_plants.
 	all_plants.append(tree.find_node("Plant"));
 	all_plants.append(tree.find_node("Plant2"));
+	all_plants.append(tree.find_node("Plant3"));
+	all_plants.append(tree.find_node("Plant4"));
+	all_plants.append(tree.find_node("Plant5"));
+	all_plants.append(tree.find_node("Plant6"));
 	
 	
 	#Agregamos cada uno de los pinos existentes 
@@ -251,7 +256,9 @@ func _ready():
 	all_pine_trees.append(tree.find_node("PineTree5"))
 	all_pine_trees.append(tree.find_node("PineTree6"))
 	all_pine_trees.append(tree.find_node("PineTree7"))
-	all_pine_trees.append(tree.find_node("PineTree8"))	
+	all_pine_trees.append(tree.find_node("PineTree8"))
+	all_pine_trees.append(tree.find_node("PineTree9"))
+	all_pine_trees.append(tree.find_node("PineTree10"))			
 	
 	#Agregamos las cuatro canteras existentes 
 	#en la escena principal al arreglo all_quarries.
@@ -353,6 +360,16 @@ func _process(_delta):
 		wood_label.text = str(int(Globals.wood_points))
 		water_label.text = str(int(Globals.water_points))
 		
+		
+		for enemy_citizen in enemy_citizens_node.get_children():
+			if enemy_citizen.target!=null:
+				if !enemy_citizen.target.empty:
+					timer_label.text = "Puntos de Objetivo: " + str(enemy_citizen.target.points)
+				else:
+					timer_label.text = "Objetivo Vacío" + ", Estado: " + str(enemy_citizen.AI_state)
+			else:
+				timer_label.text = "Objetivo Nulo"
+		
 		state_label.text= ("Inventario Enemigo: \n" +
 		"Comida: " + str(Globals.e_food_points) +
 		"\nHojas: " + str(Globals.e_leaves_points) +
@@ -373,6 +390,9 @@ func _process(_delta):
 
 		#Comprobar si todos los árboles de fruita han sido consumidos.
 		_check_fruit_trees()
+		
+		#Comprobar si todas las plantas han sido consumidas
+		_check_plants()
 		
 		#Comprobar si todas las canteras han sido agotadas.
 		_check_quarries()
@@ -1161,14 +1181,14 @@ func _on_MakeWarchief_pressed():
 		
 
 func _check_pine_trees():
-	var not_all_trees_empty=false
+	var not_all_pine_trees_empty=false
 	
 	for a_pine_tree in all_pine_trees:
 		if !a_pine_tree.empty:
-			not_all_trees_empty=true
+			not_all_pine_trees_empty=true
 			break
 			
-	if not_all_trees_empty==false:
+	if not_all_pine_trees_empty==false:
 		for a_pine_tree in all_pine_trees:
 			a_pine_tree.points+=30
 			a_pine_tree.empty=false
@@ -1184,7 +1204,22 @@ func _check_fruit_trees():
 	if not_all_fruit_trees_empty==false:
 		for a_fruit_tree in all_trees:
 			a_fruit_tree.points+=30
-			a_fruit_tree.empty=false	
+			a_fruit_tree.empty=false
+
+func _check_plants():
+	var not_all_plants_empty=false
+	
+	for a_plant in all_plants:
+		if !a_plant.empty:
+			not_all_plants_empty=true
+			break
+			
+	if not_all_plants_empty==false:
+		for a_plant in all_plants:
+			a_plant.points+=60
+			a_plant.empty=false	
+	
+		
 			
 func _check_quarries():
 	var not_all_quarries_empty=false
@@ -1229,17 +1264,7 @@ func _check_coppers():
 			copper2.points+=150
 			copper2.empty=false
 
-func _check_plants():
-	var not_all_plants_empty=false
-	
-	for a_plant in all_plants:
-		if !a_plant.empty:
-			not_all_plants_empty=true
-			
-	if not_all_plants_empty==false:
-		for a_plant in all_plants:
-			a_plant.points+=60
-			a_plant.empty=false	
+
 			
 
 		

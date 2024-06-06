@@ -93,7 +93,7 @@ var is_erased = false
 
 
 #Posición adonde la unidad debe moverse.
-var target_position = Vector2.ZERO
+var target_position
 
 #Indica si la unidad puede agregar puntos de comida o no.
 var can_add = false
@@ -284,8 +284,9 @@ func _physics_process(delta):
 	if AI_state==1 || AI_state==2:
 		_move_along_path(SPEED*delta)
 		
-		if position.distance_to(target_position) > MAX_DISTANCE:
-			_walk()		
+		if target_position!=null:
+			if position.distance_to(target_position) > MAX_DISTANCE:
+				_walk()		
 	
 	
 	if selected:
@@ -295,12 +296,12 @@ func _physics_process(delta):
 		if box.visible == true:
 			box.visible = false
 	
-	if target_position!=Vector2.ZERO:
-		if position.distance_to(target_position) > 10:			
-			_move_along_path(SPEED*delta)
-		else:
-			target_position=position
-			velocity=Vector2.ZERO
+#	if target_position!=Vector2.ZERO:
+#		if position.distance_to(target_position) > 10:			
+#			_move_along_path(SPEED*delta)
+#		else:
+#			target_position=position
+#			velocity=Vector2.ZERO
 		
 
 
@@ -333,9 +334,9 @@ func _physics_process(delta):
 	
 		
 	#revisar si está tocando un árbol o una planta.
-	_check_fruit_tree_touching()
-	_check_plant_touching()
-	_check_pine_tree_touching()
+	#_check_fruit_tree_touching()
+	#_check_plant_touching()
+	#_check_pine_tree_touching()
 	
 
 	
@@ -356,65 +357,65 @@ func _physics_process(delta):
 func _collect_pickable(var _pickable):
 	if _pickable.type == "fruit_tree" or _pickable.type == "pine_tree" or _pickable.type == "plant" or _pickable.type == "quarry" or _pickable.type == "copper":
 		if _pickable.touching && !_pickable.empty && pickable_touching:
-			if((abs(position.x-_pickable.position.x)<50)&&
-			(abs(position.y-_pickable.position.y)<50)):
-				if _pickable.type=="fruit_tree":
-					if(has_bag):
-						if(_pickable.points>=4):
-							Globals.e_food_points +=4
-							_pickable.points-=4
-						else:
-							Globals.e_food_points += _pickable.points
-							_pickable.points = 0
-					else:					
-						Globals.e_food_points +=1
-						_pickable.points-=1
-						#if _pickable.points <= 0:
-						#_pickable.empty = true
-				elif _pickable.type == "pine_tree":
-					if(tree.is_stone_weapons_developed):
-						if(_pickable.points>=4):
-							Globals.e_wood_points +=4
-							_pickable.points-=4
-						else:
-							Globals.e_wood_points += _pickable.points
-							_pickable.points = 0
-					else:					
-						Globals.e_wood_points +=1
-						_pickable.points-=1
-				elif _pickable.type == "plant":
-					if(has_bag):
-						if(_pickable.points>=4):
-							Globals.e_leaves_points +=4
-							_pickable.points-=4
-						else:
-							Globals.e_leaves_points+=_pickable.points
-							_pickable.points=0
+			#if((abs(position.x-_pickable.position.x)<50)&&
+			#(abs(position.y-_pickable.position.y)<50)):
+			if _pickable.type=="fruit_tree":
+				if(has_bag):
+					if(_pickable.points>=4):
+						Globals.e_food_points +=4
+						_pickable.points-=4
 					else:
-						Globals.e_leaves_points+=1
-						_pickable.points-=1
-				elif _pickable.type == "quarry":
-					if(tree.is_stone_weapons_developed):
-						if(_pickable.points>=4):
-							Globals.e_stone_points+=4
-							_pickable.points-=4
-						else:
-							Globals.e_stone_points+=_pickable.points
-							_pickable.points=0
+						Globals.e_food_points += _pickable.points
+						_pickable.points = 0
+				else:					
+					Globals.e_food_points +=1
+					_pickable.points-=1
+					#if _pickable.points <= 0:
+					#_pickable.empty = true
+			elif _pickable.type == "pine_tree":
+				if(tree.is_stone_weapons_developed):
+					if(_pickable.points>=4):
+						Globals.e_wood_points +=4
+						_pickable.points-=4
 					else:
-						Globals.e_stone_points+=1
-						_pickable.points-=1
-				elif _pickable.type == "copper":
-					if(tree.is_stone_weapons_developed):
-						if(_pickable.points>=4):
-							Globals.e_copper_points+=4
-							_pickable.points-=4
-						else:
-							Globals.e_copper_points+=_pickable.points
-							_pickable.points=0
+						Globals.e_wood_points += _pickable.points
+						_pickable.points = 0
+				else:					
+					Globals.e_wood_points +=1
+					_pickable.points-=1
+			elif _pickable.type == "plant":
+				if(has_bag):
+					if(_pickable.points>=4):
+						Globals.e_leaves_points +=4
+						_pickable.points-=4
 					else:
-						Globals.e_copper_points+=1
-						_pickable.points-=1
+						Globals.e_leaves_points+=_pickable.points
+						_pickable.points=0
+				else:
+					Globals.e_leaves_points+=1
+					_pickable.points-=1
+			elif _pickable.type == "quarry":
+				if(tree.is_stone_weapons_developed):
+					if(_pickable.points>=4):
+						Globals.e_stone_points+=4
+						_pickable.points-=4
+					else:
+						Globals.e_stone_points+=_pickable.points
+						_pickable.points=0
+				else:
+					Globals.e_stone_points+=1
+					_pickable.points-=1
+			elif _pickable.type == "copper":
+				if(tree.is_stone_weapons_developed):
+					if(_pickable.points>=4):
+						Globals.e_copper_points+=4
+						_pickable.points-=4
+					else:
+						Globals.e_copper_points+=_pickable.points
+						_pickable.points=0
+				else:
+					Globals.e_copper_points+=1
+					_pickable.points-=1
 			if _pickable.points <= 0:
 				_pickable.empty = true	
 	else:
@@ -818,7 +819,7 @@ func _animate():
 	
 	#if position.distance_to(get_node("Single_Tap_Device/Target_Position").position) < 5:
 	#target_position = get_global_mouse_position()
-	if position.distance_to(target_position) < 5:
+	if target_position==null || position.distance_to(target_position) < 5:
 		if(!is_dressed):
 			if(!is_girl):
 				sprite.animation = "male_idle1"
@@ -830,7 +831,8 @@ func _animate():
 			else:
 				sprite.animation = "female_idle1_d"
 		if(bag_sprite.visible):
-			bag_sprite.animation = "bag_1"
+				bag_sprite.animation = "bag_1"
+	
 	
 
 
@@ -948,6 +950,8 @@ func _on_Area2D_body_entered(body):
 		if ("Unit" in body.name || "Warrior" in body.name) && !("Enemy" in body.name):
 			body_entered=body
 			can_heal_another=true
+	else:
+		body_entered=body
 	
 func heal(_body):
 	if is_warchief:
@@ -1013,6 +1017,20 @@ func _on_Area2D_body_exited(body):
 	
 	
 func _choose_target():
+	if target_t==target_type.PLANT && plants_node.get_child_count()>0:
+		for i in range(0,plants_node.get_child_count()):
+			if i!=0:
+				if plants_node.get_child(i).position.distance_to(position)<plants_node.get_child(i-1).position.distance_to(position):
+					if !plants_node.get_child(i).empty:
+						target=plants_node.get_child(i)
+						target_position=plants_node.get_child(i).position
+#						if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
+#							target=root.tower_node.get_child(i)
+#							target_position=root.tower_node.get_child(i).position
+			else:
+				if !plants_node.get_child(i).empty:
+					target=plants_node.get_child(i)
+					target_position=plants_node.get_child(i).position
 	if target_t == target_type.FRUIT_TREE && fruit_trees_node.get_child_count()>0:
 		for i in range(0,fruit_trees_node.get_child_count()):
 			if i!=0:
@@ -1025,9 +1043,9 @@ func _choose_target():
 #							target_position=root.tower_node.get_child(i).position
 			else:
 				if !fruit_trees_node.get_child(i).empty:
-					target=fruit_trees_node.get_child(0)
-					target_position=fruit_trees_node.get_child(0).position
-	elif target_t==target_type.PINE_TREE && pine_trees_node.get_child_count()>0:				
+					target=fruit_trees_node.get_child(i)
+					target_position=fruit_trees_node.get_child(i).position
+	if target_t==target_type.PINE_TREE && pine_trees_node.get_child_count()>0:				
 		for i in range(0,pine_trees_node.get_child_count()):
 			if i!=0:
 				if pine_trees_node.get_child(i).position.distance_to(position)<pine_trees_node.get_child(i-1).position.distance_to(position):
@@ -1039,22 +1057,38 @@ func _choose_target():
 #							target_position=root.tower_node.get_child(i).position
 			else:
 				if !pine_trees_node.get_child(i).empty:
-					target=pine_trees_node.get_child(0)
-					target_position=pine_trees_node.get_child(0).position
-	elif target_t==target_type.PLANT && plants_node.get_child_count()>0:
-		for i in range(0,plants_node.get_child_count()):
+					target=pine_trees_node.get_child(i)
+					target_position=pine_trees_node.get_child(i).position
+	if target_t==target_type.STONE && quarries_node.get_child_count()>0:				
+		for i in range(0,quarries_node.get_child_count()):
 			if i!=0:
-				if plants_node.get_child(i).position.distance_to(position)<plants_node.get_child(i-1).position.distance_to(position):
-					if !plants_node.get_child(i).empty:
-						target=plants_node.get_child(i)
-						target_position=plants_node.get_child(i).position
-#					if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
-#						target=root.tower_node.get_child(i)
-#						target_position=root.tower_node.get_child(i).position
+				if quarries_node.get_child(i).position.distance_to(position)<quarries_node.get_child(i-1).position.distance_to(position):
+					if !quarries_node.get_child(i).empty:
+						target=quarries_node.get_child(i)
+						target_position=quarries_node.get_child(i).position
+#						if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
+#							target=root.tower_node.get_child(i)
+#							target_position=root.tower_node.get_child(i).position
 			else:
-				if !plants_node.get_child(i).empty:
-					target=plants_node.get_child(0)
-					target_position=plants_node.get_child(0).position
+				if !quarries_node.get_child(i).empty:
+					target=quarries_node.get_child(i)
+					target_position=quarries_node.get_child(i).position
+	if target_t==target_type.COPPER && copper_node.get_child_count()>0:				
+		for i in range(0,copper_node.get_child_count()):
+			if i!=0:
+				if copper_node.get_child(i).position.distance_to(position)<copper_node.get_child(i-1).position.distance_to(position):
+					if !copper_node.get_child(i).empty:
+						target=copper_node.get_child(i)
+						target_position=copper_node.get_child(i).position
+#						if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
+#							target=root.tower_node.get_child(i)
+#							target_position=root.tower_node.get_child(i).position
+			else:
+				if !copper_node.get_child(i).empty:
+					target=copper_node.get_child(i)
+					target_position=copper_node.get_child(i).position
+
+
 	
 	
 
@@ -1064,6 +1098,7 @@ func _state_machine():
 			_choose_target()
 			print("Cambio a estado 1.")
 			AI_state=1
+			pass
 		1:
 			if target!=null && is_instance_valid(target):
 				if !("Lake" in target.name) && !("Puddle" in target.name):
@@ -1072,7 +1107,8 @@ func _state_machine():
 					else:
 						AI_state=0
 				else:
-					target_position=target.position
+					#target_position=target.position
+					pass
 			else:
 				AI_state=0
 			
@@ -1082,12 +1118,13 @@ func _state_machine():
 				print("vuelta a estado 0")
 				AI_state=0
 			else:			
-				target=body_entered.position
+				target_position=body_entered.position
 		3:
 			target_position=self.position
 	
 	if body_entered!=null && is_instance_valid(body_entered):
-		print("se ha detectado un cuerpo")
+#		print("se ha detectado un cuerpo")
+#		print(body_entered)
 		if !("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name):
 			target_position=body_entered.position
 			print("cambio a estado 2")

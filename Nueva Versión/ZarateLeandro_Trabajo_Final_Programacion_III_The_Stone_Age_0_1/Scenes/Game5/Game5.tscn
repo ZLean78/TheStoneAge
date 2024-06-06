@@ -222,6 +222,7 @@ position = Vector2( -891, -499 )
 
 [node name="EnemyCitizen3" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -841, -542 )
+target_t = 1
 
 [node name="EnemyCitizen4" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -937, -428 )
@@ -229,11 +230,11 @@ target_t = 1
 
 [node name="EnemyCitizen5" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -994, -363 )
-target_t = 1
+target_t = 3
 
 [node name="EnemyCitizen6" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -870, -378 )
-target_t = 1
+target_t = 3
 
 [node name="EnemyCitizen7" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -855, -324 )
@@ -245,7 +246,7 @@ target_t = 2
 
 [node name="EnemyCitizen9" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -969, -303 )
-target_t = 2
+target_t = 4
 
 [node name="Tigers" type="Node2D" parent="."]
 z_as_relative = false
@@ -308,10 +309,19 @@ position = Vector2( -789, 213 )
 position = Vector2( 592, 53 )
 
 [node name="Plant2" parent="Plants" instance=ExtResource( 9 )]
-position = Vector2( 181, 469 )
+position = Vector2( 298, 492 )
 
 [node name="Plant3" parent="Plants" instance=ExtResource( 9 )]
-position = Vector2( -892, -70 )
+position = Vector2( 199, 173 )
+
+[node name="Plant4" parent="Plants" instance=ExtResource( 9 )]
+position = Vector2( -676, -154 )
+
+[node name="Plant5" parent="Plants" instance=ExtResource( 9 )]
+position = Vector2( -657, 397 )
+
+[node name="Plant6" parent="Plants" instance=ExtResource( 9 )]
+position = Vector2( -735, 57 )
 
 [node name="Camera" type="Camera2D" parent="."]
 position = Vector2( 711, 400 )
@@ -353,6 +363,7 @@ margin_right = 800.0
 focus_mode = 1
 
 [node name="Rectangle" type="NinePatchRect" parent="UI/Base"]
+margin_top = -14.0
 margin_right = 1440.0
 margin_bottom = 100.0
 texture = ExtResource( 24 )

@@ -77,14 +77,13 @@ animations = [ {
 extents = Vector2( 8.5, 13 )
 
 [sub_resource type="CircleShape2D" id=4]
-radius = 31.6938
+radius = 123.728
 
 [node name="EnemyCitizen" type="KinematicBody2D"]
-collision_layer = 2
-collision_mask = 11
+collision_mask = 14
 input_pickable = true
 script = ExtResource( 3 )
-SPEED = 25.0
+SPEED = 50.0
 energy_points = 100.0
 
 [node name="Selected" type="Sprite" parent="."]

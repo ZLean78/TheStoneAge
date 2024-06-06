@@ -186,6 +186,7 @@ focus_mode = 1
 
 [node name="Rectangle" type="NinePatchRect" parent="UI/Base"]
 show_behind_parent = true
+margin_top = -9.0
 margin_right = 1440.0
 margin_bottom = 100.0
 size_flags_vertical = 0

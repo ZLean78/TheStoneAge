@@ -320,6 +320,7 @@ margin_right = 800.0
 focus_mode = 1
 
 [node name="Rectangle" type="NinePatchRect" parent="UI/Base"]
+margin_top = -13.0
 margin_right = 1440.0
 margin_bottom = 100.0
 texture = ExtResource( 4 )
