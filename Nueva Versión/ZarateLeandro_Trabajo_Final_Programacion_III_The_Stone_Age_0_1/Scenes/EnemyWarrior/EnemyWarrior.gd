@@ -154,9 +154,7 @@ signal health_change
 signal im_dead
 #signal food_points_change
 
-#Señales de que la unidad fue seleccionada y desseleccionada.
-signal was_selected
-signal was_deselected
+
 
 
 func _ready():

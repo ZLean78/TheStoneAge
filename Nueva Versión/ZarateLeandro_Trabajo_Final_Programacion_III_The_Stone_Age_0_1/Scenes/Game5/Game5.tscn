@@ -153,7 +153,7 @@ position = Vector2( 972, -421 )
 position = Vector2( -121, -359 )
 
 [node name="Copper2" parent="Coppers" instance=ExtResource( 3 )]
-position = Vector2( -523, 336 )
+position = Vector2( -645, -32 )
 
 [node name="SpawnPosition" type="Position2D" parent="."]
 position = Vector2( 713, 404 )
@@ -216,9 +216,11 @@ z_as_relative = false
 
 [node name="EnemyCitizen" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -991, -531 )
+SPEED = 100.0
 
 [node name="EnemyCitizen2" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -891, -499 )
+SPEED = 100.0
 
 [node name="EnemyCitizen3" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -841, -542 )
@@ -226,26 +228,40 @@ target_t = 1
 
 [node name="EnemyCitizen4" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -937, -428 )
+SPEED = 100.0
 target_t = 1
 
 [node name="EnemyCitizen5" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -994, -363 )
+SPEED = 100.0
 target_t = 3
 
 [node name="EnemyCitizen6" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -870, -378 )
+SPEED = 100.0
 target_t = 3
 
 [node name="EnemyCitizen7" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -855, -324 )
+SPEED = 100.0
 target_t = 2
 
 [node name="EnemyCitizen8" parent="EnemyCitizens" instance=ExtResource( 4 )]
-position = Vector2( -930, -225 )
+position = Vector2( -723.937, -1193.61 )
+scale = Vector2( 1, 1 )
+SPEED = 100.0
 target_t = 2
 
 [node name="EnemyCitizen9" parent="EnemyCitizens" instance=ExtResource( 4 )]
-position = Vector2( -969, -303 )
+position = Vector2( -723.937, -1193.61 )
+scale = Vector2( 1, 1 )
+SPEED = 100.0
+target_t = 4
+
+[node name="EnemyCitizen10" parent="EnemyCitizens" instance=ExtResource( 4 )]
+position = Vector2( -723.937, -1193.61 )
+scale = Vector2( 1, 1 )
+SPEED = 100.0
 target_t = 4
 
 [node name="Tigers" type="Node2D" parent="."]
@@ -726,14 +742,16 @@ margin_right = 52.0
 margin_bottom = 26.0
 text = "Siguiente Escena"
 
-[connection signal="is_arrow" from="." to="." method="_on_Game4_is_arrow"]
-[connection signal="is_axe" from="." to="." method="_on_Game4_is_axe"]
-[connection signal="is_basket" from="." to="." method="_on_Game4_is_basket"]
-[connection signal="is_claypot" from="." to="." method="_on_Game4_is_claypot"]
-[connection signal="is_hand" from="." to="." method="_on_Game4_is_hand"]
-[connection signal="is_pick_mattock" from="." to="." method="_on_Game4_is_pick_mattock"]
-[connection signal="is_sword" from="." to="." method="_on_Game4_is_sword"]
-[connection signal="remove_building" from="." to="." method="_on_Game4_remove_building"]
+[connection signal="is_arrow" from="." to="." method="_on_Game5_is_arrow"]
+[connection signal="is_axe" from="." to="." method="_on_Game5_is_axe"]
+[connection signal="is_basket" from="." to="." method="_on_Game5_is_basket"]
+[connection signal="is_claypot" from="." to="." method="_on_Game5_is_claypot"]
+[connection signal="is_fort" from="." to="." method="_on_Game5_is_fort"]
+[connection signal="is_hand" from="." to="." method="_on_Game5_is_hand"]
+[connection signal="is_house" from="." to="." method="_on_Game5_is_house"]
+[connection signal="is_pick_mattock" from="." to="." method="_on_Game5_is_pick_mattock"]
+[connection signal="is_sword" from="." to="." method="_on_Game5_is_sword"]
+[connection signal="remove_building" from="." to="." method="_on_Game5_remove_building"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateWarriorUnit" to="." method="_on_CreateWarriorUnit_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/DevelopPottery" to="." method="_on_DevelopPottery_pressed"]

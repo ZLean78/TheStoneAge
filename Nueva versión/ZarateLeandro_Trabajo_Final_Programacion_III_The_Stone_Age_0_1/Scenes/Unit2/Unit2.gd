@@ -50,7 +50,7 @@ var initialPosition = Vector2()
 #Puntos de comida de la unidad.
 var food_points = 0
 #Salud.
-export (float) var energy_points = 1
+export (int) var energy_points = 1
 #Variable que indica si se está arrastrando el mouse sobre la unidad.
 var dragging = true
 
@@ -183,11 +183,8 @@ var can_heal_another
 var is_timer_timeout=false
 
 
-#Señal de cambio de salud (incremento o decremento).
-signal health_change
-#Señal de que la unidad ha muerto.
-signal im_dead
-#signal food_points_change
+
+
 
 #Señales de que la unidad fue seleccionada y desseleccionada.
 signal was_selected
@@ -200,7 +197,7 @@ func _ready():
 	nav2d=tree.get_node("nav")
 	connect("was_selected",tree,"_select_unit")
 	connect("was_deselected",tree,"_deselect_unit")
-	#emit_signal("health_change",energy_points)
+	
 	
 	
 	has_bag=true
@@ -918,7 +915,6 @@ func heal(_body):
 		if _body.energy_points<_body.MAX_HEALTH:
 			#if timer_count==0:
 			_body.energy_points+=5
-			print("unt energy" + str(_body.energy_points))
 			_body.bar._set_energy_points(_body.energy_points)
 			_body.bar._update_energy()
 	

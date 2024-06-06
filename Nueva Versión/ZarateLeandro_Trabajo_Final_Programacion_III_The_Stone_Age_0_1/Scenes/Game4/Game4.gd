@@ -182,8 +182,8 @@ signal is_axe
 signal remove_building
 
 
-#signal is_house
-#signal is_fort
+signal is_house
+signal is_fort
 
 #Variables para indicar los modos del mouse.
 var arrow_mode=false

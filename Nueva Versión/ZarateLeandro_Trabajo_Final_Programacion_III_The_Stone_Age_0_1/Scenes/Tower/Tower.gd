@@ -15,7 +15,7 @@ var body_entered=null
 var target_position=Vector2.ZERO
 var can_shoot=false
 
-export (float) var MIN_DISTANCE=0
+export (int) var MIN_DISTANCE=0
 
 #Proyectil, piedra para lanzar al enemigo.
 var spear

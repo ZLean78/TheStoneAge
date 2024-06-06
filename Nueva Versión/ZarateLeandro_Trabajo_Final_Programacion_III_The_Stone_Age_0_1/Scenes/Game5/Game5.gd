@@ -107,6 +107,7 @@ onready var next_scene_confirmation = $UI/Base/NextSceneConfirmation
 onready var exit_confirmation=$UI/Base/ExitConfirmation
 onready var replay_confirmation=$UI/Base/ReplayConfirmation
 
+#onready var remote_transform2d=$Path2D/PathFollow2D/RemoteTransform2D
 
 var path=[]
 
@@ -183,8 +184,8 @@ signal is_axe
 signal remove_building
 
 
-#signal is_house
-#signal is_fort
+signal is_house
+signal is_fort
 
 #Variables para indicar los modos del mouse.
 var arrow_mode=false
@@ -215,6 +216,9 @@ var attack_counter=50
 var victory_obtained=false
 
 func _ready():
+	
+	
+
 	
 	#igualamos el arreglo all_units a los nodos del grupo
 	#de unidades civiles con las que empezamos la fase.	
@@ -341,7 +345,7 @@ func _ready():
 	
 
 
-func _process(_delta):
+func _process(delta):
 	
 	#Verificar que el jefe no esté muerto.
 	if !is_warchief_dead:
@@ -403,6 +407,8 @@ func _process(_delta):
 		_check_mouse_modes()
 		
 		_check_enemies()
+		
+		#MovementLoop(delta)
 
 #Seleccionar una unidad.
 func _select_unit(unit):
@@ -495,7 +501,7 @@ func _unhandled_input(event):
 			#Si el cursor está en modo casa.
 			if house_mode || fort_mode || tower_mode || barn_mode:
 				#Ponemos el cursor en modo flecha para cancelar la construcción de una casa.
-				_on_Game4_is_arrow()
+				_on_Game5_is_arrow()
 			if basket_mode || axe_mode || mattock_mode:
 				for i in range(0,selected_units.size()):
 					selected_units[i].target_position=get_global_mouse_position()
@@ -511,7 +517,7 @@ func _unhandled_input(event):
 				for citizen in units.get_children():
 					citizen.firstPoint=citizen.global_position
 					citizen.secondPoint=citizen.target_position
-					_on_Game4_is_arrow()
+					_on_Game5_is_arrow()
 					var arrPath: PoolVector2Array = nav2d.get_simple_path(citizen.firstPoint,citizen.secondPoint,true)
 					citizen.firstPoint = arrPath[0]
 					citizen.path = arrPath
@@ -529,7 +535,7 @@ func _unhandled_input(event):
 					if citizen.selected:
 						citizen.firstPoint=citizen.global_position
 						citizen.secondPoint=citizen.target_position
-						_on_Game4_is_arrow()
+						_on_Game5_is_arrow()
 						var arrPath: PoolVector2Array = nav2d.get_simple_path(citizen.firstPoint,citizen.secondPoint,true)
 						citizen.firstPoint = arrPath[0]
 						citizen.path = arrPath
@@ -542,7 +548,7 @@ func _unhandled_input(event):
 			#Si el cursor está en modo casa.
 			if house_mode || fort_mode || tower_mode || barn_mode:
 				#Ponemos el cursor en modo flecha para cancelar la construcción de una casa.
-				_on_Game4_is_arrow()
+				_on_Game5_is_arrow()
 			elif arrow_mode:
 				if(all_units.size()==0 && Globals.food_points<15) || is_warchief_dead:
 					replay_confirmation.visible=true
@@ -956,7 +962,7 @@ func _area_selected(obj):
 #			un.move_unit(obj.move_to_point)
 		
 
-func _on_Game4_is_arrow():
+func _on_Game5_is_arrow():
 	Input.set_custom_mouse_cursor(Globals.arrow)
 	arrow_mode=true
 	basket_mode=false
@@ -972,7 +978,7 @@ func _on_Game4_is_arrow():
 	
 
 
-func _on_Game4_is_basket():
+func _on_Game5_is_basket():
 	if !house_mode && !fort_mode:
 		Input.set_custom_mouse_cursor(Globals.basket)
 		basket_mode=true
@@ -987,7 +993,7 @@ func _on_Game4_is_basket():
 		tower_mode=false
 		barn_mode=false
 	
-func _on_Game4_is_pick_mattock():
+func _on_Game5_is_pick_mattock():
 	if !house_mode && !fort_mode:
 		Input.set_custom_mouse_cursor(Globals.pick_mattock)
 		mattock_mode=true
@@ -1002,7 +1008,7 @@ func _on_Game4_is_pick_mattock():
 		tower_mode=false
 		barn_mode=false
 
-func _on_Game4_is_sword():
+func _on_Game5_is_sword():
 	if !house_mode && !fort_mode:
 		Input.set_custom_mouse_cursor(Globals.sword)
 		sword_mode=true
@@ -1017,7 +1023,7 @@ func _on_Game4_is_sword():
 		tower_mode=false
 		barn_mode=false
 
-func _on_Game4_is_hand():
+func _on_Game5_is_hand():
 	if !house_mode && !fort_mode:
 		Input.set_custom_mouse_cursor(Globals.hand)
 		hand_mode=true
@@ -1033,7 +1039,7 @@ func _on_Game4_is_hand():
 		barn_mode=false
 
 
-func _on_Game4_is_claypot():
+func _on_Game5_is_claypot():
 	if !house_mode && !fort_mode:
 		Input.set_custom_mouse_cursor(Globals.claypot)
 		claypot_mode=true
@@ -1048,7 +1054,7 @@ func _on_Game4_is_claypot():
 		tower_mode=false
 		barn_mode=false
 
-func _on_Game4_is_axe():
+func _on_Game5_is_axe():
 	if !house_mode && !fort_mode:
 		Input.set_custom_mouse_cursor(Globals.axe)
 		axe_mode=true
@@ -1063,7 +1069,7 @@ func _on_Game4_is_axe():
 		tower_mode=false
 		barn_mode=false
 	
-func _on_Game4_is_house():
+func _on_Game5_is_house():
 	if is_mouse_entered || is_too_close:
 		Input.set_custom_mouse_cursor(Globals.house_b)
 	else:
@@ -1080,7 +1086,7 @@ func _on_Game4_is_house():
 	tower_mode=false
 	barn_mode=false
 				
-func _on_Game4_is_fort():
+func _on_Game5_is_fort():
 	if is_mouse_entered || is_too_close:
 		Input.set_custom_mouse_cursor(Globals.fort_b)
 	else:
@@ -1097,7 +1103,7 @@ func _on_Game4_is_fort():
 	tower_mode=false
 	barn_mode=false
 
-func _on_Game4_is_tower():
+func _on_Game5_is_tower():
 	if is_mouse_entered || is_too_close:
 		Input.set_custom_mouse_cursor(Globals.tower_b)
 	else:
@@ -1114,7 +1120,7 @@ func _on_Game4_is_tower():
 	fort_mode=false	
 	barn_mode=false
 	
-func _on_Game4_is_barn():
+func _on_Game5_is_barn():
 	if is_mouse_entered || is_too_close:
 		Input.set_custom_mouse_cursor(Globals.barn_b)
 	else:
@@ -1308,9 +1314,9 @@ func _on_CreateWarriorUnit_pressed():
 #entre modo flecha y modo casa.
 func _on_CreateHouse_pressed():
 	if !house_mode:
-		_on_Game4_is_house()
+		_on_Game5_is_house()
 	else:
-		_on_Game4_is_arrow()
+		_on_Game5_is_arrow()
 
 
 func _on_GiveAttackOrder_pressed():
@@ -1345,34 +1351,34 @@ func _update_path(new_obstacle):
 
 func _on_BuildFort_pressed():
 	if !fort_mode:
-		_on_Game4_is_fort()
+		_on_Game5_is_fort()
 	else:
-		_on_Game4_is_arrow()
+		_on_Game5_is_arrow()
 
 
 func _on_BuildSurveillanceTower_pressed():
 	if !tower_mode:
-		_on_Game4_is_tower()
+		_on_Game5_is_tower()
 	else:
-		_on_Game4_is_arrow()
+		_on_Game5_is_arrow()
 
 
 func _on_BuildBarn_pressed():
 	if !barn_mode:
-		_on_Game4_is_barn()
+		_on_Game5_is_barn()
 	else:
-		_on_Game4_is_arrow()
+		_on_Game5_is_arrow()
 		
 
 func _check_mouse_modes():
 	if house_mode:
-		_on_Game4_is_house()
+		_on_Game5_is_house()
 	if tower_mode:
-		_on_Game4_is_tower()
+		_on_Game5_is_tower()
 	if barn_mode:
-		_on_Game4_is_barn()
+		_on_Game5_is_barn()
 	if fort_mode:
-		_on_Game4_is_fort()
+		_on_Game5_is_fort()
 	
 		
 
@@ -1543,3 +1549,16 @@ func _on_ReplayOk_pressed():
 func _on_NextSceneOk_pressed():
 	$UI.remove_child(Globals.settings)
 	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
+
+
+#func MovementLoop(_delta):
+#	var prepos=path_follow2d.get_global_position()
+#	path_follow2d.set_offset(path_follow2d.get_offset()+50*_delta)
+#	var pos=path_follow2d.get_global_position()
+#	var direction = (pos.angle_to_point(prepos)/3.14)*180
+#	$Path2D/PathFollow2D/EnemyCitizen8.position = pos*direction
+#	$Path2D/PathFollow2D/EnemyCitizen9.position = pos*direction
+
+
+func _on_Game5_remove_building():
+	_rebake_navigation()

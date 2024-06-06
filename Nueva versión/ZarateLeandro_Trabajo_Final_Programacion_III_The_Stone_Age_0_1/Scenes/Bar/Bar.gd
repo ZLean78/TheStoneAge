@@ -19,8 +19,7 @@ func _set_energy_points(var _energy_points):
 #		$Background.get_child(0).scale.x += 0.033
 
 func _update_energy():
-	print("bar energy: " + str(energy_points))
 	$Background.get_child(0).scale.x = energy_points/100
-	print($Background.get_child(0).scale.x)
+	
 
 

@@ -205,7 +205,6 @@ z_as_relative = false
 [node name="Unit2" parent="Units" instance=ExtResource( 12 )]
 process_priority = 1
 position = Vector2( 719, 387 )
-energy_points = 1.0
 
 [node name="Warriors" type="Node2D" parent="."]
 z_as_relative = false
@@ -687,7 +686,9 @@ text = "Siguiente Escena"
 [connection signal="is_axe" from="." to="." method="_on_Game4_is_axe"]
 [connection signal="is_basket" from="." to="." method="_on_Game4_is_basket"]
 [connection signal="is_claypot" from="." to="." method="_on_Game4_is_claypot"]
+[connection signal="is_fort" from="." to="." method="_on_Game4_is_fort"]
 [connection signal="is_hand" from="." to="." method="_on_Game4_is_hand"]
+[connection signal="is_house" from="." to="." method="_on_Game4_is_house"]
 [connection signal="is_pick_mattock" from="." to="." method="_on_Game4_is_pick_mattock"]
 [connection signal="is_sword" from="." to="." method="_on_Game4_is_sword"]
 [connection signal="remove_building" from="." to="." method="_on_Game4_remove_building"]

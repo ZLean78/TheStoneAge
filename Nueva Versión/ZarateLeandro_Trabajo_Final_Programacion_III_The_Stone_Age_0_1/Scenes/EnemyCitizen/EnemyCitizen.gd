@@ -10,6 +10,12 @@ export (float) var SPEED = 100.0
 #Máximo de Salud
 export (float) var MAX_HEALTH = 100.0
 
+onready var path2d
+
+onready var path_follow2d
+
+onready var remote_transform2d
+
 #Nodo de la escena actual.
 onready var tree
 
@@ -20,8 +26,6 @@ onready var quarries_node
 onready var copper_node
 onready var lake_node
 onready var puddle_node
-
-
 
 
 #Temporizador de comida, agrega un punto de comida por segundo cuando la unidad toca un árbol frutal.
@@ -59,7 +63,7 @@ var initialPosition = Vector2()
 #Puntos de comida de la unidad.
 var food_points = 0
 #Salud.
-export (float) var energy_points = 1
+export (int) var energy_points = 1
 #Variable que indica si se está arrastrando el mouse sobre la unidad.
 var dragging = true
 
@@ -202,16 +206,16 @@ var can_heal_another
 var is_timer_timeout=false
 
 
-#Señal de cambio de salud (incremento o decremento).
-signal health_change
-#Señal de que la unidad ha muerto.
-signal im_dead
-#signal food_points_change
+
 
 #Señales de que la unidad fue seleccionada y desseleccionada.
 signal was_selected
 signal was_deselected
 
+
+#func _init():
+#	call_deferred("ready")
+	
 
 func _ready():
 	AI_state=1
@@ -1017,102 +1021,82 @@ func _on_Area2D_body_exited(body):
 	
 	
 func _choose_target():
-	if target_t==target_type.PLANT && plants_node.get_child_count()>0:
-		for i in range(0,plants_node.get_child_count()):
-			if i!=0:
-				if plants_node.get_child(i).position.distance_to(position)<plants_node.get_child(i-1).position.distance_to(position):
+	match target_t:
+		target_type.PLANT:
+			if plants_node.get_child_count()>0:
+				for i in range(0,plants_node.get_child_count()):
 					if !plants_node.get_child(i).empty:
-						target=plants_node.get_child(i)
 						target_position=plants_node.get_child(i).position
-#						if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
-#							target=root.tower_node.get_child(i)
-#							target_position=root.tower_node.get_child(i).position
-			else:
-				if !plants_node.get_child(i).empty:
-					target=plants_node.get_child(i)
-					target_position=plants_node.get_child(i).position
-	if target_t == target_type.FRUIT_TREE && fruit_trees_node.get_child_count()>0:
-		for i in range(0,fruit_trees_node.get_child_count()):
-			if i!=0:
-				if fruit_trees_node.get_child(i).position.distance_to(position)<fruit_trees_node.get_child(i-1).position.distance_to(position):
-					if !fruit_trees_node.get_child(i).empty:
-						target=fruit_trees_node.get_child(i)
-						target_position=fruit_trees_node.get_child(i).position
-#						if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
-#							target=root.tower_node.get_child(i)
-#							target_position=root.tower_node.get_child(i).position
-			else:
-				if !fruit_trees_node.get_child(i).empty:
-					target=fruit_trees_node.get_child(i)
-					target_position=fruit_trees_node.get_child(i).position
-	if target_t==target_type.PINE_TREE && pine_trees_node.get_child_count()>0:				
-		for i in range(0,pine_trees_node.get_child_count()):
-			if i!=0:
-				if pine_trees_node.get_child(i).position.distance_to(position)<pine_trees_node.get_child(i-1).position.distance_to(position):
-					if !pine_trees_node.get_child(i).empty:
-						target=pine_trees_node.get_child(i)
-						target_position=pine_trees_node.get_child(i).position
-#						if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
-#							target=root.tower_node.get_child(i)
-#							target_position=root.tower_node.get_child(i).position
-			else:
-				if !pine_trees_node.get_child(i).empty:
-					target=pine_trees_node.get_child(i)
-					target_position=pine_trees_node.get_child(i).position
-	if target_t==target_type.STONE && quarries_node.get_child_count()>0:				
-		for i in range(0,quarries_node.get_child_count()):
-			if i!=0:
-				if quarries_node.get_child(i).position.distance_to(position)<quarries_node.get_child(i-1).position.distance_to(position):
-					if !quarries_node.get_child(i).empty:
-						target=quarries_node.get_child(i)
-						target_position=quarries_node.get_child(i).position
-#						if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
-#							target=root.tower_node.get_child(i)
-#							target_position=root.tower_node.get_child(i).position
-			else:
-				if !quarries_node.get_child(i).empty:
-					target=quarries_node.get_child(i)
-					target_position=quarries_node.get_child(i).position
-	if target_t==target_type.COPPER && copper_node.get_child_count()>0:				
-		for i in range(0,copper_node.get_child_count()):
-			if i!=0:
-				if copper_node.get_child(i).position.distance_to(position)<copper_node.get_child(i-1).position.distance_to(position):
-					if !copper_node.get_child(i).empty:
-						target=copper_node.get_child(i)
-						target_position=copper_node.get_child(i).position
-#						if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
-#							target=root.tower_node.get_child(i)
-#							target_position=root.tower_node.get_child(i).position
-			else:
-				if !copper_node.get_child(i).empty:
-					target=copper_node.get_child(i)
-					target_position=copper_node.get_child(i).position
-
-
+						break
+					else:
+						target_position=plants_node.get_child(i+1).position
 	
+	
+		target_type.FRUIT_TREE:
+			if fruit_trees_node.get_child_count()>0:
+				for i in range(0,fruit_trees_node.get_child_count()):
+					if !fruit_trees_node.get_child(i).empty:
+						target_position=fruit_trees_node.get_child(i).position
+						break
+					else:
+						target_position=fruit_trees_node.get_child(i+1).position
+		target_type.PINE_TREE:
+			if pine_trees_node.get_child_count()>0:				
+				for i in range(0,pine_trees_node.get_child_count()):
+					if !pine_trees_node.get_child(i).empty:
+						target_position=pine_trees_node.get_child(i).position
+						break
+					else:
+						target_position=pine_trees_node.get_child(i+1).position		
+		target_type.COPPER:
+			if copper_node.get_child_count()>0:				
+				for i in range(0,copper_node.get_child_count()):
+					if !copper_node.get_child(i).empty:
+						target_position=copper_node.get_child(i).position
+						break
+					else:
+						target_position=copper_node.get_child(i+1).position
+		target_type.STONE:
+			if quarries_node.get_child_count()>0:				
+				for i in range(0,quarries_node.get_child_count()):
+					if !quarries_node.get_child(i).empty:
+						target_position=quarries_node.get_child(i).position
+						break
+					else:
+						target_position=quarries_node.get_child(i+1).position
+
+
+#MUESTRA DE CÓDIGO ANTERIOR
+#	if target_t==target_type.PLANT && plants_node.get_child_count()>0:
+#		for i in range(0,plants_node.get_child_count()):
+#			if i!=0:
+#				if plants_node.get_child(i).position.distance_to(position)<plants_node.get_child(i-1).position.distance_to(position):
+#					if !plants_node.get_child(i).empty:
+#						target=plants_node.get_child(i)
+#						target_position=plants_node.get_child(i).position
+##						if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
+##							target=root.tower_node.get_child(i)
+##							target_position=root.tower_node.get_child(i).position
+#			else:
+#				if !plants_node.get_child(i).empty:
+#					target=plants_node.get_child(i)
+#					target_position=plants_node.get_child(i).position	
 	
 
 func _state_machine():
 	match AI_state:
 		0:
 			_choose_target()
-			print("Cambio a estado 1.")
 			AI_state=1
-			pass
 		1:
 			if target!=null && is_instance_valid(target):
 				if !("Lake" in target.name) && !("Puddle" in target.name):
-					if !(target.empty):
-						target_position=target.position
-					else:
+					if target.empty:
 						AI_state=0
-				else:
-					#target_position=target.position
-					pass
+						if target_t==target_type.COPPER:
+							print("Cambio buscador de cobre a estado 0")
 			else:
 				AI_state=0
-			
-		
 		2:
 			if !(is_instance_valid(body_entered)):
 				print("vuelta a estado 0")
@@ -1129,4 +1113,5 @@ func _state_machine():
 			target_position=body_entered.position
 			print("cambio a estado 2")
 			AI_state=2	
+
 
