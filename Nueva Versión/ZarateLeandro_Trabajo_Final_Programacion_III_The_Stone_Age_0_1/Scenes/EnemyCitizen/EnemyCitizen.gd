@@ -361,67 +361,67 @@ func _physics_process(delta):
 func _collect_pickable(var _pickable):
 	if _pickable.type == "fruit_tree" or _pickable.type == "pine_tree" or _pickable.type == "plant" or _pickable.type == "quarry" or _pickable.type == "copper":
 		if _pickable.touching && !_pickable.empty && pickable_touching:
-			#if((abs(position.x-_pickable.position.x)<50)&&
-			#(abs(position.y-_pickable.position.y)<50)):
-			if _pickable.type=="fruit_tree":
-				if(has_bag):
-					if(_pickable.points>=4):
-						Globals.e_food_points +=4
-						_pickable.points-=4
+			if((abs(position.x-_pickable.position.x)<50)&&
+			(abs(position.y-_pickable.position.y)<50)):
+				if _pickable.type=="fruit_tree":
+					if(has_bag):
+						if(_pickable.points>=4):
+							Globals.e_food_points+=4
+							_pickable.points-=4
+						else:
+							Globals.e_food_points+=_pickable.points
+							_pickable.points = 0
+					else:					
+						Globals.e_food_points+=1
+						_pickable.points-=1
+						#if _pickable.points <= 0:
+						#_pickable.empty = true
+				elif _pickable.type == "pine_tree":
+					if(tree.is_stone_weapons_developed):
+						if(_pickable.points>=4):
+							Globals.e_wood_points+=4
+							_pickable.points-=4
+						else:
+							Globals.e_wood_points+=_pickable.points
+							_pickable.points = 0
+					else:					
+						Globals.e_wood_points+=1
+						_pickable.points-=1
+				elif _pickable.type=="plant":
+					if(has_bag):
+						if(_pickable.points>=4):
+							Globals.e_leaves_points+=4
+							_pickable.points-=4
+						else:
+							Globals.e_leaves_points+=_pickable.points
+							_pickable.points=0
 					else:
-						Globals.e_food_points += _pickable.points
-						_pickable.points = 0
-				else:					
-					Globals.e_food_points +=1
-					_pickable.points-=1
-					#if _pickable.points <= 0:
-					#_pickable.empty = true
-			elif _pickable.type == "pine_tree":
-				if(tree.is_stone_weapons_developed):
-					if(_pickable.points>=4):
-						Globals.e_wood_points +=4
-						_pickable.points-=4
+						Globals.e_leaves_points+=1
+						_pickable.points-=1
+				elif _pickable.type == "copper":
+					if(tree.is_stone_weapons_developed):
+						if(_pickable.points>=5):
+							Globals.e_copper_points+=5
+							_pickable.points-=5
+						else:
+							Globals.e_copper_points+=_pickable.points
+							_pickable.points=0
 					else:
-						Globals.e_wood_points += _pickable.points
-						_pickable.points = 0
-				else:					
-					Globals.e_wood_points +=1
-					_pickable.points-=1
-			elif _pickable.type == "plant":
-				if(has_bag):
-					if(_pickable.points>=4):
-						Globals.e_leaves_points +=4
-						_pickable.points-=4
+						Globals.e_copper_points+=1
+						_pickable.points-=1
+				elif _pickable.type == "quarry":
+					if(tree.is_stone_weapons_developed):
+						if(_pickable.points>=5):
+							Globals.e_stone_points+=5
+							_pickable.points-=5
+						else:
+							Globals.e_stone_points+=_pickable.points
+							_pickable.points=5
 					else:
-						Globals.e_leaves_points+=_pickable.points
-						_pickable.points=0
-				else:
-					Globals.e_leaves_points+=1
-					_pickable.points-=1
-			elif _pickable.type == "quarry":
-				if(tree.is_stone_weapons_developed):
-					if(_pickable.points>=4):
-						Globals.e_stone_points+=4
-						_pickable.points-=4
-					else:
-						Globals.e_stone_points+=_pickable.points
-						_pickable.points=0
-				else:
-					Globals.e_stone_points+=1
-					_pickable.points-=1
-			elif _pickable.type == "copper":
-				if(tree.is_stone_weapons_developed):
-					if(_pickable.points>=4):
-						Globals.e_copper_points+=4
-						_pickable.points-=4
-					else:
-						Globals.e_copper_points+=_pickable.points
-						_pickable.points=0
-				else:
-					Globals.e_copper_points+=1
-					_pickable.points-=1
-			if _pickable.points <= 0:
-				_pickable.empty = true	
+						Globals.e_stone_points+=1
+						_pickable.points-=1
+				if _pickable.points <= 0:
+					_pickable.empty = true	
 	else:
 		if _pickable.touching && pickable_touching:
 			if _pickable.type == "puddle" && puddle_touching:

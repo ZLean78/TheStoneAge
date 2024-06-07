@@ -234,35 +234,32 @@ target_t = 1
 [node name="EnemyCitizen5" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -994, -363 )
 SPEED = 100.0
-target_t = 3
+target_t = 2
 
 [node name="EnemyCitizen6" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -870, -378 )
 SPEED = 100.0
-target_t = 3
+target_t = 2
 
 [node name="EnemyCitizen7" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -855, -324 )
 SPEED = 100.0
-target_t = 2
+target_t = 4
 
 [node name="EnemyCitizen8" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -723.937, -1193.61 )
-scale = Vector2( 1, 1 )
 SPEED = 100.0
-target_t = 2
+target_t = 4
 
 [node name="EnemyCitizen9" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -723.937, -1193.61 )
-scale = Vector2( 1, 1 )
 SPEED = 100.0
-target_t = 4
+target_t = 3
 
 [node name="EnemyCitizen10" parent="EnemyCitizens" instance=ExtResource( 4 )]
 position = Vector2( -723.937, -1193.61 )
-scale = Vector2( 1, 1 )
 SPEED = 100.0
-target_t = 4
+target_t = 3
 
 [node name="Tigers" type="Node2D" parent="."]
 z_as_relative = false
