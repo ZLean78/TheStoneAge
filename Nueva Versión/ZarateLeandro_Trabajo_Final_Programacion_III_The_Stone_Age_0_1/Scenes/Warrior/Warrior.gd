@@ -329,6 +329,8 @@ func _unhandled_input(event):
 						tree._on_Game3_is_arrow()
 					elif tree.name=="Game4":
 						tree._on_Game4_is_arrow()
+					elif tree.name=="Game5":
+						tree._on_Game5_is_arrow()
 		else:
 			_walk()
 			

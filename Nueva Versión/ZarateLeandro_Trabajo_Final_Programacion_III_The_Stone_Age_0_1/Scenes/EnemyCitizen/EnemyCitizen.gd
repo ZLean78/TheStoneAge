@@ -472,8 +472,16 @@ func _get_damage(var the_beast):
 		else:
 			_set_selected(false)			
 			is_deleted=true
-	if "EnemySpear" in the_beast.name:
+	if "Bullet" in the_beast.name:
 		the_beast.queue_free()
+		if energy_points>0:
+			energy_points-=5
+			bar._set_energy_points(energy_points)
+			bar._update_energy()
+		else:
+			_set_selected(false)			
+			is_deleted=true
+	if "Warrior" in the_beast.name && is_enemy_touching:
 		if energy_points>0:
 			energy_points-=20
 			bar._set_energy_points(energy_points)
@@ -481,9 +489,17 @@ func _get_damage(var the_beast):
 		else:
 			_set_selected(false)			
 			is_deleted=true
-	if "EnemyWarrior" in the_beast.name && is_enemy_touching:
+	if "Unit2" in the_beast.name && is_enemy_touching:
 		if energy_points>0:
-			energy_points-=20
+			energy_points-=10
+			bar._set_energy_points(energy_points)
+			bar._update_energy()
+		else:
+			_set_selected(false)			
+			is_deleted=true
+	if "Stone" in the_beast.name && is_enemy_touching:
+		if energy_points>0:
+			energy_points-=15
 			bar._set_energy_points(energy_points)
 			bar._update_energy()
 		else:
@@ -949,13 +965,13 @@ func _die():
 	queue_free()
 
 func _on_Area2D_body_entered(body):
+	if (("Tower" in body.name || "Bullet" in body.name || "Warrior" in body.name || "Unit" in body.name)
+		&& !("Enemy" in body.name)):		
+		if is_instance_valid(body_entered):
+			if "Warrior" in body.name || "Unit" in body.name:
+				body.is_enemy_touching=true
+			_get_damage(body_entered)
 	
-	if is_warchief:
-		if ("Unit" in body.name || "Warrior" in body.name) && !("Enemy" in body.name):
-			body_entered=body
-			can_heal_another=true
-	else:
-		body_entered=body
 	
 func heal(_body):
 	if is_warchief:
@@ -1016,8 +1032,8 @@ func _walk():
 
 
 func _on_Area2D_body_exited(body):
-	can_heal_another=false
-	body_entered=null
+	if "Warrior" in body.name || "Unit" in body.name:
+		body.is_enemy_touching=false	
 	
 	
 func _choose_target():
@@ -1115,3 +1131,21 @@ func _state_machine():
 			AI_state=2	
 
 
+
+
+func _on_EnemyCitizen_mouse_entered():
+	if tree.name=="Game4":
+		tree._on_Game4_is_sword()
+	if tree.name=="Game5":
+		tree._on_Game5_is_sword()
+	tree.emit_signal("is_sword")
+	tree.touching_enemy=self
+
+
+func _on_EnemyCitizen_mouse_exited():
+	if tree.name=="Game4":
+		tree._on_Game4_is_arrow()
+	if tree.name=="Game5":
+		tree._on_Game5_is_arrow()
+	tree.emit_signal("is_arrow")
+	tree.touching_enemy=null

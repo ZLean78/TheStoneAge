@@ -408,6 +408,8 @@ func _process(delta):
 		
 		_check_enemies()
 		
+		_check_enemy_citizens()
+		
 		#MovementLoop(delta)
 
 #Seleccionar una unidad.
@@ -1168,7 +1170,17 @@ func _check_units():
 				#Llamamos a la función die de la unidad,
 				#para que sea eliminada definitivamente.
 				the_unit._die()
-				
+
+func _check_enemy_citizens():
+	for an_enemy_citizen in enemy_citizens_node.get_children():		
+		#Si la unidad ha sido marcada para borrar y todavía es una instancia válida,
+		#es decir, no ha sido eliminada con queue_free().
+		if an_enemy_citizen.is_deleted && is_instance_valid(an_enemy_citizen):
+			#Si el nombre incluye la palabra "Unit", es un ciudadano. 
+			if "EnemyCitizen" in an_enemy_citizen.name:
+				an_enemy_citizen._die()
+			
+			
 
 func _on_MakeWarchief_pressed():
 	#La unidad seleccionada se convierte en jefe si es que se selecciona sólo una.

@@ -686,13 +686,21 @@ func _state_machine():
 	
 
 func _on_EnemyWarrior_mouse_entered():
-	tree._on_Game5_is_sword()
+	if tree.name=="Game4":
+		tree._on_Game4_is_sword()
+	if tree.name=="Game5":
+		tree._on_Game5_is_sword()
 	tree.emit_signal("is_sword")
 	tree.touching_enemy=self
 
 
 func _on_EnemyWarrior_mouse_exited():
-	tree._on_Game5_is_arrow()
+	if tree.name=="Game4":
+		tree._on_Game4_is_arrow()
+	if tree.name=="Game5":
+		tree._on_Game5_is_arrow()
+	tree.emit_signal("is_arrow")
+	tree.touching_enemy=null
 
 
 func _on_DetectionArea_body_entered(body):
