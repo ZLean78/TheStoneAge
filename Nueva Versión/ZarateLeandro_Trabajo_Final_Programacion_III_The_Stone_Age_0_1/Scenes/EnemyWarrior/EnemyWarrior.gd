@@ -240,9 +240,9 @@ func _physics_process(delta):
 	if(all_timer.is_stopped()):
 		all_timer.start()
 
-	if get_slide_count() && stop_timer.is_stopped():
-		stop_timer.start()
-		last_distance_to_target = position.distance_to(target)
+#	if get_slide_count() && stop_timer.is_stopped():
+#		stop_timer.start()
+#		last_distance_to_target = position.distance_to(target)
 		
 func _get_damage(var the_beast):
 	if "Tiger" in the_beast.name && the_beast.visible && is_enemy_touching:
@@ -686,13 +686,13 @@ func _state_machine():
 	
 
 func _on_EnemyWarrior_mouse_entered():
-	tree._on_Game4_is_sword()
+	tree._on_Game5_is_sword()
 	tree.emit_signal("is_sword")
 	tree.touching_enemy=self
 
 
 func _on_EnemyWarrior_mouse_exited():
-	tree._on_Game4_is_arrow()
+	tree._on_Game5_is_arrow()
 
 
 func _on_DetectionArea_body_entered(body):
