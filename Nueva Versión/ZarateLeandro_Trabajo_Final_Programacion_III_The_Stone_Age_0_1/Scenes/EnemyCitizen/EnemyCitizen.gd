@@ -10,11 +10,9 @@ export (float) var SPEED = 100.0
 #Máximo de Salud
 export (float) var MAX_HEALTH = 100.0
 
-onready var path2d
 
-onready var path_follow2d
 
-onready var remote_transform2d
+
 
 #Nodo de la escena actual.
 onready var tree
@@ -63,7 +61,7 @@ var initialPosition = Vector2()
 #Puntos de comida de la unidad.
 var food_points = 0
 #Salud.
-export (int) var energy_points = 1
+export (int) var energy_points = MAX_HEALTH
 #Variable que indica si se está arrastrando el mouse sobre la unidad.
 var dragging = true
 
@@ -97,7 +95,7 @@ var is_erased = false
 
 
 #Posición adonde la unidad debe moverse.
-var target_position
+var target_position=Vector2.ZERO
 
 #Indica si la unidad puede agregar puntos de comida o no.
 var can_add = false
@@ -255,12 +253,11 @@ func _ready():
 	#randomize()
 	#bar.value = randi() % 90 + 10
 	
-	bar._set_energy_points(energy_points)
-	bar._update_energy()
+
 	
 	
-func _deferred_start():
-	call_deferred("_ready")
+#func _deferred_start():
+#	call_deferred("_ready")
 	
 
 func _set_selected(value):
@@ -286,7 +283,11 @@ func _physics_process(delta):
 	position.y = clamp(position.y,-608,608)	
 	
 	if AI_state==1 || AI_state==2:
-		_move_along_path(SPEED*delta)
+		
+		if(AI_state==2):
+			_move_along_path((SPEED/2)*delta)
+		else:
+			_move_along_path(SPEED*delta)
 		
 		if target_position!=null:
 			if position.distance_to(target_position) > MAX_DISTANCE:
@@ -353,9 +354,9 @@ func _physics_process(delta):
 #		get_parent().add_child(bullet)
 		
 		
-#	if(all_timer.is_stopped()):
-#		timer_count-=1
-		
+	if(all_timer.is_stopped()):
+		timer_count-=1
+		all_timer.start()
 	
 		
 func _collect_pickable(var _pickable):
@@ -448,7 +449,7 @@ func _get_damage(var the_beast):
 				else:
 					energy_points-=5
 				bar._set_energy_points(energy_points)
-				bar._update_energy()
+				
 			else:
 				_set_selected(false)			
 				is_deleted=true				
@@ -459,7 +460,7 @@ func _get_damage(var the_beast):
 				else:
 					energy_points-=10
 				bar._set_energy_points(energy_points)
-				bar._update_energy()
+				
 			else:
 				if the_beast:
 					_set_selected(false)			
@@ -468,24 +469,25 @@ func _get_damage(var the_beast):
 		if energy_points>0:
 			energy_points-=30
 			bar._set_energy_points(energy_points)
-			bar._update_energy()
+			
 		else:
 			_set_selected(false)			
 			is_deleted=true
 	if "Bullet" in the_beast.name:
-		the_beast.queue_free()
-		if energy_points>0:
-			energy_points-=5
-			bar._set_energy_points(energy_points)
-			bar._update_energy()
+		
+		if energy_points>0:			
+			energy_points-=20
+			bar._set_energy_points(self.energy_points)
+
+			print("enemy citizen energy" + str(self.energy_points))
 		else:
-			_set_selected(false)			
 			is_deleted=true
+
 	if "Warrior" in the_beast.name && is_enemy_touching:
 		if energy_points>0:
 			energy_points-=20
 			bar._set_energy_points(energy_points)
-			bar._update_energy()
+			
 		else:
 			_set_selected(false)			
 			is_deleted=true
@@ -493,7 +495,7 @@ func _get_damage(var the_beast):
 		if energy_points>0:
 			energy_points-=10
 			bar._set_energy_points(energy_points)
-			bar._update_energy()
+			
 		else:
 			_set_selected(false)			
 			is_deleted=true
@@ -501,7 +503,7 @@ func _get_damage(var the_beast):
 		if energy_points>0:
 			energy_points-=15
 			bar._set_energy_points(energy_points)
-			bar._update_energy()
+			
 		else:
 			_set_selected(false)			
 			is_deleted=true
@@ -543,30 +545,30 @@ func _move_to_target(target):
 	var collision = move_and_collide(velocity*to_delta*SPEED)
 	
 
-func _unhandled_input(event):
-	if event.is_action_pressed("RightClick"):
-		if tree.sword_mode:
-			if tree.touching_enemy!=null:
-				if is_instance_valid(tree.touching_enemy):
-					if selected && can_shoot:
-						if !is_warchief:
-							_shoot()
-						else:
-							for warrior in tree.warriors.get_children():
-								if warrior.position.distance_to(position):
-									warrior._shoot()
-				else:					
-					if tree.name == "Game3":
-						tree._on_Game3_is_arrow()
-					if tree.name == "Game2":
-						tree._on_Game2_is_arrow()
-		else:
-			firstPoint=global_position
-
-
-	if event.is_action_released("RightClick"):		
-		if !tree.sword_mode:
-			_walk()
+#func _unhandled_input(event):
+#	if event.is_action_pressed("RightClick"):
+#		if tree.sword_mode:
+#			if tree.touching_enemy!=null:
+#				if is_instance_valid(tree.touching_enemy):
+#					if selected && can_shoot:
+#						if !is_warchief:
+#							_shoot()
+#						else:
+#							for warrior in tree.warriors.get_children():
+#								if warrior.position.distance_to(position):
+#									warrior._shoot()
+#				else:					
+#					if tree.name == "Game3":
+#						tree._on_Game3_is_arrow()
+#					if tree.name == "Game2":
+#						tree._on_Game2_is_arrow()
+#		else:
+#			firstPoint=global_position
+#
+#
+#	if event.is_action_released("RightClick"):		
+#		if !tree.sword_mode:
+#			_walk()
 
 
 func _on_Unit_input_event(_viewport, event, _shape_idx):
@@ -927,8 +929,8 @@ func _check_pine_tree_touching():
 	_set_pine_tree_touching(pine_tree_touching)
 #	
 func _on_all_timer_timeout():
-	if body_entered!=null:
-		heal(body_entered)
+#	if body_entered!=null:
+#		heal(body_entered)
 	timer_count+=1	
 	
 #	if body_entered!=null && is_instance_valid(body_entered):
@@ -965,12 +967,13 @@ func _die():
 	queue_free()
 
 func _on_Area2D_body_entered(body):
-	if (("Tower" in body.name || "Bullet" in body.name || "Warrior" in body.name || "Unit" in body.name)
-		&& !("Enemy" in body.name)):		
+	if (("Tower" in body.name || "Warrior" in body.name || "Unit" in body.name)
+		&& !("Enemy" in body.name)):	
+		body_entered=body	
 		if is_instance_valid(body_entered):
 			if "Warrior" in body.name || "Unit" in body.name:
 				body.is_enemy_touching=true
-			_get_damage(body_entered)
+			
 	
 	
 func heal(_body):
@@ -979,9 +982,9 @@ func heal(_body):
 		if _body.energy_points<_body.MAX_HEALTH:
 			#if timer_count==0:
 			_body.energy_points+=5
-			print("unt energy" + str(_body.energy_points))
+			print("unit energy" + str(_body.energy_points))
 			_body.bar._set_energy_points(_body.energy_points)
-			_body.bar._update_energy()
+			
 	
 			if _body.energy_points>_body.MAX_HEALTH:
 				_body.energy_points=_body.MAX_HEALTH
@@ -993,7 +996,7 @@ func self_heal():
 	if energy_points<MAX_HEALTH:
 		energy_points+=5
 		bar._set_energy_points(energy_points)
-		bar._update_energy()	
+		
 		
 		if energy_points>MAX_HEALTH:
 			energy_points=MAX_HEALTH
@@ -1005,21 +1008,22 @@ func self_heal():
 
 
 func _shoot():
-	target_position = tree.touching_enemy.position
-	shoot_node.look_at(target_position)				
-	var angle = shoot_node.rotation
-	#var forward = Vector2(cos(angle),sin(angle))
-	var new_stone = stone_scene.instance()
-	shoot_point.rotation = angle				
-	new_stone.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-	if target_position.x<position.x:
-		new_stone.set_velocity(Vector2(-200,0))
-	else:
-		new_stone.set_velocity(Vector2(200,0))
-	new_stone.rotation = angle		
-	var the_tilemap=get_tree().get_nodes_in_group("tilemap")
-	the_tilemap[0].add_child(new_stone)
-	can_shoot=false
+	if(target!=null) && is_instance_valid(target):
+		target_position = target.position
+		shoot_node.look_at(target_position)				
+		var angle = shoot_node.rotation
+		#var forward = Vector2(cos(angle),sin(angle))
+		var new_stone = stone_scene.instance()
+		shoot_point.rotation = angle				
+		new_stone.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+		if target_position.x<position.x:
+			new_stone.set_velocity(Vector2(-200,0))
+		else:
+			new_stone.set_velocity(Vector2(200,0))
+		new_stone.rotation = angle		
+		var the_tilemap=get_tree().get_nodes_in_group("tilemap")
+		the_tilemap[0].add_child(new_stone)
+		can_shoot=false
 
 func _walk():
 	firstPoint = global_position
@@ -1033,53 +1037,65 @@ func _walk():
 
 func _on_Area2D_body_exited(body):
 	if "Warrior" in body.name || "Unit" in body.name:
-		body.is_enemy_touching=false	
+		body.is_enemy_touching=false
+		body_entered=null	
 	
 	
 func _choose_target():
-	match target_t:
-		target_type.PLANT:
-			if plants_node.get_child_count()>0:
-				for i in range(0,plants_node.get_child_count()):
-					if !plants_node.get_child(i).empty:
-						target_position=plants_node.get_child(i).position
-						break
-					else:
-						target_position=plants_node.get_child(i+1).position
+	if is_instance_valid(body_entered) && body_entered!=null && ("Warrior" in body_entered.name || "Unit" in body_entered.name) && !("Enemy" in body_entered.name):
+		target_position=body_entered.position
+	else:
+		match target_t:
+			target_type.PLANT:
+				if !(AI_state==2):
+					if plants_node.get_child_count()>0:
+						for i in range(0,plants_node.get_child_count()):
+							if !plants_node.get_child(i).empty:
+								target_position=plants_node.get_child(i).position
+								break
+							else:
+								target_position=plants_node.get_child(i+1).position
 	
 	
-		target_type.FRUIT_TREE:
-			if fruit_trees_node.get_child_count()>0:
-				for i in range(0,fruit_trees_node.get_child_count()):
-					if !fruit_trees_node.get_child(i).empty:
-						target_position=fruit_trees_node.get_child(i).position
-						break
-					else:
-						target_position=fruit_trees_node.get_child(i+1).position
-		target_type.PINE_TREE:
-			if pine_trees_node.get_child_count()>0:				
-				for i in range(0,pine_trees_node.get_child_count()):
-					if !pine_trees_node.get_child(i).empty:
-						target_position=pine_trees_node.get_child(i).position
-						break
-					else:
-						target_position=pine_trees_node.get_child(i+1).position		
-		target_type.COPPER:
-			if copper_node.get_child_count()>0:				
-				for i in range(0,copper_node.get_child_count()):
-					if !copper_node.get_child(i).empty:
-						target_position=copper_node.get_child(i).position
-						break
-					else:
-						target_position=copper_node.get_child(i+1).position
-		target_type.STONE:
-			if quarries_node.get_child_count()>0:				
-				for i in range(0,quarries_node.get_child_count()):
-					if !quarries_node.get_child(i).empty:
-						target_position=quarries_node.get_child(i).position
-						break
-					else:
-						target_position=quarries_node.get_child(i+1).position
+			target_type.FRUIT_TREE:
+				if !(AI_state==2):
+					if fruit_trees_node.get_child_count()>0:
+						for i in range(0,fruit_trees_node.get_child_count()):
+							if !fruit_trees_node.get_child(i).empty:
+								target_position=fruit_trees_node.get_child(i).position
+								break
+							else:
+								target_position=fruit_trees_node.get_child(i+1).position
+			target_type.PINE_TREE:
+				if !(AI_state==2):
+					if pine_trees_node.get_child_count()>0:				
+						for i in range(0,pine_trees_node.get_child_count()):
+							if !pine_trees_node.get_child(i).empty:
+								target_position=pine_trees_node.get_child(i).position
+								break
+							else:
+								target_position=pine_trees_node.get_child(i+1).position		
+			target_type.COPPER:
+				if !(AI_state==2):
+					if copper_node.get_child_count()>0:				
+						for i in range(0,copper_node.get_child_count()):
+							if !copper_node.get_child(i).empty:
+								target_position=copper_node.get_child(i).position
+								break
+							else:
+								target_position=copper_node.get_child(i+1).position
+			target_type.STONE:
+				if !(AI_state==2):
+					if quarries_node.get_child_count()>0:				
+						for i in range(0,quarries_node.get_child_count()):
+							if !quarries_node.get_child(i).empty:
+								target_position=quarries_node.get_child(i).position
+								break
+							else:
+								target_position=quarries_node.get_child(i+1).position
+	
+	
+		
 
 
 #MUESTRA DE CÓDIGO ANTERIOR
@@ -1115,23 +1131,29 @@ func _state_machine():
 				AI_state=0
 		2:
 			if !(is_instance_valid(body_entered)):
-				print("vuelta a estado 0")
+				#print("vuelta a estado 0")
 				AI_state=0
 			else:			
 				target_position=body_entered.position
+				
 		3:
 			target_position=self.position
-	
+			
 	if body_entered!=null && is_instance_valid(body_entered):
-#		print("se ha detectado un cuerpo")
-#		print(body_entered)
+		#print("se ha detectado un cuerpo")
+		#print(body_entered)
 		if !("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name):
+			
 			target_position=body_entered.position
-			print("cambio a estado 2")
+			#print("cambio a estado 2")
 			AI_state=2	
 
 
-
+	if position.distance_to(target_position)<=50 && target_position!=self.position:
+		if can_shoot:
+			_shoot()
+	
+	
 
 func _on_EnemyCitizen_mouse_entered():
 	if tree.name=="Game4":

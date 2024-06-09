@@ -268,7 +268,7 @@ func _get_damage():
 					energy_points-=1
 					#the_unit.get_child(4)._decrease_energy()
 				bar._set_energy_points(energy_points)
-				bar._update_energy()
+				
 			else:
 				visible=false
 				_set_selected(false)			
@@ -286,7 +286,7 @@ func _get_damage():
 				energy_points+=1
 				#the_unit.get_child(4)._increase_energy()
 				bar._set_energy_points(energy_points)
-				bar._update_energy()
+				
 	
 func move_towards(pos,point,delta):
 	var v = (point-pos).normalized()

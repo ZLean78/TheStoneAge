@@ -222,7 +222,7 @@ func _ready():
 	#bar.value = randi() % 90 + 10
 	
 	bar._set_energy_points(energy_points)
-	bar._update_energy()
+	
 	
 	
 func _deferred_start():
@@ -395,35 +395,34 @@ func _collect_pickable(var _pickable):
 
 		
 func _get_damage(var the_beast):
-	if "Tiger" in the_beast.name && the_beast.visible && is_enemy_touching:
+	if "Tiger" in the_beast.name && is_enemy_touching && the_beast.visible:
 		if is_warchief:
 			if(energy_points>0):
 				if(!is_dressed):
-					energy_points-=10
-				else:
 					energy_points-=5
+				else:
+					energy_points-=2
 				bar._set_energy_points(energy_points)
-				bar._update_energy()
+			
 			else:
 				_set_selected(false)			
 				is_deleted=true				
 		else:
 			if(energy_points>0):
 				if(!is_dressed):
-					energy_points-=15
-				else:
 					energy_points-=10
+				else:
+					energy_points-=5
 				bar._set_energy_points(energy_points)
-				bar._update_energy()
+				
 			else:
-				if the_beast:
-					_set_selected(false)			
-					is_deleted=true
+				_set_selected(false)			
+				is_deleted=true
 	if "Mammoth" in the_beast.name && is_enemy_touching:
 		if energy_points>0:
 			energy_points-=30
 			bar._set_energy_points(energy_points)
-			bar._update_energy()
+			
 		else:
 			_set_selected(false)			
 			is_deleted=true
@@ -432,7 +431,7 @@ func _get_damage(var the_beast):
 		if energy_points>0:
 			energy_points-=20
 			bar._set_energy_points(energy_points)
-			bar._update_energy()
+			
 		else:
 			_set_selected(false)			
 			is_deleted=true
@@ -440,7 +439,7 @@ func _get_damage(var the_beast):
 		if energy_points>0:
 			energy_points-=20
 			bar._set_energy_points(energy_points)
-			bar._update_energy()
+			
 		else:
 			_set_selected(false)			
 			is_deleted=true
@@ -865,13 +864,14 @@ func _check_pine_tree_touching():
 	_set_pine_tree_touching(pine_tree_touching)
 #	
 func _on_all_timer_timeout():
+
 	if body_entered!=null:
 		heal(body_entered)
 	timer_count+=1	
 	
-#	if body_entered!=null && is_instance_valid(body_entered):
+	if body_entered!=null && is_instance_valid(body_entered):
 #		if "tiger" in body_entered.name || "mammoth" in body_entered.name || "enemy" in body_entered.name:
-#			_get_damage(body_entered)
+			_get_damage(body_entered)
 #		if is_warchief:
 #			if !("enemy" in body_entered.name) && "unit" in body_entered.name || "warrior" in body_entered.name:
 #				heal(body_entered)
@@ -884,8 +884,8 @@ func _on_all_timer_timeout():
 #
 #		if can_heal_itself && timer_count>3:
 #			self_heal()
-	
-	
+	if body_entered!=null:
+		_get_damage(body_entered)
 	
 	if pickable!=null:
 		_collect_pickable(pickable)
@@ -916,7 +916,7 @@ func heal(_body):
 			#if timer_count==0:
 			_body.energy_points+=5
 			_body.bar._set_energy_points(_body.energy_points)
-			_body.bar._update_energy()
+			
 	
 			if _body.energy_points>_body.MAX_HEALTH:
 				_body.energy_points=_body.MAX_HEALTH
@@ -928,7 +928,7 @@ func self_heal():
 	if energy_points<MAX_HEALTH:
 		energy_points+=5
 		bar._set_energy_points(energy_points)
-		bar._update_energy()	
+			
 		
 		if energy_points>MAX_HEALTH:
 			energy_points=MAX_HEALTH

@@ -240,16 +240,16 @@ func _physics_process(delta):
 	if(all_timer.is_stopped()):
 		all_timer.start()
 
-#	if get_slide_count() && stop_timer.is_stopped():
-#		stop_timer.start()
-#		last_distance_to_target = position.distance_to(target)
+	if get_slide_count() && stop_timer.is_stopped():
+		stop_timer.start()
+		last_distance_to_target = position.distance_to(target)
 		
 func _get_damage(var the_beast):
-	if "Tiger" in the_beast.name && the_beast.visible && is_enemy_touching:
+	if "Tiger" in the_beast.name && is_enemy_touching && the_beast.visible:
 		if(energy_points>0):
 			energy_points-=5
 			bar._set_energy_points(energy_points)
-			bar._update_energy()
+			
 		else:
 			#the_beast.unit = null
 			#the_beast.is_chasing = false
@@ -259,16 +259,17 @@ func _get_damage(var the_beast):
 		if energy_points>0:
 			energy_points-=30
 			bar._set_energy_points(energy_points)
-			bar._update_energy()
+			
 		else:
 					
 			is_deleted=true
 	if "Bullet" in the_beast.name:
-		the_beast.queue_free()
+
 		if energy_points>0:
 			energy_points-=20
 			bar._set_energy_points(energy_points)
-			bar._update_energy()
+
+			print("enemy warrior energy" + str(energy_points))
 		else:
 			is_deleted=true	
 				
@@ -569,12 +570,12 @@ func _die():
 
 
 func _on_Area2D_body_entered(body):	
-	if (("Tower" in body.name || "Bullet" in body.name || "Warrior" in body.name || "Unit" in body.name)
+	if (("Tower" in body.name || "Warrior" in body.name || "Unit" in body.name)
 		&& !("Enemy" in body.name)):		
 		if is_instance_valid(body_entered):
 			if "Warrior" in body.name || "Unit" in body.name:
 				body.is_enemy_touching=true
-			_get_damage(body_entered)
+			
 
 		
 func _on_Area2D_body_exited(body):
@@ -651,19 +652,19 @@ func _state_machine():
 	match AI_state:
 		0:
 			_choose_target()
-			print("Cambio a estado 1.")
+			#print("Cambio a estado 1.")
 			AI_state=1
 		1:
 			if target!=null && is_instance_valid(target):
 				target_position=target.position
 			else:
-				print("vuelta a estado 0")
+				#print("vuelta a estado 0")
 				AI_state=0
 			
 		
 		2:
 			if !(is_instance_valid(body_entered)):
-				print("vuelta a estado 0")
+				#print("vuelta a estado 0")
 				AI_state=0
 			else:			
 				target=body_entered.position
@@ -671,8 +672,9 @@ func _state_machine():
 			target_position=self.position
 	
 	if body_entered!=null && is_instance_valid(body_entered):
-		print("se ha detectado un cuerpo")
+		#print("se ha detectado un cuerpo")
 		if !("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name):
+			target=body_entered
 			target_position=body_entered.position
 			print("cambio a estado 2")
 			AI_state=2	

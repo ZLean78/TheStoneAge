@@ -36,7 +36,13 @@ func _physics_process(delta):
 		var direction=(target_position-position)
 		velocity=direction.normalized()*speed
 		
-		var collision = move_and_slide(velocity)
+		var collision = move_and_collide(velocity*delta)
+		
+		if collision != null:		
+			if "Unit" in collision.collider.name || "Warrior" in collision.collider.name:
+				collision.get_collider().is_enemy_touching=true
+				collision.get_collider().body_entered=self
+			
 
 #		if collision!=null && is_instance_valid(collision.collider):
 #			if "Bullet" in collision.collider.name || "Stone" in collision.collider.name:
@@ -118,8 +124,8 @@ func _on_Area2D_body_entered(body):
 		is_dead=true
 		queue_free()
 	
-	if "Unit" in body.name || "Warrior" in body.name:
-		body.is_enemy_touching=true
+#	if "Unit" in body.name || "Warrior" in body.name:
+#		body.is_enemy_touching=true
 	
 				
 func _on_Area2D_body_exited(body):

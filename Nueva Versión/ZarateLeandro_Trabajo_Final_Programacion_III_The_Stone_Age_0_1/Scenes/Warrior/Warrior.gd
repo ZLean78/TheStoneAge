@@ -250,11 +250,11 @@ func _physics_process(delta):
 
 		
 func _get_damage(var the_beast):
-	if "Tiger" in the_beast.name && the_beast.visible && is_enemy_touching:
+	if "Tiger" in the_beast.name && the_beast.visible:
 		if(energy_points>0):
 			energy_points-=5
 			bar._set_energy_points(energy_points)
-			bar._update_energy()
+			
 		else:
 			#the_beast.unit = null
 			#the_beast.is_chasing = false
@@ -264,7 +264,7 @@ func _get_damage(var the_beast):
 		if energy_points>0:
 			energy_points-=30
 			bar._set_energy_points(energy_points)
-			bar._update_energy()
+			
 		else:
 			_set_selected(false)			
 			is_deleted=true	
@@ -273,7 +273,7 @@ func _get_damage(var the_beast):
 		if energy_points>0:
 			energy_points-=20
 			bar._set_energy_points(energy_points)
-			bar._update_energy()
+			
 		else:
 			_set_selected(false)			
 			is_deleted=true	
