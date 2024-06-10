@@ -981,7 +981,7 @@ func _on_Game5_is_arrow():
 
 
 func _on_Game5_is_basket():
-	if !house_mode && !fort_mode:
+	if arrow_mode:
 		Input.set_custom_mouse_cursor(Globals.basket)
 		basket_mode=true
 		arrow_mode=false
@@ -996,7 +996,7 @@ func _on_Game5_is_basket():
 		barn_mode=false
 	
 func _on_Game5_is_pick_mattock():
-	if !house_mode && !fort_mode:
+	if arrow_mode:
 		Input.set_custom_mouse_cursor(Globals.pick_mattock)
 		mattock_mode=true
 		basket_mode=false
@@ -1011,7 +1011,7 @@ func _on_Game5_is_pick_mattock():
 		barn_mode=false
 
 func _on_Game5_is_sword():
-	if !house_mode && !fort_mode:
+	if arrow_mode:
 		Input.set_custom_mouse_cursor(Globals.sword)
 		sword_mode=true
 		mattock_mode=false
@@ -1026,7 +1026,7 @@ func _on_Game5_is_sword():
 		barn_mode=false
 
 func _on_Game5_is_hand():
-	if !house_mode && !fort_mode:
+	if arrow_mode:
 		Input.set_custom_mouse_cursor(Globals.hand)
 		hand_mode=true
 		mattock_mode=false
@@ -1042,7 +1042,7 @@ func _on_Game5_is_hand():
 
 
 func _on_Game5_is_claypot():
-	if !house_mode && !fort_mode:
+	if arrow_mode:
 		Input.set_custom_mouse_cursor(Globals.claypot)
 		claypot_mode=true
 		arrow_mode=false
@@ -1057,7 +1057,7 @@ func _on_Game5_is_claypot():
 		barn_mode=false
 
 func _on_Game5_is_axe():
-	if !house_mode && !fort_mode:
+	if arrow_mode:
 		Input.set_custom_mouse_cursor(Globals.axe)
 		axe_mode=true
 		arrow_mode=false

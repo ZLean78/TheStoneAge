@@ -4,7 +4,7 @@ extends StaticBody2D
 export var condition=0
 export var condition_max=0
 onready var tree
-onready var units
+onready var enemy_citizens
 onready var timer=$Timer
 #onready var all_timer=get_tree().root.get_child(0).get_node("food_timer")
 onready var bar=$Bar
@@ -13,7 +13,7 @@ var mouse_entered=false
 
 func _ready():
 	tree=Globals.current_scene
-	units=tree.get_node("Units")
+	enemy_citizens=tree.get_node("EnemyCitizens")
 	
 func _process(_delta):
 	bar.value=condition
@@ -41,8 +41,8 @@ func _on_Area2D_body_exited(body):
 
 
 func _on_Timer_timeout():
-	for citizen in units.get_children():
-		if citizen.townhall_entered:
+	for enemy_citizen in enemy_citizens.get_children():
+		if enemy_citizen.townhall_entered:
 			_townhall_build()
 	timer.start()
 

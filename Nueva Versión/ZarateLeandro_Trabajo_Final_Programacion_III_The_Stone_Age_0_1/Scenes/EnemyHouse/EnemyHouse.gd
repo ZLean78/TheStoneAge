@@ -17,6 +17,8 @@ func _ready():
 	
 func _process(_delta):
 	bar.value=condition
+	
+
 
 func _house_build():
 	if condition<condition_max:
@@ -28,7 +30,8 @@ func _house_build():
 func _on_Area2D_body_entered(body):
 	if "Unit" in body.name:
 		body.house_entered=true
-	
+
+		
 
 
 
@@ -46,6 +49,27 @@ func _on_Timer_timeout():
 	timer.start()
 
 
+func _on_Area2D_mouse_entered():
+	mouse_entered=true
+	if tree.name=="Game5":
+		tree._on_Game5_is_sword()
+		tree.emit_signal("is_sword")
+		tree.touching_enemy=self
+
+
+func _on_Area2D_mouse_exited():
+	mouse_entered=false
+	if tree.name=="Game5":
+		tree._on_Game5_is_arrow()
+		tree.emit_signal("is_arrow")
+		tree.touching_enemy=null
+
+func _get_damage(body):
+	if is_instance_valid(body):
+		if "Bullet" in body.name:
+			condition-=3
+	if condition<=0:
+		queue_free()
 
 
 
