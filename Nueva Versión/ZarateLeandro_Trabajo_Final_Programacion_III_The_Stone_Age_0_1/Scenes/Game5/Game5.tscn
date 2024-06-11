@@ -219,8 +219,10 @@ condition_max = 80
 
 [node name="EnemyTownhall" type="Node2D" parent="."]
 
-[node name="TownHall" parent="EnemyTownhall" instance=ExtResource( 40 )]
+[node name="EnemyTownhall" parent="EnemyTownhall" instance=ExtResource( 40 )]
 position = Vector2( -885, -348 )
+condition = 80
+condition_max = 80
 
 [node name="Fort" type="Node2D" parent="."]
 

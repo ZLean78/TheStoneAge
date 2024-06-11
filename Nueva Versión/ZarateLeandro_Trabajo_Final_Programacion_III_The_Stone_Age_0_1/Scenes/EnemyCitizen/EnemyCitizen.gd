@@ -499,11 +499,10 @@ func _get_damage(var the_beast):
 		else:
 			_set_selected(false)			
 			is_deleted=true
-	if "Stone" in the_beast.name && is_enemy_touching:
+	if "Stone" in the_beast.name && the_beast.owner_name=="Citizen":
 		if energy_points>0:
 			energy_points-=15
-			bar._set_energy_points(energy_points)
-			
+			bar._set_energy_points(energy_points)			
 		else:
 			_set_selected(false)			
 			is_deleted=true
@@ -1020,7 +1019,8 @@ func _shoot():
 			new_stone.set_velocity(Vector2(-200,0))
 		else:
 			new_stone.set_velocity(Vector2(200,0))
-		new_stone.rotation = angle		
+		new_stone.rotation = angle
+		new_stone.owner_name="EnemyCitizen"		
 		var the_tilemap=get_tree().get_nodes_in_group("tilemap")
 		the_tilemap[0].add_child(new_stone)
 		can_shoot=false
@@ -1043,6 +1043,7 @@ func _on_Area2D_body_exited(body):
 	
 func _choose_target():
 	if is_instance_valid(body_entered) && body_entered!=null && ("Warrior" in body_entered.name || "Unit" in body_entered.name) && !("Enemy" in body_entered.name):
+		target=body_entered
 		target_position=body_entered.position
 	else:
 		match target_t:
@@ -1122,7 +1123,8 @@ func _state_machine():
 			AI_state=1
 		1:
 			if target!=null && is_instance_valid(target):
-				if !("Lake" in target.name) && !("Puddle" in target.name):
+				if( !("Lake" in target.name) && !("Puddle" in target.name) 
+				&& !("Unit" in target.name) && !("Warrior" in target.name)):
 					if target.empty:
 						AI_state=0
 						if target_t==target_type.COPPER:
@@ -1133,8 +1135,12 @@ func _state_machine():
 			if !(is_instance_valid(body_entered)):
 				#print("vuelta a estado 0")
 				AI_state=0
-			else:			
-				target_position=body_entered.position
+			else:	
+				if position.distance_to(target_position)<=150 && target_position!=self.position:	
+					if can_shoot:
+						_shoot()
+				else:
+					target_position=body_entered.position
 				
 		3:
 			target_position=self.position
@@ -1149,7 +1155,7 @@ func _state_machine():
 			AI_state=2	
 
 
-	if position.distance_to(target_position)<=50 && target_position!=self.position:
+	if position.distance_to(target_position)<=50 :
 		if can_shoot:
 			_shoot()
 	

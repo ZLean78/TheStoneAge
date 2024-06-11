@@ -443,6 +443,13 @@ func _get_damage(var the_beast):
 		else:
 			_set_selected(false)			
 			is_deleted=true
+	if "Stone" in the_beast.name && the_beast.owner_name=="EnemyCitizen":
+		if energy_points>0:
+			energy_points-=15
+			bar._set_energy_points(energy_points)			
+		else:
+			_set_selected(false)			
+			is_deleted=true
 					
 								
 
@@ -951,7 +958,8 @@ func _shoot():
 		new_stone.set_velocity(Vector2(-200,0))
 	else:
 		new_stone.set_velocity(Vector2(200,0))
-	new_stone.rotation = angle		
+	new_stone.rotation = angle	
+	new_stone.owner_name="Citizen"	
 	var the_tilemap=get_tree().get_nodes_in_group("tilemap")
 	the_tilemap[0].add_child(new_stone)
 	can_shoot=false

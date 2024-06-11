@@ -366,7 +366,8 @@ func _process(delta):
 		
 		
 		for enemy_citizen in enemy_citizens_node.get_children():
-			if enemy_citizen.target!=null:
+			if (is_instance_valid(enemy_citizen.target) &&
+			!("Unit" in enemy_citizen.target.name) && !("Warrior" in enemy_citizen.target.name)):
 				if !enemy_citizen.target.empty:
 					timer_label.text = "Puntos de Objetivo: " + str(enemy_citizen.target.points)
 				else:

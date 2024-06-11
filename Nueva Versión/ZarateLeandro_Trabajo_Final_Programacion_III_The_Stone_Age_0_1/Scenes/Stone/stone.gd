@@ -4,24 +4,29 @@ var start_position=Vector2.ZERO
 var gravity=Vector2(0,9.8)
 var velocity_x=Vector2.ZERO
 var velocity_y=Vector2(0,-250)
+var owner_name=""
+var to_delta
 
 func _ready():
 	start_position=position
 
-func _physics_process(_delta):
+func _physics_process(delta):
 	velocity_y+=gravity
+	to_delta=delta
 	move_projectile()
 
 func move_projectile():
-	var collision = move_and_slide(velocity_x+velocity_y)
+	var collision = move_and_collide((velocity_x+velocity_y)*to_delta)
 	
-#	if collision != null:
-#		if "Tiger" in collision.collider.name || "Mammoth" in collision.collider.name:
-#			if "Tiger" in collision.collider.name:
-#				collision.collider.unit.is_tiger_touching=false
-#				collision.collider.unit=null
-#			#collision.collider.queue_free()
-#		queue_free()
+	if collision != null:
+		if("Unit2" in collision.collider.name || "Warrior" in collision.collider.name
+		|| "EnemyCitizen" in collision.collider.name || "EnemyWarrior" in collision.collider.name
+		|| "House" in collision.collider.name || "EnemyHouse" in collision.collider.name
+		|| "Townhall" in collision.collider.name || "EnemyTownhall" in collision.collider.name):
+			collision.collider._get_damage(self)
+		queue_free()
+
+	
 
 	if position.distance_to(start_position)>250:
 		queue_free()

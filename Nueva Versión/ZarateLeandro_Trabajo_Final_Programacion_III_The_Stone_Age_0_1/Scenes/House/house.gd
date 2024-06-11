@@ -28,11 +28,6 @@ func _house_build():
 func _on_Area2D_body_entered(body):
 	if "Unit" in body.name:
 		body.house_entered=true
-	
-
-
-
-
 
 func _on_Area2D_body_exited(body):
 	if "Unit" in body.name:
@@ -45,7 +40,14 @@ func _on_Timer_timeout():
 			_house_build()
 	timer.start()
 
-
+func _get_damage(body):
+	if is_instance_valid(body):
+		if "Bullet" in body.name:
+			condition-=3
+		if "Stone" in body.name && body.owner_name=="EnemyCitizen":
+			condition-=3
+	if condition<=0:
+		queue_free()
 
 
 
