@@ -127,7 +127,7 @@ var index = 0
 var AI_state=0
 
 #Variable enumerador que discrimina el tipo de objetivo.
-enum target_type {TOWER,BARN,FORT}
+enum target_type {TOWER,BARN,FORT,TOWNHALL}
 
 var target=null
 export (target_type) var target_t
@@ -583,9 +583,7 @@ func _on_Area2D_body_exited(body):
 		body.is_enemy_touching=false	
 		
 #
-#func _on_Area2D_body_exited(body):
-#	if ("Warrior" in body.name || "Unit" in body.name) && !("Enemy" in body.name):
-#		body_entered=null
+
 		
 		
 func _choose_target():
@@ -625,28 +623,36 @@ func _choose_target():
 			else:
 				target=tree.fort_node.get_child(0)
 				target_position=tree.fort_node.get_child(0).position
+	elif target_t==target_type.TOWNHALL && tree.townhall_node.get_child_count()>0:
+		target=tree.townhall_node.get_child(0)
+		target_position=tree.townhall_node.get_child(0).position
 	elif ((target_t == target_type.TOWER && tree.tower_node.get_child_count()==0)||
 		(target_t==target_type.BARN && tree.barn_node.get_child_count()==0)||
 		(target_t==target_type.FORT && tree.fort_node.get_child_count()==0)):
-		if tree.warriors.get_child_count()>0:					
-			for i in range(0,tree.warriors.get_child_count()):
-				if i!=0:
-					if tree.warriors.get_child(i).position.distance_to(position)<tree.warriors.get_child(i-1).position.distance_to(position):
-						target=tree.warriors.get_child(i)
-						target_position=tree.warriors.get_child(i).position
-				else:
-					target=tree.warriors.get_child(0)
-					target_position=tree.warriors.get_child(0).position	
+		if tree.name=="Game5":
+			if tree.townhall_node.get_child_count()>0:
+				target=tree.townhall_node.get_child(0)
+				target_position=tree.townhall_node.get_child(0).position
 		else:
-			if tree.units.get_child_count()>0:
-				for i in range(0,tree.units.get_child_count()):
+			if tree.warriors.get_child_count()>0:					
+				for i in range(0,tree.warriors.get_child_count()):
 					if i!=0:
-						if tree.units.get_child(i).position.distance_to(position)<tree.units.get_child(i-1).position.distance_to(position):
-							target=tree.units.get_child(i)
-							target_position=tree.units.get_child(i).position
+						if tree.warriors.get_child(i).position.distance_to(position)<tree.warriors.get_child(i-1).position.distance_to(position):
+							target=tree.warriors.get_child(i)
+							target_position=tree.warriors.get_child(i).position
 					else:
-						target=tree.units.get_child(0)
-						target_position=tree.units.get_child(0).position	
+						target=tree.warriors.get_child(0)
+						target_position=tree.warriors.get_child(0).position	
+			else:
+				if tree.units.get_child_count()>0:
+					for i in range(0,tree.units.get_child_count()):
+						if i!=0:
+							if tree.units.get_child(i).position.distance_to(position)<tree.units.get_child(i-1).position.distance_to(position):
+								target=tree.units.get_child(i)
+								target_position=tree.units.get_child(i).position
+						else:
+							target=tree.units.get_child(0)
+							target_position=tree.units.get_child(0).position	
 
 func _state_machine():
 	match AI_state:
@@ -680,7 +686,7 @@ func _state_machine():
 			AI_state=2	
 	
 	
-	if position.distance_to(target_position)<=50 && target_position!=self.position:
+	if position.distance_to(target_position)<=150 && target_position!=self.position:
 		if can_shoot:
 			_shoot()
 		

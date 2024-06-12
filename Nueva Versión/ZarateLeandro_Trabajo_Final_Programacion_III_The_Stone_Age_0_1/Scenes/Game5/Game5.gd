@@ -71,10 +71,10 @@ onready var wood_label = tree.get_node("UI/Base/Rectangle/WoodLabel")
 onready var water_label = tree.get_node("UI/Base/Rectangle/WaterLabel")
 #onready var developments_label = tree.get_node("UI/Base/Rectangle/DevelopmentsLabel")
 onready var rectangle = tree.get_node("UI/Base/Rectangle")
-onready var develop_pottery = tree.get_node("UI/Base/Rectangle/DevelopPottery")
-onready var develop_carpentry = tree.get_node("UI/Base/Rectangle/DevelopCarpentry")
-onready var develop_mining = tree.get_node("UI/Base/Rectangle/DevelopMining")
-onready var develop_metals = tree.get_node("UI/Base/Rectangle/DevelopMetals")
+#onready var develop_pottery = tree.get_node("UI/Base/Rectangle/DevelopPottery")
+#onready var develop_carpentry = tree.get_node("UI/Base/Rectangle/DevelopCarpentry")
+#onready var develop_mining = tree.get_node("UI/Base/Rectangle/DevelopMining")
+#onready var develop_metals = tree.get_node("UI/Base/Rectangle/DevelopMetals")
 onready var create_house = tree.get_node("UI/Base/Rectangle/CreateHouse")
 #onready var create_townhall = tree.get_node("UI/Base/Rectangle/CreateTownHall")
 onready var create_warrior = tree.get_node("UI/Base/Rectangle/CreateWarriorUnit")
@@ -123,6 +123,7 @@ export (PackedScene) var Fort
 export (PackedScene) var Tower
 export (PackedScene) var Barn
 export (PackedScene) var EnemyWarrior
+export (PackedScene) var EnemyCitizen
 
 
 #Arreglos para controlar los distintos grupos de entidades.
@@ -411,6 +412,8 @@ func _process(delta):
 		
 		_check_enemy_citizens()
 		
+		_manage_enemy_units()
+		
 		#MovementLoop(delta)
 
 #Seleccionar una unidad.
@@ -609,6 +612,8 @@ func _create_fort():
 				else:
 					#Si el nuevo fuerte está a la izquierda.
 					citizen.target_position=Vector2(the_fort.position.x+60,the_fort.position.y)
+	#Comprobar_victoria.
+	_check_victory()
 	#Ataque enemigo por obtención de mejora.				
 	if !victory_obtained:
 		_make_attack()
@@ -683,8 +688,10 @@ func _create_tower():
 				else:
 					#Si la nueva torre está a la izquierda.
 					citizen.target_position=Vector2(the_tower.position.x+35,the_tower.position.y)	
+	#Comprobar victoria.
+	_check_victory()
 	#Ataque enemigo por obtención de mejora.				
-	if !victory_obtained:
+	if tree.name=="Game4" && !victory_obtained:
 		_make_attack()
 				
 #Función crear granero.
@@ -754,6 +761,8 @@ func _create_barn():
 				else:
 					#Si el nuevo granero está a la izquierda.
 					citizen.target_position=Vector2(the_barn.position.x+25,the_barn.position.y)	
+	#Comprobar victoria.
+	_check_victory()
 	#Ataque enemigo por obtención de mejora.				
 	if !victory_obtained:
 		_make_attack()
@@ -1284,7 +1293,35 @@ func _check_coppers():
 			copper2.empty=false
 
 
+func _manage_enemy_units():
+	if Globals.e_food_points>=15 && enemy_citizens_node.get_child_count()<16:
+		var new_enemy_citizen = EnemyCitizen.instance()
+		new_enemy_citizen.position=enemy_spawn.position
+		enemy_citizens_node.add_child(new_enemy_citizen)
+		new_enemy_citizen.AI_state=1
+		Globals.e_food_points-=15		
+	else:
+		if (Globals.e_food_points>=30 && Globals.e_wood_points>=20 && 
+		Globals.stone_points>=10 && enemy_warriors_node.get_child_count()<12):
+			var new_enemy_warrior=EnemyWarrior.instance()
+			new_enemy_warrior.position=enemy_spawn.position
+			enemy_warriors_node.add_child(new_enemy_warrior)
+			Globals.e_food_points-=30
+			Globals.e_wood_points-=20
+			Globals.e_stone_points-=10
+			var target_number=randi()%4+1
+		
+			match target_number:
+				1:
+					new_enemy_warrior.target_t=new_enemy_warrior.target_type.TOWER
+				2:
+					new_enemy_warrior.target_t=new_enemy_warrior.target_type.BARN
+				3:
+					new_enemy_warrior.target_t=new_enemy_warrior.target_type.FORT
+				4:
+					new_enemy_warrior.target_t=new_enemy_warrior.target_type.TOWNHALL
 			
+			new_enemy_warrior.AI_state=0	
 
 		
 
@@ -1396,36 +1433,7 @@ func _check_mouse_modes():
 		
 
 
-func _on_DevelopPottery_pressed():
-	if Globals.clay_points>=400 && Globals.wood_points>=150:
-		Globals.clay_points-=400
-		Globals.wood_points-=150
-		is_pottery_developed=true
-		develop_pottery.visible=false
-		#Ataque enemigo por mejora.
-		if !victory_obtained:
-			_make_attack()
 
-
-func _on_DevelopCarpentry_pressed():
-	if Globals.wood_points>=500:
-		Globals.wood_points-=500
-		is_carpentry_developed=true
-		develop_carpentry.visible=false
-		#Ataque enemigo por mejora.
-		if !victory_obtained:
-			_make_attack()
-
-
-func _on_DevelopMining_pressed():
-	if Globals.stone_points>=300 && Globals.copper_points>=200:
-		Globals.stone_points-=300
-		Globals.copper_points-=200
-		is_mining_developed=true
-		develop_mining.visible=false
-		#Ataque enemigo por mejora.
-		if !victory_obtained:
-			_make_attack()
 
 
 func _on_DevelopMetals_pressed():
@@ -1433,9 +1441,9 @@ func _on_DevelopMetals_pressed():
 		Globals.stone_points-=250
 		Globals.copper_points-=150
 		is_metals_developed=true
-		develop_metals.visible=false
+		#develop_metals.visible=false
 		#Ataque enemigo por mejora.
-		if !victory_obtained:
+		if tree.name=="Game4" && !victory_obtained:
 			_make_attack()
 		
 		
