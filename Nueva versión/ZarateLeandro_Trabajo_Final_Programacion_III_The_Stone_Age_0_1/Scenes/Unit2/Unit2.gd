@@ -233,7 +233,7 @@ func _collect_pickable(var _pickable):
 						#if _pickable.points <= 0:
 						#_pickable.empty = true
 				elif _pickable.type == "pine_tree":
-					if(tree.is_stone_weapons_developed):
+					if(Globals.is_stone_weapons_developed):
 						if(_pickable.points>=4):
 							Globals.wood_points +=4
 							_pickable.points-=4
@@ -274,7 +274,7 @@ func _collect_pickable(var _pickable):
 							Globals.copper_points+=_pickable.points
 							_pickable.points=0
 					else:
-						tree.copper_points+=1
+						Globals.copper_points+=1
 						_pickable.points-=1
 			if _pickable.points <= 0:
 				_pickable.empty = true	
@@ -293,7 +293,7 @@ func _collect_pickable(var _pickable):
 				
 func _get_rain_damage():	
 	if tree.its_raining:
-		if !(is_sheltered):
+		if (!is_sheltered):
 			if timer_count==0:
 				if(health>0):
 					if(!is_dressed):
@@ -310,7 +310,7 @@ func _get_rain_damage():
 			if timer_count==0:
 				if(health<MAX_HEALTH):
 					health+=MAX_ENERGY_LOSS
-					bar._set_energy_points(health)
+					bar._set_health(health)
 					bar._update_energy()
 		
 func _get_damage(var _collider):
@@ -410,7 +410,10 @@ func _move_along_path(distance):
 #				_walk()
 #		else:
 #			_walk()
-			
+
+func _on_fruit_tree_fruit_tree_entered():
+	can_add = true
+	is_sheltered = true		
 
 func _on_fruit_tree_fruit_tree_exited():
 	can_add = false

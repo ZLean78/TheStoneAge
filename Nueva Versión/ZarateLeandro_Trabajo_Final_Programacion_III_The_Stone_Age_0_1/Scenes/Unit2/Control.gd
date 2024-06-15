@@ -17,10 +17,9 @@ func _unhandled_input(event):
 							if !unit_instance.is_warchief:
 								unit_instance._shoot()
 							else:
-								for warrior in tree_instance.warriors.get_children():
+								for warrior in tree_instance.get_node("Warriors").get_children():
 									if warrior.position.distance_to(position):
-										if warrior.can_shoot:
-											warrior._shoot()
+										warrior._shoot()
 					else:					
 						if tree_instance.name == "Game3":
 							tree_instance._on_Game3_is_arrow()

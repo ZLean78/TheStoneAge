@@ -46,6 +46,21 @@ var e_copper_points = 0
 var group_dressed = false
 var group_has_bag = false
 
+#Variables de hitos
+var is_fire_discovered = false
+var is_wheel_invented = false
+var is_stone_weapons_developed = false
+var is_claypot_made = false
+var is_agriculture_developed = false
+var is_townhall_created = false
+var is_pottery_developed=false
+var is_carpentry_developed=false
+var is_mining_developed=false
+var is_metals_developed=false
+var is_first_tower_built=false
+var is_barn_built=false
+var is_fort_built=false
+
 var screen_size:Vector2
 
 var settings_scene=load("res://Scenes/Settings/Settings.tscn")

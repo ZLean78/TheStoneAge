@@ -44,7 +44,9 @@ onready var tree=Globals.current_scene
 
 #onready var rectd = tree.find_node("draw_rect")
 
-#onready var select_draw
+onready var select_draw
+
+
 
 var its_raining=false
 
@@ -52,13 +54,16 @@ signal area_selected
 #signal start_move_selection
 
 func _ready():
-	#rectd.visible=true
+	
 	connect("area_selected",get_parent(),"_area_selected",[self])
 	#connect("start_move_selection",get_parent(),"start_move_selection",[self])
 	#select_draw = Globals.current_scene.select_draw
-	pass
+	#pass
 
 func _process(delta):
+	
+	
+	
 	#smooth movement
 	var inpx = (int(Input.is_action_pressed("ui_right"))
 				 - int(Input.is_action_pressed("ui_left")))
@@ -66,18 +71,21 @@ func _process(delta):
 				 - int(Input.is_action_pressed("ui_up")))
 	position.x=lerp(position.x,position.x+inpx*panSpeed*zoom.x,panSpeed*delta)
 	position.y=lerp(position.y,position.y+inpy*panSpeed*zoom.y,panSpeed*delta)
+	
 
 	#movimiento de cámara con mouse
-	#if Input.is_key_pressed(KEY_CONTROL):
-	#chequear posición del mouse
-	if mousePos.x < marginX:
-		position.x=lerp(position.x,position.x-abs(mousePos.x-marginX)/marginX*(panSpeed/10)*zoom.x,(panSpeed/10)*delta)
-	elif mousePos.x > ProjectSettings.get("display/window/size/width") - marginX:
-		position.x=lerp(position.x,position.x+abs(mousePos.x-ProjectSettings.get("display/window/size/width")+marginX)/marginX*(panSpeed/10)*zoom.x,(panSpeed/10)*delta)
-	if mousePos.y < marginY:
-		position.y=lerp(position.y,position.y-abs(mousePos.y-marginY)/marginY*(panSpeed/10)*zoom.y,(panSpeed/10)*delta)
-	elif mousePos.y > ProjectSettings.get("display/window/size/height") - marginY:
-		position.y=lerp(position.y,position.y+abs(mousePos.y-ProjectSettings.get("display/window/size/height")+marginY)/marginY*(panSpeed/10)*zoom.y,(panSpeed/10)*delta)
+	if Input.is_action_pressed("mouse_wheel_pressed"):
+		#chequear posición del mouse
+		if mousePos.x < marginX:
+			position.x=lerp(position.x,position.x-abs(mousePos.x-marginX)/marginX*panSpeed*zoom.x,panSpeed*delta)
+		elif mousePos.x > ProjectSettings.get("display/window/size/width") - marginX:
+			position.x=lerp(position.x,position.x+abs(mousePos.x-ProjectSettings.get("display/window/size/width")+marginX)/marginX*panSpeed*zoom.x,panSpeed*delta)
+		if mousePos.y < marginY:
+			position.y=lerp(position.y,position.y-abs(mousePos.y-marginY)/marginY*panSpeed*zoom.y,panSpeed*delta)
+		elif mousePos.y > ProjectSettings.get("display/window/size/height") - marginY:
+			position.y=lerp(position.y,position.y+abs(mousePos.y-ProjectSettings.get("display/window/size/height")+marginY)/marginY*panSpeed*zoom.y,panSpeed*delta)
+
+	
 
 	if Input.is_action_just_pressed("ui_left_mouse_button"):
 		if get_parent().arrow_mode:
@@ -100,9 +108,6 @@ func _process(delta):
 		else:
 			end = start
 			is_dragging = false
-				
-			
-#		
 
 	#zoom in
 	zoom.x = lerp(zoom.x,zoom.x*zoomFactor,zoomSpeed*delta)
@@ -157,7 +162,8 @@ func _input(event):
 		mousePos = event.position
 		mousePosGlobal = get_global_mouse_position()
 
-	#print(str(zoom.x)+" , "+str(zoom.y))	
+	
+					
 	
 func _set_its_raining(var _its_raining):
 	its_raining = _its_raining

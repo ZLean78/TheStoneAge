@@ -5,28 +5,11 @@ extends Node2D
 var unit_count = 1
 
 
-
-#Hitos anteriores ya cumplidos
-var group_dressed = false
-var group_has_bag = false
-var is_fire_discovered = true
-var is_wheel_invented = true
-var is_stone_weapons_developed = true
-var is_claypot_made = true
-var is_agriculture_developed = true
-var is_townhall_created = false
-
 #El jefe ha muerto.
 var is_warchief_dead = false
 
-#Variables de hitos
-var is_pottery_developed=false
-var is_carpentry_developed=false
-var is_mining_developed=false
-var is_metals_developed=false
-var is_first_tower_built=false
-var is_barn_built=false
-var is_fort_built=false
+
+
 
 
 #Nodo raíz de la escena.
@@ -280,8 +263,8 @@ func _ready():
 	for a_unit in all_units:
 		a_unit.is_dressed=true
 		a_unit.has_bag=true
-		group_dressed=true
-		group_has_bag=true
+		Globals.group_dressed=true
+		Globals.group_has_bag=true
 	
 	#Convertimos en jefe guerrero a la primera unidad
 	#(no es el mismo de la fase anterior, ya que transcurrieron muchos años),
@@ -369,17 +352,7 @@ func _deselect_unit(unit):
 		selected_units.erase(unit)
 		
 		
-#Para corregir
-#	if event.is_action_pressed("RightClick"):
-#		firstPoint = player.global_position
-#		#line.points = []
-#
-#	if event.is_action_released("RightClick"):
-#		secondPoint = get_global_mouse_position()
-#		var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
-#		player.global_position = arrPath[0]
-#		player.path = arrPath
-#		player.index = 0
+
 	
 #Proceso de entrada unhandled input.
 func _unhandled_input(event):
@@ -451,7 +424,7 @@ func _unhandled_input(event):
 			if house_mode || fort_mode || tower_mode || barn_mode:
 				#Ponemos el cursor en modo flecha para cancelar la construcción de una casa.
 				_on_Game4_is_arrow()
-			if basket_mode || axe_mode || mattock_mode:
+			if basket_mode || axe_mode || mattock_mode || hand_mode || claypot_mode:
 				for i in range(0,selected_units.size()):
 					selected_units[i].target_position=get_global_mouse_position()
 
@@ -793,10 +766,10 @@ func _create_unit(cost = 0):
 	else:
 		new_Unit.is_girl=false
 	#Si el grupo está vestido, la unidad estará vestida.
-	if(group_dressed):
+	if(Globals.group_dressed):
 		new_Unit.is_dressed=true	
 	#Si el grupo lleva la bolsa de recolección, la unidad también la tendrá.
-	if(group_has_bag):
+	if(Globals.group_has_bag):
 		new_Unit.has_bag=true	
 		new_Unit.get_child(3).visible = true
 	#Restamos el costo de la unidad a los puntos de comida.
@@ -821,9 +794,9 @@ func _create_warrior_unit(cost = 0):
 		new_Unit.is_girl=true
 	else:
 		new_Unit.is_girl=false
-	if(group_dressed):
+	if(Globals.group_dressed):
 		new_Unit.is_dressed=true	
-	if(group_has_bag):
+	if(Globals.group_has_bag):
 		new_Unit.has_bag=true	
 		new_Unit.get_child(3).visible = true
 	Globals.food_points -= cost
@@ -834,22 +807,22 @@ func _check_victory():
 	if tower_node.get_child_count()>0:
 		var first_tower = tower_node.get_child(0)
 		if first_tower.condition>=first_tower.condition_max:
-			is_first_tower_built=true
+			Globals.is_first_tower_built=true
 			
 	
 	if barn_node.get_child_count()>0:
 		var the_barn = barn_node.get_child(0)
 		if the_barn.condition==the_barn.condition_max:
-			is_barn_built=true
+			Globals.is_barn_built=true
 			
 	if fort_node.get_child_count()>0:
 		var the_fort = fort_node.get_child(0)
 		if the_fort.condition==the_fort.condition_max:
-			is_fort_built=true
+			Globals.is_fort_built=true
 	
 	
-	if (is_pottery_developed && is_carpentry_developed && is_mining_developed && 
-	 is_metals_developed && is_first_tower_built && is_barn_built && is_fort_built):
+	if (Globals.is_pottery_developed && Globals.is_carpentry_developed && Globals.is_mining_developed && 
+	 Globals.is_metals_developed && Globals.is_first_tower_built && Globals.is_barn_built && Globals.is_fort_built):
 		victory_obtained=true
 		prompts_label.text = "¡Has ganado!"	
 		next_scene_confirmation.visible=true
@@ -1331,7 +1304,7 @@ func _on_DevelopPottery_pressed():
 	if Globals.clay_points>=400 && Globals.wood_points>=150:
 		Globals.clay_points-=400
 		Globals.wood_points-=150
-		is_pottery_developed=true
+		Globals.is_pottery_developed=true
 		develop_pottery.visible=false
 		#Ataque enemigo por mejora.
 		if !victory_obtained:
@@ -1341,7 +1314,7 @@ func _on_DevelopPottery_pressed():
 func _on_DevelopCarpentry_pressed():
 	if Globals.wood_points>=500:
 		Globals.wood_points-=500
-		is_carpentry_developed=true
+		Globals.is_carpentry_developed=true
 		develop_carpentry.visible=false
 		#Ataque enemigo por mejora.
 		if !victory_obtained:
@@ -1352,7 +1325,7 @@ func _on_DevelopMining_pressed():
 	if Globals.stone_points>=300 && Globals.copper_points>=200:
 		Globals.stone_points-=300
 		Globals.copper_points-=200
-		is_mining_developed=true
+		Globals.is_mining_developed=true
 		develop_mining.visible=false
 		#Ataque enemigo por mejora.
 		if !victory_obtained:
@@ -1363,7 +1336,7 @@ func _on_DevelopMetals_pressed():
 	if Globals.stone_points>=250 && Globals.copper_points>=150:
 		Globals.stone_points-=250
 		Globals.copper_points-=150
-		is_metals_developed=true
+		Globals.is_metals_developed=true
 		develop_metals.visible=false
 		#Ataque enemigo por mejora.
 		if !victory_obtained:

@@ -1,8 +1,6 @@
 extends Node2D
 
-#Variables de íconos del mouse.
-#var basket=load("res://Scenes/MouseIcons/basket.png")
-#var arrow=load("res://Scenes/MouseIcons/arrow.png")
+
 
 #Conteo de unidades ciudadanos.
 var unit_count = 1
@@ -10,8 +8,6 @@ var unit_count = 1
 
 #Condiciones que afectan a toda la comunidad
 var its_raining = false
-#var group_dressed = false
-#var group_has_bag = false
 
 #Variables de referencia a cada uno de los nodos del árbol con los que vamos
 #a trabajar en este script.
@@ -90,7 +86,8 @@ var basket_mode=false
 
 #Función _ready()
 func _ready():
-	
+	AudioPlayer._select_music()
+	AudioPlayer.music.play()
 	
 	
 	#Asignamos los arboles frutales.

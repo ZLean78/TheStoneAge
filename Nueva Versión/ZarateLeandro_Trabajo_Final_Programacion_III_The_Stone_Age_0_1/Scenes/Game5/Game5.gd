@@ -1,36 +1,10 @@
 extends Node2D
 
-#Íconos que indican los diferentes modos del mouse para llevar
-#a cabo distintas acciones.
-#var basket=load("res://Scenes/MouseIcons/basket.png")
-#var arrow=load("res://Scenes/MouseIcons/arrow.png")
-#var pick_mattock=load("res://Scenes/MouseIcons/pick_mattock.png")
-#var sword=load("res://Scenes/MouseIcons/sword.png")
-#var claypot=load("res://Scenes/MouseIcons/claypot.png")
-#var hand=load("res://Scenes/MouseIcons/hand.png")
-#var axe=load("res://Scenes/MouseIcons/axe.png")
-#var house=load("res://Scenes/MouseIcons/house.png")
-#var house_b=load("res://Scenes/MouseIcons/house_b.png")
-#var townhall=load("res://Scenes/MouseIcons/townHall.png")
-#var townhall_b=load("res://Scenes/MouseIcons/townHall_b.png")
-#var fort=load("res://Scenes/MouseIcons/fort_s.png")
-#var fort_b=load("res://Scenes/MouseIcons/fort_sb.png")
-#var barn=load("res://Scenes/MouseIcons/barn_s.png")
-#var barn_b=load("res://Scenes/MouseIcons/barn_sb.png")
-#var tower=load("res://Scenes/MouseIcons/tower_s.png")
-#var tower_b=load("res://Scenes/MouseIcons/tower_sb.png")
 
 #Contador de unidades civiles.
 var unit_count = 1
 
-#Puntos de cada uno de los recursos naturales a recolectar.
-#var food_points = 1000
-#var leaves_points = 1000
-#var stone_points = 1000
-#var copper_points = 1000
-#var wood_points = 1000
-#var clay_points = 2000
-#var water_points = 1000
+
 
 #Hitos anteriores ya cumplidos
 var group_dressed = false
@@ -69,14 +43,11 @@ onready var copper_label = tree.get_node("UI/Base/Rectangle/CopperLabel")
 onready var clay_label = tree.get_node("UI/Base/Rectangle/ClayLabel")
 onready var wood_label = tree.get_node("UI/Base/Rectangle/WoodLabel")
 onready var water_label = tree.get_node("UI/Base/Rectangle/WaterLabel")
-#onready var developments_label = tree.get_node("UI/Base/Rectangle/DevelopmentsLabel")
+
 onready var rectangle = tree.get_node("UI/Base/Rectangle")
-#onready var develop_pottery = tree.get_node("UI/Base/Rectangle/DevelopPottery")
-#onready var develop_carpentry = tree.get_node("UI/Base/Rectangle/DevelopCarpentry")
-#onready var develop_mining = tree.get_node("UI/Base/Rectangle/DevelopMining")
-#onready var develop_metals = tree.get_node("UI/Base/Rectangle/DevelopMetals")
+
 onready var create_house = tree.get_node("UI/Base/Rectangle/CreateHouse")
-#onready var create_townhall = tree.get_node("UI/Base/Rectangle/CreateTownHall")
+
 onready var create_warrior = tree.get_node("UI/Base/Rectangle/CreateWarriorUnit")
 
 onready var camera = tree.get_node("Camera")
@@ -524,7 +495,7 @@ func _unhandled_input(event):
 			if house_mode || fort_mode || tower_mode || barn_mode:
 				#Ponemos el cursor en modo flecha para cancelar la construcción de una casa.
 				_on_Game5_is_arrow()
-			if basket_mode || axe_mode || mattock_mode:
+			if basket_mode || axe_mode || mattock_mode || hand_mode || claypot_mode:
 				for i in range(0,selected_units.size()):
 					selected_units[i].target_position=get_global_mouse_position()
 

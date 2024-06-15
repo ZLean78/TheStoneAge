@@ -2,6 +2,8 @@ extends Node2D
 
 func _ready():
 	add_child(Globals.settings)
+	AudioPlayer._select_music()
+	AudioPlayer.music.play()
 
 func _unhandled_input(_event):
 	if Input.is_action_pressed("EscapeKey"):
@@ -13,7 +15,7 @@ func _unhandled_input(_event):
 
 func _on_Start_pressed():
 	remove_child(Globals.settings)
-	Globals.go_to_scene("res://Scenes/Game/Game.tscn")
+	Globals.go_to_scene("res://Scenes/Game3/Game3.tscn")
 
 
 func _on_Quit_pressed():

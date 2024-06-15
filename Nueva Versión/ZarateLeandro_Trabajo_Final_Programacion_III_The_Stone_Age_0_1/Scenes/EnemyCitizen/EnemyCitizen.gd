@@ -5,6 +5,10 @@ var bullet
 export var bullet_scene=preload("res://Scenes/Bullet/Bullet.tscn")
 export var stone_scene=preload("res://Scenes/Stone/stone.tscn")
 
+#MÁXIMO Y MÍNIMO DE ENEGÍA QUE LA UNIDAD PUEDE PERDER.
+export (float) var MAX_ENERGY_LOSS
+export (float) var MIN_ENERGY_LOSS
+
 onready var fruit_trees_node
 onready var pine_trees_node
 onready var plants_node
@@ -26,8 +30,8 @@ var initialPosition = Vector2()
 
 #Puntos de comida de la unidad.
 var food_points = 0
-#Salud.
-export (int) var energy_points = MAX_HEALTH
+
+
 #Variable que indica si se está arrastrando el mouse sobre la unidad.
 var dragging = true
 
@@ -161,9 +165,7 @@ func _ready():
 	lake_node=tree.get_node("Lake")
 	puddle_node=tree.get_node("Puddle")
 	nav2d=tree.get_node("nav")
-#	connect("was_selected",tree,"_select_unit")
-#	connect("was_deselected",tree,"_deselect_unit")
-	#emit_signal("health_change",energy_points)
+
 	
 	
 	has_bag=true
@@ -196,22 +198,11 @@ func _ready():
 	if(!has_bag):
 		bag_sprite.visible=false
 	else:
-		bag_sprite.visible=true
-		
+		bag_sprite.visible=true		
 
 	_set_selected(true)
 	
 
-	
-	
-
-	
-
-
-
-
-	
-	
 
 func _physics_process(delta):
 	
@@ -257,33 +248,14 @@ func _physics_process(delta):
 	#Máquina de estados para las acciones.
 	_state_machine()		
 	#animar al personaje	
-	_animate()	
+	$Animation._animate(sprite,is_dressed,is_girl,bag_sprite,velocity,target_position)	
 		
 	#Cambiar los cuadros de animación del player.
-	if velocity.length() > 0:
-		velocity = velocity.normalized() * SPEED
-		if(!sprite.is_playing()):
-			sprite.play()
-	else:
+	if position.distance_to(target_position) <= 10:
 		sprite.stop()
-	
-	
-		
-	#revisar si está tocando un árbol o una planta.
-	#_check_fruit_tree_touching()
-	#_check_plant_touching()
-	#_check_pine_tree_touching()
-	
+	else:
+		sprite.play()
 
-	
-
-	
-#	if(Input.is_action_just_pressed("shoot") && selected):
-#		bullet = bullet_scene.instance()
-#		bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-#		bullet.set_dir($scalable.scale.x)
-#		get_parent().add_child(bullet)
-		
 		
 	if(all_timer.is_stopped()):
 		timer_count-=1
@@ -374,66 +346,64 @@ func _collect_pickable(var _pickable):
 func _get_damage(var the_beast):
 	if "Tiger" in the_beast.name && the_beast.visible && is_enemy_touching:
 		if is_warchief:
-			if(energy_points>0):
+			if(health>0):
 				if(!is_dressed):
-					energy_points-=10
+					health-=10
 				else:
-					energy_points-=5
-				bar._set_health(energy_points)
+					health-=5
+				bar._set_health(health)
 				
 			else:
 				_set_selected(false)			
 				is_deleted=true				
 		else:
-			if(energy_points>0):
+			if(health>0):
 				if(!is_dressed):
-					energy_points-=15
+					health-=15
 				else:
-					energy_points-=10
-				bar._set_health(energy_points)
+					health-=10
+				bar._set_health(health)
 				
 			else:
 				if the_beast:
 					_set_selected(false)			
 					is_deleted=true
 	if "Mammoth" in the_beast.name && is_enemy_touching:
-		if energy_points>0:
-			energy_points-=30
-			bar._set_health(energy_points)
+		if health>0:
+			health-=30
+			bar._set_health(health)
 			
 		else:
 			_set_selected(false)			
 			is_deleted=true
 	if "Bullet" in the_beast.name:
 		
-		if energy_points>0:			
-			energy_points-=20
-			bar._set_health(self.energy_points)
-
-			print("enemy citizen energy" + str(self.energy_points))
+		if health>0:			
+			health-=20
+			bar._set_health(health)			
 		else:
 			is_deleted=true
 
 	if "Warrior" in the_beast.name && is_enemy_touching:
-		if energy_points>0:
-			energy_points-=20
-			bar._set_health(energy_points)
+		if health>0:
+			health-=20
+			bar._set_health(health)
 			
 		else:
 			_set_selected(false)			
 			is_deleted=true
 	if "Unit2" in the_beast.name && is_enemy_touching:
-		if energy_points>0:
-			energy_points-=10
-			bar._set_health(energy_points)
+		if health>0:
+			health-=10
+			bar._set_health(health)
 			
 		else:
 			_set_selected(false)			
 			is_deleted=true
 	if "Stone" in the_beast.name && the_beast.owner_name=="Citizen":
-		if energy_points>0:
-			energy_points-=15
-			bar._set_health(energy_points)			
+		if health>0:
+			health-=15
+			bar._set_health(health)			
 		else:
 			_set_selected(false)			
 			is_deleted=true
@@ -475,52 +445,7 @@ func _move_to_target(target):
 	var collision = move_and_collide(velocity*to_delta*SPEED)
 	
 
-#func _unhandled_input(event):
-#	if event.is_action_pressed("RightClick"):
-#		if tree.sword_mode:
-#			if tree.touching_enemy!=null:
-#				if is_instance_valid(tree.touching_enemy):
-#					if selected && can_shoot:
-#						if !is_warchief:
-#							_shoot()
-#						else:
-#							for warrior in tree.warriors.get_children():
-#								if warrior.position.distance_to(position):
-#									warrior._shoot()
-#				else:					
-#					if tree.name == "Game3":
-#						tree._on_Game3_is_arrow()
-#					if tree.name == "Game2":
-#						tree._on_Game2_is_arrow()
-#		else:
-#			firstPoint=global_position
-#
-#
-#	if event.is_action_released("RightClick"):		
-#		if !tree.sword_mode:
-#			_walk()
 
-
-#func _on_Unit_input_event(_viewport, event, _shape_idx):
-#	if event is InputEventMouseButton:
-#		if event.is_pressed():			
-#			if event.button_index == BUTTON_LEFT:
-#				_set_selected(not selected)
-#				#tree._select_last()
-
-#func hurt(amount):
-#	health-=amount
-#	#esto podría ir en un setter
-#	if health <= 0:
-#		if !dead:
-#			emit_signal("im_dead")
-#			dead = true
-#			set_physics_process(false) 
-#		health = 0
-#		return
-#	elif health > 100:
-#		health = 100
-#	emit_signal("health_change",health)
 
 
 func _on_Target_Position_body_entered(_body):
@@ -541,294 +466,7 @@ func _on_Target_Position1_body_entered(_body):
 		sprite.animation = "female_idle1"
 		
 
-		
-func _animate():
-	if(!is_dressed):
-		if(!is_girl):
-			if velocity == Vector2(0,0):
-				if sprite.animation == "male_backwalk":
-					sprite.animation = "male_idle2"
-					if(bag_sprite.visible):
-						bag_sprite.animation = "bag_2"
-				elif sprite.animation == "male_frontwalk":
-					sprite.animation = "male_idle1"
-					if(bag_sprite.visible):
-						bag_sprite.animation = "bag_1"
-				elif sprite.animation == "male_sidewalk":
-					sprite.animation = "male_idle3"
-					if(bag_sprite.visible):
-						bag_sprite.animation = "bag_3"
-#				else:
-#					$sprite.animation = "male_idle1"
-			else:
-				if velocity.y < 0:
-					if abs(velocity.y) > abs(velocity.x):
-						sprite.animation = "male_backwalk"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_2"
-					else:
-						sprite.animation = "male_sidewalk"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_3"
-				elif velocity.y > 0:
-					if abs(velocity.y) > abs(velocity.x):
-						sprite.animation = "male_frontwalk"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_1"
-					else:
-						sprite.animation = "male_sidewalk"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_3"
-				elif velocity.x < 0:
-					if abs(velocity.x) > abs(velocity.y):
-						sprite.animation = "male_sidewalk"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_3"
-					else:
-						sprite.animation = "male_backwalk"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_2"
-				elif velocity.x > 0:
-					if abs(velocity.x) > abs(velocity.y):
-						sprite.animation = "male_sidewalk"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_3"
-					else:
-						sprite.animation = "male_frontwalk"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_1"
-#				else:
-#				$sprite.animation = "male_idle1"			
-		else:
-			if velocity == Vector2(0,0):
-				if sprite.animation == "female_backwalk":
-					sprite.animation = "female_idle2"
-					if(bag_sprite.visible):
-						bag_sprite.animation = "bag_2"
-				elif sprite.animation == "female_frontwalk":
-					sprite.animation = "female_idle1"
-					if(bag_sprite.visible):
-						bag_sprite.animation = "bag_1"
-				elif sprite.animation == "female_sidewalk":
-					sprite.animation = "female_idle3"	
-					if(bag_sprite.visible):
-						bag_sprite.animation = "bag_3"	
-#				else:
-#					$sprite.animation = "female_idle1"
-			else:
-				if velocity.y < 0:
-					if abs(velocity.y) > abs(velocity.x):
-						sprite.animation = "female_backwalk"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_2"
-					else:
-						sprite.animation = "female_sidewalk"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_3"
-				elif velocity.y > 0:
-					if abs(velocity.y) > abs(velocity.x):
-						sprite.animation = "female_frontwalk"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_1"
-					else:
-						sprite.animation = "female_sidewalk"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_3"
-				elif velocity.x < 0:
-					if abs(velocity.x) > abs(velocity.y):
-						sprite.animation = "female_sidewalk"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_3"
-					else:
-						sprite.animation = "female_backwalk"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_2"
-				elif velocity.x > 0:
-					if abs(velocity.x) > abs(velocity.y):
-						sprite.animation = "female_sidewalk"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_3"
-					else:
-						sprite.animation = "female_frontwalk"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_1"
-#				else:
-#					$sprite.animation = "female_idle1"	
-	else:
-		if(!is_girl):
-			if velocity == Vector2(0,0):
-				if sprite.animation == "male_backwalk_d":
-					sprite.animation = "male_idle2_d"
-					if(bag_sprite.visible):
-						bag_sprite.animation = "bag_2"
-				elif sprite.animation == "male_frontwalk_d":
-					sprite.animation = "male_idle1_d"
-					if(bag_sprite.visible):
-						bag_sprite.animation = "bag_1"
-				elif sprite.animation == "male_sidewalk_d":
-					sprite.animation = "male_idle3_d"
-					if(bag_sprite.visible):
-						bag_sprite.animation = "bag_3"
-#				else:
-#					$sprite.animation = "male_idle1"
-			else:
-				if velocity.y < 0:
-					if abs(velocity.y) > abs(velocity.x):
-						sprite.animation = "male_backwalk_d"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_2"
-					else:
-						sprite.animation = "male_sidewalk_d"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_3"
-				elif velocity.y > 0:
-					if abs(velocity.y) > abs(velocity.x):
-						sprite.animation = "male_frontwalk_d"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_1"
-					else:
-						sprite.animation = "male_sidewalk_d"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_3"
-				elif velocity.x < 0:
-					if abs(velocity.x) > abs(velocity.y):
-						sprite.animation = "male_sidewalk_d"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_3"
-					else:
-						sprite.animation = "male_backwalk_d"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_2"
-				elif velocity.x > 0:
-					if abs(velocity.x) > abs(velocity.y):
-						sprite.animation = "male_sidewalk_d"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_3"
-					else:
-						sprite.animation = "male_frontwalk_d"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_1"
-#				else:
-#				$sprite.animation = "male_idle1"			
-		else:
-			if velocity == Vector2(0,0):
-				if sprite.animation == "female_backwalk_d":
-					sprite.animation = "female_idle2_d"
-					if(bag_sprite.visible):
-						bag_sprite.animation = "bag_2"
-				elif sprite.animation == "female_frontwalk_d":
-					sprite.animation = "female_idle1_d"
-					if(bag_sprite.visible):
-						bag_sprite.animation = "bag_1"
-				elif sprite.animation == "female_sidewalk_d":
-					sprite.animation = "female_idle3_d"	
-					if(bag_sprite.visible):
-						bag_sprite.animation = "bag_3"	
-#				else:
-#					$sprite.animation = "female_idle1"
-			else:
-				if velocity.y < 0:
-					if abs(velocity.y) > abs(velocity.x):
-						sprite.animation = "female_backwalk_d"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_2"
-					else:
-						sprite.animation = "female_sidewalk_d"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_3"
-				elif velocity.y > 0:
-					if abs(velocity.y) > abs(velocity.x):
-						sprite.animation = "female_frontwalk_d"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_1"
-					else:
-						sprite.animation = "female_sidewalk_d"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_3"
-				elif velocity.x < 0:
-					if abs(velocity.x) > abs(velocity.y):
-						sprite.animation = "female_sidewalk_d"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_3"
-					else:
-						sprite.animation = "female_backwalk_d"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_2"
-				elif velocity.x > 0:
-					if abs(velocity.x) > abs(velocity.y):
-						sprite.animation = "female_sidewalk_d"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_3"
-					else:
-						sprite.animation = "female_frontwalk_d"
-						if(bag_sprite.visible):
-							bag_sprite.animation = "bag_1"
-#				else:
-#					$sprite.animation = "female_idle1"	
-		
 
-	
-	
-	#if position.distance_to(get_node("Single_Tap_Device/Target_Position").position) < 5:
-	#target_position = get_global_mouse_position()
-	if target_position==null || position.distance_to(target_position) < 5:
-		if(!is_dressed):
-			if(!is_girl):
-				sprite.animation = "male_idle1"
-			else:
-				sprite.animation = "female_idle1"
-		else:
-			if(!is_girl):
-				sprite.animation = "male_idle1_d"
-			else:
-				sprite.animation = "female_idle1_d"
-		if(bag_sprite.visible):
-				bag_sprite.animation = "bag_1"
-	
-	
-
-
-func _on_fruit_tree_fruit_tree_entered():	
-	can_add = true	
-	is_sheltered = true
-	
-	
-func _on_fruit_tree_fruit_tree_exited():
-	can_add = false
-	is_sheltered = false
-	
-func _on_plant_plant_entered():
-	can_add_leaves = true;
-	
-func _on_plant_plant_exited():
-	can_add_leaves = false;
-
-#func _on_tiger_tiger_entered():
-#	is_tiger_touching=true
-
-#func _on_tiger_tiger_exited():
-#	is_tiger_touching=false
-
-
-
-	
-func _set_fruit_tree_touching(var _fruit_tree):
-	fruit_tree_touching=_fruit_tree
-	
-func _set_plant_touching(var _plant):
-	plant_touching=_plant
-	
-func _set_quarry_touching(var _quarry):
-	quarry_touching=_quarry
-	
-func _set_puddle_touching(var _puddle):
-	puddle_touching=_puddle
-	
-func _set_pine_tree_touching(var _pine_tree):
-	pine_tree_touching=_pine_tree
-
-func _set_lake_touching(var _lake):
-	lake_touching=_lake
 
 func _set_pickable_touching(var _pickable):
 	pickable_touching=_pickable
@@ -836,26 +474,12 @@ func _set_pickable_touching(var _pickable):
 func _set_pickable(_pickable):
 	pickable=_pickable	
 
-func _set_its_raining(var _its_raining):
-	its_raining = _its_raining
+
 	
 func _set_erased(var _is_erased):
 	is_erased=_is_erased
 	
-func _check_fruit_tree_touching():
-	_set_fruit_tree_touching(fruit_tree_touching)
-	
-func _check_plant_touching():
-	_set_plant_touching(plant_touching)
 
-func _check_quarry_touching():
-	_set_quarry_touching(quarry_touching)
-	
-func _check_puddle_touching():
-	_set_puddle_touching(puddle_touching)
-	
-func _check_pine_tree_touching():
-	_set_pine_tree_touching(pine_tree_touching)
 #	
 func _on_all_timer_timeout():
 #	if body_entered!=null:
@@ -869,7 +493,7 @@ func _on_all_timer_timeout():
 #			if !("enemy" in body_entered.name) && "unit" in body_entered.name || "warrior" in body_entered.name:
 #				heal(body_entered)
 		
-#	if energy_points<MAX_HEALTH && heal_counter>0:
+#	if health<MAX_HEALTH && heal_counter>0:
 #		heal_counter-=1
 #		if heal_counter<=0:
 #			can_heal_itself=true
@@ -908,27 +532,27 @@ func _on_Area2D_body_entered(body):
 func heal(_body):
 	if is_warchief:
 		#print(to_delta)	
-		if _body.energy_points<_body.MAX_HEALTH:
+		if _body.health<_body.MAX_HEALTH:
 			#if timer_count==0:
-			_body.energy_points+=5
-			print("unit energy" + str(_body.energy_points))
-			_body.bar._set_health(_body.energy_points)
+			_body.health+=5
+			print("unit energy" + str(_body.health))
+			_body.bar._set_health(_body.health)
 			
 	
-			if _body.energy_points>_body.MAX_HEALTH:
-				_body.energy_points=_body.MAX_HEALTH
+			if _body.health>_body.MAX_HEALTH:
+				_body.health=_body.MAX_HEALTH
 		
 		_body.bar.visible=true
 		
 			
 func self_heal():	
-	if energy_points<MAX_HEALTH:
-		energy_points+=5
-		bar._set_health(energy_points)
+	if health<MAX_HEALTH:
+		health+=5
+		bar._set_health(health)
 		
 		
-		if energy_points>MAX_HEALTH:
-			energy_points=MAX_HEALTH
+		if health>MAX_HEALTH:
+			health=MAX_HEALTH
 			can_heal_itself=false
 			heal_counter=60
 
@@ -1025,25 +649,8 @@ func _choose_target():
 							else:
 								target_position=quarries_node.get_child(i+1).position
 	
+
 	
-		
-
-
-#MUESTRA DE CÓDIGO ANTERIOR
-#	if target_t==target_type.PLANT && plants_node.get_child_count()>0:
-#		for i in range(0,plants_node.get_child_count()):
-#			if i!=0:
-#				if plants_node.get_child(i).position.distance_to(position)<plants_node.get_child(i-1).position.distance_to(position):
-#					if !plants_node.get_child(i).empty:
-#						target=plants_node.get_child(i)
-#						target_position=plants_node.get_child(i).position
-##						if position.distance_to(root.tower_node.get_child(i).position)==position.distance_to(root.tower_node.get_child(i-1).position):
-##							target=root.tower_node.get_child(i)
-##							target_position=root.tower_node.get_child(i).position
-#			else:
-#				if !plants_node.get_child(i).empty:
-#					target=plants_node.get_child(i)
-#					target_position=plants_node.get_child(i).position	
 	
 
 func _state_machine():

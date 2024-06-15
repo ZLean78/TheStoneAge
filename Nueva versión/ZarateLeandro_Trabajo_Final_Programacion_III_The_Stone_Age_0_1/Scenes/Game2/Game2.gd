@@ -22,12 +22,12 @@ var unit_count = 1
 var group_dressed = false
 var group_has_bag = false
 
-#Variables de hitos
-var is_fire_discovered = false
-var is_wheel_invented = false
-var is_stone_weapons_developed = false
-var is_claypot_made = false
-var is_agriculture_developed = false
+##Variables de hitos
+#var is_fire_discovered = false
+#var is_wheel_invented = false
+#var is_stone_weapons_developed = false
+#var is_claypot_made = false
+#var is_agriculture_developed = false
 
 
 onready var tree = Globals.current_scene
@@ -63,9 +63,9 @@ onready var tiger = preload("res://Scenes/Tiger/Tiger.tscn")
 onready var fruit_trees=$FruitTrees
 onready var pine_trees=$PineTrees
 onready var plants=$Plants
-onready var next_scene_confirmation=$UI/Base/NextSceneConfirmation
+onready var next_scene_confirmation=$UI/Base/Rectangle/NextSceneConfirmation
 onready var exit_confirmation=$UI/Base/ExitConfirmation
-onready var replay_confirmation=$UI/Base/ReplayConfirmation
+onready var replay_confirmation=$UI/Base/Rectangle/ReplayConfirmation
 
 #Nodo que dibuja el rectángulo de selección de la cámara.
 onready var select_draw=$SelectDraw
@@ -129,6 +129,8 @@ clic derecho sobre ellos estandoa gran distancia."""
 var touching_enemy
 
 func _ready():
+	AudioPlayer._select_music()
+	AudioPlayer.music.play()
 	
 	all_units=units.get_children()
 	all_plants=plants.get_children()
@@ -258,9 +260,11 @@ func _unhandled_input(event):
 						selected_units[i].target_position=Vector2(selected_units[0].target_position.x,selected_units[i-1].target_position.y+20)
 					else:
 						selected_units[i].target_position=Vector2(selected_units[i-1].target_position.x+20,selected_units[i-1].target_position.y)
-		if basket_mode || axe_mode || mattock_mode:
+		if basket_mode || axe_mode || mattock_mode || hand_mode || claypot_mode:
 			for i in range(0,selected_units.size()):
 				selected_units[i].target_position=get_global_mouse_position()
+		
+			
 	if event.is_action_pressed("EscapeKey"):
 		#Si el cursor está en modo flecha.
 		if arrow_mode:
@@ -299,7 +303,7 @@ func _create_unit(cost = 0):
 
 			
 func _check_victory():
-	if is_fire_discovered && is_wheel_invented && is_stone_weapons_developed && is_claypot_made && is_agriculture_developed:
+	if Globals.is_fire_discovered && Globals.is_wheel_invented && Globals.is_stone_weapons_developed && Globals.is_claypot_made && Globals.is_agriculture_developed:
 		prompts_label.text = "¡Has ganado!"
 		next_scene_confirmation.visible=true
 			
@@ -543,7 +547,7 @@ func _on_DevelopStoneWeapons_pressed():
 		Globals.stone_points-=70
 		Globals.wood_points-=70
 		Globals.leaves_points-=50
-		is_stone_weapons_developed=true	
+		Globals.is_stone_weapons_developed=true	
 		develop_stone_weapons.visible = false	
 		
 		
@@ -553,20 +557,20 @@ func _on_InventWheel_pressed():
 	if Globals.stone_points >=70 && Globals.wood_points>=40:
 		Globals.stone_points-=70
 		Globals.wood_points-=40
-		is_wheel_invented=true
+		Globals.is_wheel_invented=true
 		invent_wheel.visible = false
 
 func _on_DiscoverFire_pressed():
 	if Globals.wood_points >=60 && Globals.stone_points>=40:
 		Globals.wood_points-=60
 		Globals.stone_points-=40
-		is_fire_discovered=true
+		Globals.is_fire_discovered=true
 		discover_fire.visible = false
 		
 func _on_MakeClaypot_pressed():
 	if Globals.clay_points>=85:
 		Globals.clay_points-=85
-		is_claypot_made=true
+		Globals.is_claypot_made=true
 		make_claypot.visible=false
 
 
@@ -575,7 +579,7 @@ func _on_DevelopAgriculture_pressed():
 		Globals.food_points-=70
 		Globals.leaves_points-=70
 		Globals.water_points-=70
-		is_agriculture_developed=true
+		Globals.is_agriculture_developed=true
 		develop_agriculture.visible=false
 
 
