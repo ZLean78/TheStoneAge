@@ -47,9 +47,9 @@
 0/z_index = 0
 
 [sub_resource type="NavigationPolygon" id=2]
-vertices = PoolVector2Array( 1023, -634, 1027, 601, 1025, 241, 1024, 406, 837, 243, -84, 29, -84, -27, -1023, -634, -291, -28, -1015, 602, -291, 29, 827, 405, 941, 406, 888, 329, 940, 331, 871, 403 )
-polygons = [ PoolIntArray( 0, 1, 2 ), PoolIntArray( 3, 2, 1 ), PoolIntArray( 0, 2, 4, 5, 6 ), PoolIntArray( 7, 0, 6, 8 ), PoolIntArray( 9, 7, 8, 10 ), PoolIntArray( 1, 9, 10, 5, 11 ), PoolIntArray( 12, 3, 1 ), PoolIntArray( 13, 14, 12, 15 ), PoolIntArray( 5, 4, 11 ), PoolIntArray( 12, 1, 11, 15 ) ]
-outlines = [ PoolVector2Array( -1023, -634, -1015, 602, 1027, 601, 1023, -634 ), PoolVector2Array( -291, -28, -291, 29, -84, 29, -84, -27 ), PoolVector2Array( 1025, 241, 837, 243, 827, 405, 871, 403, 888, 329, 940, 331, 941, 406, 1024, 406 ) ]
+vertices = PoolVector2Array( 1023, -634, 1027, 601, -1015, 602, -1023, -634 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
+outlines = [ PoolVector2Array( -1023, -634, -1015, 602, 1027, 601, 1023, -634 ) ]
 
 [sub_resource type="Shader" id=13]
 code = "shader_type canvas_item;

@@ -10,6 +10,7 @@ bg_color = Color( 0, 0, 1, 1 )
 radius = 55.109
 
 [node name="House" type="StaticBody2D"]
+collision_mask = 7
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]

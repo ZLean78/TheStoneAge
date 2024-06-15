@@ -222,7 +222,7 @@ func _ready():
 				else:
 					all_units[i].position = Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
 	
-	
+	_rebake_navigation()
 	
 	#Agregar ropa y bolso a todas las unidades
 	for a_unit in all_units:
@@ -390,7 +390,7 @@ func _create_townhall():
 			Globals.clay_points-=100
 			print("Se construyó un centro cívico.")
 			#Actualizamos el mapa de navegación con el nuevo centro cívico.
-			_update_path(new_townhall)	
+			_rebake_navigation()
 	
 	if the_townhall!=null:
 		for citizen in citizens:
@@ -438,7 +438,7 @@ func _create_house():
 			#Agregamos la nueva casa al nodo casas.
 			houses.add_child(new_house)
 			#Actualizamos el mapa de navegación con la nueva casa.
-			_update_path(new_house)
+			_rebake_navigation()
 			
 			#Le marcamos la posición de la casa al ciudadano seleccionado
 			#para que vaya a construirla.
@@ -986,7 +986,38 @@ func _update_path(new_obstacle):
 		path = Array(p)
 		path.invert()
 
-
+func _rebake_navigation():
+	nav2d.get_node("polygon").enabled=false
+	var navi_polygon=nav2d.get_node("polygon").get_navigation_polygon()
+	navi_polygon.clear_outlines()
+	navi_polygon.clear_polygons()
+	
+	#Agregar límite general y cueva.
+	navi_polygon.add_outline(PoolVector2Array([
+	Vector2(-1024,-608),
+	Vector2(1024,-608),
+	Vector2(1024,608),
+	Vector2(-1024,608)]))
+	
+	#Agregar lago.
+	_update_path(lake)
+	
+	#Agregar cueva.
+	_update_path(cave)
+		
+	for a_house in houses.get_children():
+		if is_instance_valid(a_house):
+			_update_path(a_house)
+			
+	for a_townhall in townhall_node.get_children():
+		if is_instance_valid(a_townhall):
+			_update_path(a_townhall)
+		
+	
+		
+	navi_polygon.make_polygons_from_outlines()	
+	nav2d.get_node("polygon").enabled=true
+	
 
 	
 	

@@ -22,7 +22,14 @@ onready var food_timer = $food_timer
 onready var camera = $Camera
 onready var rain_timer = $Rain_Timer
 onready var tile_map = $TileMap
-onready var cave = $TileMap/Cave
+onready var cave = $Cave/Cave
+onready var lake=$Lake/Lake
+onready var citizens_node=$Citizens
+
+var path=[]
+
+#Node de polígono de navegación.
+onready var nav2d=$nav
 
 #Nodos de interfaz UI
 onready var timer_label = $UI/Base/TimerLabel
@@ -39,6 +46,9 @@ onready var replay_confirmation = $UI/Base/Rectangle/ReplayConfirmation
 
 #Nodo que dibuja el rectángulo de selección de la cámara.
 onready var select_draw=$SelectDraw
+
+
+
 
 #Variable unidad ciudadano original a partir de la cual se crean todas las demás.
 export (PackedScene) var Unit
@@ -103,10 +113,16 @@ func _ready():
 	#Lugar donde va a aparecer la nueva unidad
 	all_units[all_units.size()-1].position = Vector2(camera.position.x+rand_range(50,100),camera.position.y+rand_range(50,100))
 	
+	
+	#Actualizar mapa de navegación.
+	_rebake_navigation()
+	
+	
 	#Configuración por defecto del cursor del mouse a aspecto de flecha.
 	emit_signal("is_arrow")
 	arrow_mode=true
 	basket_mode=false
+	
 	
 	
 	$UI.add_child(Globals.settings)
@@ -124,13 +140,7 @@ func _process(_delta):
 			
 	for a_unit in all_units:
 		
-		#a_unit.position.x = clamp(a_unit.position.x,-1028,screensize.x)
-		#a_unit.position.y = clamp(a_unit.position.y,-608,screensize.y)
-	
-	
-		a_unit._set_its_raining(its_raining)
-		
-		#a_unit.move_unit(a_unit.target_position)
+		a_unit.its_raining=its_raining
 		
 
 		
@@ -180,7 +190,7 @@ func _create_unit():
 		if(Globals.group_dressed):
 			new_Unit.is_dressed=true	
 		
-		tile_map.add_child(new_Unit)	
+		citizens_node.add_child(new_Unit)	
 		
 		if(Globals.group_has_bag):
 			new_Unit.has_bag=true	
@@ -364,6 +374,51 @@ func _check_victory():
 		next_scene_confirmation.visible=true
 		
 		
+func _update_path(new_obstacle):	
+	var citizens=get_tree().get_nodes_in_group("units")
+	var the_citizen=null
+	var new_polygon=PoolVector2Array()
+	var col_polygon=new_obstacle.get_node("CollisionPolygon2D").get_polygon()
+	
+	for vector in col_polygon:
+		new_polygon.append(vector + new_obstacle.position)		
+		
+	var navi_polygon=nav2d.get_node("polygon").get_navigation_polygon()
+	navi_polygon.add_outline(new_polygon)
+	navi_polygon.make_polygons_from_outlines()	
+	
+	for citizen in citizens:
+		if citizen.selected:
+			the_citizen=citizen
+			break
+	
+	if the_citizen!=null:	
+		var p = nav2d.get_simple_path(the_citizen.firstPoint,the_citizen.secondPoint,true)
+		path = Array(p)
+		path.invert()
+
+func _rebake_navigation():
+	nav2d.get_node("polygon").enabled=false
+	var navi_polygon=nav2d.get_node("polygon").get_navigation_polygon()
+	navi_polygon.clear_outlines()
+	navi_polygon.clear_polygons()
+	
+	#Agregar límite general y cueva.
+	navi_polygon.add_outline(PoolVector2Array([
+	Vector2(-1024,-608),
+	Vector2(1024,-608),
+	Vector2(1024,608),
+	Vector2(-1024,608)]))
+	
+	#Agregar lago.
+	_update_path(lake)
+	
+	#Agregar cueva.
+	_update_path(cave)
+		
+	navi_polygon.make_polygons_from_outlines()	
+	nav2d.get_node("polygon").enabled=true
+	
 
 
 
@@ -386,3 +441,5 @@ func _on_ReplayCancel_pressed():
 func _on_NextSceneOk_pressed():
 	$UI.remove_child(Globals.settings)
 	Globals.go_to_scene("res://Scenes/Game2/Game2.tscn")
+	
+

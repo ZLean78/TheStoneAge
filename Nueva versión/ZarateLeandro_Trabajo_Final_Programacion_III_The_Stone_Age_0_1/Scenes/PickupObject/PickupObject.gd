@@ -5,6 +5,7 @@ onready var the_sprite = null
 var type=null
 var touching = false
 var empty = false
+var mouse_entered=false
 
 
 # Called when the node enters the scene tree for the first time.
@@ -34,12 +35,13 @@ func _on_Area2D_body_exited(body):
 		body._set_pickable_touching(false)
 		body._set_pickable(null)
 		if type == "lake":
-			body._set_lake_touching(false)
+			body._set_lake_touching(false)			
 		elif type == "puddle":
 			body._set_puddle_touching(false)
 		
 
 func _on_Area2D_mouse_entered():
+	mouse_entered=true
 	var tree = Globals.current_scene
 	if tree.name == "Game":
 		if type == "fruit_tree":
@@ -88,10 +90,14 @@ func _on_Area2D_mouse_entered():
 			elif type == "puddle":
 				get_parent().emit_signal("is_hand")	
 			elif type == "lake":
-				get_parent().emit_signal("is_claypot")		
+				if tree.arrow_mode:
+					get_parent().emit_signal("is_claypot")
+				if tree.house_mode:
+					get_parent().emit_signal("is_house")
 
 
 func _on_Area2D_mouse_exited():
+	mouse_entered=false
 	var tree = Globals.current_scene
 	if tree.name == "Game":
 		if type == "fruit_tree" or type == "plant":

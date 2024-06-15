@@ -54,6 +54,7 @@ onready var lake = tree.get_node("Lake")
 onready var puddle = tree.get_node("Puddle")
 onready var quarries = $Quarries
 onready var units=$Units
+onready var nav2d=$nav
 onready var spawn_position=tree.get_node("SpawnPosition")
 onready var tiger_spawn=tree.get_node("TigerSpawn")
 onready var tiger_target=tree.get_node("TigerTarget")
@@ -68,6 +69,8 @@ onready var replay_confirmation=$UI/Base/ReplayConfirmation
 
 #Nodo que dibuja el rectángulo de selección de la cámara.
 onready var select_draw=$SelectDraw
+
+var path=[]
 
 var cave
 
@@ -134,7 +137,7 @@ func _ready():
 	all_quarries=quarries.get_children()
 	
 	#tile_map=tree.find_node("TileMap")
-	cave=get_node("Cave")
+	cave=get_node("Cave/Cave")
 	all_trees.append(tree.find_node("fruit_tree"))
 	all_trees.append(tree.find_node("fruit_tree2"))
 	all_trees.append(tree.find_node("fruit_tree3"))
@@ -179,7 +182,7 @@ func _ready():
 		group_dressed=true
 		group_has_bag=true
 	
-#	
+	_rebake_navigation()
 
 	emit_signal("is_arrow")
 	arrow_mode=true
@@ -663,7 +666,55 @@ func _check_units():
 			the_unit._die()
 	
 	
+func _update_path(new_obstacle):	
+	var citizens=units.get_children()
+	var the_citizen=null
+	var new_polygon=PoolVector2Array()
+	var col_polygon=new_obstacle.get_node("CollisionPolygon2D").get_polygon()
+	
+	for vector in col_polygon:
+		new_polygon.append(vector + new_obstacle.position)		
+		
+	var navi_polygon=nav2d.get_node("polygon").get_navigation_polygon()
+	navi_polygon.add_outline(new_polygon)
+	navi_polygon.make_polygons_from_outlines()	
+	
+	for citizen in citizens:
+		if citizen.selected:
+			the_citizen=citizen
+			break
+	
+	if the_citizen!=null:	
+		var p = nav2d.get_simple_path(the_citizen.firstPoint,the_citizen.secondPoint,true)
+		path = Array(p)
+		path.invert()
 
+func _rebake_navigation():
+	nav2d.get_node("polygon").enabled=false
+	var navi_polygon=nav2d.get_node("polygon").get_navigation_polygon()
+	navi_polygon.clear_outlines()
+	navi_polygon.clear_polygons()
+	
+	#Agregar límite general y cueva.
+	navi_polygon.add_outline(PoolVector2Array([
+	Vector2(-1024,-608),
+	Vector2(1024,-608),
+	Vector2(1024,608),
+	Vector2(-1024,608)]))
+	
+	#Agregar lago.
+	_update_path(lake)
+	
+	#Agregar cueva.
+	_update_path(cave)
+		
+
+		
+	
+		
+	navi_polygon.make_polygons_from_outlines()	
+	nav2d.get_node("polygon").enabled=true
+	
 
 
 func _on_ExitConfirmation_confirmed():

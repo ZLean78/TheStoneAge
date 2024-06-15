@@ -1,36 +1,10 @@
 extends Node2D
 
-#Íconos que indican los diferentes modos del mouse para llevar
-#a cabo distintas acciones.
-#var basket=load("res://Scenes/MouseIcons/basket.png")
-#var arrow=load("res://Scenes/MouseIcons/arrow.png")
-#var pick_mattock=load("res://Scenes/MouseIcons/pick_mattock.png")
-#var sword=load("res://Scenes/MouseIcons/sword.png")
-#var claypot=load("res://Scenes/MouseIcons/claypot.png")
-#var hand=load("res://Scenes/MouseIcons/hand.png")
-#var axe=load("res://Scenes/MouseIcons/axe.png")
-#var house=load("res://Scenes/MouseIcons/house.png")
-#var house_b=load("res://Scenes/MouseIcons/house_b.png")
-#var townhall=load("res://Scenes/MouseIcons/townHall.png")
-#var townhall_b=load("res://Scenes/MouseIcons/townHall_b.png")
-#var fort=load("res://Scenes/MouseIcons/fort_s.png")
-#var fort_b=load("res://Scenes/MouseIcons/fort_sb.png")
-#var barn=load("res://Scenes/MouseIcons/barn_s.png")
-#var barn_b=load("res://Scenes/MouseIcons/barn_sb.png")
-#var tower=load("res://Scenes/MouseIcons/tower_s.png")
-#var tower_b=load("res://Scenes/MouseIcons/tower_sb.png")
 
 #Contador de unidades civiles.
 var unit_count = 1
 
-#Puntos de cada uno de los recursos naturales a recolectar.
-#var food_points = 1000
-#var leaves_points = 1000
-#var stone_points = 1000
-#var copper_points = 1000
-#var wood_points = 1000
-#var clay_points = 2000
-#var water_points = 1000
+
 
 #Hitos anteriores ya cumplidos
 var group_dressed = false
@@ -55,7 +29,7 @@ var is_barn_built=false
 var is_fort_built=false
 
 
-
+#Nodo raíz de la escena.
 onready var tree = Globals.current_scene
 onready var food_timer = tree.get_node("food_timer")
 onready var enemy_timer = tree.get_node("enemy_timer")
@@ -79,7 +53,20 @@ onready var create_house = tree.get_node("UI/Base/Rectangle/CreateHouse")
 #onready var create_townhall = tree.get_node("UI/Base/Rectangle/CreateTownHall")
 onready var create_warrior = tree.get_node("UI/Base/Rectangle/CreateWarriorUnit")
 
+#Nodo de la cámara.
 onready var camera = tree.get_node("Camera")
+
+#Nodos de las fuentes de recursos
+onready var fruit_trees_node=$FruitTrees
+onready var pine_trees_node=$PineTrees
+onready var plants_node=$Plants
+onready var quarries_node=$Quarries
+onready var coppers_node=$Coppers
+
+
+
+
+
 #onready var tiger_timer = tree.get_node("tiger_timer")
 onready var tile_map = tree.get_node("TileMap")
 onready var puddle = tree.get_node("Puddle")
@@ -225,16 +212,12 @@ func _ready():
 	tile_map=tree.find_node("TileMap")
 	
 	#Nodo de la cueva.
-	cave=tree.get_node("Cave")
+	cave=tree.get_node("Cave/Cave")
 	
 	#Agregamos cada uno de los árboles frutales existentes 
 	#en la escena principal al arreglo all_trees.
-	all_trees.append(tree.find_node("fruit_tree"))
-	all_trees.append(tree.find_node("fruit_tree2"))
-	all_trees.append(tree.find_node("fruit_tree3"))
-	all_trees.append(tree.find_node("fruit_tree4"))
-	all_trees.append(tree.find_node("fruit_tree5"))
-	all_trees.append(tree.find_node("fruit_tree6"))
+	for fruit_tree in fruit_trees_node.get_children():
+		all_trees.append(fruit_tree)
 	
 	#Agregamos las dos plantas existentes 
 	#en la escena principal al arreglo all_plants.
@@ -306,15 +289,10 @@ func _ready():
 	all_units[0].is_warchief=true
 	all_units[0].warchief_mark.visible=true
 	
-	#Actualizamos el polígono de navegación para los edificios
-	var dwells=houses.get_children()
+	#Actualizamos el mapa de navegación.
+	_rebake_navigation()
 	
-	for house in dwells:
-		all_units[0].selected=true
-		_update_path(house)
 	
-	all_units[0].selected=true	
-	_update_path(townhall_node.get_child(0))
 	
 	all_units[0].selected=false
 
@@ -430,6 +408,9 @@ func _unhandled_input(event):
 				for a_fort in fort_node.get_children():
 					if !a_fort in obstacles:
 						obstacles.append(a_fort)
+						
+				obstacles.append(lake)
+				obstacles.append(cave)
 				
 				for an_obstacle in obstacles:
 					
@@ -1406,23 +1387,14 @@ func _rebake_navigation():
 	navi_polygon.add_outline(PoolVector2Array([
 	Vector2(-1024,-608),
 	Vector2(1024,-608),
-	Vector2(1024,244),
-	Vector2(843,244),
-	Vector2(833,406),
-	Vector2(873,406),
-	Vector2(897,334),
-	Vector2(938,334),
-	Vector2(945,405),
-	Vector2(1024,406),	
 	Vector2(1024,608),
 	Vector2(-1024,608)]))
 	
 	#Agregar lago.
-	navi_polygon.add_outline(PoolVector2Array([
-	Vector2(-287,-27),
-	Vector2(-82,-27),
-	Vector2(-82,32),
-	Vector2(-287,32)]))	
+	_update_path(lake)
+	
+	#Agregar cueva.
+	_update_path(cave)
 		
 	for a_house in houses.get_children():
 		if is_instance_valid(a_house):

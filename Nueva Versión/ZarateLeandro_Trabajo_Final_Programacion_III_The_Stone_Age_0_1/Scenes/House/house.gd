@@ -6,6 +6,7 @@ export var condition_max=0
 onready var tree
 onready var units
 onready var timer=$Timer
+onready var polygon=$CollisionPolygon2D
 #onready var all_timer=get_tree().root.get_child(0).get_node("food_timer")
 onready var bar=$Bar
 var mouse_entered=false
@@ -47,7 +48,9 @@ func _get_damage(body):
 		if "Stone" in body.name && body.owner_name=="EnemyCitizen":
 			condition-=3
 	if condition<=0:
+		polygon.visible=false
 		queue_free()
+		tree.emit_signal("remove_building")
 
 
 

@@ -82,6 +82,7 @@ onready var create_warrior = tree.get_node("UI/Base/Rectangle/CreateWarriorUnit"
 onready var camera = tree.get_node("Camera")
 #onready var tiger_timer = tree.get_node("tiger_timer")
 onready var tile_map = tree.get_node("TileMap")
+
 onready var puddle = tree.get_node("Puddle")
 onready var quarry1 = tree.get_node("Quarries/Quarry1")
 onready var quarry2 = tree.get_node("Quarries/Quarry2")
@@ -96,6 +97,7 @@ onready var enemy_spawn = $EnemySpawn
 onready var units = $Units
 onready var warriors = $Warriors
 onready var houses = $Houses
+onready var enemy_houses=$EnemyHouses
 onready var fort_node = $Fort
 onready var tower_node = $Towers
 onready var barn_node = $Barn
@@ -230,8 +232,8 @@ func _ready():
 	#Nodo del mapa de tejas.
 	tile_map=tree.find_node("TileMap")
 	
-	#Nodo de la cueva.
-	cave=tree.get_node("Cave")
+	#Objeto cueva.
+	cave=$Cave/Cave
 	
 	#Agregamos cada uno de los árboles frutales existentes 
 	#en la escena principal al arreglo all_trees.
@@ -318,15 +320,22 @@ func _ready():
 	all_units[0].is_warchief=true
 	all_units[0].warchief_mark.visible=true
 	
-	#Actualizamos el polígono de navegación para los edificios
-	var dwells=houses.get_children()
+	#Actualizamos el mapa de navegación.
+	_rebake_navigation()
 	
-	for house in dwells:
-		all_units[0].selected=true
-		_update_path(house)
-	
-	all_units[0].selected=true	
-	_update_path(townhall_node.get_child(0))
+#	#Actualizamos el polígono de navegación para los edificios
+#	var dwells=houses.get_children()
+#
+#	for house in dwells:
+#		#all_units[0].selected=true
+#		_update_path(house)
+#
+#	#all_units[0].selected=true	
+#	_update_path(townhall_node.get_child(0))
+#
+#
+#	for enemy_house in enemy_houses.get_children():
+#		_update_path(enemy_house)
 	
 	all_units[0].selected=false
 
@@ -468,6 +477,13 @@ func _unhandled_input(event):
 				for a_fort in fort_node.get_children():
 					if !a_fort in obstacles:
 						obstacles.append(a_fort)
+						
+				for enemy_house in enemy_houses.get_children():
+					if !enemy_house in obstacles:
+						obstacles.append(enemy_house)
+						
+				obstacles.append(cave)
+				obstacles.append(lake)
 				
 				for an_obstacle in obstacles:
 					
@@ -1464,23 +1480,14 @@ func _rebake_navigation():
 	navi_polygon.add_outline(PoolVector2Array([
 	Vector2(-1024,-608),
 	Vector2(1024,-608),
-	Vector2(1024,244),
-	Vector2(843,244),
-	Vector2(833,406),
-	Vector2(873,406),
-	Vector2(897,334),
-	Vector2(938,334),
-	Vector2(945,405),
-	Vector2(1024,406),	
 	Vector2(1024,608),
 	Vector2(-1024,608)]))
 	
 	#Agregar lago.
-	navi_polygon.add_outline(PoolVector2Array([
-	Vector2(-287,-27),
-	Vector2(-82,-27),
-	Vector2(-82,32),
-	Vector2(-287,32)]))	
+	_update_path(lake)
+	
+	#Agregar cueva.
+	_update_path(cave)
 		
 	for a_house in houses.get_children():
 		if is_instance_valid(a_house):
@@ -1501,6 +1508,12 @@ func _rebake_navigation():
 	for a_fort in fort_node.get_children():
 		if is_instance_valid(a_fort):
 			_update_path(a_fort)
+			
+	for enemy_house in enemy_houses.get_children():
+		if is_instance_valid(enemy_house):
+			_update_path(enemy_house)
+			
+	
 		
 	navi_polygon.make_polygons_from_outlines()	
 	nav2d.get_node("polygon").enabled=true
@@ -1564,7 +1577,7 @@ func _on_ReplayCancel_pressed():
 
 func _on_ReplayOk_pressed():
 	$UI.remove_child(Globals.settings)
-	get_tree().reload_current_scene()
+	Globals.go_to_scene("res://Scenes/Game5/Game5.tscn")
 
 
 func _on_NextSceneOk_pressed():

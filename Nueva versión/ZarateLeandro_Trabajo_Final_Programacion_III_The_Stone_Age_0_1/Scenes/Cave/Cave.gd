@@ -1,5 +1,6 @@
-extends Node2D
+extends StaticBody2D
 
+var mouse_entered=false
 var sheltered_units=0
 var tree
 
@@ -14,7 +15,7 @@ func _on_Area2D_body_entered(body):
 
 
 func _on_Area2D_input_event(viewport, event, shape_idx):
-	if event is InputEventMouseButton:
+	if event is InputEventMouseButton && tree.arrow_mode:
 		if event.is_pressed():
 			if event.button_index == BUTTON_LEFT:
 				if tree.name=="Game2":
@@ -23,4 +24,14 @@ func _on_Area2D_input_event(viewport, event, shape_idx):
 					tree.discover_fire.visible = not tree.discover_fire.visible
 					tree.make_claypot.visible = not tree.make_claypot.visible
 					tree.develop_agriculture.visible = not tree.develop_agriculture.visible
+
+		
 				
+
+
+func _on_Area2D_mouse_entered():
+	mouse_entered=true
+
+
+func _on_Area2D_mouse_exited():
+	mouse_entered=false

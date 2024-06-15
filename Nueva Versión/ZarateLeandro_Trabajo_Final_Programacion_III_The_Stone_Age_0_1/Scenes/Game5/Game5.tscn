@@ -16,9 +16,9 @@
 [ext_resource path="res://Scenes/Quarry/Quarry.tscn" type="PackedScene" id=14]
 [ext_resource path="res://Scenes/fruit_tree/fruit_tree.tscn" type="PackedScene" id=15]
 [ext_resource path="res://Scenes/House/house.tscn" type="PackedScene" id=16]
-[ext_resource path="res://Scenes/Game/Camera.gd" type="Script" id=17]
+[ext_resource path="res://Scenes/Camera/Camera.gd" type="Script" id=17]
 [ext_resource path="res://Scenes/Tower/Tower.tscn" type="PackedScene" id=18]
-[ext_resource path="res://Scenes/Game/SelectDraw.gd" type="Script" id=19]
+[ext_resource path="res://Scenes/Camera/SelectDraw.gd" type="Script" id=19]
 [ext_resource path="res://Scenes/Game2/male1_d.png" type="Texture" id=20]
 [ext_resource path="res://Sprites/game/tiles/grass/simple/grass.png" type="Texture" id=21]
 [ext_resource path="res://Scenes/Copper/CopperSmall.png" type="Texture" id=22]
@@ -57,9 +57,9 @@
 0/z_index = 0
 
 [sub_resource type="NavigationPolygon" id=3]
-vertices = PoolVector2Array( 1023, -634, 1027, 601, 1025, 241, 1024, 406, 837, 243, -84, 29, -84, -27, -1023, -634, -291, -28, -1015, 602, -291, 29, 827, 405, 941, 406, 888, 329, 940, 331, 871, 403 )
-polygons = [ PoolIntArray( 0, 1, 2 ), PoolIntArray( 3, 2, 1 ), PoolIntArray( 0, 2, 4, 5, 6 ), PoolIntArray( 7, 0, 6, 8 ), PoolIntArray( 9, 7, 8, 10 ), PoolIntArray( 1, 9, 10, 5, 11 ), PoolIntArray( 12, 3, 1 ), PoolIntArray( 13, 14, 12, 15 ), PoolIntArray( 5, 4, 11 ), PoolIntArray( 12, 1, 11, 15 ) ]
-outlines = [ PoolVector2Array( -1023, -634, -1015, 602, 1027, 601, 1023, -634 ), PoolVector2Array( -291, -28, -291, 29, -84, 29, -84, -27 ), PoolVector2Array( 1025, 241, 837, 243, 827, 405, 871, 403, 888, 329, 940, 331, 941, 406, 1024, 406 ) ]
+vertices = PoolVector2Array( 1023, -634, 1027, 601, -1015, 602, -1023, -634 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
+outlines = [ PoolVector2Array( -1023, -634, -1015, 602, 1027, 601, 1023, -634 ) ]
 
 [sub_resource type="Shader" id=9]
 code = "shader_type canvas_item;
@@ -278,17 +278,17 @@ SPEED = 100.0
 target_t = 4
 
 [node name="EnemyCitizen8" parent="EnemyCitizens" instance=ExtResource( 4 )]
-position = Vector2( -341.937, -1118 )
+position = Vector2( -334, -448 )
 SPEED = 100.0
 target_t = 4
 
 [node name="EnemyCitizen9" parent="EnemyCitizens" instance=ExtResource( 4 )]
-position = Vector2( -341.937, -1118 )
+position = Vector2( -237, -210 )
 SPEED = 100.0
 target_t = 3
 
 [node name="EnemyCitizen10" parent="EnemyCitizens" instance=ExtResource( 4 )]
-position = Vector2( -341.937, -1118 )
+position = Vector2( -259, -405 )
 SPEED = 100.0
 target_t = 3
 
