@@ -4,7 +4,7 @@ var health=0
 
 
 
-func _set_healt(var _health):
+func _set_health(var _health):
 	health = _health
 	_update_energy()
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Scenes/Bar/Bar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Unit2/Unit2.gd" type="Script" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://Scenes/Unit/bag_2.png" type="Texture" id=7]
 [ext_resource path="res://Scenes/Warrior/WarriorMark.png" type="Texture" id=8]
 [ext_resource path="res://Scenes/Unit2/Animation.gd" type="Script" id=9]
+[ext_resource path="res://Scenes/Unit2/Control.gd" type="Script" id=10]
 
 [sub_resource type="CanvasItemMaterial" id=7]
 
@@ -117,6 +118,9 @@ autostart = true
 
 [node name="Animation" type="Node2D" parent="."]
 script = ExtResource( 9 )
+
+[node name="Control" type="Node2D" parent="."]
+script = ExtResource( 10 )
 
 [connection signal="input_event" from="." to="." method="_on_Unit_input_event"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]

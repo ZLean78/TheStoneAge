@@ -31,11 +31,6 @@ var food_points = 0
 var dragging = true
 
 
-
-
-
-
-
 #Variables agregadas
 #var device_number = 0
 #!!!!
@@ -96,20 +91,15 @@ var pickable_touching = false
 #Variable que indica el pickable que la unidad está tocando
 var pickable = null
 
-#!!!!
-
-
 
 #Para saber si la unidad ha sido eliminada.
 var is_deleted=false
-
 
 
 #Para saber si la unidad ha sido convertida en jefe guerrero.
 var is_warchief = false
 
 var can_shoot = true
-
 
 
 var direction = Vector2.ZERO
@@ -389,44 +379,37 @@ func _move_along_path(distance):
 		
 
 
-	
-	
-	
 
-	
-	
-	
-
-func _unhandled_input(event):
-	if event.is_action_pressed("RightClick"):
-		if tree.name!="Game":
-			if tree.sword_mode:
-				if tree.touching_enemy!=null:
-					if is_instance_valid(tree.touching_enemy):
-						if selected && can_shoot:
-							if !is_warchief:
-								_shoot()
-							else:
-								for warrior in tree.warriors.get_children():
-									if warrior.position.distance_to(position):
-										if warrior.can_shoot:
-											warrior._shoot()
-					else:					
-						if tree.name == "Game3":
-							tree._on_Game3_is_arrow()
-						if tree.name == "Game2":
-							tree._on_Game2_is_arrow()
-			else:
-				firstPoint=global_position
-		else:
-			firstPoint=global_position
-			
-	if event.is_action_released("RightClick"):
-		if tree.name!="Game":		
-			if !tree.sword_mode:
-				_walk()
-		else:
-			_walk()
+#func _unhandled_input(event):
+#	if event.is_action_pressed("RightClick"):
+#		if tree.name!="Game":
+#			if tree.sword_mode:
+#				if tree.touching_enemy!=null:
+#					if is_instance_valid(tree.touching_enemy):
+#						if selected && can_shoot:
+#							if !is_warchief:
+#								_shoot()
+#							else:
+#								for warrior in tree.warriors.get_children():
+#									if warrior.position.distance_to(position):
+#										if warrior.can_shoot:
+#											warrior._shoot()
+#					else:					
+#						if tree.name == "Game3":
+#							tree._on_Game3_is_arrow()
+#						if tree.name == "Game2":
+#							tree._on_Game2_is_arrow()
+#			else:
+#				firstPoint=global_position
+#		else:
+#			firstPoint=global_position
+#
+#	if event.is_action_released("RightClick"):
+#		if tree.name!="Game":		
+#			if !tree.sword_mode:
+#				_walk()
+#		else:
+#			_walk()
 			
 
 func _on_fruit_tree_fruit_tree_exited():
@@ -530,10 +513,6 @@ func self_heal():
 			can_heal_itself=false
 			heal_counter=60
 		
-		
-
-
-
 
 
 func _on_Area2D_body_exited(body):

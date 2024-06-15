@@ -1,21 +1,9 @@
-extends KinematicBody2D
+extends "res://Scenes/Unit/Unit.gd"
 
 #Proyectil, piedra para lanzar al enemigo.
 var bullet
 export var bullet_scene=preload("res://Scenes/Bullet/Bullet.tscn")
 export var stone_scene=preload("res://Scenes/Stone/stone.tscn")
-
-#Velocidad
-export (float) var SPEED = 100.0
-#Máximo de Salud
-export (float) var MAX_HEALTH = 100.0
-
-
-
-
-
-#Nodo de la escena actual.
-onready var tree
 
 onready var fruit_trees_node
 onready var pine_trees_node
@@ -29,32 +17,10 @@ onready var puddle_node
 #Temporizador de comida, agrega un punto de comida por segundo cuando la unidad toca un árbol frutal.
 onready var food_timer
 
-
-#Variable que indica si está seleccionada la unidad.
-var selected = true setget _set_selected
-#Marca de selección
-onready var box = $Selected
-#onready var label = $label
-#Barra de Energía
-onready var bar = $Bar
-onready var all_timer = $all_timer
-onready var sprite = get_node("scalable/sprite")
-onready var bag_sprite = get_node("scalable/bag_sprite")
-onready var shoot_node = $shootNode
-onready var shoot_point = $shootNode/shootPoint
-
 #Marca de jefe guerrero.
 onready var warchief_mark= $WarchiefMark
 
 
-
-
-#Variable que indica si el jugador debe moverse.
-var move_p = false
-#Vector2 que indica cuánto debe moverse el jugador.
-var to_move = Vector2()
-#PoolVector2Array que indica el camino variable teniendo en cuenta el Polígono de navegación.
-var path = PoolVector2Array()
 #Posición inicial, se actualiza cada vez que hacemos click con el botón derecho.
 var initialPosition = Vector2()
 
@@ -65,22 +31,12 @@ export (int) var energy_points = MAX_HEALTH
 #Variable que indica si se está arrastrando el mouse sobre la unidad.
 var dragging = true
 
-#Indica si la animación de la unidad debe estar flipeada en x.
-var is_flipped = false
-var is_chased = false
+
 #var click_relative = 16
 #Indica si la unidad ha muerto.
 var dead = false
 
 
-
-#Variables agregadas
-#var device_number = 0
-#!!!!
-var motion = Vector2()
-#Vector2 que indica la velocidad en x e y para las animaciones.
-var velocity = Vector2()
-#!!!!!
 var touch_enabled = false
 #Indica si la unidad se encuentra bajo refugio.
 var is_sheltered = false
@@ -91,11 +47,7 @@ var is_dressed = false
 #Indica si tiene cesta de hojas o no.
 var has_bag = false
 #Indica si la unidad ha sido eliminada o no.
-var is_erased = false
 
-
-#Posición adonde la unidad debe moverse.
-var target_position=Vector2.ZERO
 
 #Indica si la unidad puede agregar puntos de comida o no.
 var can_add = false
@@ -141,23 +93,16 @@ var pickable_touching = false
 #Variable que indica el pickable que la unidad está tocando
 var pickable = null
 
-#!!!!
-
-#Variable contador para diferenciar cuándo ha acabado el timer "all_timer".
-var timer_count=1
-
 #Para saber si la unidad ha sido eliminada.
 var is_deleted=false
 
-#Para detección de daño. Cuerpo que ingresa al área 2D
-var body_entered
 
 #Para saber si la unidad ha sido convertida en jefe guerrero.
 var is_warchief = false
 
 var can_shoot = true
 
-var to_delta = 0.0
+
 
 var direction = Vector2.ZERO
 
@@ -204,17 +149,6 @@ var can_heal_another
 var is_timer_timeout=false
 
 
-
-
-#Señales de que la unidad fue seleccionada y desseleccionada.
-signal was_selected
-signal was_deselected
-
-
-#func _init():
-#	call_deferred("ready")
-	
-
 func _ready():
 	AI_state=1
 	tree=Globals.current_scene
@@ -227,13 +161,27 @@ func _ready():
 	lake_node=tree.get_node("Lake")
 	puddle_node=tree.get_node("Puddle")
 	nav2d=tree.get_node("nav")
-	connect("was_selected",tree,"_select_unit")
-	connect("was_deselected",tree,"_deselect_unit")
+#	connect("was_selected",tree,"_select_unit")
+#	connect("was_deselected",tree,"_deselect_unit")
 	#emit_signal("health_change",energy_points)
 	
 	
 	has_bag=true
+	bar=$Bar
+	all_timer=$all_timer
+	foot=$Selected
+	
+	sprite = $scalable/sprite
+	bag_sprite = $scalable/bag_sprite
+	shoot_node = $shootNode
+	shoot_point = $shootNode/shootPoint
+	
+	#Salud.
+	health = MAX_HEALTH
+	
 	is_dressed=true
+	has_bag=true
+	
 	if(!is_dressed):
 		if !is_girl:
 			sprite.animation = "male_idle1"
@@ -244,32 +192,22 @@ func _ready():
 			sprite.animation = "male_idle1_d"
 		if is_girl:
 			sprite.animation = "female_idle1_d"
-	
-	
-	box.visible = true
-	#label.visible = false
-	bar.visible = true
-	#label.text = name
-	#randomize()
-	#bar.value = randi() % 90 + 10
+			
+	if(!has_bag):
+		bag_sprite.visible=false
+	else:
+		bag_sprite.visible=true
+		
+
+	_set_selected(true)
 	
 
 	
 	
-#func _deferred_start():
-#	call_deferred("_ready")
+
 	
 
-func _set_selected(value):
-	if selected != value:
-		selected = value
-		box.visible = value
-		#label.visible = value
-		bar.visible = value
-		if selected:
-			emit_signal("was_selected",self)
-		else:
-			emit_signal("was_deselected",self)
+
 
 
 	
@@ -295,19 +233,12 @@ func _physics_process(delta):
 	
 	
 	if selected:
-		if box.visible == false:
-			box.visible = true
+		if foot.visible == false:
+			foot.visible = true
 	else:
-		if box.visible == true:
-			box.visible = false
+		if foot.visible == true:
+			foot.visible = false
 	
-#	if target_position!=Vector2.ZERO:
-#		if position.distance_to(target_position) > 10:			
-#			_move_along_path(SPEED*delta)
-#		else:
-#			target_position=position
-#			velocity=Vector2.ZERO
-		
 
 
 	
@@ -448,7 +379,7 @@ func _get_damage(var the_beast):
 					energy_points-=10
 				else:
 					energy_points-=5
-				bar._set_energy_points(energy_points)
+				bar._set_health(energy_points)
 				
 			else:
 				_set_selected(false)			
@@ -459,7 +390,7 @@ func _get_damage(var the_beast):
 					energy_points-=15
 				else:
 					energy_points-=10
-				bar._set_energy_points(energy_points)
+				bar._set_health(energy_points)
 				
 			else:
 				if the_beast:
@@ -468,7 +399,7 @@ func _get_damage(var the_beast):
 	if "Mammoth" in the_beast.name && is_enemy_touching:
 		if energy_points>0:
 			energy_points-=30
-			bar._set_energy_points(energy_points)
+			bar._set_health(energy_points)
 			
 		else:
 			_set_selected(false)			
@@ -477,7 +408,7 @@ func _get_damage(var the_beast):
 		
 		if energy_points>0:			
 			energy_points-=20
-			bar._set_energy_points(self.energy_points)
+			bar._set_health(self.energy_points)
 
 			print("enemy citizen energy" + str(self.energy_points))
 		else:
@@ -486,7 +417,7 @@ func _get_damage(var the_beast):
 	if "Warrior" in the_beast.name && is_enemy_touching:
 		if energy_points>0:
 			energy_points-=20
-			bar._set_energy_points(energy_points)
+			bar._set_health(energy_points)
 			
 		else:
 			_set_selected(false)			
@@ -494,7 +425,7 @@ func _get_damage(var the_beast):
 	if "Unit2" in the_beast.name && is_enemy_touching:
 		if energy_points>0:
 			energy_points-=10
-			bar._set_energy_points(energy_points)
+			bar._set_health(energy_points)
 			
 		else:
 			_set_selected(false)			
@@ -502,7 +433,7 @@ func _get_damage(var the_beast):
 	if "Stone" in the_beast.name && the_beast.owner_name=="Citizen":
 		if energy_points>0:
 			energy_points-=15
-			bar._set_energy_points(energy_points)			
+			bar._set_health(energy_points)			
 		else:
 			_set_selected(false)			
 			is_deleted=true
@@ -570,12 +501,12 @@ func _move_to_target(target):
 #			_walk()
 
 
-func _on_Unit_input_event(_viewport, event, _shape_idx):
-	if event is InputEventMouseButton:
-		if event.is_pressed():			
-			if event.button_index == BUTTON_LEFT:
-				_set_selected(not selected)
-				#tree._select_last()
+#func _on_Unit_input_event(_viewport, event, _shape_idx):
+#	if event is InputEventMouseButton:
+#		if event.is_pressed():			
+#			if event.button_index == BUTTON_LEFT:
+#				_set_selected(not selected)
+#				#tree._select_last()
 
 #func hurt(amount):
 #	health-=amount
@@ -878,8 +809,7 @@ func _on_plant_plant_exited():
 #func _on_tiger_tiger_exited():
 #	is_tiger_touching=false
 
-func _on_player_mouse_entered():
-	selected = true
+
 
 	
 func _set_fruit_tree_touching(var _fruit_tree):
@@ -982,7 +912,7 @@ func heal(_body):
 			#if timer_count==0:
 			_body.energy_points+=5
 			print("unit energy" + str(_body.energy_points))
-			_body.bar._set_energy_points(_body.energy_points)
+			_body.bar._set_health(_body.energy_points)
 			
 	
 			if _body.energy_points>_body.MAX_HEALTH:
@@ -994,7 +924,7 @@ func heal(_body):
 func self_heal():	
 	if energy_points<MAX_HEALTH:
 		energy_points+=5
-		bar._set_energy_points(energy_points)
+		bar._set_health(energy_points)
 		
 		
 		if energy_points>MAX_HEALTH:
