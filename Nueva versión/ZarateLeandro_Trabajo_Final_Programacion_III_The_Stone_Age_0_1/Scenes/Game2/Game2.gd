@@ -170,21 +170,40 @@ func _ready():
 
 	$UI.add_child(Globals.settings)
 	
-	_create_unit();
+	for i in range(0,11):
+		_create_unit();
 	
-		
+	for i in range(0,12):
+		if i==0:
+			all_units[i].position = Vector2(camera.position.x+50,camera.position.y+50)
+			#all_units[i].position = Vector2(camera.get_viewport().size.x/6,camera.get_viewport().size.y/4)
+		else:
+			if i<4:
+				all_units[i].position =	Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
+			elif i>=4 && i<8:
+				if i==4:
+					all_units[i].position =	Vector2(all_units[0].position.x,all_units[0].position.y+20)
+				else:
+					all_units[i].position = Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
+			elif i>=8:
+				if i==8:
+					all_units[i].position = Vector2(all_units[0].position.x,all_units[0].position.y+40)
+				else:
+					all_units[i].position = Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
 	
-	
-	
+	_rebake_navigation()
 	
 	#Agregar ropa y bolso a todas las unidades
 	for a_unit in all_units:
 		a_unit.is_dressed=true
 		a_unit.has_bag=true
-		group_dressed=true
-		group_has_bag=true
-	
-	_rebake_navigation()
+		a_unit.bag_sprite.visible=true
+		if a_unit.is_girl:
+			a_unit.sprite.animation="female_idle1_d"
+		else:
+			a_unit.sprite.animation="male_idle1_d"
+		Globals.group_dressed=true
+		Globals.group_has_bag=true
 
 	emit_signal("is_arrow")
 	arrow_mode=true

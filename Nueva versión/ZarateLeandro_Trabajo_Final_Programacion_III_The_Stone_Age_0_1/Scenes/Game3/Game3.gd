@@ -201,6 +201,11 @@ func _ready():
 	for a_unit in all_units:
 		a_unit.is_dressed=true
 		a_unit.has_bag=true
+		a_unit.bag_sprite.visible=true
+		if a_unit.is_girl:
+			a_unit.sprite.animation="female_idle1_d"
+		else:
+			a_unit.sprite.animation="male_idle1_d"
 		Globals.group_dressed=true
 		Globals.group_has_bag=true
 	

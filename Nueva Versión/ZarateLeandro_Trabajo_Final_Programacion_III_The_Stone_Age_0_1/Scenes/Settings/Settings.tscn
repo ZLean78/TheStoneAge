@@ -12,13 +12,21 @@ visible = false
 z_index = 10
 script = ExtResource( 2 )
 
-[node name="Label" type="Label" parent="."]
+[node name="LblResolution" type="Label" parent="."]
 margin_left = 246.0
 margin_top = 127.0
 margin_right = 356.0
 margin_bottom = 158.0
 custom_fonts/font = SubResource( 1 )
 text = "Resolución:"
+
+[node name="LblMusicVolume" type="Label" parent="."]
+margin_left = 249.0
+margin_top = 244.0
+margin_right = 359.0
+margin_bottom = 275.0
+custom_fonts/font = SubResource( 1 )
+text = "Música:"
 
 [node name="Label2" type="Label" parent="."]
 margin_left = 251.0
@@ -28,7 +36,14 @@ margin_bottom = 200.0
 custom_fonts/font = SubResource( 1 )
 text = "640x480"
 
-[node name="HScrollBar" type="HScrollBar" parent="."]
+[node name="MusicValue" type="Label" parent="."]
+margin_left = 255.0
+margin_top = 287.0
+margin_right = 352.0
+margin_bottom = 318.0
+custom_fonts/font = SubResource( 1 )
+
+[node name="HSResolution" type="HScrollBar" parent="."]
 margin_left = 376.0
 margin_top = 178.0
 margin_right = 521.0
@@ -40,4 +55,14 @@ value = 4.0
 
 [node name="Timer" type="Timer" parent="."]
 
-[connection signal="scrolling" from="HScrollBar" to="." method="_on_HScrollBar_scrolling"]
+[node name="HSMusicVolume" type="HScrollBar" parent="."]
+margin_left = 388.0
+margin_top = 298.0
+margin_right = 533.0
+margin_bottom = 310.0
+rect_scale = Vector2( 0.96, 1 )
+max_value = 10.0
+value = 2.0
+
+[connection signal="scrolling" from="HSResolution" to="." method="_on_HSResolution_scrolling"]
+[connection signal="value_changed" from="HSMusicVolume" to="." method="_on_HSMusicVolume_value_changed"]

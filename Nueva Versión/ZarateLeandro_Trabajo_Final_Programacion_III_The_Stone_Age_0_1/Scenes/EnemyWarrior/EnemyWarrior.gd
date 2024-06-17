@@ -248,7 +248,7 @@ func _get_damage(var the_beast):
 	if "Tiger" in the_beast.name && is_enemy_touching && the_beast.visible:
 		if(energy_points>0):
 			energy_points-=5
-			bar._set_energy_points(energy_points)
+			bar._set_health(energy_points)
 			
 		else:
 			#the_beast.unit = null
@@ -258,7 +258,7 @@ func _get_damage(var the_beast):
 	if "Mammoth" in the_beast.name && is_enemy_touching:
 		if energy_points>0:
 			energy_points-=30
-			bar._set_energy_points(energy_points)
+			bar._set_health(energy_points)
 			
 		else:
 					
@@ -267,7 +267,7 @@ func _get_damage(var the_beast):
 
 		if energy_points>0:
 			energy_points-=20
-			bar._set_energy_points(energy_points)
+			bar._set_health(energy_points)
 
 			print("enemy warrior energy" + str(energy_points))
 		else:

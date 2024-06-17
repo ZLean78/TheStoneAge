@@ -1,20 +1,15 @@
 extends Node2D
 
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	_on_HScrollBar_scrolling()
+	_on_HSResolution_scrolling()
 
 
 
-func _on_HScrollBar_scrolling():	
+func _on_HSResolution_scrolling():	
 	
-	match int($HScrollBar.value):
+	match int($HSResolution.value):
 		1:
 			Globals.screen_size=Vector2(640,480)
 			$Label2.text="640x480"
@@ -35,5 +30,12 @@ func _on_HScrollBar_scrolling():
 			$Label2.text="2560x1440"
 	get_viewport().size=Globals.screen_size
 	
-		
-		
+
+
+func _on_HSMusicVolume_value_changed(value: float)->void:
+	_set_bus_volume(1,value)
+	$MusicValue.text = "%d%%" % [value*10]
+	
+func _set_bus_volume(bus_index:int,value:float)->void:
+	AudioServer.set_bus_volume_db(bus_index,linear2db(value))
+	AudioServer.set_bus_mute(bus_index,value<0.01)

@@ -184,6 +184,8 @@ var attack_counter=50
 var victory_obtained=false
 
 func _ready():
+	AudioPlayer._select_music()
+	AudioPlayer.music.play()
 	
 	#igualamos el arreglo all_units a los nodos del grupo
 	#de unidades civiles con las que empezamos la fase.	
@@ -274,6 +276,18 @@ func _ready():
 	
 	#Actualizamos el mapa de navegación.
 	_rebake_navigation()
+	
+	#Agregar ropa y bolso a todas las unidades
+	for a_unit in all_units:
+		a_unit.is_dressed=true
+		a_unit.has_bag=true
+		a_unit.bag_sprite.visible=true
+		if a_unit.is_girl:
+			a_unit.sprite.animation="female_idle1_d"
+		else:
+			a_unit.sprite.animation="male_idle1_d"
+		Globals.group_dressed=true
+		Globals.group_has_bag=true
 	
 	
 	
@@ -1456,4 +1470,4 @@ func _on_ReplayOk_pressed():
 
 func _on_NextSceneOk_pressed():
 	$UI.remove_child(Globals.settings)
-	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
+	Globals.go_to_scene("res://Scenes/Game5/Game5.tscn")
