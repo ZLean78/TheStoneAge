@@ -12,13 +12,8 @@ export (float) var MIN_ENERGY_LOSS
 #Temporizador de comida, agrega un punto de comida por segundo cuando la unidad toca un árbol frutal.
 onready var food_timer = tree.get_node("food_timer")
 
-
-
 #Marca de jefe guerrero.
-onready var warchief_mark= $WarchiefMark
-
-onready var agent=$NavigationAgent2D
-
+onready var warchief_mark=$WarchiefMark
 
 
 #Posición inicial, se actualiza cada vez que hacemos click con el botón derecho.
@@ -175,7 +170,7 @@ func _physics_process(delta):
 			foot.visible = false
 	
 	if target_position!=Vector2.ZERO:
-		if position.distance_to(target_position) > 10:
+		if position.distance_to(target_position) > 7:
 			_move_along_path(SPEED*delta)
 	else:
 		target_position=position
@@ -284,7 +279,7 @@ func _collect_pickable(var _pickable):
 				Globals.clay_points+=4
 			elif _pickable.type == "lake" && lake_touching:
 				if tree.name == "Game2":
-					if tree.is_claypot_made:
+					if Globals.is_claypot_made:
 						Globals.water_points+=4
 					else:
 						tree.prompts_label.text="Debes desarrollar el cuenco de barro \n para poder transportar agua."
@@ -527,8 +522,11 @@ func _on_Area2D_body_exited(body):
 func _shoot():
 	target_position = tree.touching_enemy.position
 	shoot_node.look_at(target_position)				
-	var angle = shoot_node.rotation
-	#var forward = Vector2(cos(angle),sin(angle))
+	var angle
+	if target_position.x<position.x:
+		angle=1/2*(1/2*sin((target_position.x-position.x)*9.8/-200))+shoot_node.rotation
+	else:
+		angle=1/2*(1/2*sin((target_position.x-position.x)*9.8/200))+shoot_node.rotation
 	var new_stone = stone_scene.instance()
 	new_stone.owner_name="Citizen"
 	shoot_point.rotation = angle				

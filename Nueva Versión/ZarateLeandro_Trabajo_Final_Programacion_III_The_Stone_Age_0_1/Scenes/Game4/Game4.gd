@@ -169,7 +169,7 @@ var barn_mode=false
 var fort_mode=false
 
 
-var previous_mouse_state=""
+#var previous_mouse_state=""
 
 #Si el cursor está en forma de espada tocando un enemigo, lo guardamos en esta variable.
 var touching_enemy

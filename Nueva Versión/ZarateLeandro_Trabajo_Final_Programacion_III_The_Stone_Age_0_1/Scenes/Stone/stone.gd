@@ -3,7 +3,7 @@ extends KinematicBody2D
 var start_position=Vector2.ZERO
 var gravity=Vector2(0,9.8)
 var velocity_x=Vector2.ZERO
-var velocity_y=Vector2(0,-250)
+var velocity_y=Vector2(0,-200)
 var owner_name=""
 var to_delta
 
@@ -28,8 +28,8 @@ func move_projectile():
 
 	
 
-	if position.distance_to(start_position)>250:
-		queue_free()
+#	if position.distance_to(start_position)>250:
+#		queue_free()
 
 func set_velocity(_velocity):
 	velocity_x=_velocity

@@ -200,7 +200,7 @@ func _ready():
 	else:
 		bag_sprite.visible=true		
 
-	_set_selected(true)
+	#_set_selected(true)
 	
 
 
@@ -281,7 +281,7 @@ func _collect_pickable(var _pickable):
 						#if _pickable.points <= 0:
 						#_pickable.empty = true
 				elif _pickable.type == "pine_tree":
-					if(tree.is_stone_weapons_developed):
+					if(Globals.is_stone_weapons_developed):
 						if(_pickable.points>=4):
 							Globals.e_wood_points+=4
 							_pickable.points-=4
@@ -303,7 +303,7 @@ func _collect_pickable(var _pickable):
 						Globals.e_leaves_points+=1
 						_pickable.points-=1
 				elif _pickable.type == "copper":
-					if(tree.is_stone_weapons_developed):
+					if(Globals.is_stone_weapons_developed):
 						if(_pickable.points>=5):
 							Globals.e_copper_points+=5
 							_pickable.points-=5
@@ -314,7 +314,7 @@ func _collect_pickable(var _pickable):
 						Globals.e_copper_points+=1
 						_pickable.points-=1
 				elif _pickable.type == "quarry":
-					if(tree.is_stone_weapons_developed):
+					if(Globals.is_stone_weapons_developed):
 						if(_pickable.points>=5):
 							Globals.e_stone_points+=5
 							_pickable.points-=5
@@ -332,7 +332,7 @@ func _collect_pickable(var _pickable):
 				Globals.e_clay_points+=4
 			elif _pickable.type == "lake" && lake_touching:
 				if tree.name == "Game2":
-					if tree.is_claypot_made:
+					if Globals.is_claypot_made:
 						Globals.e_water_points+=4
 					else:
 						tree.prompts_label.text="Debes desarrollar el cuenco de barro \n para poder transportar agua."

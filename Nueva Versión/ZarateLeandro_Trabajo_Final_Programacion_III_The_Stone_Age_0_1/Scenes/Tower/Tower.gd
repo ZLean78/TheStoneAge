@@ -46,7 +46,7 @@ func _get_damage(body):
 			if condition<0:
 				polygon.visible=false
 				if tree.tower_node.get_child_count()<=0:
-					tree.is_first_tower_built=false
+					Globals.is_first_tower_built=false
 				queue_free()
 				tree.emit_signal("remove_building")
 	else:

@@ -50,7 +50,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=8]
-extents = Vector2( 4, 3 )
+extents = Vector2( 5, 7 )
 
 [sub_resource type="CircleShape2D" id=4]
 radius = 31.6938
@@ -100,7 +100,7 @@ frames = SubResource( 3 )
 animation = "bag_1"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 0, 9 )
+position = Vector2( 1, 5 )
 shape = SubResource( 8 )
 
 [node name="Area2D" type="Area2D" parent="."]
@@ -110,8 +110,6 @@ collision_mask = 3
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2( 0.5, -1.5 )
 shape = SubResource( 4 )
-
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 
 [node name="all_timer" type="Timer" parent="."]
 autostart = true

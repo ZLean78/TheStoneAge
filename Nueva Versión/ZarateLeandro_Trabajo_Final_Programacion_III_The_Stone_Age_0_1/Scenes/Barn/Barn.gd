@@ -46,7 +46,7 @@ func _get_damage(body):
 			condition-=3
 			if condition<0:
 				polygon.visible=false
-				tree.is_barn_built=false
+				Globals.is_barn_built=false
 				queue_free()
 				tree.emit_signal("remove_building")
 	else:

@@ -25,13 +25,13 @@ var tower_b=load("res://Scenes/MouseIcons/tower_sb.png")
 #var settings=load("res://Scenes/Settings/Settings.tscn")
 
 #Puntos de recursos de la comunidad.
-var food_points = 2015
-var leaves_points = 2000
-var stone_points = 2000
-var wood_points = 2000
-var clay_points = 2000
-var water_points = 2000
-var copper_points = 2000
+var food_points = 15
+var leaves_points = 0
+var stone_points = 0
+var wood_points = 0
+var clay_points = 0
+var water_points = 0
+var copper_points = 0
 
 #Puntos de recursos del pueblo enemigo:
 var e_food_points = 0

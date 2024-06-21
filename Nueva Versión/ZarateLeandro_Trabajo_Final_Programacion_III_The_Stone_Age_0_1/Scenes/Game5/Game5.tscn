@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=2]
+[gd_scene load_steps=49 format=2]
 
 [ext_resource path="res://Scenes/Unit2/Unit2.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Fort/Fort.tscn" type="PackedScene" id=2]
@@ -27,6 +27,7 @@
 [ext_resource path="res://Scenes/Game2/woodicon.png" type="Texture" id=25]
 [ext_resource path="res://Scenes/Game2/puddle.png" type="Texture" id=26]
 [ext_resource path="res://Scenes/Game2/food.png" type="Texture" id=27]
+[ext_resource path="res://Scenes/Vehicle/Vehicle.tscn" type="PackedScene" id=28]
 [ext_resource path="res://Scenes/MouseIcons/barn_m.png" type="Texture" id=29]
 [ext_resource path="res://Scenes/MouseIcons/fort_m.png" type="Texture" id=30]
 [ext_resource path="res://Scenes/MouseIcons/tower_m.png" type="Texture" id=31]
@@ -115,6 +116,7 @@ Tower = ExtResource( 18 )
 Barn = ExtResource( 5 )
 EnemyWarrior = ExtResource( 7 )
 EnemyCitizen = ExtResource( 4 )
+Vehicle = ExtResource( 28 )
 
 [node name="TileMap" type="TileMap" parent="." groups=["tilemap"]]
 position = Vector2( 0, 1 )
@@ -229,6 +231,8 @@ condition_max = 80
 [node name="Barn" type="Node2D" parent="."]
 
 [node name="Towers" type="Node2D" parent="."]
+
+[node name="Vehicles" type="Node2D" parent="."]
 
 [node name="Units" type="Node2D" parent="."]
 process_priority = 1
