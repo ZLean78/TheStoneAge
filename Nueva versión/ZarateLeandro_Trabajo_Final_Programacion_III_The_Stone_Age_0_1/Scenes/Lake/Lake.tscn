@@ -1,16 +1,14 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Scenes/Lake/lake.png" type="Texture" id=1]
 [ext_resource path="res://Scenes/Lake/Lake.gd" type="Script" id=2]
 
 [sub_resource type="CapsuleShape2D" id=1]
-radius = 33.8834
+radius = 35.8918
 height = 194.902
 
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 99.5, 26 )
-
-[node name="Lake" type="Node2D"]
+[node name="Lake" type="StaticBody2D"]
+collision_mask = 2
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
@@ -23,11 +21,8 @@ collision_mask = 2
 rotation = 1.57196
 shape = SubResource( 1 )
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2( 0.5, 1 )
-shape = SubResource( 2 )
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PoolVector2Array( -119, -3, -55, -31, -3, -34, 59, -31, 107, -3, 66, 26, -1, 30, -57, 26 )
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
 [connection signal="body_exited" from="Area2D" to="." method="_on_Area2D_body_exited"]

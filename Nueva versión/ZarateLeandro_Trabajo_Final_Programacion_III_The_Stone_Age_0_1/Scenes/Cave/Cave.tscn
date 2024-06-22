@@ -6,7 +6,7 @@
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 22.5, 38 )
 
-[node name="Cave" type="Node2D"]
+[node name="Cave" type="StaticBody2D"]
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
@@ -21,5 +21,10 @@ collision_mask = 2
 position = Vector2( -14.5, 39 )
 shape = SubResource( 1 )
 
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PoolVector2Array( -101, 77, -93, -74, 85, -81, 83, 81, 15, 80, 12, -4, -42, -4, -42, 75 )
+
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
 [connection signal="input_event" from="Area2D" to="." method="_on_Area2D_input_event"]
+[connection signal="mouse_entered" from="Area2D" to="." method="_on_Area2D_mouse_entered"]
+[connection signal="mouse_exited" from="Area2D" to="." method="_on_Area2D_mouse_exited"]

@@ -13,6 +13,8 @@ func _ready():
 func _process(_delta):
 	if empty:
 		visible=false
+	else:
+		visible=true
 
 
 
