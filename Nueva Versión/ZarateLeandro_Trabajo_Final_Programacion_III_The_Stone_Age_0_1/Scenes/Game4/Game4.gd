@@ -264,12 +264,14 @@ func _ready():
 
 	
 	#Asignamos la posición de la fase anterior a las construcciones:
-	var child_index=0
-	for house in houses.get_children():
-		house.position=Globals.houses_p[child_index]
-		child_index+=1
-	
-	get_tree().get_nodes_in_group("townhall")[0].position=Globals.townhall_p
+	if !Globals.houses_p.empty():
+		var child_index=0
+		for house in houses.get_children():
+			house.position=Globals.houses_p[child_index]
+			child_index+=1
+
+	if Globals.townhall_p!=Vector2() && Globals.townhall_p!=Vector2.ZERO:
+		get_tree().get_nodes_in_group("townhall")[0].position=Globals.townhall_p
 	
 	
 	#Marcamos a la unidad jefe	

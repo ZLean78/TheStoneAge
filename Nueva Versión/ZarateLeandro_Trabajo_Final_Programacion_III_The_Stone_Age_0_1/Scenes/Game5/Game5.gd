@@ -297,22 +297,28 @@ func _ready():
 
 	
 	
-#	#Asignamos la posición de la fase anterior a las construcciones:
-#	var child_index=0
-#	for house in houses.get_children():
-#		house.position=Globals.houses_p[child_index]
-#		child_index+=1
-#
-#	get_tree().get_nodes_in_group("townhall")[0].position=Globals.townhall_p
+	#Asignamos la posición de la fase anterior a las construcciones:
+	if !Globals.houses_p.empty():
+		var child_index=0
+		for house in houses.get_children():
+			house.position=Globals.houses_p[child_index]
+			child_index+=1
+
+	if Globals.townhall_p!=Vector2() && Globals.townhall_p!=Vector2.ZERO:
+		get_tree().get_nodes_in_group("townhall")[0].position=Globals.townhall_p
+
+	if !Globals.towers_p.empty():
+		var child_index=0
+		for tower in tower_node.get_children():
+			tower.position=Globals.towers_p[child_index]
+			child_index+=1
+
 	
-#	child_index=0
-#	for tower in tower_node.get_children():
-#		tower.position=Globals.towers_p[child_index]
-#		child_index+=1
-		
+	if Globals.barn_p!=Vector2() && Globals.barn_p!=Vector2.ZERO:
+		get_tree().get_nodes_in_group("barn")[0].position=Globals.barn_p
 	
-#	get_tree().get_nodes_in_group("barn")[0].position=Globals.barn_p
-#	get_tree().get_nodes_in_group("fort")[0].position=Globals.fort
+	if Globals.fort_p!=Vector2() && Globals.fort_p!=Vector2.ZERO:
+		get_tree().get_nodes_in_group("fort")[0].position=Globals.fort_p
 	
 	
 	#Marcamos a la unidad jefe	
@@ -448,17 +454,7 @@ func _deselect_unit(unit):
 		selected_units.erase(unit)
 		
 		
-#Para corregir
-#	if event.is_action_pressed("RightClick"):
-#		firstPoint = player.global_position
-#		#line.points = []
-#
-#	if event.is_action_released("RightClick"):
-#		secondPoint = get_global_mouse_position()
-#		var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
-#		player.global_position = arrPath[0]
-#		player.path = arrPath
-#		player.index = 0
+
 	
 #Proceso de entrada unhandled input.
 func _unhandled_input(event):
@@ -917,30 +913,7 @@ func _check_victory():
 		victory_obtained=true
 		next_scene_confirmation.visible=true
 		
-	
-#	if tower_node.get_child_count()>0:
-#		var first_tower = tower_node.get_child(0)
-#		if first_tower.condition>=first_tower.condition_max:
-#			Globals.is_first_tower_built=true
-#
-#
-#	if barn_node.get_child_count()>0:
-#		var the_barn = barn_node.get_child(0)
-#		if the_barn.condition==the_barn.condition_max:
-#			Globals.is_barn_built=true
-#
-#	if fort_node.get_child_count()>0:
-#		var the_fort = fort_node.get_child(0)
-#		if the_fort.condition==the_fort.condition_max:
-#			Globals.is_fort_built=true
-	
-	
-#	if (Globals.is_pottery_developed && Globals.is_carpentry_developed && Globals.is_mining_developed && 
-#	 Globals.is_metals_developed && Globals.is_first_tower_built && Globals.is_barn_built && Globals.is_fort_built):
-#		victory_obtained=true
-#		prompts_label.text = "¡Has ganado!"	
-#		next_scene_confirmation.visible=true
-		
+
 	elif(all_units.size()==0 && Globals.food_points<15):
 		prompts_label.text = "Has sido derrotado."
 		replay_confirmation.visible=true
@@ -991,12 +964,6 @@ func _area_selected(obj):
 		u.selected = not u.selected
 		
 
-		
-#func start_move_selection(obj):
-#	for un in all_units:
-#		if un.selected:
-#			un.move_unit(obj.move_to_point)
-		
 
 func _on_Game5_is_arrow():
 	Input.set_custom_mouse_cursor(Globals.arrow)
@@ -1189,10 +1156,7 @@ func _check_units():
 					#Buscamos la unidad en all_units y la removemos del arreglo.
 					var the_unit=all_units[all_units.find(a_unit,0)]
 					all_units.remove(all_units.find(a_unit,0))
-#					for a_tiger in all_tigers:
-#						if is_instance_valid(a_tiger):
-#							if a_tiger.unit == the_unit:
-#								a_tiger.unit = null
+#					
 					#Llamamos a la función die de la unidad,
 					#para que sea eliminada definitivamente.
 					the_unit._die()
@@ -1533,14 +1497,7 @@ func _on_Game4_remove_building():
 	_rebake_navigation()
 
 
-#func _on_enemy_timer_timeout():
-#	if attack_counter>0:
-#		attack_counter-=1	
-#
-#	if attack_counter<=0:
-#		for an_enemy in enemy_warriors_node.get_children():
-#			if an_enemy.AI_state==3:
-#				an_enemy.AI_state=0
+
 
 func _make_attack():
 	for i in range(0,9):
@@ -1593,13 +1550,7 @@ func _on_NextSceneOk_pressed():
 	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
 
 
-#func MovementLoop(_delta):
-#	var prepos=path_follow2d.get_global_position()
-#	path_follow2d.set_offset(path_follow2d.get_offset()+50*_delta)
-#	var pos=path_follow2d.get_global_position()
-#	var direction = (pos.angle_to_point(prepos)/3.14)*180
-#	$Path2D/PathFollow2D/EnemyCitizen8.position = pos*direction
-#	$Path2D/PathFollow2D/EnemyCitizen9.position = pos*direction
+
 
 
 func _on_Game5_remove_building():
