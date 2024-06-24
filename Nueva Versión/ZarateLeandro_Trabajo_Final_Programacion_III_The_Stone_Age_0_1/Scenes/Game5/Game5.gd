@@ -193,9 +193,20 @@ var attack_counter=50
 var victory_obtained=false
 
 func _ready():
-	AudioPlayer.music.stop()
+	AudioPlayer._select_music()
+	AudioPlayer.music.play()
 	
+	Globals.food_points = 15
+	Globals.leaves_points = 1140
+	Globals.stone_points = 1300
+	Globals.wood_points = 1580
+	Globals.clay_points = 300
+	Globals.water_points = 0
+	Globals.copper_points = 0
 
+	Globals.is_fort_built = false
+	
+	$UI/Base/Rectangle/BuildCatapult.visible=false
 	
 	#igualamos el arreglo all_units a los nodos del grupo
 	#de unidades civiles con las que empezamos la fase.	
@@ -286,6 +297,28 @@ func _ready():
 
 	
 	
+#	#Asignamos la posición de la fase anterior a las construcciones:
+#	var child_index=0
+#	for house in houses.get_children():
+#		house.position=Globals.houses_p[child_index]
+#		child_index+=1
+#
+#	get_tree().get_nodes_in_group("townhall")[0].position=Globals.townhall_p
+	
+#	child_index=0
+#	for tower in tower_node.get_children():
+#		tower.position=Globals.towers_p[child_index]
+#		child_index+=1
+		
+	
+#	get_tree().get_nodes_in_group("barn")[0].position=Globals.barn_p
+#	get_tree().get_nodes_in_group("fort")[0].position=Globals.fort
+	
+	
+	#Marcamos a la unidad jefe	
+	all_units[Globals.warchief_index].is_warchief=true
+	all_units[Globals.warchief_index].warchief_mark.visible=true
+		
 	#Agregar ropa y bolso a todas las unidades
 	for a_unit in all_units:
 		a_unit.is_dressed=true
@@ -298,21 +331,16 @@ func _ready():
 		Globals.group_dressed=true
 		Globals.group_has_bag=true
 	
-	#Convertimos en jefe guerrero a la primera unidad
-	#(no es el mismo de la fase anterior, ya que transcurrieron muchos años),
-	#y le agregamos su marca de identificación color naranja.
-	all_units[0].is_warchief=true
-	all_units[0].warchief_mark.visible=true
-	
-	
-	
-	
-	
 	#Actualizamos el mapa de navegación.
 	_rebake_navigation()
 	
+	Globals.is_fort_built=true
+	Globals.is_barn_built=true
+	Globals.is_first_tower_built=true
 	
-
+	$Fort/Fort.condition=70
+	$Barn/Barn.condition=65
+	$Towers/Tower.condition=50
 
 	#Establecemos el cursor en modo flecha con la señal is_arrow,
 	#el modo arrow_mode en true, y todos los demás modos en false.
@@ -330,9 +358,7 @@ func _ready():
 	
 	
 	
-	var new_vehicle=Vehicle.instance()
-	vehicles.add_child(new_vehicle)
-	all_units.append(new_vehicle)
+	
 
 func _process(delta):
 	
@@ -402,13 +428,16 @@ func _process(delta):
 		
 		_manage_enemy_units()
 		
-		
+		if Globals.is_fort_built:
+			$UI/Base/Rectangle/BuildCatapult.visible=true
+		else:
+			$UI/Base/Rectangle/BuildCatapult.visible=false
 
 #Seleccionar una unidad.
 func _select_unit(unit):
 	#if not selected_units.has(unit):
 	selected_units.append(unit)
-	print("selected is" + unit.name)
+	
 	if "Vehicle" in unit.name:
 		print("The unit is a vehicle.")	
 	#create_buttons()
@@ -556,12 +585,9 @@ func _unhandled_input(event):
 				if(all_units.size()==0 && Globals.food_points<15) || is_warchief_dead:
 					replay_confirmation.visible=true
 				else:
-					exit_confirmation.popup()
-					exit_confirmation.get_ok().text="Aceptar"
-					exit_confirmation.get_cancel().text="cancelar"
+					$UI/Base/Rectangle/OptionsMenu.visible=!$UI/Base/Rectangle/OptionsMenu.visible
 					
-		if event.is_action_pressed("Settings"):
-			Globals.settings.visible=!Globals.settings.visible
+
 
 
 
@@ -609,8 +635,12 @@ func _create_fort():
 				else:
 					#Si el nuevo fuerte está a la izquierda.
 					citizen.target_position=Vector2(the_fort.position.x+60,the_fort.position.y)
-	#Comprobar_victoria.
-	_check_victory()
+	
+	
+	Globals.is_fort_built=true
+	
+	
+	
 	#Ataque enemigo por obtención de mejora.				
 	if !victory_obtained:
 		_make_attack()
@@ -685,11 +715,7 @@ func _create_tower():
 				else:
 					#Si la nueva torre está a la izquierda.
 					citizen.target_position=Vector2(the_tower.position.x+35,the_tower.position.y)	
-	#Comprobar victoria.
-	_check_victory()
-	#Ataque enemigo por obtención de mejora.				
-	if tree.name=="Game4" && !victory_obtained:
-		_make_attack()
+
 				
 #Función crear granero.
 func _create_barn():
@@ -758,11 +784,7 @@ func _create_barn():
 				else:
 					#Si el nuevo granero está a la izquierda.
 					citizen.target_position=Vector2(the_barn.position.x+25,the_barn.position.y)	
-	#Comprobar victoria.
-	_check_victory()
-	#Ataque enemigo por obtención de mejora.				
-	if !victory_obtained:
-		_make_attack()
+	
 
 #Función crear casa.				
 func _create_house():
@@ -891,28 +913,33 @@ func _create_warrior_unit(cost = 0):
 	all_units.append(new_Unit)
 			
 func _check_victory():
-	if tower_node.get_child_count()>0:
-		var first_tower = tower_node.get_child(0)
-		if first_tower.condition>=first_tower.condition_max:
-			Globals.is_first_tower_built=true
-			
-	
-	if barn_node.get_child_count()>0:
-		var the_barn = barn_node.get_child(0)
-		if the_barn.condition==the_barn.condition_max:
-			Globals.is_barn_built=true
-			
-	if fort_node.get_child_count()>0:
-		var the_fort = fort_node.get_child(0)
-		if the_fort.condition==the_fort.condition_max:
-			Globals.is_fort_built=true
-	
-	
-	if (Globals.is_pottery_developed && Globals.is_carpentry_developed && Globals.is_mining_developed && 
-	 Globals.is_metals_developed && Globals.is_first_tower_built && Globals.is_barn_built && Globals.is_fort_built):
+	if Globals.is_enemy_townhall_down:
 		victory_obtained=true
-		prompts_label.text = "¡Has ganado!"	
 		next_scene_confirmation.visible=true
+		
+	
+#	if tower_node.get_child_count()>0:
+#		var first_tower = tower_node.get_child(0)
+#		if first_tower.condition>=first_tower.condition_max:
+#			Globals.is_first_tower_built=true
+#
+#
+#	if barn_node.get_child_count()>0:
+#		var the_barn = barn_node.get_child(0)
+#		if the_barn.condition==the_barn.condition_max:
+#			Globals.is_barn_built=true
+#
+#	if fort_node.get_child_count()>0:
+#		var the_fort = fort_node.get_child(0)
+#		if the_fort.condition==the_fort.condition_max:
+#			Globals.is_fort_built=true
+	
+	
+#	if (Globals.is_pottery_developed && Globals.is_carpentry_developed && Globals.is_mining_developed && 
+#	 Globals.is_metals_developed && Globals.is_first_tower_built && Globals.is_barn_built && Globals.is_fort_built):
+#		victory_obtained=true
+#		prompts_label.text = "¡Has ganado!"	
+#		next_scene_confirmation.visible=true
 		
 	elif(all_units.size()==0 && Globals.food_points<15):
 		prompts_label.text = "Has sido derrotado."
@@ -948,9 +975,7 @@ func _get_units_in_area(area):
 	for unit in all_units:
 		if unit.position.x>area[0].x and unit.position.x<area[1].x:
 			if unit.position.y>area[0].y and unit.position.y<area[1].y:
-				u.append(unit)
-			else:
-				print("unit not appended")
+				u.append(unit)			
 	return u
 		
 func _area_selected(obj):
@@ -1583,3 +1608,29 @@ func _on_Game5_remove_building():
 
 func _on_Vehicle_was_deselected():
 	pass # Replace with function body.
+
+
+func _on_Settings_pressed():
+	Globals.settings.visible=true
+
+
+func _on_Quit_pressed():
+	exit_confirmation.popup()
+	exit_confirmation.get_ok().text="Aceptar"
+	exit_confirmation.get_cancel().text="cancelar"
+
+
+func _on_Back_pressed():
+	$UI/Base/Rectangle/OptionsMenu.visible=false
+
+
+func _on_BuildCatapult_pressed():
+	if (Globals.stone_points>=200 && Globals.wood_points>=300 && Globals.leaves_points>=200 && Globals.is_fort_built):
+		Globals.stone_points-=200
+		Globals.wood_points-=300
+		Globals.leaves_points-=200
+		var new_vehicle=Vehicle.instance()
+		vehicles.add_child(new_vehicle)
+		all_units.append(new_vehicle)
+		new_vehicle.position=$SpawnPosition.position
+		

@@ -161,15 +161,13 @@ func _unhandled_input(event):
 			if(all_units.size()==0 && Globals.food_points<15):
 				replay_confirmation.visible=true
 			else:
-				exit_confirmation.popup()
-				exit_confirmation.get_ok().text="Aceptar"
-				exit_confirmation.get_cancel().text="cancelar"
+				$UI/Base/Rectangle/OptionsMenu.visible=!$UI/Base/Rectangle/OptionsMenu.visible
+				
 	if event.is_action_pressed("PrintScreen"):
 		var image = get_viewport().get_texture().get_data()
 		image.flip_y()
 		image.save_png("res://captures/image.png")
-	if event.is_action_pressed("Settings"):
-		Globals.settings.visible=!Globals.settings.visible
+	
 	
 #///////////////////////////////////////////////////////////////////////////
 #FUNCIONES DE CREACIÓN Y CONFIGURACIÓN DE UNIDADES
@@ -303,8 +301,10 @@ func start_move_selection(obj):
 func _rain_pour():
 	if(!its_raining):
 		its_raining=true
+		$"/root/AudioPlayer"._play_rain()
 	else:
 		its_raining=false
+		$"/root/AudioPlayer"._play_rain()
 			
 
 #SEÑAL DE TIEMPO TRANSCURRIDO PARA TEMPORIZADOR 'RAIN TIMER',
@@ -312,7 +312,7 @@ func _rain_pour():
 func _on_Rain_Timer_timeout():	
 	_rain_pour()
 	if(its_raining):
-		rain_timer.wait_time = 100
+		rain_timer.wait_time = 90		
 	else:
 		rain_timer.wait_time = 30
 
@@ -438,5 +438,16 @@ func _on_ReplayCancel_pressed():
 func _on_NextSceneOk_pressed():
 	$UI.remove_child(Globals.settings)
 	Globals.go_to_scene("res://Scenes/Game2/Game2.tscn")
-	
 
+func _on_Settings_pressed():
+	Globals.settings.visible=true
+
+
+func _on_Quit_pressed():
+	exit_confirmation.popup()
+	exit_confirmation.get_ok().text="Aceptar"
+	exit_confirmation.get_cancel().text="cancelar"
+
+
+func _on_Back_pressed():
+	$UI/Base/Rectangle/OptionsMenu.visible=false

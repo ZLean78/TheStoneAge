@@ -1,22 +1,25 @@
 extends KinematicBody2D
 
 var start_position=Vector2.ZERO
-var gravity=Vector2(0,9.8)
-var velocity_x=Vector2.ZERO
-var velocity_y=Vector2(0,-200)
+var gravity=9.8
+var velocity_x=0
+var velocity_y=0
+var speedY = 0
 var owner_name=""
 var to_delta
 
 func _ready():
 	start_position=position
 
-func _physics_process(delta):
-	velocity_y+=gravity
+func _process(delta):
+	speedY += gravity*delta
+	velocity_y+= speedY
 	to_delta=delta
 	move_projectile()
 
 func move_projectile():
-	var collision = move_and_collide((velocity_x+velocity_y)*to_delta)
+	var collision = move_and_collide(Vector2(velocity_x,velocity_y)*to_delta)
+	
 	
 	if collision != null:
 		if("Unit2" in collision.collider.name || "Warrior" in collision.collider.name
@@ -32,4 +35,5 @@ func move_projectile():
 #		queue_free()
 
 func set_velocity(_velocity):
-	velocity_x=_velocity
+	velocity_x=_velocity.x
+	velocity_y=_velocity.y

@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=2]
+[gd_scene load_steps=47 format=2]
 
 [ext_resource path="res://Scenes/Unit2/Unit2.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Fort/Fort.tscn" type="PackedScene" id=2]
@@ -22,7 +22,7 @@
 [ext_resource path="res://Scenes/Game2/male1_d.png" type="Texture" id=20]
 [ext_resource path="res://Sprites/game/tiles/grass/simple/grass.png" type="Texture" id=21]
 [ext_resource path="res://Scenes/Copper/CopperSmall.png" type="Texture" id=22]
-[ext_resource path="res://Scenes/MouseIcons/carpentry_m.png" type="Texture" id=23]
+[ext_resource path="res://Scenes/Game5/vehicle.png" type="Texture" id=23]
 [ext_resource path="res://Scenes/Game2/gray_texture.png" type="Texture" id=24]
 [ext_resource path="res://Scenes/Game2/woodicon.png" type="Texture" id=25]
 [ext_resource path="res://Scenes/Game2/puddle.png" type="Texture" id=26]
@@ -32,11 +32,9 @@
 [ext_resource path="res://Scenes/MouseIcons/fort_m.png" type="Texture" id=30]
 [ext_resource path="res://Scenes/MouseIcons/tower_m.png" type="Texture" id=31]
 [ext_resource path="res://Scenes/Game2/watericon.png" type="Texture" id=32]
-[ext_resource path="res://Scenes/MouseIcons/mining_m.png" type="Texture" id=33]
 [ext_resource path="res://Scenes/Game2/plant.png" type="Texture" id=34]
 [ext_resource path="res://Scenes/Game2/quarry.png" type="Texture" id=35]
 [ext_resource path="res://Scenes/MouseIcons/house_small.png" type="Texture" id=36]
-[ext_resource path="res://Scenes/MouseIcons/metals_m.png" type="Texture" id=37]
 [ext_resource path="res://Scenes/Game5/Game5.gd" type="Script" id=38]
 [ext_resource path="res://Scenes/EnemyHouse/EnemyHouse.tscn" type="PackedScene" id=39]
 [ext_resource path="res://Scenes/EnemyTownhall/EnemyTownhall.tscn" type="PackedScene" id=40]
@@ -222,15 +220,24 @@ condition_max = 80
 [node name="EnemyTownhall" type="Node2D" parent="."]
 
 [node name="EnemyTownhall" parent="EnemyTownhall" instance=ExtResource( 40 )]
-position = Vector2( -885, -348 )
+position = Vector2( -865, -358 )
 condition = 80
 condition_max = 80
 
 [node name="Fort" type="Node2D" parent="."]
 
+[node name="Fort" parent="Fort" instance=ExtResource( 2 )]
+position = Vector2( 834, 8 )
+
 [node name="Barn" type="Node2D" parent="."]
 
+[node name="Barn" parent="Barn" instance=ExtResource( 5 )]
+position = Vector2( 700, 480 )
+
 [node name="Towers" type="Node2D" parent="."]
+
+[node name="Tower" parent="Towers" instance=ExtResource( 18 )]
+position = Vector2( 340, 168 )
 
 [node name="Vehicles" type="Node2D" parent="."]
 
@@ -549,40 +556,17 @@ margin_bottom = 121.0
 hint_tooltip = "Agua"
 texture = ExtResource( 32 )
 
-[node name="BuildHorseCart" type="TextureButton" parent="UI/Base/Rectangle"]
-margin_left = 969.0
-margin_top = 24.0
-margin_right = 996.0
-margin_bottom = 45.0
-hint_tooltip = "Desarrollar carpintería:
-útil en todo tipo de
-construcciones, armas y
-herramientas. Costo: 500 pts. madera."
-texture_normal = ExtResource( 23 )
-
 [node name="BuildCatapult" type="TextureButton" parent="UI/Base/Rectangle"]
-margin_left = 940.0
-margin_top = 25.0
-margin_right = 964.0
-margin_bottom = 47.0
-hint_tooltip = "Desarrollar minería:
-aprende a recolectar y
-explotar más rápido los 
-recursos minerales de la zona. Costo: 300 pts. piedra,
-200 pts. cobre."
-texture_normal = ExtResource( 33 )
-
-[node name="BuildRam" type="TextureButton" parent="UI/Base/Rectangle"]
-margin_left = 915.0
-margin_top = 27.0
-margin_right = 937.0
-margin_bottom = 51.0
-hint_tooltip = "Desarrollar fundición de metales:
-te permitirá fabricar armas,
-herramientas y utensilios
-más resistentes y duraderos.
-Costo: 250 pts. piedra, 150 pts. cobre."
-texture_normal = ExtResource( 37 )
+margin_left = 1126.0
+margin_top = 20.0
+margin_right = 1168.0
+margin_bottom = 43.0
+hint_tooltip = "Crear catapulta: destruye
+el centro cívico enemigo.
+Costo: 300 ptos. madera,
+200 ptos. piedra, 200 ptos.
+hojas."
+texture_normal = ExtResource( 23 )
 
 [node name="CreateHouse" type="TextureButton" parent="UI/Base/Rectangle"]
 margin_left = 1052.0
@@ -641,6 +625,35 @@ margin_right = 95.0
 margin_bottom = 100.0
 text = "0"
 
+[node name="OptionsMenu" type="ColorRect" parent="UI/Base/Rectangle"]
+visible = false
+margin_left = 599.0
+margin_top = -333.0
+margin_right = 687.0
+margin_bottom = -210.0
+color = Color( 0.243137, 0.756863, 0.858824, 1 )
+
+[node name="Settings" type="Button" parent="UI/Base/Rectangle/OptionsMenu"]
+margin_left = 10.0
+margin_top = 12.0
+margin_right = 83.0
+margin_bottom = 44.0
+text = "Opciones"
+
+[node name="Back" type="Button" parent="UI/Base/Rectangle/OptionsMenu"]
+margin_left = 10.0
+margin_top = 49.0
+margin_right = 83.0
+margin_bottom = 77.0
+text = "Volver"
+
+[node name="Quit" type="Button" parent="UI/Base/Rectangle/OptionsMenu"]
+margin_left = 10.0
+margin_top = 82.0
+margin_right = 83.0
+margin_bottom = 110.0
+text = "Salir"
+
 [node name="TimerLabel" type="Label" parent="UI/Base"]
 margin_left = 1007.0
 margin_top = -569.0
@@ -664,10 +677,10 @@ anchor_left = 0.5
 anchor_top = -2.217
 anchor_right = 0.5
 anchor_bottom = -2.217
-margin_left = -78.0
-margin_top = -47.96
-margin_right = 103.0
-margin_bottom = 42.04
+margin_left = -428.0
+margin_top = -64.3
+margin_right = -247.0
+margin_bottom = 25.7
 rect_clip_content = true
 focus_mode = 2
 
@@ -733,10 +746,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -96.0
-margin_top = -366.0
-margin_right = 146.0
-margin_bottom = -296.0
+margin_left = -456.0
+margin_top = -322.0
+margin_right = -214.0
+margin_bottom = -252.0
 rect_clip_content = true
 
 [node name="Label" type="Label" parent="UI/Base/NextSceneConfirmation"]
@@ -774,10 +787,14 @@ text = "Siguiente Escena"
 [connection signal="remove_building" from="." to="." method="_on_Game5_remove_building"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateWarriorUnit" to="." method="_on_CreateWarriorUnit_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/BuildCatapult" to="." method="_on_BuildCatapult_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateHouse" to="." method="_on_CreateHouse_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/BuildBarn" to="." method="_on_BuildBarn_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/BuildSurveillanceTower" to="." method="_on_BuildSurveillanceTower_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/BuildFort" to="." method="_on_BuildFort_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/OptionsMenu/Settings" to="." method="_on_Settings_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/OptionsMenu/Back" to="." method="_on_Back_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/OptionsMenu/Quit" to="." method="_on_Quit_pressed"]
 [connection signal="pressed" from="UI/Base/ReplayConfirmation/ReplayOk" to="." method="_on_ReplayOk_pressed"]
 [connection signal="pressed" from="UI/Base/ReplayConfirmation/ReplayCancel" to="." method="_on_ReplayCancel_pressed"]
 [connection signal="confirmed" from="UI/Base/ExitConfirmation" to="." method="_on_ExitConfirmation_confirmed"]

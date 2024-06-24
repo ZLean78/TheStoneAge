@@ -15,6 +15,7 @@ var body_entered=null
 var target_position=Vector2.ZERO
 var can_shoot=false
 
+
 export (int) var MIN_DISTANCE=0
 
 #Proyectil, piedra para lanzar al enemigo.
@@ -24,7 +25,8 @@ export var spear_scene=preload("res://Scenes/Bullet/Bullet.tscn")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	tree=Globals.current_scene
-	units=tree.units
+	units=tree.get_node("Units")
+	timer.start()
 
 
 func _process(_delta):
@@ -73,6 +75,7 @@ func _on_Timer_timeout():
 	if can_shoot==false:
 		can_shoot=true
 	timer.start()
+	
 
 
 func _on_Tower_mouse_entered():
@@ -84,6 +87,12 @@ func _on_Tower_mouse_exited():
 	
 func _detect_enemies():
 	for an_enemy in tree.enemy_warriors_node.get_children():
+		if is_instance_valid(an_enemy):
+			if position.distance_to(an_enemy.position)<MIN_DISTANCE:
+				target_position=an_enemy.position
+				if can_shoot:
+					_shoot()
+	for an_enemy in tree.enemy_citizens_node.get_children():
 		if is_instance_valid(an_enemy):
 			if position.distance_to(an_enemy.position)<MIN_DISTANCE:
 				target_position=an_enemy.position
@@ -106,8 +115,8 @@ func _shoot():
 		spear.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
 		spear.set_dir(forward)
 		spear.rotation = angle
-		#spear.owner_name="Enemy_Warrior"
-		#target_position=spear_target		
+		spear.owner_name="Tower"
+			
 		the_tilemap[0].add_child(spear)		
 	can_shoot=false
 

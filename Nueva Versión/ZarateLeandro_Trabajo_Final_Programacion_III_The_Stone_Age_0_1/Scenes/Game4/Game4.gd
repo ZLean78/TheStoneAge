@@ -261,18 +261,21 @@ func _ready():
 	
 	
 	
-	#Agregar ropa y bolso a todas las unidades
-	for a_unit in all_units:
-		a_unit.is_dressed=true
-		a_unit.has_bag=true
-		Globals.group_dressed=true
-		Globals.group_has_bag=true
+
 	
-	#Convertimos en jefe guerrero a la primera unidad
-	#(no es el mismo de la fase anterior, ya que transcurrieron muchos años),
-	#y le agregamos su marca de identificación color naranja.
-	all_units[0].is_warchief=true
-	all_units[0].warchief_mark.visible=true
+	#Asignamos la posición de la fase anterior a las construcciones:
+	var child_index=0
+	for house in houses.get_children():
+		house.position=Globals.houses_p[child_index]
+		child_index+=1
+	
+	get_tree().get_nodes_in_group("townhall")[0].position=Globals.townhall_p
+	
+	
+	#Marcamos a la unidad jefe	
+	all_units[Globals.warchief_index].is_warchief=true
+	all_units[Globals.warchief_index].warchief_mark.visible=true
+		
 	
 	#Actualizamos el mapa de navegación.
 	_rebake_navigation()
@@ -489,12 +492,9 @@ func _unhandled_input(event):
 				if(all_units.size()==0 && Globals.food_points<15) || is_warchief_dead:
 					replay_confirmation.visible=true
 				else:
-					exit_confirmation.popup()
-					exit_confirmation.get_ok().text="Aceptar"
-					exit_confirmation.get_cancel().text="cancelar"
+					$UI/Base/Rectangle/OptionsMenu.visible=!$UI/Base/Rectangle/OptionsMenu.visible
 					
-		if event.is_action_pressed("Settings"):
-			Globals.settings.visible=!Globals.settings.visible
+		
 
 
 
@@ -531,6 +531,7 @@ func _create_fort():
 			Globals.stone_points-=200
 			Globals.leaves_points-=40
 			
+			Globals.fort_p=new_fort.position
 			print("Se construyó un fuerte.")	
 
 	if the_fort!=null:
@@ -601,6 +602,8 @@ func _create_tower():
 			Globals.stone_points-=100
 			Globals.wood_points-=80
 			Globals.leaves_points-=20
+			
+			Globals.towers_p.append(new_tower.position)
 			#Mensaje de comprobación para la consola.
 			print("Se construyó una torre.")
 	
@@ -672,6 +675,8 @@ func _create_barn():
 			Globals.clay_points-=300
 			Globals.wood_points-=200
 			Globals.leaves_points-=80
+			
+			Globals.barn_p=new_barn.position
 			#Mensaje de comprobación para la consola.
 			print("Se construyó un granero.")
 	
@@ -1471,3 +1476,17 @@ func _on_ReplayOk_pressed():
 func _on_NextSceneOk_pressed():
 	$UI.remove_child(Globals.settings)
 	Globals.go_to_scene("res://Scenes/Game5/Game5.tscn")
+
+
+func _on_Settings_pressed():
+	Globals.settings.visible=true
+
+
+func _on_Quit_pressed():
+	exit_confirmation.popup()
+	exit_confirmation.get_ok().text="Aceptar"
+	exit_confirmation.get_cancel().text="cancelar"
+
+
+func _on_Back_pressed():
+	$UI/Base/Rectangle/OptionsMenu.visible=false

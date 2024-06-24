@@ -333,11 +333,8 @@ func _unhandled_input(event):
 				if(all_units.size()==0 && Globals.food_points<15) || is_warchief_dead:
 					replay_confirmation.visible=true
 				else:
-					exit_confirmation.popup()
-					exit_confirmation.get_ok().text="Aceptar"
-					exit_confirmation.get_cancel().text="cancelar"
-		if event.is_action_pressed("Settings"):
-			Globals.settings.visible=!Globals.settings.visible
+					$UI/Base/Rectangle/OptionsMenu.visible=!$UI/Base/Rectangle/OptionsMenu.visible
+		
 	
 
 func _create_townhall():
@@ -355,7 +352,7 @@ func _create_townhall():
 			new_townhall.condition_max=80
 			#the_citizen.agent.set_target_location(get_global_mouse_position())
 			new_townhall.position = get_global_mouse_position()
-			tile_map.add_child(new_townhall)
+			townhall_node.add_child(new_townhall)
 			if the_citizen.position.x < new_townhall.position.x:
 				#Si el nuevo centro cívico está a la derecha.
 				the_citizen.target_position=Vector2(new_townhall.position.x-125,new_townhall.position.y)
@@ -504,7 +501,7 @@ func _create_warrior_unit(cost = 0):
 	all_units.append(new_Unit)
 			
 func _check_victory():
-	for child in tile_map.get_children():
+	for child in townhall_node.get_children():
 		if "TownHall" in child.name:
 			if child.condition==80:
 				Globals.is_townhall_created=true
@@ -877,5 +874,29 @@ func _on_ReplayCancel_pressed():
 
 
 func _on_NextSceneOk_pressed():
+	for house in houses.get_children():
+		Globals.houses_p.append(house.position)
+	Globals.townhall_p=townhall_node.get_child(0).position
+	var child_index=0
+	for citizen in units.get_children():
+		if citizen.is_warchief:
+			Globals.warchief_index=child_index
+			break
+		else:
+			child_index+=1
 	$UI.remove_child(Globals.settings)
 	Globals.go_to_scene("res://Scenes/Game4/Game4.tscn")
+
+
+func _on_Settings_pressed():
+	Globals.settings.visible=true
+
+
+func _on_Quit_pressed():
+	exit_confirmation.popup()
+	exit_confirmation.get_ok().text="Aceptar"
+	exit_confirmation.get_cancel().text="cancelar"
+
+
+func _on_Back_pressed():
+	$UI/Base/Rectangle/OptionsMenu.visible=false

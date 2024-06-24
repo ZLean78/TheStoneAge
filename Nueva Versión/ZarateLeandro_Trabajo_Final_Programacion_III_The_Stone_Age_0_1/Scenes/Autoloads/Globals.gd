@@ -60,11 +60,21 @@ var is_metals_developed=false
 var is_first_tower_built=false
 var is_barn_built=false
 var is_fort_built=false
+var is_enemy_fort_built=false
+var is_townhall_down=false
+var is_enemy_townhall_down=false
 
 var screen_size:Vector2
 
 var settings_scene=load("res://Scenes/Settings/Settings.tscn")
 var settings=settings_scene.instance()
+
+var houses_p=[]
+var townhall_p=Vector2()
+var barn_p=Vector2()
+var fort_p=Vector2()
+var towers_p=[]
+var warchief_index=0
 
 func _ready():
 	root=get_tree().root

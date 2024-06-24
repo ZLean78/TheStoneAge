@@ -343,8 +343,8 @@ func _collect_pickable(var _pickable):
 
 
 		
-func _get_damage(var the_beast):
-	if "Tiger" in the_beast.name && the_beast.visible && is_enemy_touching:
+func _get_damage(var collider):
+	if "Tiger" in collider.name && collider.visible && is_enemy_touching:
 		if is_warchief:
 			if(health>0):
 				if(!is_dressed):
@@ -365,10 +365,10 @@ func _get_damage(var the_beast):
 				bar._set_health(health)
 				
 			else:
-				if the_beast:
+				if collider:
 					_set_selected(false)			
 					is_deleted=true
-	if "Mammoth" in the_beast.name && is_enemy_touching:
+	if "Mammoth" in collider.name && is_enemy_touching:
 		if health>0:
 			health-=30
 			bar._set_health(health)
@@ -376,7 +376,7 @@ func _get_damage(var the_beast):
 		else:
 			_set_selected(false)			
 			is_deleted=true
-	if "Bullet" in the_beast.name:
+	if "Bullet" in collider.name:
 		
 		if health>0:			
 			health-=20
@@ -384,7 +384,7 @@ func _get_damage(var the_beast):
 		else:
 			is_deleted=true
 
-	if "Warrior" in the_beast.name && is_enemy_touching:
+	if "Warrior" in collider.name && is_enemy_touching:
 		if health>0:
 			health-=20
 			bar._set_health(health)
@@ -392,7 +392,7 @@ func _get_damage(var the_beast):
 		else:
 			_set_selected(false)			
 			is_deleted=true
-	if "Unit2" in the_beast.name && is_enemy_touching:
+	if "Unit2" in collider.name && is_enemy_touching:
 		if health>0:
 			health-=10
 			bar._set_health(health)
@@ -400,7 +400,7 @@ func _get_damage(var the_beast):
 		else:
 			_set_selected(false)			
 			is_deleted=true
-	if "Stone" in the_beast.name && the_beast.owner_name=="Citizen":
+	if "Stone" in collider.name && collider.owner_name=="Citizen":
 		if health>0:
 			health-=15
 			bar._set_health(health)			

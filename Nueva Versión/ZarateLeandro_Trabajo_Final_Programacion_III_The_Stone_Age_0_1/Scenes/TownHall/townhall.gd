@@ -21,18 +21,11 @@ func _process(_delta):
 func _townhall_build():
 	if condition<condition_max:
 		condition+=1	
-		
-			
-			
-			
 
 
 func _on_Area2D_body_entered(body):
 	if "Unit" in body.name:
 		body.townhall_entered=true
-
-
-
 
 
 func _on_Area2D_body_exited(body):
@@ -58,7 +51,7 @@ func _get_damage(body):
 	if is_instance_valid(body):
 		if "EnemySpear" in body.name:
 			condition-=3
-		if "Stone" in body.name && body.owner_name=="EnemyCitizen":
+		if "Stone" in body.name && body.owner_name=="EnemyCatapult":
 			condition-=3
 	if condition<=0:
 		queue_free()

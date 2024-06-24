@@ -584,10 +584,10 @@ anchor_left = 0.5
 anchor_top = -2.217
 anchor_right = 0.5
 anchor_bottom = -2.217
-margin_left = -78.0
-margin_top = -47.96
-margin_right = 103.0
-margin_bottom = 42.04
+margin_left = -418.0
+margin_top = -48.3
+margin_right = -237.0
+margin_bottom = 41.7
 rect_clip_content = true
 focus_mode = 2
 
@@ -653,10 +653,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -96.0
-margin_top = -366.0
-margin_right = 146.0
-margin_bottom = -296.0
+margin_left = -448.0
+margin_top = -330.0
+margin_right = -206.0
+margin_bottom = -260.0
 rect_clip_content = true
 
 [node name="Label" type="Label" parent="UI/Base/NextSceneConfirmation"]
@@ -682,6 +682,35 @@ margin_right = 52.0
 margin_bottom = 26.0
 text = "Siguiente Escena"
 
+[node name="OptionsMenu" type="ColorRect" parent="UI/Base"]
+visible = false
+margin_left = 599.0
+margin_top = -346.0
+margin_right = 687.0
+margin_bottom = -223.0
+color = Color( 0.243137, 0.756863, 0.858824, 1 )
+
+[node name="Settings" type="Button" parent="UI/Base/OptionsMenu"]
+margin_left = 10.0
+margin_top = 12.0
+margin_right = 83.0
+margin_bottom = 44.0
+text = "Opciones"
+
+[node name="Back" type="Button" parent="UI/Base/OptionsMenu"]
+margin_left = 10.0
+margin_top = 49.0
+margin_right = 83.0
+margin_bottom = 77.0
+text = "Volver"
+
+[node name="Quit" type="Button" parent="UI/Base/OptionsMenu"]
+margin_left = 10.0
+margin_top = 82.0
+margin_right = 83.0
+margin_bottom = 110.0
+text = "Salir"
+
 [connection signal="is_arrow" from="." to="." method="_on_Game4_is_arrow"]
 [connection signal="is_axe" from="." to="." method="_on_Game4_is_axe"]
 [connection signal="is_basket" from="." to="." method="_on_Game4_is_basket"]
@@ -706,3 +735,6 @@ text = "Siguiente Escena"
 [connection signal="pressed" from="UI/Base/ReplayConfirmation/ReplayCancel" to="." method="_on_ReplayCancel_pressed"]
 [connection signal="confirmed" from="UI/Base/ExitConfirmation" to="." method="_on_ExitConfirmation_confirmed"]
 [connection signal="pressed" from="UI/Base/NextSceneConfirmation/NextSceneOk" to="." method="_on_NextSceneOk_pressed"]
+[connection signal="pressed" from="UI/Base/OptionsMenu/Settings" to="." method="_on_Settings_pressed"]
+[connection signal="pressed" from="UI/Base/OptionsMenu/Back" to="." method="_on_Back_pressed"]
+[connection signal="pressed" from="UI/Base/OptionsMenu/Quit" to="." method="_on_Quit_pressed"]

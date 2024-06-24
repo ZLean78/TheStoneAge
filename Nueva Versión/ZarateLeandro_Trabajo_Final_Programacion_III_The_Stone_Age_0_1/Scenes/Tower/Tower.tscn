@@ -9,12 +9,11 @@ bg_color = Color( 0, 0, 1, 1 )
 [sub_resource type="CircleShape2D" id=2]
 radius = 63.2851
 
-[node name="Tower" type="StaticBody2D"]
+[node name="Tower" type="StaticBody2D" groups=["towers"]]
 collision_layer = 8
 collision_mask = 11
 script = ExtResource( 2 )
 condition_max = 50
-MIN_DISTANCE = 100.0
 
 [node name="Sprite" type="Sprite" parent="."]
 scale = Vector2( 0.220001, 0.330643 )
@@ -35,7 +34,6 @@ max_value = 50.0
 shape = SubResource( 2 )
 
 [node name="Timer" type="Timer" parent="."]
-autostart = true
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 scale = Vector2( 0.525, 0.814815 )

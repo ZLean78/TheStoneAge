@@ -1,6 +1,7 @@
 extends Node2D
 
 onready var music=$Music
+onready var soundFx=$Rain
 
 func _select_music():
 	if Globals.current_scene.name=="Menu":
@@ -13,4 +14,13 @@ func _select_music():
 		music.stream=load("res://Sound/Stage3.ogg")
 	if Globals.current_scene.name=="Game4":
 		music.stream=load("res://Sound/Stage4.ogg")
+	if Globals.current_scene.name=="Game5":
+		music.stream=load("res://Sound/Stage4.ogg")
 	
+func _play_rain():
+	if Globals.current_scene.its_raining:
+		if !$Rain.playing:
+			$Rain.play()
+	else:
+		if $Rain.playing:
+			$Rain.stop() 
