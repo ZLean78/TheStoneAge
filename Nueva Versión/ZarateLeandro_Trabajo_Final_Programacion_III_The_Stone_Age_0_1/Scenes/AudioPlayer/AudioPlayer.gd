@@ -16,6 +16,16 @@ func _select_music():
 		music.stream=load("res://Sound/Stage4.ogg")
 	if Globals.current_scene.name=="Game5":
 		music.stream=load("res://Sound/Stage5.ogg")
+	if Globals.current_scene.name=="Intermission1":
+		music.stream=load("res://Sound/Intermission.ogg")
+	if Globals.current_scene.name=="Intermission2":
+		music.stream=load("res://Sound/Intermission.ogg")
+	if Globals.current_scene.name=="Intermission3":
+		music.stream=load("res://Sound/OpeningSlow.ogg")
+	if Globals.current_scene.name=="Intermission4":
+		music.stream=load("res://Sound/OpeningSlow.ogg")
+	if Globals.current_scene.name=="FinalScene":
+		music.stream=load("res://Sound/NonLoopingOpening.ogg")
 	
 func _play_rain():
 	if Globals.current_scene.its_raining:

@@ -885,7 +885,7 @@ func _on_NextSceneOk_pressed():
 		else:
 			child_index+=1
 	$UI.remove_child(Globals.settings)
-	Globals.go_to_scene("res://Scenes/Game4/Game4.tscn")
+	Globals.go_to_scene("res://Scenes/Intermissions/Intermission3.tscn")
 
 
 func _on_Settings_pressed():

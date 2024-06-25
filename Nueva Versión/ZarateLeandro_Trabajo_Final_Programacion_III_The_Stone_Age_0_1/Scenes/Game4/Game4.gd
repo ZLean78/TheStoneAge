@@ -1477,7 +1477,7 @@ func _on_ReplayOk_pressed():
 
 func _on_NextSceneOk_pressed():
 	$UI.remove_child(Globals.settings)
-	Globals.go_to_scene("res://Scenes/Game5/Game5.tscn")
+	Globals.go_to_scene("res://Scenes/Intermissions/Intermission4.tscn")
 
 
 func _on_Settings_pressed():
