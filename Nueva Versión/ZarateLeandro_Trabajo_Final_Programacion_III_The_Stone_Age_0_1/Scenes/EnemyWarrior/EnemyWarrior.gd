@@ -562,10 +562,10 @@ func _die():
 
 
 func _on_Area2D_body_entered(body):	
-	if (("Tower" in body.name || "Warrior" in body.name || "Unit" in body.name)
+	if (("Tower" in body.name || "Warrior" in body.name || "Unit" in body.name || "Vehicle" in body.name)
 		&& !("Enemy" in body.name)):		
 		if is_instance_valid(body_entered):
-			if "Warrior" in body.name || "Unit" in body.name:
+			if "Warrior" in body.name || "Unit" in body.name || "Vehicle" in body.name:
 				body.is_enemy_touching=true
 			
 
@@ -724,8 +724,7 @@ func _shoot():
 		spear.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
 		spear.set_dir(forward)
 		spear.rotation = angle
-		#spear.owner_name="Enemy_Warrior"
-		#target_position=spear_target	
+			
 	
 		the_tilemap[0].add_child(spear)
 	can_shoot=false	

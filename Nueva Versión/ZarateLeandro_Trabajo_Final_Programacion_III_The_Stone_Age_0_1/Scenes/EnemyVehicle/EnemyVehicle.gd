@@ -101,7 +101,7 @@ func _physics_process(delta):
 	else:
 		sprite.play()
 	
-
+	$Bar.value=health
 		
 func _move_along_path(distance):	
 	var last_point=position
@@ -194,3 +194,9 @@ func _on_all_timer_timeout():
 func _on_Sprite_animation_finished():
 	just_shot=false
 	$Animation._animate(sprite,velocity,target_position)
+
+func _get_damage(body):
+	if "Bullet" in body.name:
+		health-=3
+		if health<=0:
+			queue_free()

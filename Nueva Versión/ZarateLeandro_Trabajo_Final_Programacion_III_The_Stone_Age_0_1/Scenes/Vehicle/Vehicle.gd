@@ -15,6 +15,7 @@ var to_delta=0.0
 var is_flipped=false
 var can_shoot=true
 var just_shot=false
+var is_enemy_touching=false
 
 #Salud de la unidad.
 export (float) var health = 100
@@ -106,7 +107,7 @@ func _physics_process(delta):
 	else:
 		sprite.play()
 	
-
+	$Bar.value=health
 		
 func _move_along_path(distance):	
 	var last_point=position
@@ -199,3 +200,12 @@ func _on_all_timer_timeout():
 func _on_Sprite_animation_finished():
 	just_shot=false
 	$Animation._animate(sprite,velocity,target_position)
+	
+func _get_damage(body):
+	if "EnemySpear" in body.name:
+		health-=3		
+	if "Stone" in body.name && body.owner_name=="EnemyCitizen":
+		health-=3
+	if health<=0:
+		queue_free()
+	

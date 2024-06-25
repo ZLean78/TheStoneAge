@@ -486,21 +486,7 @@ func _on_all_timer_timeout():
 #		heal(body_entered)
 	timer_count+=1	
 	
-#	if body_entered!=null && is_instance_valid(body_entered):
-#		if "tiger" in body_entered.name || "mammoth" in body_entered.name || "enemy" in body_entered.name:
-#			_get_damage(body_entered)
-#		if is_warchief:
-#			if !("enemy" in body_entered.name) && "unit" in body_entered.name || "warrior" in body_entered.name:
-#				heal(body_entered)
-		
-#	if health<MAX_HEALTH && heal_counter>0:
-#		heal_counter-=1
-#		if heal_counter<=0:
-#			can_heal_itself=true
-#
-#
-#		if can_heal_itself && timer_count>3:
-#			self_heal()
+
 	
 	
 	
@@ -520,11 +506,11 @@ func _die():
 	queue_free()
 
 func _on_Area2D_body_entered(body):
-	if (("Tower" in body.name || "Warrior" in body.name || "Unit" in body.name)
+	if (("Tower" in body.name || "Warrior" in body.name || "Unit" in body.name || "Vehicle" in body.name)
 		&& !("Enemy" in body.name)):	
 		body_entered=body	
 		if is_instance_valid(body_entered):
-			if "Warrior" in body.name || "Unit" in body.name:
+			if "Warrior" in body.name || "Unit" in body.name || "Vehicle" in body.name:
 				body.is_enemy_touching=true
 			
 	
@@ -596,7 +582,7 @@ func _on_Area2D_body_exited(body):
 	
 	
 func _choose_target():
-	if is_instance_valid(body_entered) && body_entered!=null && ("Warrior" in body_entered.name || "Unit" in body_entered.name) && !("Enemy" in body_entered.name):
+	if is_instance_valid(body_entered) && body_entered!=null && ("Warrior" in body_entered.name || "Unit" in body_entered.name || "Vehicle" in body_entered.name) && !("Enemy" in body_entered.name):
 		target=body_entered
 		target_position=body_entered.position
 	else:
@@ -661,11 +647,11 @@ func _state_machine():
 		1:
 			if target!=null && is_instance_valid(target):
 				if( !("Lake" in target.name) && !("Puddle" in target.name) 
-				&& !("Unit" in target.name) && !("Warrior" in target.name)):
+				&& !("Unit" in target.name) && !("Warrior" in target.name) && !("Vehicle"in target.name)):
 					if target.empty:
 						AI_state=0
 						if target_t==target_type.COPPER:
-							print("Cambio buscador de cobre a estado 0")
+							print("Cambio buscador de cobre a estado 0")							
 			else:
 				AI_state=0
 		2:
@@ -683,7 +669,7 @@ func _state_machine():
 			target_position=self.position
 			
 	if body_entered!=null && is_instance_valid(body_entered):
-		if !("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name):
+		if !("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name || "Vehicle" in body_entered.name):
 			target_position=body_entered.position-Vector2(50,50)
 			AI_state=2	
 			if position.distance_to(target_position)<=50:

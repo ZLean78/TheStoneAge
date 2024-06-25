@@ -15,7 +15,7 @@ func _select_music():
 	if Globals.current_scene.name=="Game4":
 		music.stream=load("res://Sound/Stage4.ogg")
 	if Globals.current_scene.name=="Game5":
-		music.stream=load("res://Sound/Stage4.ogg")
+		music.stream=load("res://Sound/Stage5.ogg")
 	
 func _play_rain():
 	if Globals.current_scene.its_raining:

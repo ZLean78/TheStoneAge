@@ -5,29 +5,8 @@ extends Node2D
 var unit_count = 1
 
 
-
-#Hitos anteriores ya cumplidos
-#var group_dressed = false
-#var group_has_bag = false
-#var is_fire_discovered = true
-#var is_wheel_invented = true
-#var is_stone_weapons_developed = true
-#var is_claypot_made = true
-#var is_agriculture_developed = true
-#var is_townhall_created = false
-
 #El jefe ha muerto.
 var is_warchief_dead = false
-
-##Variables de hitos
-#var is_pottery_developed=false
-#var is_carpentry_developed=false
-#var is_mining_developed=false
-#var is_metals_developed=false
-#var is_first_tower_built=false
-#var is_barn_built=false
-#var is_fort_built=false
-
 
 
 onready var tree = Globals.current_scene
@@ -104,6 +83,7 @@ export (PackedScene) var Barn
 export (PackedScene) var EnemyWarrior
 export (PackedScene) var EnemyCitizen
 export (PackedScene) var Vehicle
+export (PackedScene) var EnemyVehicle
 
 
 #Arreglos para controlar los distintos grupos de entidades.
@@ -200,16 +180,6 @@ func _ready():
 	Globals.is_townhall_down=false
 	AudioPlayer._select_music()
 	AudioPlayer.music.play()
-	
-	Globals.food_points = 15
-	Globals.leaves_points = 1140
-	Globals.stone_points = 1300
-	Globals.wood_points = 1580
-	Globals.clay_points = 300
-	Globals.water_points = 0
-	Globals.copper_points = 0
-
-	Globals.is_fort_built = false
 	
 	$UI/Base/Rectangle/BuildCatapult.visible=false
 	
@@ -378,8 +348,7 @@ func _process(delta):
 	
 		#Etiqueta de tiempo restante para la amenaza enemiga
 		#y etiquetas de recursos recolectados.
-		for enemy in enemy_warriors_node.get_children():
-			timer_label.text = "PELIGRO EN: " + str(int(attack_counter))
+		
 			
 			
 		food_label.text = str(int(Globals.food_points))
@@ -1290,7 +1259,7 @@ func _check_coppers():
 
 
 func _manage_enemy_units():
-	if Globals.e_food_points>=15 && enemy_citizens_node.get_child_count()<16 && enemy_citizens_node.get_child_count()<12:
+	if Globals.e_food_points>=15 && enemy_citizens_node.get_child_count()<8:
 		var new_enemy_citizen = EnemyCitizen.instance()
 		new_enemy_citizen.position=enemy_spawn.position
 		enemy_citizens_node.add_child(new_enemy_citizen)
@@ -1298,14 +1267,14 @@ func _manage_enemy_units():
 		Globals.e_food_points-=15		
 	else:
 		if (Globals.e_food_points>=30 && Globals.e_wood_points>=20 && 
-		Globals.stone_points>=10 && enemy_warriors_node.get_child_count()<12):
+		Globals.stone_points>=10 && enemy_warriors_node.get_child_count()<4):
 			var new_enemy_warrior=EnemyWarrior.instance()
 			new_enemy_warrior.position=enemy_spawn.position
 			enemy_warriors_node.add_child(new_enemy_warrior)
 			Globals.e_food_points-=30
 			Globals.e_wood_points-=20
 			Globals.e_stone_points-=10
-			var target_number=randi()%4+1
+			var target_number=randi()%3+1
 		
 			match target_number:
 				1:
@@ -1314,13 +1283,15 @@ func _manage_enemy_units():
 					new_enemy_warrior.target_t=new_enemy_warrior.target_type.BARN
 				3:
 					new_enemy_warrior.target_t=new_enemy_warrior.target_type.FORT
-				4:
-					new_enemy_warrior.target_t=new_enemy_warrior.target_type.TOWNHALL
 			
 			new_enemy_warrior.AI_state=0
 		else:
-			if enemy_fort_node.get_child_count() == 0 && Globals.e_wood_points>=300 && Globals.e_stone_points>=200 && Globals.e_leaves_points>=40:
-				_create_enemy_fort()	
+			if enemy_fort_node.get_child_count() == 0 && Globals.e_wood_points>=100 && Globals.e_stone_points>=50 && Globals.e_leaves_points>=20:
+				_create_enemy_fort()
+			if Globals.is_enemy_fort_built:
+				var new_enemy_vehicle=EnemyVehicle.instance()
+				new_enemy_vehicle.position=Vector2(enemy_fort_node.get_child(0).position.x,enemy_fort_node.get_child(0).position.y+100)
+						
 
 func _create_enemy_fort():
 	var new_enemy_fort=EnemyFort.instance()
@@ -1487,9 +1458,17 @@ func _rebake_navigation():
 		if is_instance_valid(a_house):
 			_update_path(a_house)
 			
+	for enemy_house in enemy_houses.get_children():
+		if is_instance_valid(enemy_house):
+			_update_path(enemy_house)
+			
 	for a_townhall in townhall_node.get_children():
 		if is_instance_valid(a_townhall):
 			_update_path(a_townhall)
+			
+	for enemy_townhall in enemy_townhall_node.get_children():
+		if is_instance_valid(enemy_townhall):
+			_update_path(enemy_townhall)
 		
 	for a_tower in tower_node.get_children():
 		if is_instance_valid(a_tower):
@@ -1502,6 +1481,10 @@ func _rebake_navigation():
 	for a_fort in fort_node.get_children():
 		if is_instance_valid(a_fort):
 			_update_path(a_fort)
+			
+	for enemy_fort in enemy_fort_node.get_children():
+		if is_instance_valid(enemy_fort):
+			_update_path(enemy_fort)
 			
 	for enemy_house in enemy_houses.get_children():
 		if is_instance_valid(enemy_house):
@@ -1605,5 +1588,5 @@ func _on_BuildCatapult_pressed():
 		var new_vehicle=Vehicle.instance()
 		vehicles.add_child(new_vehicle)
 		all_units.append(new_vehicle)
-		new_vehicle.position=$SpawnPosition.position
+		new_vehicle.position=Vector2(fort_node.get_child(0).position.x,fort_node.get_child(0).position.y+100)
 		
