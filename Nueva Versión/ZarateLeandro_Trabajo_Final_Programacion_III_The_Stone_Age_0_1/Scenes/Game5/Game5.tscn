@@ -748,6 +748,7 @@ el progreso."
 dialog_autowrap = true
 
 [node name="NextSceneConfirmation" type="ColorRect" parent="UI/Base"]
+visible = false
 material = SubResource( 15 )
 anchor_left = 0.5
 anchor_top = 0.5

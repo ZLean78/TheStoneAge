@@ -160,7 +160,7 @@ position = Vector2( 643, 261 )
 position = Vector2( 100, 123 )
 
 [node name="Rain_Timer" type="Timer" parent="."]
-wait_time = 0.05
+wait_time = 90.0
 autostart = true
 
 [node name="Plants" type="Node2D" parent="."]
