@@ -54,6 +54,7 @@ func _get_damage(body):
 		if "Stone" in body.name && body.owner_name=="EnemyCatapult":
 			condition-=3
 	if condition<=0:
+		Globals.is_townhall_down=true
 		queue_free()
 
 

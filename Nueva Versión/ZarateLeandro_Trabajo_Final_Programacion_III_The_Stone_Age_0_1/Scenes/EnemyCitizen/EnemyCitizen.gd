@@ -683,18 +683,26 @@ func _state_machine():
 			target_position=self.position
 			
 	if body_entered!=null && is_instance_valid(body_entered):
-		#print("se ha detectado un cuerpo")
-		#print(body_entered)
 		if !("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name):
-			
-			target_position=body_entered.position
-			#print("cambio a estado 2")
+			target_position=body_entered.position-Vector2(50,50)
 			AI_state=2	
+			if position.distance_to(target_position)<=50:
+				if can_shoot:
+					_shoot()
+	
+						
+	if tree.enemy_fort_node.get_child_count()>0:
+		if is_instance_valid(tree.enemy_fort_node.get_child(0)):	
+			if target_t==target_type.PINE_TREE:
+				if tree.enemy_fort_node.get_child(0).condition<70:
+					target_position=tree.enemy_fort_node.get_child(0).position
+	
+	if is_instance_valid(tree.enemy_townhall):			
+		if tree.enemy_townhall.condition<80 && target_t!=target_type.PINE_TREE:
+			target_position=tree.enemy_townhall.position
 
 
-	if position.distance_to(target_position)<=50 :
-		if can_shoot:
-			_shoot()
+	
 	
 	
 

@@ -14,6 +14,7 @@ collision_layer = 8
 collision_mask = 11
 script = ExtResource( 2 )
 condition_max = 50
+MIN_DISTANCE = 100
 
 [node name="Sprite" type="Sprite" parent="."]
 scale = Vector2( 0.220001, 0.330643 )

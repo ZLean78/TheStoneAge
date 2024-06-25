@@ -64,25 +64,28 @@ onready var copper2 = tree.get_node("Coppers/Copper2")
 onready var lake = tree.get_node("Lake")
 onready var spawn_position = $SpawnPosition
 onready var enemy_spawn = $EnemySpawn
-#onready var tiger_target = $TigerTarget
 onready var units = $Units
 onready var warriors = $Warriors
 onready var vehicles = $Vehicles
+onready var enemy_vehicles=$EnemyVehicles
 onready var houses = $Houses
 onready var enemy_houses=$EnemyHouses
 onready var fort_node = $Fort
 onready var tower_node = $Towers
 onready var barn_node = $Barn
+onready var enemy_fort_node = $EnemyFort
+onready var enemy_townhall_node = $EnemyTownhall
+onready var enemy_townhall=$EnemyTownhall/EnemyTownhall
+onready var enemy_fort_spawn = $EnemyFortSpawn
 onready var nav2d=$nav
 onready var townhall_node=$TownHall
+onready var townhall=$TownHall/TownHall
 onready var enemy_warriors_node=$EnemyWarriors
 onready var enemy_citizens_node=$EnemyCitizens
 onready var next_scene_confirmation = $UI/Base/NextSceneConfirmation
 onready var exit_confirmation=$UI/Base/ExitConfirmation
 onready var replay_confirmation=$UI/Base/ReplayConfirmation
-#onready var vehicle=$Vehicles/Vehicle
 
-#onready var remote_transform2d=$Path2D/PathFollow2D/RemoteTransform2D
 
 var path=PoolVector2Array()
 
@@ -95,6 +98,7 @@ export (PackedScene) var Warrior
 export (PackedScene) var House
 export (PackedScene) var TownHall
 export (PackedScene) var Fort
+export (PackedScene) var EnemyFort
 export (PackedScene) var Tower
 export (PackedScene) var Barn
 export (PackedScene) var EnemyWarrior
@@ -193,6 +197,7 @@ var attack_counter=50
 var victory_obtained=false
 
 func _ready():
+	Globals.is_townhall_down=false
 	AudioPlayer._select_music()
 	AudioPlayer.music.play()
 	
@@ -386,24 +391,24 @@ func _process(delta):
 		water_label.text = str(int(Globals.water_points))
 		
 		
-		for enemy_citizen in enemy_citizens_node.get_children():
-			if (is_instance_valid(enemy_citizen.target) &&
-			!("Unit" in enemy_citizen.target.name) && !("Warrior" in enemy_citizen.target.name)):
-				if !enemy_citizen.target.empty:
-					timer_label.text = "Puntos de Objetivo: " + str(enemy_citizen.target.points)
-				else:
-					timer_label.text = "Objetivo Vacío" + ", Estado: " + str(enemy_citizen.AI_state)
-			else:
-				timer_label.text = "Objetivo Nulo"
 		
-		state_label.text= ("Inventario Enemigo: \n" +
-		"Comida: " + str(Globals.e_food_points) +
-		"\nHojas: " + str(Globals.e_leaves_points) +
-		"\nMadera: " + str(Globals.e_wood_points) +
-		"\nArcilla: " + str(Globals.e_clay_points) +
-		"\nAgua: " + str(Globals.e_water_points) +
-		"\nPiedra: " + str(Globals.e_stone_points) +
-		"\nCobre: " + str(Globals.e_copper_points)) 
+		
+		if !Globals.is_enemy_fort_built:
+			state_label.text= ("Inventario Enemigo: \n" +
+			"Comida: " + str(Globals.e_food_points) +
+			"\nHojas: " + str(Globals.e_leaves_points) +
+			"\nMadera: " + str(Globals.e_wood_points) +
+			"\nArcilla: " + str(Globals.e_clay_points) +
+			"\nAgua: " + str(Globals.e_water_points) +
+			"\nPiedra: " + str(Globals.e_stone_points) +
+			"\nCobre: " + str(Globals.e_copper_points)) 
+		else:
+			if Globals.is_enemy_fort_built && enemy_vehicles.get_child_count()==0:
+				timer_label.text="¡Alerta!"
+				state_label.text="Los habitantes del poblado enemigo han levantado un fuerte."
+			else:
+				timer_label.text="¡Peligro!"
+				"Una catapulta enemiga se dirige al poblado para derribar tu centro cívico."
 	
 		#Comprobar las unidades existentes para ver si alguna está muerta.
 		_check_units()
@@ -917,6 +922,9 @@ func _check_victory():
 	elif(all_units.size()==0 && Globals.food_points<15):
 		prompts_label.text = "Has sido derrotado."
 		replay_confirmation.visible=true
+	elif Globals.is_townhall_down:
+		prompts_label.text = "Has sido derrotado. Tu centro cívico ha caído."
+		replay_confirmation.visible=true
 	else:
 		for a_unit in all_units:
 			if "Unit" in a_unit.name && a_unit.is_warchief && a_unit.is_deleted:
@@ -1282,7 +1290,7 @@ func _check_coppers():
 
 
 func _manage_enemy_units():
-	if Globals.e_food_points>=15 && enemy_citizens_node.get_child_count()<16:
+	if Globals.e_food_points>=15 && enemy_citizens_node.get_child_count()<16 && enemy_citizens_node.get_child_count()<12:
 		var new_enemy_citizen = EnemyCitizen.instance()
 		new_enemy_citizen.position=enemy_spawn.position
 		enemy_citizens_node.add_child(new_enemy_citizen)
@@ -1309,9 +1317,23 @@ func _manage_enemy_units():
 				4:
 					new_enemy_warrior.target_t=new_enemy_warrior.target_type.TOWNHALL
 			
-			new_enemy_warrior.AI_state=0	
+			new_enemy_warrior.AI_state=0
+		else:
+			if enemy_fort_node.get_child_count() == 0 && Globals.e_wood_points>=300 && Globals.e_stone_points>=200 && Globals.e_leaves_points>=40:
+				_create_enemy_fort()	
 
-		
+func _create_enemy_fort():
+	var new_enemy_fort=EnemyFort.instance()
+	new_enemy_fort.position=enemy_fort_spawn.position
+	new_enemy_fort.condition=80
+	enemy_fort_node.add_child(new_enemy_fort)
+	Globals.is_enemy_fort_built=true
+	Globals.e_wood_points-=300
+	Globals.e_stone_points-=200
+	Globals.e_leaves_points-=40
+	_rebake_navigation()
+			
+
 
 #Botón para crear unidades militares guerrero y cazador.
 func _on_CreateWarriorUnit_pressed():

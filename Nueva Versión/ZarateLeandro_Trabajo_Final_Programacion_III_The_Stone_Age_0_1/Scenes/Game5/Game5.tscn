@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=2]
+[gd_scene load_steps=48 format=2]
 
 [ext_resource path="res://Scenes/Unit2/Unit2.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Fort/Fort.tscn" type="PackedScene" id=2]
@@ -32,6 +32,7 @@
 [ext_resource path="res://Scenes/MouseIcons/fort_m.png" type="Texture" id=30]
 [ext_resource path="res://Scenes/MouseIcons/tower_m.png" type="Texture" id=31]
 [ext_resource path="res://Scenes/Game2/watericon.png" type="Texture" id=32]
+[ext_resource path="res://Scenes/EnemyFort/EnemyFort.tscn" type="PackedScene" id=33]
 [ext_resource path="res://Scenes/Game2/plant.png" type="Texture" id=34]
 [ext_resource path="res://Scenes/Game2/quarry.png" type="Texture" id=35]
 [ext_resource path="res://Scenes/MouseIcons/house_small.png" type="Texture" id=36]
@@ -110,6 +111,7 @@ Warrior = ExtResource( 6 )
 House = ExtResource( 16 )
 TownHall = ExtResource( 13 )
 Fort = ExtResource( 2 )
+EnemyFort = ExtResource( 33 )
 Tower = ExtResource( 18 )
 Barn = ExtResource( 5 )
 EnemyWarrior = ExtResource( 7 )
@@ -162,6 +164,9 @@ position = Vector2( 713, 404 )
 
 [node name="EnemySpawn" type="Position2D" parent="."]
 position = Vector2( -620, -122 )
+
+[node name="EnemyFortSpawn" type="Position2D" parent="."]
+position = Vector2( -447, -385 )
 
 [node name="TigerTarget" type="Position2D" parent="."]
 position = Vector2( 496, 365 )
@@ -241,6 +246,8 @@ position = Vector2( 340, 168 )
 
 [node name="Vehicles" type="Node2D" parent="."]
 
+[node name="EnemyVehicles" type="Node2D" parent="."]
+
 [node name="Units" type="Node2D" parent="."]
 process_priority = 1
 z_as_relative = false
@@ -251,6 +258,8 @@ position = Vector2( 719, 387 )
 
 [node name="Warriors" type="Node2D" parent="."]
 z_as_relative = false
+
+[node name="EnemyFort" type="Node2D" parent="."]
 
 [node name="EnemyWarriors" type="YSort" parent="."]
 
@@ -659,9 +668,8 @@ margin_left = 1007.0
 margin_top = -569.0
 margin_right = 1238.0
 margin_bottom = -519.0
-text = "ATAQUE ENEMIGO:
-000"
 align = 1
+autowrap = true
 
 [node name="StateLabel" type="Label" parent="UI/Base"]
 margin_left = 1010.0
@@ -669,6 +677,7 @@ margin_top = -493.0
 margin_right = 1241.0
 margin_bottom = -443.0
 align = 1
+autowrap = true
 
 [node name="ReplayConfirmation" type="ColorRect" parent="UI/Base"]
 visible = false
