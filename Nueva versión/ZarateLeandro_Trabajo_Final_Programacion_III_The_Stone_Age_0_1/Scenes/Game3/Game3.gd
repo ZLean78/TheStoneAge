@@ -767,7 +767,7 @@ func _check_mammoths():
 		prompts_label.text="""Regresa cerca de la cueva y haz que tus ciudadanos
 		construyan cuatro casas en la zona. Obtén los recursos necesarios
 		y haz clic en un ciudadano para llevar a cabo la tarea. Debes construir 
-		una	casa cada cuatro civiles."""	
+		una casa cada cuatro civiles."""	
 		create_house.visible=true
 
 func _on_CreateHouse_pressed():

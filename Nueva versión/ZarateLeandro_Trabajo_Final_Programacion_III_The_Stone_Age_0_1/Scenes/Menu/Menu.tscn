@@ -125,5 +125,6 @@ text = "Salir"
 [connection signal="mouse_entered" from="BtnControl/Options" to="." method="_on_Options_mouse_entered"]
 [connection signal="pressed" from="BtnControl/Options" to="." method="_on_Options_pressed"]
 [connection signal="mouse_entered" from="BtnControl/Credits" to="." method="_on_Credits_mouse_entered"]
+[connection signal="pressed" from="BtnControl/Credits" to="." method="_on_Credits_pressed"]
 [connection signal="mouse_entered" from="BtnControl/Quit" to="." method="_on_Quit_mouse_entered"]
 [connection signal="pressed" from="BtnControl/Quit" to="." method="_on_Quit_pressed"]

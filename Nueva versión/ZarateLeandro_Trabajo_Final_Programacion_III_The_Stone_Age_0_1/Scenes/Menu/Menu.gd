@@ -71,3 +71,8 @@ func _on_Credits_mouse_entered():
 
 func _on_Options_pressed():
 	Globals.settings.visible=!Globals.settings.visible
+
+
+func _on_Credits_pressed():
+	remove_child(Globals.settings)
+	Globals.go_to_scene("res://Scenes/Game/Game.tscn")

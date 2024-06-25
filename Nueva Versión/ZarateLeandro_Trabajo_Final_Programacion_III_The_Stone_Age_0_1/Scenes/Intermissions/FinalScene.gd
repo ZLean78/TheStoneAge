@@ -4,6 +4,7 @@ var civilization_number=0
 var civilization_name=""
 
 func _ready():
+	add_child(Globals.settings)
 	randomize()
 	AudioPlayer._select_music()
 	AudioPlayer.music.play()
@@ -12,6 +13,7 @@ func _ready():
 
 
 func _on_Button_pressed():
+	remove_child(Globals.settings)
 	Globals.go_to_scene("res://Scenes/Credits/Credits.tscn")
 
 func _get_civilization()->String:
@@ -30,6 +32,11 @@ func _get_civilization()->String:
 	
 	return civilization_name
 			 
+
+func _unhandled_input(event):
+	if event.is_action_pressed("EscapeKey"):
+		Globals.settings.visible=!Globals.settings.visible
+
 func _clear_globals():
 	
 	Globals.food_points = 15

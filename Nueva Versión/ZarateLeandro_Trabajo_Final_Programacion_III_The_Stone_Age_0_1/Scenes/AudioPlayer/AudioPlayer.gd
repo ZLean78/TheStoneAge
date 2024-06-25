@@ -26,6 +26,8 @@ func _select_music():
 		music.stream=load("res://Sound/OpeningSlow.ogg")
 	if Globals.current_scene.name=="FinalScene":
 		music.stream=load("res://Sound/NonLoopingOpening.ogg")
+	if Globals.current_scene.name=="Credits":
+		music.stream=load("res://Sound/FinalCredits.ogg")
 	
 func _play_rain():
 	if Globals.current_scene.its_raining:

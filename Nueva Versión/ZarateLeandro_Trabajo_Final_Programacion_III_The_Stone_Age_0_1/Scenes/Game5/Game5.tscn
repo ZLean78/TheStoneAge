@@ -460,14 +460,10 @@ texture_normal = ExtResource( 20 )
 [node name="PromptsLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 220.0
 margin_top = 6.0
-margin_right = 579.0
-margin_bottom = 122.0
-text = "Desarrolla los hitos debajo del título de 
-DESAFÍOS/DESARROLLOS\".
-Recoge los recursos para hacerlo.
-Repele a los invasores enemigos. Crea 
-un fuerte de soldados y torres
-de vigilancia para hacerlo."
+margin_right = 626.0
+margin_bottom = 105.0
+text = "Busca los recursos necesarios y desarrolla un catapulta para asaltar el centro cívico enemigo. Hazlo antes de que el enemigo construya un fuerte y haga su propia catapulta. Tu fuerte debe estar en pie o de lo contrario deberás crear uno nuevo."
+autowrap = true
 
 [node name="FoodTexture" type="TextureRect" parent="UI/Base/Rectangle"]
 margin_left = 17.0
