@@ -319,12 +319,7 @@ func _process(_delta):
 	#Verificar que el jefe no esté muerto.
 	if !is_warchief_dead:
 	
-		#Etiqueta de tiempo restante para la amenaza enemiga
-		#y etiquetas de recursos recolectados.
-		for enemy in enemy_warriors_node.get_children():
-			timer_label.text = "PELIGRO EN: " + str(int(attack_counter))
-			
-			
+					
 		food_label.text = str(int(Globals.food_points))
 		leaves_label.text = str(int(Globals.leaves_points))	
 		stone_label.text = str(int(Globals.stone_points))	
@@ -333,8 +328,12 @@ func _process(_delta):
 		wood_label.text = str(int(Globals.wood_points))
 		water_label.text = str(int(Globals.water_points))
 		
-		for enemy_warrior in enemy_warriors_node.get_children():
-			state_label.text= "Distancia: " + str(enemy_warrior.position.distance_to(enemy_warrior.target_position))
+		if enemy_warriors_node.get_child_count()>0:
+			timer_label.text = "PELIGRO"
+			state_label.text = "Una tropa enemiga se dirige al poblado."
+		else:
+			timer_label.text = ""
+			state_label.text = ""
 	
 		#Comprobar las unidades existentes para ver si alguna está muerta.
 		_check_units()

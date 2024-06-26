@@ -595,8 +595,6 @@ margin_left = 1007.0
 margin_top = -569.0
 margin_right = 1238.0
 margin_bottom = -519.0
-text = "ATAQUE ENEMIGO:
-000"
 align = 1
 
 [node name="StateLabel" type="Label" parent="UI/Base"]
