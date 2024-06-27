@@ -290,7 +290,7 @@ func _ready():
 
 	
 	if Globals.barn_p!=Vector2() && Globals.barn_p!=Vector2.ZERO:
-		get_tree().get_nodes_in_group("barn")[0].position=Globals.barn_p
+		get_tree().get_nodes_in_group("Barn")[0].position=Globals.barn_p
 	
 	if Globals.fort_p!=Vector2() && Globals.fort_p!=Vector2.ZERO:
 		get_tree().get_nodes_in_group("fort")[0].position=Globals.fort_p
@@ -1552,7 +1552,7 @@ func _on_ReplayOk_pressed():
 
 func _on_NextSceneOk_pressed():
 	$UI.remove_child(Globals.settings)
-	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
+	Globals.go_to_scene("res://Scenes/Intermissions/FinalScene.tscn")
 
 
 

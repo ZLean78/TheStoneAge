@@ -14,5 +14,5 @@ func _unhandled_input(event):
 
 
 func _on_AnimationPlayer_animation_finished(anim_name):
-	#remove_child(Globals.settings)
+	remove_child(Globals.settings)
 	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
