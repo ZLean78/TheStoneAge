@@ -5,6 +5,7 @@ var civilization_name=""
 
 func _ready():
 	add_child(Globals.settings)
+	Globals._clear_globals()
 	randomize()
 	AudioPlayer._select_music()
 	AudioPlayer.music.play()
