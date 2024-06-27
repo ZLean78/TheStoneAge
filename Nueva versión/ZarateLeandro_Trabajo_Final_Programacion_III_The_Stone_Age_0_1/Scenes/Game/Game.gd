@@ -60,16 +60,7 @@ var sheltered=[]
 var all_plants=[]
 var all_trees=[]
 
-#Variables a eliminar del sistema de selección anterior del programa
-#var dragging = false
-#var selected = []
-#var drag_start = Vector2.ZERO
-#var select_rectangle = RectangleShape2D.new()
 
-
-
-#Variable booleana para conocer si el objeto en función está invertido en x o y (?).
-var is_flipped = false
 
 #Variable que controla el tamaño de la pantalla.
 var screensize = Vector2(ProjectSettings.get("display/window/size/width"),ProjectSettings.get("display/window/size/height"))
@@ -121,22 +112,31 @@ func _ready():
 	basket_mode=false
 	
 	
-	
+	#Agregamos como nodo hijo la pantalla de configuración de Globals.settings
 	$UI.add_child(Globals.settings)
 
 #Función _process(_delta)
 func _process(_delta):
-	
+	#Actualizar la etiqueta timer_label según esté lloviendo o no. 
 	if(!its_raining):
 		timer_label.text = "PELIGRO EN: " + str(int(rain_timer.time_left))
 	else:
 		timer_label.text = "LA LLUVIA CESARÁ EN: " + str(int(rain_timer.time_left))
+	
+	#Actualizar las etiquetas de recursos.
 	food_label.text = str(int(Globals.food_points))
 	leaves_label.text = str(int(Globals.leaves_points))	
-	camera._set_its_raining(its_raining)
+	
+	#Actualizar its raining para mostrar o no el sprite de lluvia
+	if its_raining:
+		$AnimatedSprite.visible=true
+		$AnimatedSprite.play()
+	else:
+		$AnimatedSprite.visible=false
+		$AnimatedSprite.stop()
 			
-	for a_unit in all_units:
-		
+	#Establecer propiedad its_raining para cada una de las unidades
+	for a_unit in all_units:		
 		a_unit.its_raining=its_raining
 		
 
@@ -162,7 +162,11 @@ func _unhandled_input(event):
 				replay_confirmation.visible=true
 			else:
 				$UI/Base/Rectangle/OptionsMenu.visible=!$UI/Base/Rectangle/OptionsMenu.visible
-				
+		else:
+			emit_signal("is_arrow")
+			arrow_mode=true
+			basket_mode=false
+	#Hacer captura de pantalla.			
 	if event.is_action_pressed("PrintScreen"):
 		var image = get_viewport().get_texture().get_data()
 		image.flip_y()
@@ -184,6 +188,7 @@ func _create_unit():
 			new_Unit.is_girl=false
 		if(Globals.group_dressed):
 			new_Unit.is_dressed=true	
+			
 		
 		citizens_node.add_child(new_Unit)	
 		
@@ -199,6 +204,12 @@ func _dress_units():
 	for a_unit in all_units:
 		if(!a_unit.is_dressed):
 			a_unit.is_dressed = true
+			a_unit.animation._animate(a_unit.sprite,
+			a_unit.is_dressed,
+			a_unit.is_girl,
+			a_unit.bag_sprite,
+			a_unit.velocity,
+			a_unit.target_position)
 			
 #Agregar bolso de hojas para recolección a las unidades.			
 func _add_bag():
@@ -421,6 +432,7 @@ func _rebake_navigation():
 
 func _on_ExitConfirmation_confirmed():
 	$UI.remove_child(Globals.settings)
+	Globals._clear_globals()
 	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
 	
 
@@ -437,6 +449,7 @@ func _on_ReplayCancel_pressed():
 
 func _on_NextSceneOk_pressed():
 	$UI.remove_child(Globals.settings)
+	AudioPlayer._stop_rain()
 	Globals.go_to_scene("res://Scenes/Intermissions/Intermission1.tscn")
 
 func _on_Settings_pressed():

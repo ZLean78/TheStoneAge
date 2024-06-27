@@ -635,9 +635,9 @@ text = "0"
 
 [node name="OptionsMenu" type="ColorRect" parent="UI/Base/Rectangle"]
 visible = false
-margin_left = 599.0
+margin_left = 600.0
 margin_top = -333.0
-margin_right = 687.0
+margin_right = 688.0
 margin_bottom = -210.0
 color = Color( 0.243137, 0.756863, 0.858824, 1 )
 

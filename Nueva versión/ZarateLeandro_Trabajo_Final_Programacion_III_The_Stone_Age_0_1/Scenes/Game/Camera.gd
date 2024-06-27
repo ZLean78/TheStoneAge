@@ -165,16 +165,7 @@ func _input(event):
 	
 					
 	
-func _set_its_raining(var _its_raining):
-	its_raining = _its_raining
 
-	if(its_raining):
-		$AnimatedSprite.visible = true
-		if(!$AnimatedSprite.playing):
-			$AnimatedSprite.play("default")
-	else:
-		$AnimatedSprite.visible = false
-		$AnimatedSprite.stop()
 
 ######################################
 

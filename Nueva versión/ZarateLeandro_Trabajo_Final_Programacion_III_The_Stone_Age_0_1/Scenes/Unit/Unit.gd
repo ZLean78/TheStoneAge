@@ -94,6 +94,7 @@ func _on_Unit_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton:
 		if event.is_pressed():
 			if event.button_index == BUTTON_LEFT:
+				Globals.current_scene._deselect_all()
 				_set_selected(not selected)
 		
 	

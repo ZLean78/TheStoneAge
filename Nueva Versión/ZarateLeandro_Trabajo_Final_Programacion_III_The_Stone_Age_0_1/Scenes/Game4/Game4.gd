@@ -36,6 +36,7 @@ onready var create_house = tree.get_node("UI/Base/Rectangle/CreateHouse")
 #onready var create_townhall = tree.get_node("UI/Base/Rectangle/CreateTownHall")
 onready var create_warrior = tree.get_node("UI/Base/Rectangle/CreateWarriorUnit")
 
+
 #Nodo de la cámara.
 onready var camera = tree.get_node("Camera")
 
@@ -72,6 +73,7 @@ onready var barn_node = $Barn
 onready var nav2d=$nav
 onready var townhall_node=$TownHall
 onready var enemy_warriors_node=$EnemyWarriors
+onready var enemy_citizens_node=$EnemyCitizens
 onready var next_scene_confirmation = $UI/Base/NextSceneConfirmation
 onready var exit_confirmation=$UI/Base/ExitConfirmation
 onready var replay_confirmation=$UI/Base/ReplayConfirmation
@@ -1470,12 +1472,12 @@ func _on_ReplayCancel_pressed():
 
 
 func _on_ReplayOk_pressed():
-	$UI.remove_child(Globals.settings)
-	get_tree().reload_current_scene()
+	Globals.go_to_scene("res://Scenes/Game4/Game4.tscn")
+	
 
 
-func _on_NextSceneOk_pressed():
-	$UI.remove_child(Globals.settings)
+func _on_NextSceneOk_pressed():	
+	$UI.remove_child(Globals.settings)	
 	Globals.go_to_scene("res://Scenes/Intermissions/Intermission4.tscn")
 
 

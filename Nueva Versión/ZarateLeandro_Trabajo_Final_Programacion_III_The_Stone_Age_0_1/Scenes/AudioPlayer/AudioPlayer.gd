@@ -36,3 +36,6 @@ func _play_rain():
 	else:
 		if $Rain.playing:
 			$Rain.stop() 
+			
+func _stop_rain():
+	$Rain.stop()

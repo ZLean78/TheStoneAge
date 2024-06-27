@@ -12,8 +12,12 @@ export (float) var MIN_ENERGY_LOSS
 #Temporizador de comida, agrega un punto de comida por segundo cuando la unidad toca un árbol frutal.
 onready var food_timer = tree.get_node("food_timer")
 
+onready var animation=$Animation
+
 #Marca de jefe guerrero.
 onready var warchief_mark=$WarchiefMark
+
+
 
 
 #Posición inicial, se actualiza cada vez que hacemos click con el botón derecho.
@@ -113,7 +117,7 @@ var firstPoint = Vector2.ZERO
 var secondPoint = Vector2.ZERO
 var index = 0
 
-#Podígono de navegación
+#Polígono de navegación
 onready var nav2d=tree.get_node("nav")
 
 #Variables para curarse o curar a otro
@@ -121,7 +125,9 @@ var heal_counter=60
 var can_heal_itself=false
 var can_heal_another
 
+
 func _ready():
+	
 	
 	bar=$Bar
 	all_timer=$all_timer
@@ -131,6 +137,7 @@ func _ready():
 	bag_sprite = $scalable/bag_sprite
 	shoot_node = $shootNode
 	shoot_point = $shootNode/shootPoint
+	
 	
 	#Salud.
 	health = MAX_HEALTH
@@ -188,7 +195,7 @@ func _physics_process(delta):
 	
 				
 	#animar al personaje	
-	$Animation._animate(sprite,is_dressed,is_girl,bag_sprite,velocity,target_position)	
+	animation._animate(sprite,is_dressed,is_girl,bag_sprite,velocity,target_position)	
 		
 	#Cambiar los cuadros de animación del player.
 	if position.distance_to(target_position) <= 10:
@@ -197,10 +204,7 @@ func _physics_process(delta):
 		sprite.play()
 	
 	
-	#revisar si está tocando un árbol
-	_check_fruit_tree_touching()
-	_check_plant_touching()
-	_check_pine_tree_touching()
+
 	
 	
 		
@@ -414,11 +418,11 @@ func _on_fruit_tree_fruit_tree_exited():
 	can_add = false
 	is_sheltered = false
 	
-func _on_plant_plant_entered():
-	can_add_leaves = true;
+#func _on_plant_plant_entered():
+#	can_add_leaves = true;
 	
-func _on_plant_plant_exited():
-	can_add_leaves = false;
+#func _on_plant_plant_exited():
+#	can_add_leaves = false;
 
 #func _on_tiger_tiger_entered():
 #	is_tiger_touching=true
@@ -426,24 +430,24 @@ func _on_plant_plant_exited():
 #func _on_tiger_tiger_exited():
 #	is_tiger_touching=false
 
-func _on_player_mouse_entered():
-	selected = true
+#func _on_player_mouse_entered():
+#	selected = true
 
 	
-func _set_fruit_tree_touching(var _fruit_tree):
-	fruit_tree_touching=_fruit_tree
-	
-func _set_plant_touching(var _plant):
-	plant_touching=_plant
-	
-func _set_quarry_touching(var _quarry):
-	quarry_touching=_quarry
+#func _set_fruit_tree_touching(var _fruit_tree):
+#	fruit_tree_touching=_fruit_tree
+#
+#func _set_plant_touching(var _plant):
+#	plant_touching=_plant
+#
+#func _set_quarry_touching(var _quarry):
+#	quarry_touching=_quarry
 	
 func _set_puddle_touching(var _puddle):
 	puddle_touching=_puddle
 	
-func _set_pine_tree_touching(var _pine_tree):
-	pine_tree_touching=_pine_tree
+#func _set_pine_tree_touching(var _pine_tree):
+#	pine_tree_touching=_pine_tree
 
 func _set_lake_touching(var _lake):
 	lake_touching=_lake
@@ -460,20 +464,20 @@ func _set_its_raining(var _its_raining):
 func _set_erased(var _is_erased):
 	is_erased=_is_erased
 	
-func _check_fruit_tree_touching():
-	_set_fruit_tree_touching(fruit_tree_touching)
+#func _check_fruit_tree_touching():
+#	_set_fruit_tree_touching(fruit_tree_touching)
 	
-func _check_plant_touching():
-	_set_plant_touching(plant_touching)
+#func _check_plant_touching():
+#	_set_plant_touching(plant_touching)
 
-func _check_quarry_touching():
-	_set_quarry_touching(quarry_touching)
+#func _check_quarry_touching():
+#	_set_quarry_touching(quarry_touching)
 	
-func _check_puddle_touching():
-	_set_puddle_touching(puddle_touching)
+#func _check_puddle_touching():
+#	_set_puddle_touching(puddle_touching)
 	
-func _check_pine_tree_touching():
-	_set_pine_tree_touching(pine_tree_touching)
+#func _check_pine_tree_touching():
+#	_set_pine_tree_touching(pine_tree_touching)
 	
 
 
@@ -521,23 +525,33 @@ func _on_Area2D_body_exited(body):
 
 func _shoot():
 	target_position = tree.touching_enemy.position
-	shoot_node.look_at(target_position)				
-	var angle
-	if target_position.x<position.x:
-		angle=1/2*(1/2*sin((target_position.x-position.x)*9.8/-200))+shoot_node.rotation
+	shoot_node.look_at(target_position)	
+	if is_warchief:
+		shoot_node.look_at(target_position)
+		var angle = shoot_node.rotation
+		var new_bullet = bullet_scene.instance()
+		new_bullet.owner_name="Warrior"
+		shoot_point.rotation = angle
+		new_bullet.position=Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+		var the_tilemap=get_tree().get_nodes_in_group("tilemap")
+		the_tilemap[0].add_child(new_bullet)
 	else:
-		angle=1/2*(1/2*sin((target_position.x-position.x)*9.8/200))+shoot_node.rotation
-	var new_stone = stone_scene.instance()
-	new_stone.owner_name="Citizen"
-	shoot_point.rotation = angle				
-	new_stone.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-	if target_position.x<position.x:
-		new_stone.set_velocity(Vector2(-200,0))
-	else:
-		new_stone.set_velocity(Vector2(200,0))
-	new_stone.rotation = angle		
-	var the_tilemap=get_tree().get_nodes_in_group("tilemap")
-	the_tilemap[0].add_child(new_stone)
+		var angle
+		if target_position.x<position.x:
+			angle=1/2*(1/2*sin((target_position.x-position.x)*9.8/-200))+shoot_node.rotation
+		else:
+			angle=1/2*(1/2*sin((target_position.x-position.x)*9.8/200))+shoot_node.rotation
+		var new_stone = stone_scene.instance()
+		new_stone.owner_name="Citizen"
+		shoot_point.rotation = angle				
+		new_stone.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+		if target_position.x<position.x:
+			new_stone.set_velocity(Vector2(-200,0))
+		else:
+			new_stone.set_velocity(Vector2(200,0))
+		new_stone.rotation = angle		
+		var the_tilemap=get_tree().get_nodes_in_group("tilemap")
+		the_tilemap[0].add_child(new_stone)
 	can_shoot=false
 
 func _walk():

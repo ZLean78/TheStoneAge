@@ -857,14 +857,9 @@ func _on_ExitConfirmation_confirmed():
 	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
 
 
-#func _on_ReplayConfirmation_confirmed():
-#	$UI.remove_child(Globals.settings)
-#	Globals.go_to_scene("res://Scenes/Game3/Game3.tscn")
-
-
 func _on_ReplayOk_pressed():
 	$UI.remove_child(Globals.settings)
-	get_tree().reload_current_scene()
+	Globals.go_to_scene("res://Scenes/Game3/Game3.tscn")
 
 
 func _on_ReplayCancel_pressed():
