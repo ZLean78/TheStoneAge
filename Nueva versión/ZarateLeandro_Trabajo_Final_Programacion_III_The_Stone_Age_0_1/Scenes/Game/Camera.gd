@@ -38,42 +38,54 @@ var zooming=false
 
 var is_dragging=false
 
-var move_to_point=Vector2()
+#var move_to_point=Vector2()
 
-onready var tree = get_tree().root.get_child(0)
+onready var tree=Globals.current_scene
 
-onready var rectd = tree.find_node("draw_rect")
+#onready var rectd = tree.find_node("draw_rect")
+
+onready var select_draw
+
+
 
 var its_raining=false
 
 signal area_selected
-signal start_move_selection
+#signal start_move_selection
 
 func _ready():
-	#rectd.visible=true
-	connect("area_selected",get_parent(),"area_selected",[self])
+	
+	connect("area_selected",get_parent(),"_area_selected",[self])
 	#connect("start_move_selection",get_parent(),"start_move_selection",[self])
+	#select_draw = Globals.current_scene.select_draw
+	#pass
 
 func _process(delta):
+	
+	
+	
 	#smooth movement
 	var inpx = (int(Input.is_action_pressed("ui_right"))
 				 - int(Input.is_action_pressed("ui_left")))
 	var inpy = (int(Input.is_action_pressed("ui_down"))
 				 - int(Input.is_action_pressed("ui_up")))
-	position.x=lerp(position.x,position.x+inpx*speed*zoom.x,speed*delta)
-	position.y=lerp(position.y,position.y+inpy*speed*zoom.y,speed*delta)
+	position.x=lerp(position.x,position.x+inpx*panSpeed*zoom.x,panSpeed*delta)
+	position.y=lerp(position.y,position.y+inpy*panSpeed*zoom.y,panSpeed*delta)
+	
 
 	#movimiento de cámara con mouse
-	#if Input.is_key_pressed(KEY_CONTROL):
-	#chequear posición del mouse
-	if mousePos.x < marginX:
-		position.x=lerp(position.x,position.x-abs(mousePos.x-marginX)/marginX*panSpeed*zoom.x,panSpeed*delta)
-	elif mousePos.x > ProjectSettings.get("display/window/size/width") - marginX:
-		position.x=lerp(position.x,position.x+abs(mousePos.x-ProjectSettings.get("display/window/size/width")+marginX)/marginX*panSpeed*zoom.x,panSpeed*delta)
-	if mousePos.y < marginY:
-		position.y=lerp(position.y,position.y-abs(mousePos.y-marginY)/marginY*panSpeed*zoom.y,panSpeed*delta)
-	elif mousePos.y > ProjectSettings.get("display/window/size/height") - marginY:
-		position.y=lerp(position.y,position.y+abs(mousePos.y-ProjectSettings.get("display/window/size/height")+marginY)/marginY*panSpeed*zoom.y,panSpeed*delta)
+	if Input.is_action_pressed("mouse_wheel_pressed"):
+		#chequear posición del mouse
+		if mousePos.x < marginX:
+			position.x=lerp(position.x,position.x-abs(mousePos.x-marginX)/marginX*panSpeed*zoom.x,panSpeed*delta)
+		elif mousePos.x > ProjectSettings.get("display/window/size/width") - marginX:
+			position.x=lerp(position.x,position.x+abs(mousePos.x-ProjectSettings.get("display/window/size/width")+marginX)/marginX*panSpeed*zoom.x,panSpeed*delta)
+		if mousePos.y < marginY:
+			position.y=lerp(position.y,position.y-abs(mousePos.y-marginY)/marginY*panSpeed*zoom.y,panSpeed*delta)
+		elif mousePos.y > ProjectSettings.get("display/window/size/height") - marginY:
+			position.y=lerp(position.y,position.y+abs(mousePos.y-ProjectSettings.get("display/window/size/height")+marginY)/marginY*panSpeed*zoom.y,panSpeed*delta)
+
+	
 
 	if Input.is_action_just_pressed("ui_left_mouse_button"):
 		if get_parent().arrow_mode:
@@ -81,32 +93,21 @@ func _process(delta):
 			startV = mousePos
 			is_dragging = true	
 	if is_dragging:
-		end = mousePosGlobal
-		endV = mousePos
-		draw_area()
+		if startV.distance_to(mousePos)>20:
+			end = mousePosGlobal
+			endV = mousePos
+			tree.select_draw.update_status(start,mousePosGlobal+Vector2(6,12),is_dragging)
+			#var drag_end = mousePos
 	if Input.is_action_just_released("ui_left_mouse_button"):
-		if get_parent().arrow_mode:
-			if startV.distance_to(mousePos)>20:
-				end = mousePosGlobal
-				endV = mousePos
-				is_dragging = false
-				draw_area(false)
-				emit_signal("area_selected")
-			else:
-				end = start
-				is_dragging = false
-				draw_area(false)
-			
-#		if startV.distance_to(mousePos)>20:
-#			end = mousePosGlobal
-#			endV = mousePos
-#			is_dragging = false
-#			draw_area(false)
-#			emit_signal("area_selected")
-#		else:
-#			end = start
-#			is_dragging = false
-#			draw_area(false)
+		if startV.distance_to(mousePos)>20:
+			end = mousePosGlobal
+			endV = mousePos
+			is_dragging = false
+			tree.select_draw.update_status(start,mousePosGlobal,is_dragging)				
+			emit_signal("area_selected")
+		else:
+			end = start
+			is_dragging = false
 
 	#zoom in
 	zoom.x = lerp(zoom.x,zoom.x*zoomFactor,zoomSpeed*delta)
@@ -114,21 +115,10 @@ func _process(delta):
 
 	zoom.x=clamp(zoom.x,zoomMin,zoomMax)
 	zoom.y=clamp(zoom.y,zoomMin,zoomMax)
-
-
-
-	"""if (Input.is_action_just_pressed("ui_right_mouse_button")):
-		#position=get_global_mouse_position()
-		position.x=lerp(position.x,position.x+speed*zoom.x,speed*delta)
-		position.y=lerp(position.y,position.y+speed*zoom.y,speed*delta)	
-
-		move_to_point = mousePosGlobal
-		emit_signal("start_move_selection")	"""	
+	
 
 	position.x=clamp(position.x,-1650,1650)
 	position.y=clamp(position.y,-960,960)
-	
-
 
 
 	if not zooming:
@@ -136,23 +126,23 @@ func _process(delta):
 
 
 
-func draw_area(s = true):
-	rectd.rect_size = endV-startV
-
-	var pos = Vector2()
-	pos.x = min(startV.x,endV.x)
-	pos.y = min(startV.y,endV.y)
-	
-	pos.x = clamp(pos.x,0,OS.window_size.x - rectd.rect_size.x)
-	pos.y = clamp(pos.y,0,OS.window_size.y - rectd.rect_size.y)
-	
-	#pos.y = min(startV.y,endV.y) - OS.window_size.y/1.25 - 18
-	pos.y = min(startV.y,endV.y) - OS.window_size.y/1.18	
-	
-	
-	rectd.rect_position = pos
-
-	rectd.rect_size *= int(s) # true = 1, false = 0	
+#func draw_area(s = true):
+#	rectd.rect_size = endV-startV
+#
+#	var pos = Vector2()
+#	pos.x = min(startV.x,endV.x)
+#	pos.y = min(startV.y,endV.y)
+#
+#	pos.x = clamp(pos.x,0,OS.window_size.x - rectd.rect_size.x)
+#	pos.y = clamp(pos.y,0,OS.window_size.y - rectd.rect_size.y)
+#
+#	#pos.y = min(startV.y,endV.y) - OS.window_size.y/1.25 - 18
+#	pos.y = min(startV.y,endV.y) - OS.window_size.y/1.18	
+#
+#
+#	rectd.rect_position = pos
+#
+#	rectd.rect_size *= int(s) # true = 1, false = 0	
 	
 
 func _input(event):
@@ -172,18 +162,10 @@ func _input(event):
 		mousePos = event.position
 		mousePosGlobal = get_global_mouse_position()
 
-	#print(str(zoom.x)+" , "+str(zoom.y))	
 	
-func _set_its_raining(var _its_raining):
-	its_raining = _its_raining
+					
+	
 
-	if(its_raining):
-		$AnimatedSprite.visible = true
-		if(!$AnimatedSprite.playing):
-			$AnimatedSprite.play("default")
-	else:
-		$AnimatedSprite.visible = false
-		$AnimatedSprite.stop()
 
 ######################################
 

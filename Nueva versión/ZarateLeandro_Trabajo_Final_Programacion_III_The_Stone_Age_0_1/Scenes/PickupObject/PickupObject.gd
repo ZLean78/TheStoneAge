@@ -5,6 +5,7 @@ onready var the_sprite = null
 var type=null
 var touching = false
 var empty = false
+var mouse_entered=false
 
 
 # Called when the node enters the scene tree for the first time.
@@ -17,10 +18,12 @@ func _physics_process(_delta):
 
 
 func _on_Area2D_body_entered(body):
-	if("Unit" in body.name):
+	if("Unit" in body.name || "EnemyCitizen" in body.name):
 		touching = true
 		body._set_pickable_touching(true)
 		body._set_pickable(self)
+		if type == "fruit_tree":
+			body.is_sheltered=true
 		if type == "lake":
 			body._set_lake_touching(true)
 		elif type == "puddle":
@@ -29,18 +32,21 @@ func _on_Area2D_body_entered(body):
 
 
 func _on_Area2D_body_exited(body):
-	if("Unit" in body.name):
+	if("Unit" in body.name || "EnemyCitizen" in body.name):
 		touching = false
 		body._set_pickable_touching(false)
 		body._set_pickable(null)
+		if type == "fruit_tree":
+			body.is_sheltered=false
 		if type == "lake":
-			body._set_lake_touching(false)
+			body._set_lake_touching(false)			
 		elif type == "puddle":
 			body._set_puddle_touching(false)
 		
 
 func _on_Area2D_mouse_entered():
-	var tree = get_tree().root.get_child(0)
+	mouse_entered=true
+	var tree = Globals.current_scene
 	if tree.name == "Game":
 		if type == "fruit_tree":
 			get_parent().get_parent().emit_signal("is_basket")
@@ -54,11 +60,11 @@ func _on_Area2D_mouse_entered():
 		elif type == "pine_tree":
 			get_parent().get_parent().emit_signal("is_axe")
 		elif type == "quarry":
-			get_tree().root.get_child(0).emit_signal("is_pick_mattock")	
+			tree.emit_signal("is_pick_mattock")	
 		elif type == "puddle":
-			get_tree().root.get_child(0).emit_signal("is_hand")	
+			tree.emit_signal("is_hand")	
 		elif type == "lake":
-			get_tree().root.get_child(0).emit_signal("is_claypot")	
+			tree.emit_signal("is_claypot")	
 	if tree.name == "Game3":
 		if !tree.house_mode && !tree.townhall_mode:
 			if type == "fruit_tree":
@@ -68,13 +74,13 @@ func _on_Area2D_mouse_entered():
 			elif type == "pine_tree":
 				get_parent().get_parent().emit_signal("is_axe")
 			elif type == "quarry":
-				get_tree().root.get_child(0).emit_signal("is_pick_mattock")	
+				tree.emit_signal("is_pick_mattock")	
 			elif type == "puddle":
-				get_tree().root.get_child(0).emit_signal("is_hand")	
+				tree.emit_signal("is_hand")	
 			elif type == "lake":
-				get_tree().root.get_child(0).emit_signal("is_claypot")
-	if tree.name == "Game4":
-		if !tree.house_mode:
+				tree.emit_signal("is_claypot")
+	if tree.name == "Game4" || tree.name == "Game5":
+		if !tree.house_mode && !tree.fort_mode && !tree.tower_mode && !tree.barn_mode:
 			if type == "fruit_tree":
 				get_parent().get_parent().emit_signal("is_basket")
 			elif type == "plant":
@@ -88,11 +94,15 @@ func _on_Area2D_mouse_entered():
 			elif type == "puddle":
 				get_parent().emit_signal("is_hand")	
 			elif type == "lake":
-				get_parent().emit_signal("is_claypot")		
+				if tree.arrow_mode:
+					get_parent().emit_signal("is_claypot")
+				if tree.house_mode:
+					get_parent().emit_signal("is_house")
 
 
 func _on_Area2D_mouse_exited():
-	var tree = get_tree().root.get_child(0)
+	mouse_entered=false
+	var tree = Globals.current_scene
 	if tree.name == "Game":
 		if type == "fruit_tree" or type == "plant":
 			get_parent().get_parent().emit_signal("is_arrow")
@@ -110,8 +120,8 @@ func _on_Area2D_mouse_exited():
 				get_parent().get_parent().emit_signal("is_arrow")
 			elif type == "quarry" or type == "puddle" or type == "lake":
 				tree.emit_signal("is_arrow")
-	if tree.name == "Game4":
-		if !tree.house_mode:
+	if tree.name == "Game4" || tree.name == "Game5":
+		if !tree.house_mode && !tree.fort_mode && !tree.tower_mode && !tree.barn_mode:
 			if type == "fruit_tree" or type == "plant" or type == "pine_tree":
 				get_parent().get_parent().emit_signal("is_arrow")
 			elif type == "quarry" or type == "puddle" or type == "lake" or type == "copper":

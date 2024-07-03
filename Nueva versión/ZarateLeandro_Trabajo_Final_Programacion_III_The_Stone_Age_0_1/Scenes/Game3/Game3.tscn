@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=2]
+[gd_scene load_steps=38 format=2]
 
 [ext_resource path="res://Scenes/Cave/Cave.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Unit2/Unit2.tscn" type="PackedScene" id=2]
@@ -27,7 +27,6 @@
 [ext_resource path="res://Scenes/Game2/food.png" type="Texture" id=25]
 [ext_resource path="res://Scenes/Mammoth/mammoth.tscn" type="PackedScene" id=26]
 [ext_resource path="res://Scenes/House/house.tscn" type="PackedScene" id=27]
-[ext_resource path="res://Scenes/Game2/NextStageButton.png" type="Texture" id=28]
 [ext_resource path="res://Scenes/TownHall/townhall.tscn" type="PackedScene" id=29]
 [ext_resource path="res://Scenes/MouseIcons/townhall_small.png" type="Texture" id=30]
 
@@ -47,8 +46,55 @@
 0/shapes = [  ]
 0/z_index = 0
 
+[sub_resource type="NavigationPolygon" id=2]
+vertices = PoolVector2Array( 1023, -634, 1027, 601, -1015, 602, -1023, -634 )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
+outlines = [ PoolVector2Array( -1023, -634, -1015, 602, 1027, 601, 1023, -634 ) ]
+
+[sub_resource type="Shader" id=13]
+code = "shader_type canvas_item;
+render_mode blend_mix;
+
+void fragment(){
+	vec4 current_color = texture(TEXTURE,UV);
+	
+	
+	COLOR=vec4(0.7,0.0,0.0,1.0);
+}"
+
+[sub_resource type="ShaderMaterial" id=14]
+shader = SubResource( 13 )
+
+[sub_resource type="Shader" id=10]
+code = "shader_type canvas_item;
+render_mode blend_mix;
+
+void fragment(){
+	vec4 current_color = texture(TEXTURE,UV);
+	
+	
+	COLOR=vec4(0.0,0.7,1.0,1.0);
+}"
+
+[sub_resource type="ShaderMaterial" id=11]
+shader = SubResource( 10 )
+
+[sub_resource type="Shader" id=6]
+code = "shader_type canvas_item;
+render_mode blend_mix;
+
+void fragment(){
+	vec4 current_color = texture(TEXTURE,UV);
+	
+	
+	COLOR=vec4(0.0,0.7,1.0,1.0);
+}"
+
+[sub_resource type="ShaderMaterial" id=15]
+resource_local_to_scene = true
+shader = SubResource( 6 )
+
 [node name="Game3" type="Node2D"]
-position = Vector2( -4, -11 )
 script = ExtResource( 10 )
 Unit2 = ExtResource( 2 )
 Warrior = ExtResource( 16 )
@@ -89,13 +135,21 @@ editor_draw_limits = true
 editor_draw_drag_margin = true
 script = ExtResource( 11 )
 
+[node name="nav" type="Navigation2D" parent="."]
+
+[node name="polygon" type="NavigationPolygonInstance" parent="nav"]
+position = Vector2( 4, 2 )
+navpoly = SubResource( 2 )
+
 [node name="Houses" type="Node2D" parent="."]
+
+[node name="TownHall" type="Node2D" parent="."]
 
 [node name="Warriors" type="Node2D" parent="."]
 
 [node name="Units" type="Node2D" parent="."]
 
-[node name="Unit2" parent="Units" groups=["units"] instance=ExtResource( 2 )]
+[node name="Unit2" parent="Units" instance=ExtResource( 2 )]
 position = Vector2( 669, 347 )
 
 [node name="Tigers" type="Node2D" parent="."]
@@ -214,32 +268,18 @@ position = Vector2( 7, 57 )
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="Base" type="Control" parent="UI"]
-anchor_right = 0.995
-margin_top = 600.0
-margin_right = 8.40002
-margin_bottom = 720.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -100.0
+margin_right = 800.0
 
 [node name="Rectangle" type="NinePatchRect" parent="UI/Base"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-size_flags_horizontal = 2
+margin_top = -12.0
+margin_right = 1440.0
+margin_bottom = 100.0
 size_flags_vertical = 0
 texture = ExtResource( 15 )
-
-[node name="draw_rect" type="ColorRect" parent="UI/Base/Rectangle"]
-show_behind_parent = true
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 640.0
-margin_top = -360.0
-margin_right = -640.0
-margin_bottom = -480.0
-grow_horizontal = 2
-grow_vertical = 2
-input_pass_on_modal_close_click = false
-size_flags_horizontal = 2
-size_flags_vertical = 2
-color = Color( 0.0627451, 0.27451, 0.835294, 0.768627 )
 
 [node name="CreateCitizen" type="TextureButton" parent="UI/Base/Rectangle"]
 margin_left = 1062.0
@@ -262,6 +302,7 @@ margin_left = 17.0
 margin_top = 5.0
 margin_right = 53.0
 margin_bottom = 34.0
+hint_tooltip = "Comida"
 texture = ExtResource( 25 )
 
 [node name="FoodLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -277,6 +318,7 @@ margin_left = 17.0
 margin_top = 74.0001
 margin_right = 57.0
 margin_bottom = 114.0
+hint_tooltip = "Piedra"
 texture = ExtResource( 24 )
 
 [node name="StoneLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -291,6 +333,7 @@ margin_left = 76.0
 margin_top = 10.0
 margin_right = 116.0
 margin_bottom = 29.0
+hint_tooltip = "Arcilla"
 texture = ExtResource( 18 )
 
 [node name="ClayLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -305,6 +348,7 @@ margin_left = 71.0
 margin_top = 35.0
 margin_right = 111.0
 margin_bottom = 77.0
+hint_tooltip = "Madera"
 texture = ExtResource( 21 )
 
 [node name="WoodLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -319,6 +363,7 @@ margin_left = 17.0
 margin_top = 35.0
 margin_right = 53.0
 margin_bottom = 69.0
+hint_tooltip = "Hojas"
 texture = ExtResource( 23 )
 
 [node name="LeavesLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -333,6 +378,7 @@ margin_left = 76.0
 margin_top = 81.0001
 margin_right = 116.0
 margin_bottom = 121.0
+hint_tooltip = "Agua"
 texture = ExtResource( 17 )
 
 [node name="WaterLabel" type="Label" parent="UI/Base/Rectangle"]
@@ -410,6 +456,120 @@ hint_tooltip = "Convertir unidad en
 jefe guerrero."
 texture_normal = ExtResource( 13 )
 
+[node name="ReplayConfirmation" type="ColorRect" parent="UI/Base/Rectangle"]
+visible = false
+material = SubResource( 14 )
+anchor_left = 0.5
+anchor_top = -2.217
+anchor_right = 0.5
+anchor_bottom = -2.217
+margin_left = -129.0
+margin_top = -57.696
+margin_right = 52.0
+margin_bottom = 32.304
+rect_clip_content = true
+focus_mode = 2
+
+[node name="ReplayOk" type="Button" parent="UI/Base/Rectangle/ReplayConfirmation"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -73.0
+margin_top = 13.0
+margin_right = -12.0
+margin_bottom = 33.0
+text = "Aceptar"
+
+[node name="ReplayCancel" type="Button" parent="UI/Base/Rectangle/ReplayConfirmation"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 10.0
+margin_top = 13.0
+margin_right = 76.0
+margin_bottom = 33.0
+text = "Cancelar"
+
+[node name="Label" type="Label" parent="UI/Base/Rectangle/ReplayConfirmation"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -64.0
+margin_top = -38.0
+margin_right = 67.0
+margin_bottom = 10.0
+text = "Has sido derrotado.
+¿Deseas volver a jugar?"
+autowrap = true
+
+[node name="NextSceneConfirmation" type="ColorRect" parent="UI/Base/Rectangle"]
+visible = false
+material = SubResource( 11 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -163.0
+margin_top = -356.0
+margin_right = 87.0
+margin_bottom = -286.0
+rect_clip_content = true
+
+[node name="Label" type="Label" parent="UI/Base/Rectangle/NextSceneConfirmation"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -52.0
+margin_top = -27.0
+margin_right = 51.0
+margin_bottom = -2.0
+text = "¡Has ganado!"
+align = 1
+
+[node name="NextSceneOk" type="Button" parent="UI/Base/Rectangle/NextSceneConfirmation"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -55.0
+margin_top = 1.0
+margin_right = 52.0
+margin_bottom = 26.0
+text = "Siguiente Escena"
+
+[node name="OptionsMenu" type="ColorRect" parent="UI/Base/Rectangle"]
+visible = false
+margin_left = 600.0
+margin_top = -333.0
+margin_right = 688.0
+margin_bottom = -210.0
+color = Color( 0.243137, 0.756863, 0.858824, 1 )
+
+[node name="Settings" type="Button" parent="UI/Base/Rectangle/OptionsMenu"]
+margin_left = 10.0
+margin_top = 12.0
+margin_right = 83.0
+margin_bottom = 44.0
+text = "Opciones"
+
+[node name="Back" type="Button" parent="UI/Base/Rectangle/OptionsMenu"]
+margin_left = 10.0
+margin_top = 49.0
+margin_right = 83.0
+margin_bottom = 77.0
+text = "Volver"
+
+[node name="Quit" type="Button" parent="UI/Base/Rectangle/OptionsMenu"]
+margin_left = 10.0
+margin_top = 82.0
+margin_right = 83.0
+margin_bottom = 110.0
+text = "Salir"
+
 [node name="TimerLabel" type="Label" parent="UI/Base"]
 margin_left = 1115.0
 margin_top = -569.0
@@ -419,14 +579,25 @@ text = "ATAQUE ENEMIGO:
 000"
 align = 1
 
-[node name="NextSceneButton" type="TextureButton" parent="UI/Base"]
-visible = false
-margin_left = 490.0
-margin_top = -269.0
-margin_right = 732.0
-margin_bottom = -199.0
-texture_normal = ExtResource( 28 )
-expand = true
+[node name="ExitConfirmation" type="ConfirmationDialog" parent="UI/Base"]
+material = SubResource( 15 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -138.0
+margin_top = -99.0
+margin_right = 42.0
+margin_bottom = 27.0
+rect_min_size = Vector2( 150, 52.5 )
+rect_scale = Vector2( 1.7363, 1.66238 )
+rect_clip_content = true
+window_title = "Por favor, confirma..."
+resizable = true
+dialog_text = "¿Deseas salir de la partida?
+Advertencia: se perderá todo
+el progreso."
+dialog_autowrap = true
 
 [node name="damage_timer" type="Timer" parent="."]
 autostart = true
@@ -445,4 +616,10 @@ autostart = true
 [connection signal="pressed" from="UI/Base/Rectangle/CreateTownHall" to="." method="_on_CreateTownHall_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/GiveAttackOrder" to="." method="_on_GiveAttackOrder_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/MakeWarchief" to="." method="_on_MakeWarchief_pressed"]
-[connection signal="pressed" from="UI/Base/NextSceneButton" to="." method="_on_NextSceneButton_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/ReplayConfirmation/ReplayOk" to="." method="_on_ReplayOk_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/ReplayConfirmation/ReplayCancel" to="." method="_on_ReplayCancel_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/NextSceneConfirmation/NextSceneOk" to="." method="_on_NextSceneOk_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/OptionsMenu/Settings" to="." method="_on_Settings_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/OptionsMenu/Back" to="." method="_on_Back_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/OptionsMenu/Quit" to="." method="_on_Quit_pressed"]
+[connection signal="confirmed" from="UI/Base/ExitConfirmation" to="." method="_on_ExitConfirmation_confirmed"]
