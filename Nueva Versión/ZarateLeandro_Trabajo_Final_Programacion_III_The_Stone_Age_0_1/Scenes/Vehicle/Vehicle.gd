@@ -13,6 +13,9 @@ var velocity = Vector2()
 var selected=false
 var to_delta=0.0
 var is_flipped=false
+var can_shoot=true
+var just_shot=false
+var is_enemy_touching=false
 
 #Salud de la unidad.
 export (float) var health = 100
@@ -20,8 +23,13 @@ export (float) var health = 100
 
 onready var nav2d
 onready var sprite
-#onready var bar=$ProgressBar
+onready var bar
 onready var foot=$Selected
+onready var shootNode=$scalable/shootNode
+onready var shootPoint=$scalable/shootNode/shootPoint
+
+export (PackedScene) var stone_scene
+
 export (float) var SPEED = 100.0
 var tree
 var path=PoolVector2Array()
@@ -35,10 +43,10 @@ var is_deleted=false
 var distance=Vector2.ZERO
 func _ready():
 	health=100
-	#bar=$ProgressBar
+	bar=$Bar
 	foot=$Selected
 	SPEED=100.0
-	#bar.value=health
+	bar.value=health
 	tree=Globals.current_scene
 	sprite=$scalable/Sprite
 	#target_position=Vector2.ZERO
@@ -47,21 +55,20 @@ func _ready():
 	to_delta=0.0
 	nav2d=tree.get_node("nav")
 	foot=$Selected
-	#bar=$ProgressBar
 	tree=Globals.current_scene
 	nav2d=tree.get_node("nav")
-	#connect("was_selected",tree,"_select_unit")
-	#connect("was_deselected",tree,"_deselect_unit")
+	connect("was_selected",tree,"_select_unit",[self])
+	connect("was_deselected",tree,"_deselect_unit",[self])
 	
 
 func _physics_process(delta):
 	to_delta=delta
 		
 	if selected:
-		#bar.visible = true
+		bar.visible = true
 		foot.visible = true
 	else:
-		#bar.visible = false
+		bar.visible = false
 		foot.visible = false
 	
 #	if target_position!=Vector2.ZERO:
@@ -83,11 +90,11 @@ func _physics_process(delta):
 	# Orientar al player.
 	if velocity.x<0:
 		if(is_flipped==false):			
-			$scalable.scale.x = 1
+			$scalable.scale.x = -1
 			is_flipped = true
 	if velocity.x>0:
 		if(is_flipped==true):			
-			$scalable.scale.x = -1
+			$scalable.scale.x = 1
 			is_flipped = false
 	
 				
@@ -100,10 +107,7 @@ func _physics_process(delta):
 	else:
 		sprite.play()
 	
-		
-
-		
-
+	$Bar.value=health
 		
 func _move_along_path(distance):	
 	var last_point=position
@@ -122,8 +126,7 @@ func _move_along_path(distance):
 		position=last_point
 		set_process(false)
 
-	
-	
+
 
 func _move():
 	firstPoint = global_position
@@ -133,44 +136,51 @@ func _move():
 	path = arrPath
 	index = 0
 
-func _draw():
-	draw_line(firstPoint,target_position,Color.blue)	
-
-#func _move():
-#	target_position=get_global_mouse_position()
-#	var distance=target_position-position
-#	velocity=(SPEED*distance).normalized()
-#	move_and_collide(velocity)
 
 
-
+func _shoot():
+	if is_instance_valid(tree.touching_enemy):
+		target_position = tree.touching_enemy.position
+		var shotHeight = 100
+		var distX = abs(target_position.x-shootPoint.global_position.x)
+		var distY = abs(target_position.y-shootPoint.global_position.y) + shotHeight
+		var vy = sqrt(2*9.8*distY)
+		var travelTime = vy/4.9
+		var vx = distX/travelTime
+		vx*=7.05
+		vy*=5
+		print(target_position, " ", shootPoint.global_position)
+		print(vx," ",vy)
+		var new_stone = stone_scene.instance()
+		new_stone.owner_name="Catapult"
+		new_stone.position = Vector2(shootPoint.global_position.x,shootPoint.global_position.y)
+		if target_position.x<position.x:
+			new_stone.set_velocity(Vector2(-vx,-vy))
+		else:
+			new_stone.set_velocity(Vector2(vx,-vy))
+		var the_tilemap=get_tree().get_nodes_in_group("tilemap")
+		the_tilemap[0].add_child(new_stone)
+		can_shoot=false
+		just_shot=true
 
 func _set_selected(value):
 	if selected!=value:
 		selected=value
 
-		#bar.visible = value
+		bar.visible = value
 		foot.visible = value
 		if selected:
 			emit_signal("was_selected")
-			
 		else:
 			emit_signal("was_deselected")
-			
 
-		
-		
+
 func _on_Unit_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton:
 		if event.is_pressed():			
 			if event.button_index == BUTTON_LEFT:
 				_set_selected(not selected)
 				tree._select_last()
-
-
-
-
-
 
 
 func _on_Vehicle_was_deselected():
@@ -181,3 +191,21 @@ func _on_Vehicle_was_deselected():
 func _on_Vehicle_was_selected():
 	tree._select_unit(self)
 	print("was selected emitted")
+
+
+func _on_all_timer_timeout():
+	can_shoot=true
+
+
+func _on_Sprite_animation_finished():
+	just_shot=false
+	$Animation._animate(sprite,velocity,target_position)
+	
+func _get_damage(body):
+	if "EnemySpear" in body.name:
+		health-=3		
+	if "Stone" in body.name && body.owner_name=="EnemyCitizen":
+		health-=3
+	if health<=0:
+		queue_free()
+	

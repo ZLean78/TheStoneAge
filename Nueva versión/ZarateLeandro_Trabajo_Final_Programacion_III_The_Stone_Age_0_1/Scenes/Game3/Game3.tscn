@@ -19,9 +19,9 @@
 [ext_resource path="res://Scenes/Game2/watericon.png" type="Texture" id=17]
 [ext_resource path="res://Scenes/Game2/puddle.png" type="Texture" id=18]
 [ext_resource path="res://Scenes/MouseIcons/house_small.png" type="Texture" id=19]
-[ext_resource path="res://Scenes/Game2/claypot.png" type="Texture" id=20]
+[ext_resource path="res://Scenes/Unit/warchief.png" type="Texture" id=20]
 [ext_resource path="res://Scenes/Game2/woodicon.png" type="Texture" id=21]
-[ext_resource path="res://Scenes/Game2/agro.png" type="Texture" id=22]
+[ext_resource path="res://Scenes/Unit/warrior.png" type="Texture" id=22]
 [ext_resource path="res://Scenes/Game2/plant.png" type="Texture" id=23]
 [ext_resource path="res://Scenes/Game2/quarry.png" type="Texture" id=24]
 [ext_resource path="res://Scenes/Game2/food.png" type="Texture" id=25]
@@ -197,7 +197,8 @@ is_flipped = true
 wait_time = 40.0
 one_shot = true
 
-[node name="food_timer" type="Timer" parent="."]
+[node name="all_timer" type="Timer" parent="."]
+autostart = true
 
 [node name="FruitTrees" type="Node2D" parent="."]
 
@@ -283,9 +284,9 @@ texture = ExtResource( 15 )
 
 [node name="CreateCitizen" type="TextureButton" parent="UI/Base/Rectangle"]
 margin_left = 1062.0
-margin_top = 22.0
+margin_top = 29.0
 margin_right = 1074.0
-margin_bottom = 45.0
+margin_bottom = 52.0
 hint_tooltip = "Crear Ciudadano.
 Costo: 15 ptos.
 de comida."
@@ -390,16 +391,16 @@ text = "0"
 
 [node name="CreateWarriorUnit" type="TextureButton" parent="UI/Base/Rectangle"]
 visible = false
-margin_left = 935.0
-margin_top = 22.0
-margin_right = 948.0
-margin_bottom = 46.0
+margin_left = 933.0
+margin_top = 23.0
+margin_right = 946.0
+margin_bottom = 53.0
 hint_tooltip = "Crear unidad militar
 guerrero y cazador.
 Costo: 30 ptos. alimento,
 20 ptos. madera,
 10 ptos. piedra."
-texture_normal = ExtResource( 13 )
+texture_normal = ExtResource( 22 )
 
 [node name="CreateHouse" type="TextureButton" parent="UI/Base/Rectangle"]
 visible = false
@@ -422,24 +423,6 @@ Costo: madera, 80 ptos, hojas, 90 ptos,
 arcilla, 100 ptos."
 texture_normal = ExtResource( 30 )
 
-[node name="GiveAttackOrder" type="TextureButton" parent="UI/Base/Rectangle"]
-visible = false
-margin_left = 946.0
-margin_top = 25.0001
-margin_right = 959.0
-margin_bottom = 49.0001
-hint_tooltip = "Cuenco de barro: primer gran hito en alfarería. No podrás recolectar agua sin él. Costo: 85 ptos. lodo."
-texture_normal = ExtResource( 20 )
-
-[node name="DevelopAgriculture" type="TextureButton" parent="UI/Base/Rectangle"]
-visible = false
-margin_left = 975.0
-margin_top = 25.0001
-margin_right = 988.0
-margin_bottom = 49.0001
-hint_tooltip = "Desarrollar agricultura: Una forma constante y dinámica de proveer alimentos. Costo: 70 ptos. agua, 70 ptos alimentos, 70 ptos. hojas."
-texture_normal = ExtResource( 22 )
-
 [node name="DevelopmentsLabel" type="Label" parent="UI/Base/Rectangle"]
 margin_left = 850.0
 margin_top = 7.0
@@ -454,7 +437,7 @@ margin_right = 922.0
 margin_bottom = 44.0
 hint_tooltip = "Convertir unidad en
 jefe guerrero."
-texture_normal = ExtResource( 13 )
+texture_normal = ExtResource( 20 )
 
 [node name="ReplayConfirmation" type="ColorRect" parent="UI/Base/Rectangle"]
 visible = false
@@ -541,6 +524,35 @@ margin_right = 52.0
 margin_bottom = 26.0
 text = "Siguiente Escena"
 
+[node name="OptionsMenu" type="ColorRect" parent="UI/Base/Rectangle"]
+visible = false
+margin_left = 600.0
+margin_top = -333.0
+margin_right = 688.0
+margin_bottom = -210.0
+color = Color( 0.243137, 0.756863, 0.858824, 1 )
+
+[node name="Settings" type="Button" parent="UI/Base/Rectangle/OptionsMenu"]
+margin_left = 10.0
+margin_top = 12.0
+margin_right = 83.0
+margin_bottom = 44.0
+text = "Opciones"
+
+[node name="Back" type="Button" parent="UI/Base/Rectangle/OptionsMenu"]
+margin_left = 10.0
+margin_top = 49.0
+margin_right = 83.0
+margin_bottom = 77.0
+text = "Volver"
+
+[node name="Quit" type="Button" parent="UI/Base/Rectangle/OptionsMenu"]
+margin_left = 10.0
+margin_top = 82.0
+margin_right = 83.0
+margin_bottom = 110.0
+text = "Salir"
+
 [node name="TimerLabel" type="Label" parent="UI/Base"]
 margin_left = 1115.0
 margin_top = -569.0
@@ -581,13 +593,16 @@ autostart = true
 [connection signal="is_pick_mattock" from="." to="." method="_on_Game3_is_pick_mattock"]
 [connection signal="is_sword" from="." to="." method="_on_Game3_is_sword"]
 [connection signal="timeout" from="tiger_timer" to="." method="_on_tiger_timer_timeout"]
+[connection signal="timeout" from="all_timer" to="." method="_on_all_timer_timeout"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateCitizen" to="." method="_on_CreateCitizen_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateWarriorUnit" to="." method="_on_CreateWarriorUnit_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateHouse" to="." method="_on_CreateHouse_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/CreateTownHall" to="." method="_on_CreateTownHall_pressed"]
-[connection signal="pressed" from="UI/Base/Rectangle/GiveAttackOrder" to="." method="_on_GiveAttackOrder_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/MakeWarchief" to="." method="_on_MakeWarchief_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/ReplayConfirmation/ReplayOk" to="." method="_on_ReplayOk_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/ReplayConfirmation/ReplayCancel" to="." method="_on_ReplayCancel_pressed"]
 [connection signal="pressed" from="UI/Base/Rectangle/NextSceneConfirmation/NextSceneOk" to="." method="_on_NextSceneOk_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/OptionsMenu/Settings" to="." method="_on_Settings_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/OptionsMenu/Back" to="." method="_on_Back_pressed"]
+[connection signal="pressed" from="UI/Base/Rectangle/OptionsMenu/Quit" to="." method="_on_Quit_pressed"]
 [connection signal="confirmed" from="UI/Base/ExitConfirmation" to="." method="_on_ExitConfirmation_confirmed"]

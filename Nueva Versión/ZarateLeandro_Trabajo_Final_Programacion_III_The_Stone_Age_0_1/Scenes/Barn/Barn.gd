@@ -13,10 +13,12 @@ var mouse_entered=false
 var body_entered
 
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	tree=Globals.current_scene
-	units=tree.units
+	units=tree.get_node("Units")
+	timer.start()
 
 
 func _process(_delta):
@@ -60,6 +62,8 @@ func _on_Timer_timeout():
 	if body_entered!=null && is_instance_valid(body_entered):
 		_get_damage(body_entered)
 	timer.start()
+	
+		
 
 
 func _on_Barn_mouse_entered():

@@ -1,13 +1,6 @@
 extends "res://Scenes/Unit/Unit.gd"
 
-#Proyectil, piedra para lanzar al enemigo.
-var bullet
-export var bullet_scene=preload("res://Scenes/Bullet/Bullet.tscn")
-export var stone_scene=preload("res://Scenes/Stone/stone.tscn")
 
-#MÁXIMO Y MÍNIMO DE ENEGÍA QUE LA UNIDAD PUEDE PERDER.
-export (float) var MAX_ENERGY_LOSS
-export (float) var MIN_ENERGY_LOSS
 
 onready var fruit_trees_node
 onready var pine_trees_node
@@ -19,7 +12,7 @@ onready var puddle_node
 
 
 #Temporizador de comida, agrega un punto de comida por segundo cuando la unidad toca un árbol frutal.
-onready var food_timer
+onready var all_timer
 
 #Marca de jefe guerrero.
 onready var warchief_mark= $WarchiefMark
@@ -156,7 +149,7 @@ var is_timer_timeout=false
 func _ready():
 	AI_state=1
 	tree=Globals.current_scene
-	food_timer=tree.food_timer
+	all_timer=tree.all_timer
 	fruit_trees_node=tree.get_node("FruitTrees")
 	pine_trees_node=tree.get_node("PineTrees")
 	plants_node=tree.get_node("Plants")
@@ -343,8 +336,8 @@ func _collect_pickable(var _pickable):
 
 
 		
-func _get_damage(var the_beast):
-	if "Tiger" in the_beast.name && the_beast.visible && is_enemy_touching:
+func _get_damage(var collider):
+	if "Tiger" in collider.name && collider.visible && is_enemy_touching:
 		if is_warchief:
 			if(health>0):
 				if(!is_dressed):
@@ -365,10 +358,10 @@ func _get_damage(var the_beast):
 				bar._set_health(health)
 				
 			else:
-				if the_beast:
+				if collider:
 					_set_selected(false)			
 					is_deleted=true
-	if "Mammoth" in the_beast.name && is_enemy_touching:
+	if "Mammoth" in collider.name && is_enemy_touching:
 		if health>0:
 			health-=30
 			bar._set_health(health)
@@ -376,7 +369,7 @@ func _get_damage(var the_beast):
 		else:
 			_set_selected(false)			
 			is_deleted=true
-	if "Bullet" in the_beast.name:
+	if "Bullet" in collider.name:
 		
 		if health>0:			
 			health-=20
@@ -384,7 +377,7 @@ func _get_damage(var the_beast):
 		else:
 			is_deleted=true
 
-	if "Warrior" in the_beast.name && is_enemy_touching:
+	if "Warrior" in collider.name && is_enemy_touching:
 		if health>0:
 			health-=20
 			bar._set_health(health)
@@ -392,7 +385,7 @@ func _get_damage(var the_beast):
 		else:
 			_set_selected(false)			
 			is_deleted=true
-	if "Unit2" in the_beast.name && is_enemy_touching:
+	if "Unit2" in collider.name && is_enemy_touching:
 		if health>0:
 			health-=10
 			bar._set_health(health)
@@ -400,7 +393,7 @@ func _get_damage(var the_beast):
 		else:
 			_set_selected(false)			
 			is_deleted=true
-	if "Stone" in the_beast.name && the_beast.owner_name=="Citizen":
+	if "Stone" in collider.name && collider.owner_name=="Citizen":
 		if health>0:
 			health-=15
 			bar._set_health(health)			
@@ -486,21 +479,7 @@ func _on_all_timer_timeout():
 #		heal(body_entered)
 	timer_count+=1	
 	
-#	if body_entered!=null && is_instance_valid(body_entered):
-#		if "tiger" in body_entered.name || "mammoth" in body_entered.name || "enemy" in body_entered.name:
-#			_get_damage(body_entered)
-#		if is_warchief:
-#			if !("enemy" in body_entered.name) && "unit" in body_entered.name || "warrior" in body_entered.name:
-#				heal(body_entered)
-		
-#	if health<MAX_HEALTH && heal_counter>0:
-#		heal_counter-=1
-#		if heal_counter<=0:
-#			can_heal_itself=true
-#
-#
-#		if can_heal_itself && timer_count>3:
-#			self_heal()
+
 	
 	
 	
@@ -520,11 +499,11 @@ func _die():
 	queue_free()
 
 func _on_Area2D_body_entered(body):
-	if (("Tower" in body.name || "Warrior" in body.name || "Unit" in body.name)
+	if (("Tower" in body.name || "Warrior" in body.name || "Unit" in body.name || "Vehicle" in body.name)
 		&& !("Enemy" in body.name)):	
 		body_entered=body	
 		if is_instance_valid(body_entered):
-			if "Warrior" in body.name || "Unit" in body.name:
+			if "Warrior" in body.name || "Unit" in body.name || "Vehicle" in body.name:
 				body.is_enemy_touching=true
 			
 	
@@ -596,7 +575,7 @@ func _on_Area2D_body_exited(body):
 	
 	
 func _choose_target():
-	if is_instance_valid(body_entered) && body_entered!=null && ("Warrior" in body_entered.name || "Unit" in body_entered.name) && !("Enemy" in body_entered.name):
+	if is_instance_valid(body_entered) && body_entered!=null && ("Warrior" in body_entered.name || "Unit" in body_entered.name || "Vehicle" in body_entered.name) && !("Enemy" in body_entered.name):
 		target=body_entered
 		target_position=body_entered.position
 	else:
@@ -661,11 +640,11 @@ func _state_machine():
 		1:
 			if target!=null && is_instance_valid(target):
 				if( !("Lake" in target.name) && !("Puddle" in target.name) 
-				&& !("Unit" in target.name) && !("Warrior" in target.name)):
+				&& !("Unit" in target.name) && !("Warrior" in target.name) && !("Vehicle"in target.name)):
 					if target.empty:
 						AI_state=0
 						if target_t==target_type.COPPER:
-							print("Cambio buscador de cobre a estado 0")
+							print("Cambio buscador de cobre a estado 0")							
 			else:
 				AI_state=0
 		2:
@@ -683,18 +662,26 @@ func _state_machine():
 			target_position=self.position
 			
 	if body_entered!=null && is_instance_valid(body_entered):
-		#print("se ha detectado un cuerpo")
-		#print(body_entered)
-		if !("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name):
-			
-			target_position=body_entered.position
-			#print("cambio a estado 2")
+		if !("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name || "Vehicle" in body_entered.name):
+			target_position=body_entered.position-Vector2(50,50)
 			AI_state=2	
+			if position.distance_to(target_position)<=50:
+				if can_shoot:
+					_shoot()
+	
+						
+	if tree.enemy_fort_node.get_child_count()>0:
+		if is_instance_valid(tree.enemy_fort_node.get_child(0)):	
+			if target_t==target_type.PINE_TREE:
+				if tree.enemy_fort_node.get_child(0).condition<70:
+					target_position=tree.enemy_fort_node.get_child(0).position
+	
+	if is_instance_valid(tree.enemy_townhall):			
+		if tree.enemy_townhall.condition<80 && target_t!=target_type.PINE_TREE:
+			target_position=tree.enemy_townhall.position
 
 
-	if position.distance_to(target_position)<=50 :
-		if can_shoot:
-			_shoot()
+	
 	
 	
 

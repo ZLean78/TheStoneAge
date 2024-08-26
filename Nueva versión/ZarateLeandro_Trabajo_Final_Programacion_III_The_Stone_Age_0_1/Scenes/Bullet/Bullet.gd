@@ -27,7 +27,7 @@ func _move_spears(var _to_delta):
 		|| "EnemyWarrior" in collision.collider.name
 		|| "EnemyCitizen" in collision.collider.name
 		|| "EnemyHouse" in collision.collider.name
-		|| "EnemyTownhall" in collision.collider.name):
+		|| "EnemyVehicle" in collision.collider.name):
 			collision.collider._get_damage(self)
 		queue_free()
 			

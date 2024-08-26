@@ -14,9 +14,8 @@ func _unhandled_input(event):
 				if tree_instance.touching_enemy!=null:
 					if is_instance_valid(tree_instance.touching_enemy):
 						if unit_instance.selected && unit_instance.can_shoot:
-							if !unit_instance.is_warchief:
-								unit_instance._shoot()
-							else:
+							unit_instance._shoot()
+							if unit_instance.is_warchief:
 								for warrior in tree_instance.get_node("Warriors").get_children():
 									if warrior.position.distance_to(position):
 										warrior._shoot()

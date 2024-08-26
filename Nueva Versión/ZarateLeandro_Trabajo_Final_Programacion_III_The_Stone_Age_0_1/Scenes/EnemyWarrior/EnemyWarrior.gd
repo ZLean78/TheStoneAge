@@ -244,35 +244,27 @@ func _physics_process(delta):
 		stop_timer.start()
 		last_distance_to_target = position.distance_to(target)
 		
-func _get_damage(var the_beast):
-	if "Tiger" in the_beast.name && is_enemy_touching && the_beast.visible:
+func _get_damage(var collider):
+	if "Tiger" in collider.name && is_enemy_touching && collider.visible:
 		if(energy_points>0):
 			energy_points-=5
-			bar._set_health(energy_points)
-			
-		else:
-			#the_beast.unit = null
-			#the_beast.is_chasing = false
-				
-			is_deleted=true
-	if "Mammoth" in the_beast.name && is_enemy_touching:
+			bar._set_health(energy_points)		
+	if "Mammoth" in collider.name && is_enemy_touching:
 		if energy_points>0:
 			energy_points-=30
 			bar._set_health(energy_points)
+	if "Bullet" in collider.name:
+		if collider.owner_name=="Tower":
+			if energy_points>0:
+				energy_points-=50
+				bar._set_health(energy_points)			
+		else:
+			if energy_points>0:
+				energy_points-=20
+				bar._set_health(energy_points)
 			
-		else:
-					
-			is_deleted=true
-	if "Bullet" in the_beast.name:
-
-		if energy_points>0:
-			energy_points-=20
-			bar._set_health(energy_points)
-
-			print("enemy warrior energy" + str(energy_points))
-		else:
-			is_deleted=true	
-				
+	if energy_points<=0:
+		is_deleted=true			
 	
 func move_towards(pos,point,delta):
 	var v = (point-pos).normalized()
@@ -570,10 +562,10 @@ func _die():
 
 
 func _on_Area2D_body_entered(body):	
-	if (("Tower" in body.name || "Warrior" in body.name || "Unit" in body.name)
+	if (("Tower" in body.name || "Warrior" in body.name || "Unit" in body.name || "Vehicle" in body.name)
 		&& !("Enemy" in body.name)):		
 		if is_instance_valid(body_entered):
-			if "Warrior" in body.name || "Unit" in body.name:
+			if "Warrior" in body.name || "Unit" in body.name || "Vehicle" in body.name:
 				body.is_enemy_touching=true
 			
 
@@ -682,7 +674,7 @@ func _state_machine():
 		if !("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name):
 			target=body_entered
 			target_position=body_entered.position
-			print("cambio a estado 2")
+			#print("cambio a estado 2")
 			AI_state=2	
 	
 	
@@ -732,8 +724,7 @@ func _shoot():
 		spear.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
 		spear.set_dir(forward)
 		spear.rotation = angle
-		#spear.owner_name="Enemy_Warrior"
-		#target_position=spear_target	
+			
 	
 		the_tilemap[0].add_child(spear)
 	can_shoot=false	

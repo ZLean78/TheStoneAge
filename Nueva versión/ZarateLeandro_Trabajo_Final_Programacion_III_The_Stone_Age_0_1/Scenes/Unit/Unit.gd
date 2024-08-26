@@ -1,5 +1,10 @@
 extends KinematicBody2D
 
+#Proyectil, piedra para lanzar al enemigo.
+var bullet
+export var bullet_scene=preload("res://Scenes/Bullet/Bullet.tscn")
+export var stone_scene=preload("res://Scenes/Stone/stone.tscn")
+
 #para guardar el parámetro delta del procedimiento _physics_process(delta)
 var to_delta=0.0
 #Velocidad
@@ -9,11 +14,14 @@ export (float) var MAX_HEALTH = 100.0
 #Salud de la unidad.
 export (float) var health = 100
 
+#MÁXIMO Y MÍNIMO DE ENEGÍA QUE LA UNIDAD PUEDE PERDER.
+export (float) var MAX_ENERGY_LOSS
+export (float) var MIN_ENERGY_LOSS
+
 #Nodo raíz del nivel.
 onready var tree=Globals.current_scene
 
-#Temporizador de comida, agrega un punto de comida por segundo cuando la unidad toca un árbol frutal.
-onready var all_timer
+
 
 #Contador para considerar acciones en el evento timeout del temporizador "AllTimer"
 var timer_count=0
@@ -94,10 +102,14 @@ func _on_Unit_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton:
 		if event.is_pressed():
 			if event.button_index == BUTTON_LEFT:
+				Globals.current_scene._deselect_all()
 				_set_selected(not selected)
 		
 	
 func _set_erased(var _is_erased):
 	is_erased=_is_erased
+
+
+
 
 

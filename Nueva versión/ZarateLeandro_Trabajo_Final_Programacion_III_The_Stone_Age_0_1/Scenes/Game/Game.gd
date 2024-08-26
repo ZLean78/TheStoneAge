@@ -14,10 +14,9 @@ var its_raining = false
 
 #Nodos de escenario.
 onready var tree = Globals.current_scene
-onready var food_timer = $food_timer
+onready var all_timer = $all_timer
 onready var camera = $Camera
 onready var rain_timer = $Rain_Timer
-onready var tile_map = $TileMap
 onready var cave = $Cave/Cave
 onready var lake=$Lake/Lake
 onready var citizens_node=$Citizens
@@ -60,16 +59,7 @@ var sheltered=[]
 var all_plants=[]
 var all_trees=[]
 
-#Variables a eliminar del sistema de selección anterior del programa
-#var dragging = false
-#var selected = []
-#var drag_start = Vector2.ZERO
-#var select_rectangle = RectangleShape2D.new()
 
-
-
-#Variable booleana para conocer si el objeto en función está invertido en x o y (?).
-var is_flipped = false
 
 #Variable que controla el tamaño de la pantalla.
 var screensize = Vector2(ProjectSettings.get("display/window/size/width"),ProjectSettings.get("display/window/size/height"))
@@ -121,25 +111,35 @@ func _ready():
 	basket_mode=false
 	
 	
-	
+	#Agregamos como nodo hijo la pantalla de configuración de Globals.settings
 	$UI.add_child(Globals.settings)
 
 #Función _process(_delta)
 func _process(_delta):
-	
+	#Actualizar la etiqueta timer_label según esté lloviendo o no. 
 	if(!its_raining):
 		timer_label.text = "PELIGRO EN: " + str(int(rain_timer.time_left))
 	else:
 		timer_label.text = "LA LLUVIA CESARÁ EN: " + str(int(rain_timer.time_left))
+	
+	#Actualizar las etiquetas de recursos.
 	food_label.text = str(int(Globals.food_points))
 	leaves_label.text = str(int(Globals.leaves_points))	
-	camera._set_its_raining(its_raining)
+	
+	#Actualizar its raining para mostrar o no el sprite de lluvia
+	if its_raining:
+		$AnimatedSprite.visible=true
+		$AnimatedSprite.play()
+	else:
+		$AnimatedSprite.visible=false
+		$AnimatedSprite.stop()
 			
-	for a_unit in all_units:
-		
+	#Establecer propiedad its_raining para cada una de las unidades
+	for a_unit in all_units:		
 		a_unit.its_raining=its_raining
 		
-
+	_check_units()
+	_check_victory()
 		
 #UNHANDLED INPUT
 func _unhandled_input(event):
@@ -161,15 +161,17 @@ func _unhandled_input(event):
 			if(all_units.size()==0 && Globals.food_points<15):
 				replay_confirmation.visible=true
 			else:
-				exit_confirmation.popup()
-				exit_confirmation.get_ok().text="Aceptar"
-				exit_confirmation.get_cancel().text="cancelar"
+				$UI/Base/Rectangle/OptionsMenu.visible=!$UI/Base/Rectangle/OptionsMenu.visible
+		else:
+			emit_signal("is_arrow")
+			arrow_mode=true
+			basket_mode=false
+	#Hacer captura de pantalla.			
 	if event.is_action_pressed("PrintScreen"):
 		var image = get_viewport().get_texture().get_data()
 		image.flip_y()
 		image.save_png("res://captures/image.png")
-	if event.is_action_pressed("Settings"):
-		Globals.settings.visible=!Globals.settings.visible
+	
 	
 #///////////////////////////////////////////////////////////////////////////
 #FUNCIONES DE CREACIÓN Y CONFIGURACIÓN DE UNIDADES
@@ -186,6 +188,7 @@ func _create_unit():
 			new_Unit.is_girl=false
 		if(Globals.group_dressed):
 			new_Unit.is_dressed=true	
+			
 		
 		citizens_node.add_child(new_Unit)	
 		
@@ -201,6 +204,12 @@ func _dress_units():
 	for a_unit in all_units:
 		if(!a_unit.is_dressed):
 			a_unit.is_dressed = true
+			a_unit.animation._animate(a_unit.sprite,
+			a_unit.is_dressed,
+			a_unit.is_girl,
+			a_unit.bag_sprite,
+			a_unit.velocity,
+			a_unit.target_position)
 			
 #Agregar bolso de hojas para recolección a las unidades.			
 func _add_bag():
@@ -303,8 +312,10 @@ func start_move_selection(obj):
 func _rain_pour():
 	if(!its_raining):
 		its_raining=true
+		$"/root/AudioPlayer"._play_rain()
 	else:
 		its_raining=false
+		$"/root/AudioPlayer"._play_rain()
 			
 
 #SEÑAL DE TIEMPO TRANSCURRIDO PARA TEMPORIZADOR 'RAIN TIMER',
@@ -312,7 +323,7 @@ func _rain_pour():
 func _on_Rain_Timer_timeout():	
 	_rain_pour()
 	if(its_raining):
-		rain_timer.wait_time = 100
+		rain_timer.wait_time = 90		
 	else:
 		rain_timer.wait_time = 30
 
@@ -352,13 +363,15 @@ func _on_Game_is_arrow():
 func _on_CreateCitizen_pressed():
 	_create_unit()
 
-#///////////////////////////////////////////////////////////////////
-#SEÑAL DE TIEMPO TRANSCURRIDO DE TEMPORIZADOR 'FOOD TIMER', LLAMADO ASÍ POR
-#ESTAR PENSADO PARA TEMPORIZAR LA RECOLECCIÖN DE COMIDA PERO USADO LUEGO
-#GENERALMENTE PARA LLAMAR A OTRAS FUNCIONES DE LAS QUE SÓLO QUEDA 'CHECK VICTORY'.
-func _on_food_timer_timeout():
-	if(all_units.size()>-1):
-		_check_victory()
+
+#////////////////////////////////////////////////////////////////////////////////////
+#FUNCIÓN 'CHECK UNITS' para identificar las unidades que han muerto.		
+func _check_units():
+	for a_unit in all_units:
+		if a_unit.is_deleted:
+			var the_unit=all_units[all_units.find(a_unit,0)]
+			all_units.remove(all_units.find(a_unit,0))
+			the_unit._die()
 		
 #////////////////////////////////////////////////////////////////////////////////////
 #FUNCIÓN 'CHECK VICTORY' para evaluar condiciones de derrota o victoria.
@@ -369,6 +382,8 @@ func _check_victory():
 	if(cave.sheltered_units>=12):
 		prompts_label.text = "Has ganado."
 		next_scene_confirmation.visible=true
+		
+
 		
 		
 func _update_path(new_obstacle):	
@@ -421,11 +436,14 @@ func _rebake_navigation():
 
 func _on_ExitConfirmation_confirmed():
 	$UI.remove_child(Globals.settings)
+	Globals._clear_globals()
 	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
 	
 
 func _on_ReplayOk_pressed():
 	$UI.remove_child(Globals.settings)
+	AudioPlayer._stop_rain()
+	Globals._clear_globals()
 	Globals.go_to_scene("res://Scenes/Game/Game.tscn")
 
 
@@ -437,6 +455,31 @@ func _on_ReplayCancel_pressed():
 
 func _on_NextSceneOk_pressed():
 	$UI.remove_child(Globals.settings)
-	Globals.go_to_scene("res://Scenes/Game2/Game2.tscn")
-	
+	AudioPlayer._stop_rain()
+	Globals.go_to_scene("res://Scenes/Intermissions/Intermission1.tscn")
 
+func _on_Settings_pressed():
+	Globals.settings.visible=true
+
+
+func _on_Quit_pressed():
+	exit_confirmation.popup()
+	exit_confirmation.get_ok().text="Aceptar"
+	exit_confirmation.get_cancel().text="cancelar"
+
+
+func _on_Back_pressed():
+	$UI/Base/Rectangle/OptionsMenu.visible=false
+
+
+#///////////////////////////////////////////////////////////////////
+#SEÑAL DE TIEMPO TRANSCURRIDO DE TEMPORIZADOR 'ALL TIMER', llamado
+#así por llevar a cabo la mayoría de las acciones temporizadas.
+func _on_all_timer_timeout():
+	for a_unit in all_units:
+		if is_instance_valid(a_unit):
+			if a_unit.pickable!=null:
+				a_unit._collect_pickable(a_unit.pickable)
+			
+			if a_unit.its_raining:
+				a_unit._get_rain_damage()

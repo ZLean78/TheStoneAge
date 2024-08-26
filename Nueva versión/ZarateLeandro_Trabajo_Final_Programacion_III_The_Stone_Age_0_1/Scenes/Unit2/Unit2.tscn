@@ -13,7 +13,7 @@
 
 [sub_resource type="CanvasItemMaterial" id=7]
 
-[sub_resource type="Shader" id=5]
+[sub_resource type="Shader" id=9]
 code = "shader_type canvas_item;
 render_mode blend_mix;
 
@@ -24,7 +24,7 @@ void fragment(){
 }"
 
 [sub_resource type="ShaderMaterial" id=6]
-shader = SubResource( 5 )
+shader = SubResource( 9 )
 
 [sub_resource type="SpriteFrames" id=3]
 animations = [ {
@@ -50,7 +50,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=8]
-extents = Vector2( 5, 7 )
+extents = Vector2( 7.5, 13 )
 
 [sub_resource type="CircleShape2D" id=4]
 radius = 31.6938
@@ -100,7 +100,7 @@ frames = SubResource( 3 )
 animation = "bag_1"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 1, 5 )
+position = Vector2( 0.5, 0 )
 shape = SubResource( 8 )
 
 [node name="Area2D" type="Area2D" parent="."]
@@ -111,9 +111,6 @@ collision_mask = 3
 position = Vector2( 0.5, -1.5 )
 shape = SubResource( 4 )
 
-[node name="all_timer" type="Timer" parent="."]
-autostart = true
-
 [node name="Animation" type="Node2D" parent="."]
 script = ExtResource( 9 )
 
@@ -123,4 +120,3 @@ script = ExtResource( 10 )
 [connection signal="input_event" from="." to="." method="_on_Unit_input_event"]
 [connection signal="body_entered" from="Area2D" to="." method="_on_Area2D_body_entered"]
 [connection signal="body_exited" from="Area2D" to="." method="_on_Area2D_body_exited"]
-[connection signal="timeout" from="all_timer" to="." method="_on_all_timer_timeout"]

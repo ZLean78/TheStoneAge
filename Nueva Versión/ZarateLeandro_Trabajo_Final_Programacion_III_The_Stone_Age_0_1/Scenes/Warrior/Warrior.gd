@@ -43,7 +43,7 @@ var initialPosition = Vector2()
 #Puntos de comida de la unidad.
 var food_points = 0
 #Puntos de energía.
-var energy_points = MAX_HEALTH
+var health = MAX_HEALTH
 #Variable que indica si se está arrastrando el mouse sobre la unidad.
 var dragging = true
 
@@ -147,7 +147,7 @@ func _ready():
 	nav2d=tree.get_node("nav")
 	connect("was_selected",tree,"_select_unit")
 	connect("was_deselected",tree,"_deselect_unit")
-	emit_signal("health_change",energy_points)
+	emit_signal("health_change",health)
 	
 	tree=Globals.current_scene
 	nav2d=tree.get_node("nav")
@@ -251,9 +251,9 @@ func _physics_process(delta):
 		
 func _get_damage(var the_beast):
 	if "Tiger" in the_beast.name && the_beast.visible:
-		if(energy_points>0):
-			energy_points-=5
-			bar._set_health(energy_points)
+		if(health>0):
+			health-=5
+			bar._set_health(health)
 			
 		else:
 			#the_beast.unit = null
@@ -261,18 +261,18 @@ func _get_damage(var the_beast):
 			_set_selected(false)			
 			is_deleted=true
 	if "Mammoth" in the_beast.name && is_enemy_touching:
-		if energy_points>0:
-			energy_points-=30
-			bar._set_health(energy_points)
+		if health>0:
+			health-=30
+			bar._set_health(health)
 			
 		else:
 			_set_selected(false)			
 			is_deleted=true	
 	if "EnemySpear" in the_beast.name:
 		the_beast.queue_free()
-		if energy_points>0:
-			energy_points-=20
-			bar._set_health(energy_points)
+		if health>0:
+			health-=20
+			bar._set_health(health)
 			
 		else:
 			_set_selected(false)			
