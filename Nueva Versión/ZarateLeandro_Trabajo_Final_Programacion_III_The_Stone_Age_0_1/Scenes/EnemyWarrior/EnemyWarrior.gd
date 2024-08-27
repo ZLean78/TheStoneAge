@@ -562,16 +562,16 @@ func _die():
 
 
 func _on_Area2D_body_entered(body):	
-	if (("Tower" in body.name || "Warrior" in body.name || "Unit" in body.name || "Vehicle" in body.name)
+	if (("Tower" in body.name || "Warrior" in body.name || "Unit" in body.name || "Vehicle" in body.name  || "General" in body.name)
 		&& !("Enemy" in body.name)):		
 		if is_instance_valid(body_entered):
-			if "Warrior" in body.name || "Unit" in body.name || "Vehicle" in body.name:
+			if "Warrior" in body.name || "Unit" in body.name || "Vehicle" in body.name || "General" in body.name:
 				body.is_enemy_touching=true
 			
 
 		
 func _on_Area2D_body_exited(body):
-	if "Warrior" in body.name || "Unit" in body.name:
+	if "Warrior" in body.name || "Unit" in body.name || "General" in body.name:
 		body.is_enemy_touching=false	
 		
 #
@@ -671,7 +671,7 @@ func _state_machine():
 	
 	if body_entered!=null && is_instance_valid(body_entered):
 		#print("se ha detectado un cuerpo")
-		if !("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name):
+		if !("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name || "General" in body_entered.name):
 			target=body_entered
 			target_position=body_entered.position
 			#print("cambio a estado 2")

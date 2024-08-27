@@ -499,11 +499,11 @@ func _die():
 	queue_free()
 
 func _on_Area2D_body_entered(body):
-	if (("Tower" in body.name || "Warrior" in body.name || "Unit" in body.name || "Vehicle" in body.name)
+	if (("Tower" in body.name || "Warrior" in body.name || "Unit" in body.name || "Vehicle" in body.name || "General" in body.name)
 		&& !("Enemy" in body.name)):	
 		body_entered=body	
 		if is_instance_valid(body_entered):
-			if "Warrior" in body.name || "Unit" in body.name || "Vehicle" in body.name:
+			if "Warrior" in body.name || "Unit" in body.name || "Vehicle" in body.name || "General" in body.name:
 				body.is_enemy_touching=true
 			
 	
@@ -569,7 +569,7 @@ func _walk():
 
 
 func _on_Area2D_body_exited(body):
-	if "Warrior" in body.name || "Unit" in body.name:
+	if "Warrior" in body.name || "Unit" in body.name || "General" in body.name :
 		body.is_enemy_touching=false
 		body_entered=null	
 	

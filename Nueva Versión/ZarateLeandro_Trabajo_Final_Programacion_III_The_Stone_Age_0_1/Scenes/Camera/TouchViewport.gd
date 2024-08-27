@@ -53,7 +53,7 @@ func _input(event):
 				if(unit.collider.selected):
 					unit.collider.get_node("Mouse_Control").can_move = true
 					unit.collider.target_position = $Camera2D_1.get_global_mouse_position()
-					#print(str(unit.target_position.x))
+					
 					unit.collider.device_number = 2
 				else:
 					unit.collider.get_node("Mouse_Control").can_move = false

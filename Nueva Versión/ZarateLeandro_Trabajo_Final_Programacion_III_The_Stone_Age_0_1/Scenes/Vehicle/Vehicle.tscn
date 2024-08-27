@@ -81,6 +81,7 @@ collision_mask = 11
 shape = SubResource( 2 )
 
 [node name="all_timer" type="Timer" parent="."]
+wait_time = 2.0
 autostart = true
 
 [node name="Animation" type="Node2D" parent="."]

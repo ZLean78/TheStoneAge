@@ -15,7 +15,7 @@ font_data = ExtResource( 3 )
 
 [sub_resource type="Animation" id=3]
 resource_name = "Billboard"
-length = 20.0
+length = 8.0
 step = 1.0
 tracks/0/type = "value"
 tracks/0/path = NodePath("Narrative:rect_position")
@@ -24,10 +24,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 20 ),
+"times": PoolRealArray( 0, 8 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Vector2( 70, 1000 ), Vector2( 70, -600 ) ]
+"values": [ Vector2( 70, 771 ), Vector2( 70, -600 ) ]
 }
 
 [sub_resource type="Animation" id=4]
@@ -57,7 +57,7 @@ texture = ExtResource( 1 )
 margin_left = 70.0
 margin_top = 774.0
 margin_right = 598.0
-margin_bottom = 1237.99
+margin_bottom = 1237.98
 custom_colors/font_color = Color( 0.894118, 0.901961, 0.337255, 1 )
 custom_fonts/font = SubResource( 1 )
 text = "Tras haber encontrado resguardo en la caverna, la comunidad se propone comenzar su lucha por la supervivencia. Deberá enfrentarse a las bestias, y obtener comida de ellas. Al mismo tiempo, desarrollará una serie de tecnologías que le permitan avanzar en su empresa."

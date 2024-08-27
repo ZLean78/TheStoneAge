@@ -525,7 +525,7 @@ func _unhandled_input(event):
 		#cancelando así la construcción de una casa u otra acción.
 		if event.is_action_pressed("EscapeKey"):
 			#Si el cursor está en modo casa.
-			if house_mode || fort_mode || tower_mode || barn_mode:
+			if house_mode || fort_mode || tower_mode || barn_mode || basket_mode || mattock_mode || sword_mode || axe_mode || claypot_mode:
 				#Ponemos el cursor en modo flecha para cancelar la construcción de una casa.
 				_on_Game4_is_arrow()
 			elif arrow_mode:

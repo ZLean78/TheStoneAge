@@ -139,7 +139,7 @@ func _move():
 
 
 func _shoot():
-	if is_instance_valid(tree.touching_enemy):
+	if is_instance_valid(tree.touching_enemy) && can_shoot:
 		target_position = tree.touching_enemy.position
 		var shotHeight = 100
 		var distX = abs(target_position.x-shootPoint.global_position.x)

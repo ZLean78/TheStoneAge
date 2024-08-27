@@ -24,9 +24,18 @@ func _townhall_build():
 
 
 func _on_Area2D_body_entered(body):
+	print(body.name)
 	if "Unit" in body.name:
 		body.townhall_entered=true
-
+	if "Stone" in body.name && "Catapult" in body.owner_name:
+		body.queue_free()
+		condition-=10
+		if condition<=0:
+			Globals.is_townhall_down=true
+			queue_free()
+		
+		
+	
 
 func _on_Area2D_body_exited(body):
 	if "Unit" in body.name:
@@ -47,13 +56,8 @@ func _on_Area2D_mouse_entered():
 func _on_Area2D_mouse_exited():
 	mouse_entered=false
 	
-func _get_damage(body):
-	if is_instance_valid(body):
-		if "Stone" in body.name && body.owner_name=="EnemyCatapult":
-			condition-=3
-	if condition<=0:
-		Globals.is_townhall_down=true
-		queue_free()
+#func _get_damage(body):
+	
 
 
 

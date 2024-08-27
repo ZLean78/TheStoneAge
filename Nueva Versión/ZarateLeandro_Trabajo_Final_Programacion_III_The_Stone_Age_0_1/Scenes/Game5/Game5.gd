@@ -370,22 +370,21 @@ func _process(delta):
 		
 		
 		
-		if !Globals.is_enemy_fort_built:
-			state_label.text= ("Inventario Enemigo: \n" +
-			"Comida: " + str(Globals.e_food_points) +
-			"\nHojas: " + str(Globals.e_leaves_points) +
-			"\nMadera: " + str(Globals.e_wood_points) +
-			"\nArcilla: " + str(Globals.e_clay_points) +
-			"\nAgua: " + str(Globals.e_water_points) +
-			"\nPiedra: " + str(Globals.e_stone_points) +
-			"\nCobre: " + str(Globals.e_copper_points)) 
+		state_label.text= ("Inventario Enemigo: \n" +
+		"Comida: " + str(Globals.e_food_points) +
+		"\nHojas: " + str(Globals.e_leaves_points) +
+		"\nMadera: " + str(Globals.e_wood_points) +
+		"\nArcilla: " + str(Globals.e_clay_points) +
+		"\nAgua: " + str(Globals.e_water_points) +
+		"\nPiedra: " + str(Globals.e_stone_points) +
+		"\nCobre: " + str(Globals.e_copper_points)) 
+		
+		if Globals.is_enemy_fort_built && enemy_vehicles.get_child_count()==0:
+			timer_label.text="¡Alerta!"
+			state_label.text="Los habitantes del poblado enemigo han levantado un fuerte."
 		else:
-			if Globals.is_enemy_fort_built && enemy_vehicles.get_child_count()==0:
-				timer_label.text="¡Alerta!"
-				state_label.text="Los habitantes del poblado enemigo han levantado un fuerte."
-			else:
-				timer_label.text="¡Peligro!"
-				"Una catapulta enemiga se dirige al poblado para derribar tu centro cívico."
+			timer_label.text="¡Peligro!"
+			state_label.text="Una catapulta enemiga se dirige al poblado para derribar tu centro cívico."
 	
 		#Comprobar las unidades existentes para ver si alguna está muerta.
 		_check_units()
@@ -426,7 +425,7 @@ func _select_unit(unit):
 	#if not selected_units.has(unit):
 	selected_units.append(unit)
 	
-	if "Vehicle" in unit.name:
+	if "Vehicle" in unit.name && !"Enemy" in unit.name:
 		print("The unit is a vehicle.")	
 	#create_buttons()
 
@@ -556,8 +555,8 @@ func _unhandled_input(event):
 		#cancelando así la construcción de una casa u otra acción.
 		if event.is_action_pressed("EscapeKey"):
 			#Si el cursor está en modo casa.
-			if house_mode || fort_mode || tower_mode || barn_mode:
-				#Ponemos el cursor en modo flecha para cancelar la construcción de una casa.
+			if house_mode || fort_mode || tower_mode || barn_mode || basket_mode || mattock_mode || sword_mode || axe_mode || claypot_mode:
+				#Ponemos el cursor en modo flecha.
 				_on_Game5_is_arrow()
 			elif arrow_mode:
 				if(all_units.size()==0 && Globals.food_points<15) || is_warchief_dead:
@@ -1349,14 +1348,14 @@ func _manage_enemy_units():
 			
 			new_enemy_warrior.AI_state=0
 		else:
-			if enemy_fort_node.get_child_count() == 0 && Globals.e_wood_points>=100 && Globals.e_stone_points>=50 && Globals.e_leaves_points>=20:
+			if enemy_fort_node.get_child_count() == 0 && Globals.e_wood_points>=300 && Globals.e_stone_points>=200 && Globals.e_leaves_points>=40:
 				_create_enemy_fort()
+				
+		if Globals.is_enemy_fort_built:
+			if enemy_vehicles.get_child_count()==0 && Globals.e_wood_points>=100 && Globals.e_stone_points>=50 && Globals.e_leaves_points>=20:
 				Globals.e_wood_points-=100
 				Globals.e_stone_points-=50
 				Globals.e_leaves_points-=20
-				Globals.is_enemy_fort_built=true
-		if Globals.is_enemy_fort_built:
-			if enemy_vehicles.get_child_count()==0:
 				var new_enemy_vehicle=EnemyVehicle.instance()
 				new_enemy_vehicle.position=Vector2(enemy_fort_node.get_child(0).position.x,enemy_fort_node.get_child(0).position.y+100)
 				enemy_vehicles.add_child(new_enemy_vehicle)
@@ -1370,7 +1369,7 @@ func _create_enemy_fort():
 	Globals.is_enemy_fort_built=true
 	Globals.e_wood_points-=300
 	Globals.e_stone_points-=200
-	Globals.e_leaves_points-=40
+	Globals.e_leaves_points-=40	
 	obstacles.append(new_enemy_fort)
 	_rebake_navigation()
 			
@@ -1584,6 +1583,7 @@ func _on_ReplayCancel_pressed():
 
 
 func _on_ReplayOk_pressed():
+	Globals._clear_globals()
 	$UI.remove_child(Globals.settings)
 	Globals.go_to_scene("res://Scenes/Game5/Game5.tscn")
 

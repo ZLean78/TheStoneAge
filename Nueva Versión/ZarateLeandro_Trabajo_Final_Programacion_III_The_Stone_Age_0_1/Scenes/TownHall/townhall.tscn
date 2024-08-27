@@ -7,7 +7,7 @@
 bg_color = Color( 0, 0, 1, 1 )
 
 [sub_resource type="CircleShape2D" id=2]
-radius = 124.016
+radius = 78.0256
 
 [node name="TownHall" type="StaticBody2D" groups=["townhall"]]
 collision_layer = 8
@@ -28,7 +28,7 @@ max_value = 80.0
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 8
-collision_mask = 11
+collision_mask = 15
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource( 2 )

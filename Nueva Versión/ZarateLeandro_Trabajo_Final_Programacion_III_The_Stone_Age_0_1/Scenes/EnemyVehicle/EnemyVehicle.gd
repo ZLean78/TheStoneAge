@@ -5,7 +5,6 @@ var direction=Vector2()
 
 #Variables origen y destino de navegación.
 var firstPoint = position
-var secondPoint = null
 var index = 0
 
 var target_position = Vector2.ZERO
@@ -40,6 +39,8 @@ signal was_deselected
 #Para saber si la unidad ha sido eliminada.
 var is_deleted=false
 var distance=Vector2.ZERO
+var shootTimer=0
+var shootEveryXSecond=2
 func _ready():
 	health=100
 	bar=$Bar
@@ -57,6 +58,9 @@ func _ready():
 	connect("was_selected",tree,"_select_unit",[self])
 	connect("was_deselected",tree,"_deselect_unit",[self])
 	target_position=get_parent().get_tree().root.get_child(3).townhall.position
+	target_position.x-=130
+	target_position.y+=35
+
 	
 
 func _physics_process(delta):
@@ -69,17 +73,23 @@ func _physics_process(delta):
 		bar.visible = false
 		foot.visible = false
 	
-
-	
+	shootTimer-=delta
+	if target_position!=null:
+		if position.distance_to(target_position) >= 5:
+			_create_path(target_position)	
 		
 	
-	if position.distance_to(target_position) > 10:
-		#_move_to_target(target_position)
-		_move(target_position)
-		_move_along_path(SPEED*delta)	
+	if position.distance_to(target_position) >= 5:
+		_move_along_path(SPEED*delta)
 	else:
 		velocity=Vector2.ZERO
-		_shoot()
+#		get_tree().create_timer(1.0).connect("timeout",self,"_shoot")
+		if (shootTimer <= 0):
+			_shoot()
+			shootTimer = shootEveryXSecond
+		
+		
+		
 	
 	# Orientar al player.
 	if velocity.x<0:
@@ -96,55 +106,49 @@ func _physics_process(delta):
 	$Animation._animate(sprite,velocity,target_position)	
 		
 	#Cambiar los cuadros de animación del player.
-	if position.distance_to(target_position) <= 10:
-		sprite.stop()
-	else:
+	if position.distance_to(target_position) < 5:
 		sprite.play()
+	else:
+		sprite.stop()
 	
 	$Bar.value=health
+	
+
 		
-func _move_along_path(distance):	
+func _move_along_path(speed):	
 	var last_point=position
-	direction=target_position-last_point
-	velocity=(direction).normalized()
-	while path.size():
+	
+	while path.size():		
 		var distance_between_points = last_point.distance_to(path[0])
-		if distance_between_points>7:
-			last_point=lerp(last_point,path[0],distance/distance_between_points)
-			position=last_point
+		if distance_between_points>10:
+			position=lerp(last_point,path[0],speed/distance_between_points)
 			return
 		
-		distance-=distance_between_points
-		last_point=path[0]
+#		speed-=distance_between_points
+#		last_point=path[0]
+		position=path[0]
 		path.remove(0)
-		position=last_point
+		
 		set_process(false)
 
 
 
-func _move(target_position):
-	firstPoint = global_position
-	secondPoint = target_position		
-	var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
-	firstPoint = arrPath[0]
+func _create_path(target_position):
+	var arrPath: PoolVector2Array = nav2d.get_simple_path(position,target_position,true)
 	path = arrPath
-	index = 0
-
 
 
 func _shoot():
-	if is_instance_valid(tree.touching_enemy):
-		target_position = tree.touching_enemy.position
-		var shotHeight = 100
+	if is_instance_valid(get_parent().get_tree().root.get_child(3).townhall):	
+		var target_position=get_parent().get_tree().root.get_child(3).townhall.position	
+		var shotHeight = 50
 		var distX = abs(target_position.x-shootPoint.global_position.x)
 		var distY = abs(target_position.y-shootPoint.global_position.y) + shotHeight
 		var vy = sqrt(2*9.8*distY)
 		var travelTime = vy/4.9
 		var vx = distX/travelTime
 		vx*=7.05
-		vy*=5
-		print(target_position, " ", shootPoint.global_position)
-		print(vx," ",vy)
+		vy*=5	
 		var new_stone = stone_scene.instance()
 		new_stone.owner_name="Catapult"
 		new_stone.position = Vector2(shootPoint.global_position.x,shootPoint.global_position.y)

@@ -2,6 +2,7 @@ extends Node2D
 
 func _ready():
 	add_child(Globals.settings)
+	AudioPlayer._stop_rain()
 	AudioPlayer._select_music()
 	AudioPlayer.music.play()
 	$AnimationPlayer.play("Billboard")

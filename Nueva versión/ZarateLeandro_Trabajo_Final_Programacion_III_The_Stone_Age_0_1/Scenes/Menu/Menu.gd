@@ -11,6 +11,7 @@ var font3
 var font4
 
 func _ready():
+	AudioPlayer._stop_rain()
 	font1 = start_btn.get_font("font")
 	font2 = options_btn.get_font("font")
 	font3 = credits_btn.get_font("font")
@@ -30,7 +31,7 @@ func _unhandled_input(_event):
 
 func _on_Start_pressed():
 	remove_child(Globals.settings)
-	Globals.go_to_scene("res://Scenes/Game3/Game3.tscn")
+	Globals.go_to_scene("res://Scenes/Game/Game.tscn")
 
 
 func _on_Quit_pressed():

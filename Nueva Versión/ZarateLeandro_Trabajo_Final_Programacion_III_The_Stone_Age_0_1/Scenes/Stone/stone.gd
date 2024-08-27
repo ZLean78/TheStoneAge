@@ -24,8 +24,8 @@ func move_projectile():
 	if collision != null:
 		if("Unit2" in collision.collider.name || "Warrior" in collision.collider.name || "Vehicle" in collision.collider.name
 		|| "EnemyCitizen" in collision.collider.name || "EnemyWarrior" in collision.collider.name || "EnemyVehicle" in collision.collider.name
-		|| "House" in collision.collider.name || "EnemyHouse" in collision.collider.name
-		|| "Townhall" in collision.collider.name || "EnemyTownhall" in collision.collider.name):
+		|| "House" in collision.collider.name || "EnemyHouse" in collision.collider.name 
+		|| "EnemyTownhall" in collision.collider.name || "EnemyFort" in collision.collider.name):
 			collision.collider._get_damage(self)
 		queue_free()
 

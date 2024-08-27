@@ -50,6 +50,8 @@ onready var select_draw
 
 var its_raining=false
 
+var camera_lock=false
+
 signal area_selected
 #signal start_move_selection
 
@@ -75,6 +77,9 @@ func _process(delta):
 
 	#movimiento de cámara con mouse
 	if Input.is_action_pressed("mouse_wheel_pressed"):
+		camera_lock=!camera_lock
+	
+	if !camera_lock:
 		#chequear posición del mouse
 		if mousePos.x < marginX:
 			position.x=lerp(position.x,position.x-abs(mousePos.x-marginX)/marginX*panSpeed*zoom.x,panSpeed*delta)

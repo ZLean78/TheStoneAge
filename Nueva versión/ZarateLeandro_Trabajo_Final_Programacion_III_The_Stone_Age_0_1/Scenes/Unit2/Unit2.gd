@@ -88,6 +88,9 @@ var is_deleted=false
 #Para saber si la unidad ha sido convertida en jefe guerrero.
 var is_warchief = false
 
+#Para saber si la unidad es general.
+var is_general = false
+
 #Indica si la unidad puede disparar.
 var can_shoot = true
 
@@ -507,7 +510,7 @@ func self_heal():
 
 func _shoot():
 	
-	if is_warchief:
+	if is_warchief || is_general:
 		var bullet_target = tree.touching_enemy.position
 		shoot_node.look_at(bullet_target)				
 		var angle = shoot_node.rotation
@@ -541,9 +544,9 @@ func _shoot():
 		shoot_point.rotation = angle				
 		new_stone.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
 		if target_position.x<position.x:
-			new_stone.set_velocity(Vector2(-200,0))
+			new_stone.set_velocity(Vector2(-100,-100))
 		else:
-			new_stone.set_velocity(Vector2(200,0))
+			new_stone.set_velocity(Vector2(100,-100))
 		new_stone.rotation = angle		
 		var the_tilemap=get_tree().get_nodes_in_group("tilemap")
 		the_tilemap[0].add_child(new_stone)

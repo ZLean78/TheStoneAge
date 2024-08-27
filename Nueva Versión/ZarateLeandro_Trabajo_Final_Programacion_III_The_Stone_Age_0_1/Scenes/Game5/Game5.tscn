@@ -475,6 +475,10 @@ margin_left = 1083.0
 margin_top = 55.0
 margin_right = 1095.0
 margin_bottom = 87.0
+hint_tooltip = "Crear unidad \"General\".
+Costo: 50 ptos. comida, 
+40 ptos. madera,
+30 ptos. piedra."
 texture_normal = ExtResource( 43 )
 
 [node name="PromptsLabel" type="Label" parent="UI/Base/Rectangle"]
