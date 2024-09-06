@@ -15,7 +15,7 @@ onready var bar=$ProgressBar
 export var is_flipped:bool
 onready var tree=Globals.current_scene
 onready var warriors=tree.get_node("Warriors")
-onready var citizens=tree.get_node("Units")
+onready var citizens=tree.get_node("Citizens")
 
 func _ready():
 	
@@ -39,17 +39,12 @@ func _physics_process(delta):
 		var collision = move_and_collide(velocity*delta)
 		
 		if collision != null:		
-			if "Unit" in collision.collider.name || "Warrior" in collision.collider.name:
+			if "Citizen" in collision.collider.name || "Warrior" in collision.collider.name:
 				collision.get_collider().is_enemy_touching=true
 				collision.get_collider().body_entered=self
 			
 
-#		if collision!=null && is_instance_valid(collision.collider):
-#			if "Bullet" in collision.collider.name || "Stone" in collision.collider.name:
-#				life-=20
-#				if life <=0:
-#					is_dead=true
-#					queue_free()
+
 	
 	#Actualizar barra de vida.
 	$ProgressBar.value=life
@@ -65,16 +60,16 @@ func _physics_process(delta):
 			is_flipped = false
 			
 			
-func _get_damage(var the_beast):
-	if "Stone" in the_beast.name:
-		the_beast.queue_free()
+func _get_damage(var body):
+	if "Stone" in body.name:
+		body.queue_free()
 		if life>0:
 			life-=20
 	else:
 		queue_free()
 	
-	if "Bullet" in the_beast.name:
-		the_beast.queue_free()
+	if "Bullet" in body.name:
+		body.queue_free()
 		if life>0:
 			life-=30
 	else:
@@ -129,7 +124,7 @@ func _on_Area2D_body_entered(body):
 	
 				
 func _on_Area2D_body_exited(body):
-	if "Unit" in body.name || "Warrior" in body.name:
+	if "Citizen" in body.name || "Warrior" in body.name:
 		body.is_enemy_touching=false
 	
 
@@ -155,7 +150,7 @@ func _on_Tiger_mouse_exited():
 
 
 func _on_DetectionArea_body_entered(body):
-	if "Warrior" in body.name || "Unit2" in body.name:
+	if "Warrior" in body.name || "Citizen" in body.name:
 		body_entered=body
 		for tiger in get_parent().get_children():
 			if tiger.visible && is_instance_valid(tiger):

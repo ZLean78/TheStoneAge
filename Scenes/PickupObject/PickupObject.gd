@@ -18,10 +18,12 @@ func _physics_process(_delta):
 
 
 func _on_Area2D_body_entered(body):
-	if("Unit" in body.name || "EnemyCitizen" in body.name):
+	if("Citizen" in body.name || "General" in body.name || "EnemyCitizen" in body.name):
 		touching = true
 		body._set_pickable_touching(true)
 		body._set_pickable(self)
+		if type == "fruit_tree":
+			body.is_sheltered=true
 		if type == "lake":
 			body._set_lake_touching(true)
 		elif type == "puddle":
@@ -30,10 +32,12 @@ func _on_Area2D_body_entered(body):
 
 
 func _on_Area2D_body_exited(body):
-	if("Unit" in body.name || "EnemyCitizen" in body.name):
+	if("Citizen" in body.name || "General" in body.name || "EnemyCitizen" in body.name):
 		touching = false
 		body._set_pickable_touching(false)
 		body._set_pickable(null)
+		if type == "fruit_tree":
+			body.is_sheltered=false
 		if type == "lake":
 			body._set_lake_touching(false)			
 		elif type == "puddle":

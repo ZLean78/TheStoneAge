@@ -1,9 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://d0ylvnjwra8ue"]
-
-[ext_resource type="Texture2D" uid="uid://dmo2mys4docd8" path="res://Sprites/Game_Sprites/cave_small.png" id="1_bbln4"]
-
-[node name="CaveSprite" type="Node2D"]
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.365, 0.353)
-texture = ExtResource("1_bbln4")

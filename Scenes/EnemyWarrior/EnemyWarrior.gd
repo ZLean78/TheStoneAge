@@ -244,35 +244,27 @@ func _physics_process(delta):
 		stop_timer.start()
 		last_distance_to_target = position.distance_to(target)
 		
-func _get_damage(var the_beast):
-	if "Tiger" in the_beast.name && is_enemy_touching && the_beast.visible:
+func _get_damage(var collider):
+	if "Tiger" in collider.name && is_enemy_touching && collider.visible:
 		if(energy_points>0):
 			energy_points-=5
-			bar._set_energy_points(energy_points)
-			
-		else:
-			#the_beast.unit = null
-			#the_beast.is_chasing = false
-				
-			is_deleted=true
-	if "Mammoth" in the_beast.name && is_enemy_touching:
+			bar._set_health(energy_points)		
+	if "Mammoth" in collider.name && is_enemy_touching:
 		if energy_points>0:
 			energy_points-=30
-			bar._set_energy_points(energy_points)
+			bar._set_health(energy_points)
+	if "Bullet" in collider.name:
+		if collider.owner_name=="Tower":
+			if energy_points>0:
+				energy_points-=50
+				bar._set_health(energy_points)			
+		else:
+			if energy_points>0:
+				energy_points-=20
+				bar._set_health(energy_points)
 			
-		else:
-					
-			is_deleted=true
-	if "Bullet" in the_beast.name:
-
-		if energy_points>0:
-			energy_points-=20
-			bar._set_energy_points(energy_points)
-
-			print("enemy warrior energy" + str(energy_points))
-		else:
-			is_deleted=true	
-				
+	if energy_points<=0:
+		is_deleted=true			
 	
 func move_towards(pos,point,delta):
 	var v = (point-pos).normalized()
@@ -570,16 +562,16 @@ func _die():
 
 
 func _on_Area2D_body_entered(body):	
-	if (("Tower" in body.name || "Warrior" in body.name || "Unit" in body.name)
+	if (("Tower" in body.name || "Warrior" in body.name || "Citizen" in body.name || "Vehicle" in body.name  || "General" in body.name)
 		&& !("Enemy" in body.name)):		
 		if is_instance_valid(body_entered):
-			if "Warrior" in body.name || "Unit" in body.name:
+			if "Warrior" in body.name || "Citizen" in body.name || "Vehicle" in body.name || "General" in body.name:
 				body.is_enemy_touching=true
 			
 
 		
 func _on_Area2D_body_exited(body):
-	if "Warrior" in body.name || "Unit" in body.name:
+	if "Warrior" in body.name || "Citizen" in body.name || "General" in body.name:
 		body.is_enemy_touching=false	
 		
 #
@@ -644,33 +636,30 @@ func _choose_target():
 						target=tree.warriors.get_child(0)
 						target_position=tree.warriors.get_child(0).position	
 			else:
-				if tree.units.get_child_count()>0:
-					for i in range(0,tree.units.get_child_count()):
+				if tree.citizens.get_child_count()>0:
+					for i in range(0,tree.citizens.get_child_count()):
 						if i!=0:
-							if tree.units.get_child(i).position.distance_to(position)<tree.units.get_child(i-1).position.distance_to(position):
-								target=tree.units.get_child(i)
-								target_position=tree.units.get_child(i).position
+							if tree.citizens.get_child(i).position.distance_to(position)<tree.citizens.get_child(i-1).position.distance_to(position):
+								target=tree.citizens.get_child(i)
+								target_position=tree.citizens.get_child(i).position
 						else:
-							target=tree.units.get_child(0)
-							target_position=tree.units.get_child(0).position	
+							target=tree.citizens.get_child(0)
+							target_position=tree.citizens.get_child(0).position	
 
 func _state_machine():
 	match AI_state:
 		0:
 			_choose_target()
-			#print("Cambio a estado 1.")
 			AI_state=1
 		1:
 			if target!=null && is_instance_valid(target):
 				target_position=target.position
 			else:
-				#print("vuelta a estado 0")
 				AI_state=0
 			
 		
 		2:
 			if !(is_instance_valid(body_entered)):
-				#print("vuelta a estado 0")
 				AI_state=0
 			else:			
 				target=body_entered.position
@@ -678,11 +667,9 @@ func _state_machine():
 			target_position=self.position
 	
 	if body_entered!=null && is_instance_valid(body_entered):
-		#print("se ha detectado un cuerpo")
-		if !("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Unit" in body_entered.name):
+		if !("Enemy" in body_entered.name) && ("Warrior" in body_entered.name || "Citizen" in body_entered.name || "General" in body_entered.name):
 			target=body_entered
 			target_position=body_entered.position
-			print("cambio a estado 2")
 			AI_state=2	
 	
 	
@@ -712,7 +699,7 @@ func _on_EnemyWarrior_mouse_exited():
 
 
 func _on_DetectionArea_body_entered(body):
-	if ("Unit" in body.name || "Warrior" in body.name && !("Enemy" in body.name)):
+	if ("Citizen" in body.name || "Warrior" in body.name && !("Enemy" in body.name)):
 		body_entered=body
 		
 
@@ -732,8 +719,7 @@ func _shoot():
 		spear.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
 		spear.set_dir(forward)
 		spear.rotation = angle
-		#spear.owner_name="Enemy_Warrior"
-		#target_position=spear_target	
+			
 	
 		the_tilemap[0].add_child(spear)
 	can_shoot=false	

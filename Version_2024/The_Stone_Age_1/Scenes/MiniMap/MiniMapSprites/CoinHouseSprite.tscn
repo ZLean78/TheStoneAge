@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bq6s8ds36u55c"]
-
-[ext_resource type="Texture2D" uid="uid://q73tqp28txb1" path="res://Sprites/Structure/medievalStructure_19.png" id="1_yb5cc"]
-
-[node name="CoinHouseSprite" type="Sprite2D"]
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("1_yb5cc")

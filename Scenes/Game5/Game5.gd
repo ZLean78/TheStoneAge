@@ -1,63 +1,16 @@
 extends Node2D
 
-#Íconos que indican los diferentes modos del mouse para llevar
-#a cabo distintas acciones.
-#var basket=load("res://Scenes/MouseIcons/basket.png")
-#var arrow=load("res://Scenes/MouseIcons/arrow.png")
-#var pick_mattock=load("res://Scenes/MouseIcons/pick_mattock.png")
-#var sword=load("res://Scenes/MouseIcons/sword.png")
-#var claypot=load("res://Scenes/MouseIcons/claypot.png")
-#var hand=load("res://Scenes/MouseIcons/hand.png")
-#var axe=load("res://Scenes/MouseIcons/axe.png")
-#var house=load("res://Scenes/MouseIcons/house.png")
-#var house_b=load("res://Scenes/MouseIcons/house_b.png")
-#var townhall=load("res://Scenes/MouseIcons/townHall.png")
-#var townhall_b=load("res://Scenes/MouseIcons/townHall_b.png")
-#var fort=load("res://Scenes/MouseIcons/fort_s.png")
-#var fort_b=load("res://Scenes/MouseIcons/fort_sb.png")
-#var barn=load("res://Scenes/MouseIcons/barn_s.png")
-#var barn_b=load("res://Scenes/MouseIcons/barn_sb.png")
-#var tower=load("res://Scenes/MouseIcons/tower_s.png")
-#var tower_b=load("res://Scenes/MouseIcons/tower_sb.png")
 
 #Contador de unidades civiles.
 var unit_count = 1
 
-#Puntos de cada uno de los recursos naturales a recolectar.
-#var food_points = 1000
-#var leaves_points = 1000
-#var stone_points = 1000
-#var copper_points = 1000
-#var wood_points = 1000
-#var clay_points = 2000
-#var water_points = 1000
-
-#Hitos anteriores ya cumplidos
-var group_dressed = false
-var group_has_bag = false
-var is_fire_discovered = true
-var is_wheel_invented = true
-var is_stone_weapons_developed = true
-var is_claypot_made = true
-var is_agriculture_developed = true
-var is_townhall_created = false
 
 #El jefe ha muerto.
 var is_warchief_dead = false
 
-#Variables de hitos
-var is_pottery_developed=false
-var is_carpentry_developed=false
-var is_mining_developed=false
-var is_metals_developed=false
-var is_first_tower_built=false
-var is_barn_built=false
-var is_fort_built=false
-
-
 
 onready var tree = Globals.current_scene
-onready var food_timer = tree.get_node("food_timer")
+onready var all_timer = tree.get_node("all_timer")
 onready var enemy_timer = tree.get_node("enemy_timer")
 onready var timer_label = tree.get_node("UI/Base/TimerLabel")
 onready var state_label = tree.get_node("UI/Base/StateLabel")
@@ -69,14 +22,11 @@ onready var copper_label = tree.get_node("UI/Base/Rectangle/CopperLabel")
 onready var clay_label = tree.get_node("UI/Base/Rectangle/ClayLabel")
 onready var wood_label = tree.get_node("UI/Base/Rectangle/WoodLabel")
 onready var water_label = tree.get_node("UI/Base/Rectangle/WaterLabel")
-#onready var developments_label = tree.get_node("UI/Base/Rectangle/DevelopmentsLabel")
+
 onready var rectangle = tree.get_node("UI/Base/Rectangle")
-#onready var develop_pottery = tree.get_node("UI/Base/Rectangle/DevelopPottery")
-#onready var develop_carpentry = tree.get_node("UI/Base/Rectangle/DevelopCarpentry")
-#onready var develop_mining = tree.get_node("UI/Base/Rectangle/DevelopMining")
-#onready var develop_metals = tree.get_node("UI/Base/Rectangle/DevelopMetals")
+
 onready var create_house = tree.get_node("UI/Base/Rectangle/CreateHouse")
-#onready var create_townhall = tree.get_node("UI/Base/Rectangle/CreateTownHall")
+
 onready var create_warrior = tree.get_node("UI/Base/Rectangle/CreateWarriorUnit")
 
 onready var camera = tree.get_node("Camera")
@@ -93,39 +43,50 @@ onready var copper2 = tree.get_node("Coppers/Copper2")
 onready var lake = tree.get_node("Lake")
 onready var spawn_position = $SpawnPosition
 onready var enemy_spawn = $EnemySpawn
-#onready var tiger_target = $TigerTarget
-onready var units = $Units
+onready var citizens = $Citizens
 onready var warriors = $Warriors
+onready var generals = $Generals
+onready var vehicles = $Vehicles
+onready var enemy_vehicles=$EnemyVehicles
 onready var houses = $Houses
 onready var enemy_houses=$EnemyHouses
 onready var fort_node = $Fort
 onready var tower_node = $Towers
 onready var barn_node = $Barn
+onready var enemy_fort_node = $EnemyFort
+
+onready var enemy_townhall_node = $EnemyTownhall
+onready var enemy_townhall=$EnemyTownhall/EnemyTownhall
+onready var enemy_fort_spawn = $EnemyFortSpawn
 onready var nav2d=$nav
 onready var townhall_node=$TownHall
+onready var townhall=$TownHall/TownHall
 onready var enemy_warriors_node=$EnemyWarriors
 onready var enemy_citizens_node=$EnemyCitizens
 onready var next_scene_confirmation = $UI/Base/NextSceneConfirmation
 onready var exit_confirmation=$UI/Base/ExitConfirmation
 onready var replay_confirmation=$UI/Base/ReplayConfirmation
 
-#onready var remote_transform2d=$Path2D/PathFollow2D/RemoteTransform2D
 
-var path=[]
+var path=PoolVector2Array()
 
 #Escena cueva.
 var cave
 
 #Escenas a instanciar (ciudadano, guerrero y cazador, casa, centro cívico).
-export (PackedScene) var Unit2
+export (PackedScene) var Citizen
 export (PackedScene) var Warrior
+export (PackedScene) var General
 export (PackedScene) var House
 export (PackedScene) var TownHall
 export (PackedScene) var Fort
+export (PackedScene) var EnemyFort
 export (PackedScene) var Tower
 export (PackedScene) var Barn
 export (PackedScene) var EnemyWarrior
 export (PackedScene) var EnemyCitizen
+export (PackedScene) var Vehicle
+export (PackedScene) var EnemyVehicle
 
 
 #Arreglos para controlar los distintos grupos de entidades.
@@ -204,7 +165,7 @@ var barn_mode=false
 var fort_mode=false
 
 
-var previous_mouse_state=""
+#var previous_mouse_state=""
 
 #Si el cursor está en forma de espada tocando un enemigo, lo guardamos en esta variable.
 var touching_enemy
@@ -213,21 +174,32 @@ var touching_enemy
 var row=0
 var column=0
 
+#Variables para crear las unidades civiles en formación.
+var unit_row=0
+var unit_column=0
+
 #Contador para ataque enemigo. Se cambia desde el timer "all_timer".
 var attack_counter=50
 
 var victory_obtained=false
 
 func _ready():
+	Globals._clear_enemy_globals()
+	Globals.is_townhall_down=false
+	#Seleccionar y reproducir música de la fase.
+	AudioPlayer._select_music()
+	AudioPlayer.music.play()
 	
+	$UI/Base/Rectangle/BuildCatapult.visible=false
 	
-
-	
-	#igualamos el arreglo all_units a los nodos del grupo
+	#Asignamos el arreglo all_units a los nodos del grupo
 	#de unidades civiles con las que empezamos la fase.	
 	#En este caso, tenemos una sola unidad civil,
 	#luego crearemos las demás.
 	all_units=get_tree().get_nodes_in_group("units")
+	
+	
+		
 	
 	#Nodo del mapa de tejas.
 	tile_map=tree.find_node("TileMap")
@@ -283,61 +255,83 @@ func _ready():
 	
 	#Creamos las 11 unidades restantes aparte de la que agregamos
 	#en la línea 176. 
-	for i in range(0,11):
-		_create_unit();
-	
-	#Formación de las unidades.
-	for i in range(0,12):
-		if i==0:
-			all_units[i].position = Vector2(camera.position.x+50,camera.position.y+50)
-			#all_units[i].position = Vector2(camera.get_viewport().size.x/6,camera.get_viewport().size.y/4)
-		else:
-			if i<4:
-				all_units[i].position =	Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
-			elif i>=4 && i<8:
-				if i==4:
-					all_units[i].position =	Vector2(all_units[0].position.x,all_units[0].position.y+20)
-				else:
-					all_units[i].position = Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
-			elif i>=8:
-				if i==8:
-					all_units[i].position = Vector2(all_units[0].position.x,all_units[0].position.y+40)
-				else:
-					all_units[i].position = Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
+#	for i in range(0,11):
+#		_create_citizen();
+#	for a_general in generals.get_children(): 
+#		all_units.append(a_general)
 	
 	
+#	#Formación de las unidades.
+#	for i in range(0,12):
+#		if i==0:
+#			all_units[i].position = Vector2(camera.position.x+50,camera.position.y+50)
+#			#all_units[i].position = Vector2(camera.get_viewport().size.x/6,camera.get_viewport().size.y/4)
+#		else:
+#			if i<4:
+#				all_units[i].position =	Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
+#			elif i>=4 && i<8:
+#				if i==4:
+#					all_units[i].position =	Vector2(all_units[0].position.x,all_units[0].position.y+20)
+#				else:
+#					all_units[i].position = Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
+#			elif i>=8:
+#				if i==8:
+#					all_units[i].position = Vector2(all_units[0].position.x,all_units[0].position.y+40)
+#				else:
+#					all_units[i].position = Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
+
 	
+	
+	#Asignamos la posición de la fase anterior a las construcciones:
+	if !Globals.houses_p.empty():
+		var child_index=0
+		for house in houses.get_children():
+			house.position=Globals.houses_p[child_index]
+			child_index+=1
+
+	if Globals.townhall_p!=Vector2() && Globals.townhall_p!=Vector2.ZERO:
+		get_tree().get_nodes_in_group("townhall")[0].position=Globals.townhall_p
+
+	if !Globals.towers_p.empty():
+		var child_index=0
+		for tower in tower_node.get_children():
+			tower.position=Globals.towers_p[child_index]
+			child_index+=1
+
+	
+	if Globals.barn_p!=Vector2() && Globals.barn_p!=Vector2.ZERO:
+		get_tree().get_nodes_in_group("Barn")[0].position=Globals.barn_p
+	
+	if Globals.fort_p!=Vector2() && Globals.fort_p!=Vector2.ZERO:
+		get_tree().get_nodes_in_group("fort")[0].position=Globals.fort_p
+	
+	
+	#Marcamos a la unidad jefe	
+	all_units[Globals.warchief_index].is_warchief=true
+	all_units[Globals.warchief_index].warchief_mark.visible=true
+		
 	#Agregar ropa y bolso a todas las unidades
 	for a_unit in all_units:
 		a_unit.is_dressed=true
 		a_unit.has_bag=true
-		group_dressed=true
-		group_has_bag=true
-	
-	#Convertimos en jefe guerrero a la primera unidad
-	#(no es el mismo de la fase anterior, ya que transcurrieron muchos años),
-	#y le agregamos su marca de identificación color naranja.
-	all_units[0].is_warchief=true
-	all_units[0].warchief_mark.visible=true
+		a_unit.bag_sprite.visible=true
+		if a_unit.is_girl:
+			a_unit.sprite.animation="female_idle1_d"
+		else:
+			a_unit.sprite.animation="male_idle1_d"
+		Globals.group_dressed=true
+		Globals.group_has_bag=true
 	
 	#Actualizamos el mapa de navegación.
 	_rebake_navigation()
 	
-#	#Actualizamos el polígono de navegación para los edificios
-#	var dwells=houses.get_children()
-#
-#	for house in dwells:
-#		#all_units[0].selected=true
-#		_update_path(house)
-#
-#	#all_units[0].selected=true	
-#	_update_path(townhall_node.get_child(0))
-#
-#
-#	for enemy_house in enemy_houses.get_children():
-#		_update_path(enemy_house)
+	Globals.is_fort_built=true
+	Globals.is_barn_built=true
+	Globals.is_first_tower_built=true
 	
-	all_units[0].selected=false
+	$Fort/Fort.condition=70
+	$Barn/Barn.condition=65
+	$Towers/Tower.condition=50
 
 	#Establecemos el cursor en modo flecha con la señal is_arrow,
 	#el modo arrow_mode en true, y todos los demás modos en false.
@@ -353,7 +347,9 @@ func _ready():
 	barn_mode=false
 	fort_mode=false
 	
-
+	
+	
+	
 
 func _process(delta):
 	
@@ -362,8 +358,7 @@ func _process(delta):
 	
 		#Etiqueta de tiempo restante para la amenaza enemiga
 		#y etiquetas de recursos recolectados.
-		for enemy in enemy_warriors_node.get_children():
-			timer_label.text = "PELIGRO EN: " + str(int(attack_counter))
+		
 			
 			
 		food_label.text = str(int(Globals.food_points))
@@ -375,15 +370,6 @@ func _process(delta):
 		water_label.text = str(int(Globals.water_points))
 		
 		
-		for enemy_citizen in enemy_citizens_node.get_children():
-			if (is_instance_valid(enemy_citizen.target) &&
-			!("Unit" in enemy_citizen.target.name) && !("Warrior" in enemy_citizen.target.name)):
-				if !enemy_citizen.target.empty:
-					timer_label.text = "Puntos de Objetivo: " + str(enemy_citizen.target.points)
-				else:
-					timer_label.text = "Objetivo Vacío" + ", Estado: " + str(enemy_citizen.AI_state)
-			else:
-				timer_label.text = "Objetivo Nulo"
 		
 		state_label.text= ("Inventario Enemigo: \n" +
 		"Comida: " + str(Globals.e_food_points) +
@@ -393,7 +379,15 @@ func _process(delta):
 		"\nAgua: " + str(Globals.e_water_points) +
 		"\nPiedra: " + str(Globals.e_stone_points) +
 		"\nCobre: " + str(Globals.e_copper_points)) 
-	
+		
+		
+		if Globals.is_enemy_fort_built && enemy_vehicles.get_child_count()==0:
+			timer_label.text="¡Alerta!\nLos habitantes del poblado enemigo han levantado un fuerte."
+		elif Globals.is_enemy_fort_built && enemy_vehicles.get_child_count()>0:
+			timer_label.text="¡Peligro!\nUna catapulta enemiga se dirige al poblado para derribar tu centro cívico."
+		else:
+			timer_label.text=""
+		
 		#Comprobar las unidades existentes para ver si alguna está muerta.
 		_check_units()
 		
@@ -423,14 +417,17 @@ func _process(delta):
 		
 		_manage_enemy_units()
 		
-		#MovementLoop(delta)
+		if Globals.is_fort_built:
+			$UI/Base/Rectangle/BuildCatapult.visible=true
+		else:
+			$UI/Base/Rectangle/BuildCatapult.visible=false
 
 #Seleccionar una unidad.
 func _select_unit(unit):
-	if not selected_units.has(unit):
-		selected_units.append(unit)
-	#print("selected %s" % unit.name)
-	#create_buttons()
+	#if not selected_units.has(unit):
+	selected_units.append(unit)
+	
+	
 
 #Deseleccionar una unidad.
 func _deselect_unit(unit):
@@ -438,17 +435,7 @@ func _deselect_unit(unit):
 		selected_units.erase(unit)
 		
 		
-#Para corregir
-#	if event.is_action_pressed("RightClick"):
-#		firstPoint = player.global_position
-#		#line.points = []
-#
-#	if event.is_action_released("RightClick"):
-#		secondPoint = get_global_mouse_position()
-#		var arrPath: PoolVector2Array = nav2d.get_simple_path(firstPoint,secondPoint,true)
-#		player.global_position = arrPath[0]
-#		player.path = arrPath
-#		player.index = 0
+
 	
 #Proceso de entrada unhandled input.
 func _unhandled_input(event):
@@ -481,6 +468,8 @@ func _unhandled_input(event):
 				for enemy_house in enemy_houses.get_children():
 					if !enemy_house in obstacles:
 						obstacles.append(enemy_house)
+						
+				
 						
 				obstacles.append(cave)
 				obstacles.append(lake)
@@ -524,7 +513,7 @@ func _unhandled_input(event):
 			if house_mode || fort_mode || tower_mode || barn_mode:
 				#Ponemos el cursor en modo flecha para cancelar la construcción de una casa.
 				_on_Game5_is_arrow()
-			if basket_mode || axe_mode || mattock_mode:
+			if basket_mode || axe_mode || mattock_mode || hand_mode || claypot_mode:
 				for i in range(0,selected_units.size()):
 					selected_units[i].target_position=get_global_mouse_position()
 
@@ -536,14 +525,14 @@ func _unhandled_input(event):
 				#Construimos una casa.
 				_create_house()
 				#Enviar a los ciudadanos a construir la casa.
-				for citizen in units.get_children():
-					citizen.firstPoint=citizen.global_position
-					citizen.secondPoint=citizen.target_position
+				for a_citizen in citizens.get_children():
+					a_citizen.firstPoint=a_citizen.global_position
+					a_citizen.secondPoint=a_citizen.target_position
 					_on_Game5_is_arrow()
-					var arrPath: PoolVector2Array = nav2d.get_simple_path(citizen.firstPoint,citizen.secondPoint,true)
-					citizen.firstPoint = arrPath[0]
-					citizen.path = arrPath
-					citizen.index = 0
+					var arrPath: PoolVector2Array = nav2d.get_simple_path(a_citizen.firstPoint,a_citizen.secondPoint,true)
+					a_citizen.firstPoint = arrPath[0]
+					a_citizen.path = arrPath
+					a_citizen.index = 0
 			if fort_mode:
 				_create_fort()
 			if tower_mode:
@@ -553,50 +542,46 @@ func _unhandled_input(event):
 		
 			if house_mode || fort_mode || tower_mode || barn_mode:
 				#Enviar a los ciudadanos a construir el edificio.
-				for citizen in units.get_children():
-					if citizen.selected:
-						citizen.firstPoint=citizen.global_position
-						citizen.secondPoint=citizen.target_position
+				for a_citizen in citizens.get_children():
+					if a_citizen.selected:
+						a_citizen.firstPoint=a_citizen.global_position
+						a_citizen.secondPoint=a_citizen.target_position
 						_on_Game5_is_arrow()
-						var arrPath: PoolVector2Array = nav2d.get_simple_path(citizen.firstPoint,citizen.secondPoint,true)
-						citizen.firstPoint = arrPath[0]
-						citizen.path = arrPath
-						citizen.index = 0
+						var arrPath: PoolVector2Array = nav2d.get_simple_path(a_citizen.firstPoint,a_citizen.secondPoint,true)
+						a_citizen.firstPoint = arrPath[0]
+						a_citizen.path = arrPath
+						a_citizen.index = 0
 				
 		
 		#Tecla Escape. Se utiliza para poner el cursor en modo flecha,
 		#cancelando así la construcción de una casa u otra acción.
 		if event.is_action_pressed("EscapeKey"):
 			#Si el cursor está en modo casa.
-			if house_mode || fort_mode || tower_mode || barn_mode:
-				#Ponemos el cursor en modo flecha para cancelar la construcción de una casa.
+			if house_mode || fort_mode || tower_mode || barn_mode || basket_mode || mattock_mode || sword_mode || axe_mode || claypot_mode:
+				#Ponemos el cursor en modo flecha.
 				_on_Game5_is_arrow()
 			elif arrow_mode:
 				if(all_units.size()==0 && Globals.food_points<15) || is_warchief_dead:
 					replay_confirmation.visible=true
 				else:
-					exit_confirmation.popup()
-					exit_confirmation.get_ok().text="Aceptar"
-					exit_confirmation.get_cancel().text="cancelar"
+					$UI/Base/Rectangle/OptionsMenu.visible=!$UI/Base/Rectangle/OptionsMenu.visible
 					
-		if event.is_action_pressed("Settings"):
-			Globals.settings.visible=!Globals.settings.visible
+
 
 
 
 func _create_fort():
-	var citizens=units.get_children()
+	var all_citizens=citizens.get_children()
 	var the_citizen=null
 	var the_fort=null
 
-	for citizen in citizens:
-		if citizen.selected:
-			the_citizen=citizen
+	for a_citizen in all_citizens:
+		if a_citizen.selected:
+			the_citizen=a_citizen
 
 	if the_citizen!=null:
 		if Globals.wood_points>=300 && Globals.stone_points>=200 && Globals.leaves_points>=40 && !is_mouse_entered && !is_too_close:					
 			var new_fort=Fort.instance()
-			#the_citizen.agent.set_target_location(get_global_mouse_position())
 			new_fort.position = get_global_mouse_position()
 			fort_node.add_child(new_fort)
 			#Actualizamos el mapa de navegación.
@@ -617,28 +602,32 @@ func _create_fort():
 			Globals.stone_points-=200
 			Globals.leaves_points-=40
 			
-			print("Se construyó un fuerte.")	
+			
 
 	if the_fort!=null:
-		for citizen in citizens:
-			if citizen.selected && citizen!=the_citizen:
-				if citizen.position.x < the_fort.position.x:
+		for a_citizen in all_citizens:
+			if a_citizen.selected && a_citizen!=the_citizen:
+				if a_citizen.position.x < the_fort.position.x:
 					#Si el nuevo fuerte está a la derecha.
-					citizen.target_position=Vector2(the_fort.position.x-60,the_fort.position.y)
+					a_citizen.target_position=Vector2(the_fort.position.x-60,the_fort.position.y)
 				else:
 					#Si el nuevo fuerte está a la izquierda.
-					citizen.target_position=Vector2(the_fort.position.x+60,the_fort.position.y)
-	#Comprobar_victoria.
-	_check_victory()
-	#Ataque enemigo por obtención de mejora.				
-	if !victory_obtained:
-		_make_attack()
+					a_citizen.target_position=Vector2(the_fort.position.x+60,the_fort.position.y)
+	
+	
+	Globals.is_fort_built=true
+	
+	
+	
+#	#Ataque enemigo por obtención de mejora.				
+#	if !victory_obtained:
+#		_make_attack()
 	
 				
 #Función crear torre de vigilancia
 func _create_tower():
 	#Obtenemos los ciudadanos hijos del nodo units.
-	var citizens=units.get_children()
+	var all_citizens=citizens.get_children()
 	#Obtenemos las torres hijas del nodo towers.
 	var towers=tower_node.get_children()
 	#Contador de torres.
@@ -651,9 +640,9 @@ func _create_tower():
 	
 	#Identificamos al primer ciudadano seleccionado para 
 	#construir la torre.
-	for citizen in citizens:		
-		if citizen.selected:
-			the_citizen=citizen
+	for a_citizen in all_citizens:		
+		if a_citizen.selected:
+			the_citizen=a_citizen
 			#Interrumpimos el loop para que no tome a los otros ciudadanos seleccionados.
 			break
 			
@@ -689,31 +678,28 @@ func _create_tower():
 			Globals.stone_points-=100
 			Globals.wood_points-=80
 			Globals.leaves_points-=20
-			#Mensaje de comprobación para la consola.
-			print("Se construyó una torre.")
+			
+			Globals.towers_p.append(new_tower.position)
+		
 	
 	#Si la nueva torre no es nula.
 	if the_tower!=null:
 		#Si hay otros ciudadanos seleccionados, 
 		#también los mandamos a construir la torre.
-		for citizen in citizens:
-			if citizen.selected && citizen!=the_citizen:
-				if citizen.position.x < the_tower.position.x:
+		for a_citizen in all_citizens:
+			if a_citizen.selected && a_citizen!=the_citizen:
+				if a_citizen.position.x < the_tower.position.x:
 					#Si la nueva torre está a la derecha.
-					citizen.target_position=Vector2(the_tower.position.x-35,the_tower.position.y)
+					a_citizen.target_position=Vector2(the_tower.position.x-35,the_tower.position.y)
 				else:
 					#Si la nueva torre está a la izquierda.
-					citizen.target_position=Vector2(the_tower.position.x+35,the_tower.position.y)	
-	#Comprobar victoria.
-	_check_victory()
-	#Ataque enemigo por obtención de mejora.				
-	if tree.name=="Game4" && !victory_obtained:
-		_make_attack()
+					a_citizen.target_position=Vector2(the_tower.position.x+35,the_tower.position.y)	
+
 				
 #Función crear granero.
 func _create_barn():
 	#Obtenemos los ciudadanos hijos del nodo units.
-	var citizens=units.get_children()
+	var all_citizens=citizens.get_children()
 	#Obtenemos el granero hijo del node barn_node.
 	var barns=barn_node.get_children()
 	#Contador de graneros.
@@ -726,9 +712,9 @@ func _create_barn():
 	
 	#Identificamos al primer ciudadano seleccionado para 
 	#construir el granero.
-	for citizen in citizens:		
-		if citizen.selected:
-			the_citizen=citizen
+	for a_citizen in all_citizens:		
+		if a_citizen.selected:
+			the_citizen=a_citizen
 			#Interrumpimos el loop para que no tome a los otros ciudadanos seleccionados.
 			break
 			
@@ -763,30 +749,26 @@ func _create_barn():
 			Globals.wood_points-=200
 			Globals.leaves_points-=80
 			#Mensaje de comprobación para la consola.
-			print("Se construyó un granero.")
+			
 	
 	#Si el nuevo granero no es nulo.
 	if the_barn!=null:
 		#Si hay otros ciudadanos seleccionados, 
 		#también los mandamos a construir el granero.
-		for citizen in citizens:
-			if citizen.selected && citizen!=the_citizen:
-				if citizen.position.x < the_barn.position.x:
+		for a_citizen in all_citizens:
+			if a_citizen.selected && a_citizen!=the_citizen:
+				if a_citizen.position.x < the_barn.position.x:
 					#Si el nuevo granero está a la derecha.
-					citizen.target_position=Vector2(the_barn.position.x-25,the_barn.position.y)
+					a_citizen.target_position=Vector2(the_barn.position.x-25,the_barn.position.y)
 				else:
 					#Si el nuevo granero está a la izquierda.
-					citizen.target_position=Vector2(the_barn.position.x+25,the_barn.position.y)	
-	#Comprobar victoria.
-	_check_victory()
-	#Ataque enemigo por obtención de mejora.				
-	if !victory_obtained:
-		_make_attack()
+					a_citizen.target_position=Vector2(the_barn.position.x+25,the_barn.position.y)	
+	
 
 #Función crear casa.				
 func _create_house():
 	#Obtenemos los ciudadanos hijos del nodo units.
-	var citizens=units.get_children()
+	var all_citizens=citizens.get_children()
 	#Obtenemos las casas hijas del nodo houses.
 	var dwells=houses.get_children()
 	#Contador de casas.
@@ -798,12 +780,12 @@ func _create_house():
 	var the_house=null	
 		
 	#Comprobamos que no haya menos de cuatro ciudadanos por casa.
-	for citizen in citizens:
-		if (citizens.size()/4)>dwells.size():	
+	for a_citizen in all_citizens:
+		if (all_citizens.size()/4)>dwells.size():	
 			#Identificamos al primer ciudadano seleccionado para 
 			#construir la casa.		
-			if citizen.selected:
-				the_citizen=citizen
+			if a_citizen.selected:
+				the_citizen=a_citizen
 				#Interrumpimos el loop para que no tome a los otros ciudadanos seleccionados.
 				break
 
@@ -837,104 +819,141 @@ func _create_house():
 			#Restamos 20 puntos de madera y cuarenta de arcilla.
 			Globals.wood_points-=20
 			Globals.clay_points-=40
-			#Mensaje de comprobación para la consola.			
-			print("Se construyó una casa.")
+		
 
 	#Si la nueva casa no es nula.
 	if the_house!=null:
 		#Si hay otros ciudadanos seleccionados, 
 		#también los mandamos a construir la casa.
-		for citizen in citizens:
-			if citizen.selected && citizen!=the_citizen:
+		for a_citizen in all_citizens:
+			if a_citizen.selected && a_citizen!=the_citizen:
 				#Les marcamos la posición de la casa a los ciudadanos seleccionados
 				#para que vayan a construirla.
 				#Posicionamos a las unidades según el lugar en que se encuentre la nueva casa
 				#para construirla.
-				if citizen.position.x < the_house.position.x:
+				if a_citizen.position.x < the_house.position.x:
 					#Si la nueva casa está a la derecha.
-					citizen.target_position=Vector2(the_house.position.x-30,the_house.position.y)
+					a_citizen.target_position=Vector2(the_house.position.x-30,the_house.position.y)
 				else:
 					#Si la nueva casa está a la izquierda.
-					citizen.target_position=Vector2(the_house.position.x+30,the_house.position.y)		
+					a_citizen.target_position=Vector2(the_house.position.x+30,the_house.position.y)		
 				
 
 	
 #Función crear unidad ciudadano.	
-func _create_unit(cost = 0):
+func _create_citizen(cost = 0):
 	#Instanciamos la nueva unidad.
-	var new_Unit = Unit2.instance()
+	var new_citizen = Citizen.instance()
 	#Sumamos 1 al contador de unidades.
 	unit_count+=1
 	#Si el número es par, la unidad será mujer,
 	#si es impar, será hombre.
 	if(unit_count%2==0):
-		new_Unit.is_girl=true
+		new_citizen.is_girl=true
 	else:
-		new_Unit.is_girl=false
+		new_citizen.is_girl=false
 	#Si el grupo está vestido, la unidad estará vestida.
-	if(group_dressed):
-		new_Unit.is_dressed=true	
+	if(Globals.group_dressed):
+		new_citizen.is_dressed=true	
 	#Si el grupo lleva la bolsa de recolección, la unidad también la tendrá.
-	if(group_has_bag):
-		new_Unit.has_bag=true	
-		new_Unit.get_child(3).visible = true
+	if(Globals.group_has_bag):
+		new_citizen.has_bag=true	
+		new_citizen.get_child(3).visible = true
 	#Restamos el costo de la unidad a los puntos de comida.
 	Globals.food_points -= cost
 	#Creamos la unidad en la posición spawn_position.
-	new_Unit.position = spawn_position.position
+	new_citizen.position = spawn_position.position
 	#Pero si ya hay otra unidad en esa posición,
 	#le sumamos a la posición de la unidad un Vector2 de 20x20.
-	for unit in units.get_children():
-		if new_Unit.position==unit.position:
-			new_Unit.position+=Vector2(20,20)	
+	for a_citizen in citizens.get_children():
+		if new_citizen.position==a_citizen.position:
+			unit_column+=1
+			
+		if unit_column==10:
+			unit_column=0
+			unit_row+=1
+		new_citizen.position=spawn_position.position+Vector2(20*unit_column,20*unit_row)
+			
+			
 	#Agregamos la unidad al nodo units.	
-	units.add_child(new_Unit)
+	citizens.add_child(new_citizen)
 	#Agregamos la unidad al arreglo all_units.
-	all_units.append(new_Unit)
+	all_units.append(new_citizen)
+	
+func _create_general():
+	#Creamos un nuevo contador de guerreros.
+	#var warriors_count=0
+	#Si tenemos al menos 30 puntos de comida,
+	#20 de madera y 10 de piedra.
+	if Globals.food_points>=50 && Globals.wood_points>=40 && Globals.stone_points>=30:
+		#Instanciamos el nuevo guerrero.
+		var new_general = General.instance()
+		#Situamos el guerrero en la posición spawn_position.
+		new_general.position = spawn_position.position
+		#Ordenamos los generales en filas de 10 unidades (10 columnas),
+		#en espacios de 20x20.
+		for general in generals.get_children():
+			#warriors_count+=1				
+			if new_general.position == general.position:
+				column+=1
+			
+			if column==10:
+				column=0
+				row+=1
+			new_general.position=spawn_position.position+Vector2(20*column,20*row)
 		
-func _create_warrior_unit(cost = 0):
-	var new_Unit = Unit2.instance()
-	unit_count+=1
-	new_Unit.position = Vector2(camera.position.x+rand_range(50,100),camera.position.y+rand_range(50,100))
-	if(unit_count%2==0):
-		new_Unit.is_girl=true
-	else:
-		new_Unit.is_girl=false
-	if(group_dressed):
-		new_Unit.is_dressed=true	
-	if(group_has_bag):
-		new_Unit.has_bag=true	
-		new_Unit.get_child(3).visible = true
-	Globals.food_points -= cost
-	units.add_child(new_Unit)
-	all_units.append(new_Unit)
+		#Agregamos el guerrero al nodo warriors.
+		generals.add_child(new_general)
+		#Agregamos el guerrero al arreglo all_units.
+		all_units.append(new_general)		
+		#Restamos los puntos del costo del guerrero.
+		Globals.food_points-=50
+		Globals.wood_points-=40
+		Globals.stone_points-=30	
+		
+		
+func _create_warrior_unit():
+	#Creamos un nuevo contador de guerreros.
+	#var warriors_count=0
+	#Si tenemos al menos 30 puntos de comida,
+	#20 de madera y 10 de piedra.
+	if Globals.food_points>=30 && Globals.wood_points>=20 && Globals.stone_points>=10:
+		#Instanciamos el nuevo guerrero.
+		var new_warrior = Warrior.instance()
+		#Situamos el guerrero en la posición spawn_position.
+		new_warrior.position = spawn_position.position
+		#Ordenamos los guerreros en filas de 10 unidades (10 columnas),
+		#en espacios de 20x20.
+		for warrior in warriors.get_children():
+			#warriors_count+=1				
+			if new_warrior.position == warrior.position:
+				column+=1
+			#if new_warrior.position.x>cave.position.x:
+			if column==10:
+				column=0
+				row+=1
+			new_warrior.position=spawn_position.position+Vector2(20*column,20*row)
+		
+		#Agregamos el guerrero al nodo warriors.
+		warriors.add_child(new_warrior)
+		#Agregamos el guerrero al arreglo all_units.
+		all_units.append(new_warrior)		
+		#Restamos los puntos del costo del guerrero.
+		Globals.food_points-=30
+		Globals.wood_points-=20
+		Globals.stone_points-=10
 			
 func _check_victory():
-	if tower_node.get_child_count()>0:
-		var first_tower = tower_node.get_child(0)
-		if first_tower.condition>=first_tower.condition_max:
-			is_first_tower_built=true
-			
-	
-	if barn_node.get_child_count()>0:
-		var the_barn = barn_node.get_child(0)
-		if the_barn.condition==the_barn.condition_max:
-			is_barn_built=true
-			
-	if fort_node.get_child_count()>0:
-		var the_fort = fort_node.get_child(0)
-		if the_fort.condition==the_fort.condition_max:
-			is_fort_built=true
-	
-	
-	if (is_pottery_developed && is_carpentry_developed && is_mining_developed && 
-	 is_metals_developed && is_first_tower_built && is_barn_built && is_fort_built):
+	if Globals.is_enemy_townhall_down:
 		victory_obtained=true
-		prompts_label.text = "¡Has ganado!"	
 		next_scene_confirmation.visible=true
 		
+
 	elif(all_units.size()==0 && Globals.food_points<15):
 		prompts_label.text = "Has sido derrotado."
+		replay_confirmation.visible=true
+	elif Globals.is_townhall_down:
+		prompts_label.text = "Has sido derrotado. Tu centro cívico ha caído."
 		replay_confirmation.visible=true
 	else:
 		for a_unit in all_units:
@@ -948,7 +967,7 @@ func _check_victory():
 #Llama al método create unit con un costo de 15 puntos.	
 func _on_CreateCitizen_pressed():
 	if Globals.food_points>=15:
-		_create_unit(15)
+		_create_citizen(15)
 
 	
 func _deselect_all():
@@ -967,7 +986,7 @@ func _get_units_in_area(area):
 	for unit in all_units:
 		if unit.position.x>area[0].x and unit.position.x<area[1].x:
 			if unit.position.y>area[0].y and unit.position.y<area[1].y:
-				u.append(unit)
+				u.append(unit)			
 	return u
 		
 func _area_selected(obj):
@@ -981,14 +1000,10 @@ func _area_selected(obj):
 		_deselect_all()
 	for u in ut:
 		u.selected = not u.selected
+		if "Vehicle" in u.name:
+			_select_unit(u)
 		
 
-		
-#func start_move_selection(obj):
-#	for un in all_units:
-#		if un.selected:
-#			un.move_unit(obj.move_to_point)
-		
 
 func _on_Game5_is_arrow():
 	Input.set_custom_mouse_cursor(Globals.arrow)
@@ -1181,10 +1196,7 @@ func _check_units():
 					#Buscamos la unidad en all_units y la removemos del arreglo.
 					var the_unit=all_units[all_units.find(a_unit,0)]
 					all_units.remove(all_units.find(a_unit,0))
-#					for a_tiger in all_tigers:
-#						if is_instance_valid(a_tiger):
-#							if a_tiger.unit == the_unit:
-#								a_tiger.unit = null
+#					
 					#Llamamos a la función die de la unidad,
 					#para que sea eliminada definitivamente.
 					the_unit._die()
@@ -1310,22 +1322,22 @@ func _check_coppers():
 
 
 func _manage_enemy_units():
-	if Globals.e_food_points>=15 && enemy_citizens_node.get_child_count()<16:
+	if Globals.e_food_points>=15 && enemy_citizens_node.get_child_count()<8:
 		var new_enemy_citizen = EnemyCitizen.instance()
 		new_enemy_citizen.position=enemy_spawn.position
 		enemy_citizens_node.add_child(new_enemy_citizen)
 		new_enemy_citizen.AI_state=1
 		Globals.e_food_points-=15		
 	else:
-		if (Globals.e_food_points>=30 && Globals.e_wood_points>=20 && 
-		Globals.stone_points>=10 && enemy_warriors_node.get_child_count()<12):
+		if (Globals.e_food_points>=500 && Globals.e_wood_points>=400 && 
+		Globals.stone_points>=400 && enemy_warriors_node.get_child_count()<6):
 			var new_enemy_warrior=EnemyWarrior.instance()
 			new_enemy_warrior.position=enemy_spawn.position
 			enemy_warriors_node.add_child(new_enemy_warrior)
 			Globals.e_food_points-=30
 			Globals.e_wood_points-=20
 			Globals.e_stone_points-=10
-			var target_number=randi()%4+1
+			var target_number=randi()%3+1
 		
 			match target_number:
 				1:
@@ -1334,44 +1346,45 @@ func _manage_enemy_units():
 					new_enemy_warrior.target_t=new_enemy_warrior.target_type.BARN
 				3:
 					new_enemy_warrior.target_t=new_enemy_warrior.target_type.FORT
-				4:
-					new_enemy_warrior.target_t=new_enemy_warrior.target_type.TOWNHALL
 			
-			new_enemy_warrior.AI_state=0	
+			new_enemy_warrior.AI_state=0
+		else:
+			if enemy_fort_node.get_child_count() == 0 && Globals.e_wood_points>=150 && Globals.e_stone_points>=100 && Globals.e_leaves_points>=20:
+				_create_enemy_fort()
+				
+		if Globals.is_enemy_fort_built:
+			if enemy_vehicles.get_child_count()==0 && Globals.e_wood_points>=100 && Globals.e_stone_points>=50 && Globals.e_leaves_points>=20:
+				Globals.e_wood_points-=100
+				Globals.e_stone_points-=50
+				Globals.e_leaves_points-=20
+				var new_enemy_vehicle=EnemyVehicle.instance()
+				new_enemy_vehicle.position=Vector2(enemy_fort_node.get_child(0).position.x,enemy_fort_node.get_child(0).position.y+100)
+				enemy_vehicles.add_child(new_enemy_vehicle)
+						
 
-		
+func _create_enemy_fort():
+	var new_enemy_fort=EnemyFort.instance()
+	new_enemy_fort.position=enemy_fort_spawn.position
+	new_enemy_fort.condition=80
+	enemy_fort_node.add_child(new_enemy_fort)
+	Globals.is_enemy_fort_built=true
+	Globals.e_wood_points-=150
+	Globals.e_stone_points-=100
+	Globals.e_leaves_points-=20
+	
+	obstacles.append(new_enemy_fort)
+	_update_path(new_enemy_fort)
+	_rebake_navigation()
+	
+	
+	
+			
+
 
 #Botón para crear unidades militares guerrero y cazador.
 func _on_CreateWarriorUnit_pressed():
-	#Creamos un nuevo contador de guerreros.
-	#var warriors_count=0
-	#Si tenemos al menos 30 puntos de comida,
-	#20 de madera y 10 de piedra.
-	if Globals.food_points>=30 && Globals.wood_points>=20 && Globals.stone_points>=10:
-		#Instanciamos el nuevo guerrero.
-		var new_warrior = Warrior.instance()
-		#Situamos el guerrero en la posición spawn_position.
-		new_warrior.position = spawn_position.position
-		#Ordenamos los guerreros en filas de 10 unidades (10 columnas),
-		#en espacios de 20x20.
-		for warrior in warriors.get_children():
-			#warriors_count+=1				
-			if new_warrior.position == warrior.position:
-				column+=1
-			#if new_warrior.position.x>cave.position.x:
-			if column==10:
-				column=0
-				row+=1
-			new_warrior.position=spawn_position.position+Vector2(20*column,20*row)
-		
-		#Agregamos el guerrero al nodo warriors.
-		warriors.add_child(new_warrior)
-		#Agregamos el guerrero al arreglo all_units.
-		all_units.append(new_warrior)
-		#Restamos los puntos del costo del guerrero.
-		Globals.food_points-=30
-		Globals.wood_points-=20
-		Globals.stone_points-=10
+	_create_warrior_unit()
+	
 	
 	
 
@@ -1390,7 +1403,7 @@ func _on_GiveAttackOrder_pressed():
 
 
 func _update_path(new_obstacle):	
-	var citizens=units.get_children()
+	var all_citizens=citizens.get_children()
 	var the_citizen=null	
 	var new_polygon=PoolVector2Array()
 	var col_polygon=new_obstacle.get_node("CollisionPolygon2D").get_polygon()
@@ -1404,9 +1417,9 @@ func _update_path(new_obstacle):
 		navi_polygon.add_outline(new_polygon)
 		navi_polygon.make_polygons_from_outlines()	
 	
-	for citizen in citizens:
-		if citizen.selected:
-			the_citizen=citizen
+	for a_citizen in all_citizens:
+		if a_citizen.selected:
+			the_citizen=a_citizen
 			break
 	
 	if the_citizen!=null:	
@@ -1456,10 +1469,10 @@ func _on_DevelopMetals_pressed():
 	if Globals.stone_points>=250 && Globals.copper_points>=150:
 		Globals.stone_points-=250
 		Globals.copper_points-=150
-		is_metals_developed=true
+		Globals.is_metals_developed=true
 		#develop_metals.visible=false
 		#Ataque enemigo por mejora.
-		if tree.name=="Game4" && !victory_obtained:
+		if tree.name=="Game5" && !victory_obtained:
 			_make_attack()
 		
 		
@@ -1493,10 +1506,11 @@ func _rebake_navigation():
 		if is_instance_valid(a_house):
 			_update_path(a_house)
 			
+				
 	for a_townhall in townhall_node.get_children():
 		if is_instance_valid(a_townhall):
 			_update_path(a_townhall)
-		
+			
 	for a_tower in tower_node.get_children():
 		if is_instance_valid(a_tower):
 			_update_path(a_tower)
@@ -1509,30 +1523,30 @@ func _rebake_navigation():
 		if is_instance_valid(a_fort):
 			_update_path(a_fort)
 			
+			
 	for enemy_house in enemy_houses.get_children():
 		if is_instance_valid(enemy_house):
 			_update_path(enemy_house)
+	
+	for an_enemy_townhall in enemy_townhall_node.get_children():		
+		if is_instance_valid(enemy_townhall):
+			_update_path(enemy_townhall)
 			
 	
-		
-	navi_polygon.make_polygons_from_outlines()	
+	for an_enemy_fort in enemy_fort_node.get_children():
+		if is_instance_valid(an_enemy_fort):
+			_update_path(an_enemy_fort)	
+			
+	
 	nav2d.get_node("polygon").enabled=true
 	
 
 
 
-func _on_Game4_remove_building():
-	_rebake_navigation()
 
 
-#func _on_enemy_timer_timeout():
-#	if attack_counter>0:
-#		attack_counter-=1	
-#
-#	if attack_counter<=0:
-#		for an_enemy in enemy_warriors_node.get_children():
-#			if an_enemy.AI_state==3:
-#				an_enemy.AI_state=0
+
+
 
 func _make_attack():
 	for i in range(0,9):
@@ -1565,6 +1579,7 @@ func _make_attack():
 
 
 func _on_ExitConfirmation_confirmed():
+	Globals._clear_enemy_globals()
 	$UI.remove_child(Globals.settings)
 	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
 
@@ -1576,23 +1591,94 @@ func _on_ReplayCancel_pressed():
 
 
 func _on_ReplayOk_pressed():
+	Globals._clear_enemy_globals()
 	$UI.remove_child(Globals.settings)
 	Globals.go_to_scene("res://Scenes/Game5/Game5.tscn")
 
 
 func _on_NextSceneOk_pressed():
 	$UI.remove_child(Globals.settings)
-	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
+	Globals.go_to_scene("res://Scenes/Intermissions/FinalScene.tscn")
 
 
-#func MovementLoop(_delta):
-#	var prepos=path_follow2d.get_global_position()
-#	path_follow2d.set_offset(path_follow2d.get_offset()+50*_delta)
-#	var pos=path_follow2d.get_global_position()
-#	var direction = (pos.angle_to_point(prepos)/3.14)*180
-#	$Path2D/PathFollow2D/EnemyCitizen8.position = pos*direction
-#	$Path2D/PathFollow2D/EnemyCitizen9.position = pos*direction
+
 
 
 func _on_Game5_remove_building():
 	_rebake_navigation()
+
+
+func _on_Vehicle_was_deselected():
+	pass # Replace with function body.
+
+
+func _on_Settings_pressed():
+	Globals.settings.visible=true
+
+
+func _on_Quit_pressed():
+	exit_confirmation.popup()
+	exit_confirmation.get_ok().text="Aceptar"
+	exit_confirmation.get_cancel().text="cancelar"
+
+
+func _on_Back_pressed():
+	$UI/Base/Rectangle/OptionsMenu.visible=false
+
+
+func _on_BuildCatapult_pressed():
+	if (Globals.stone_points>=200 && Globals.wood_points>=300 && Globals.leaves_points>=200 && Globals.is_fort_built):
+		Globals.stone_points-=200
+		Globals.wood_points-=300
+		Globals.leaves_points-=200
+		var new_vehicle=Vehicle.instance()
+		vehicles.add_child(new_vehicle)
+		all_units.append(new_vehicle)
+		new_vehicle.position=Vector2(fort_node.get_child(0).position.x,fort_node.get_child(0).position.y+100)
+		
+
+
+func _on_all_timer_timeout():
+	#Interacción de cada unidad con las fuentes de recursos
+	#y los enemigos.
+	for a_unit in all_units:
+		#Incrementar contador para activar ciertas propiedades en la unidad.
+		if not "Vehicle" in a_unit.name:
+			a_unit.timer_count+=1
+		if is_instance_valid(a_unit) && "Unit" in a_unit.name || "General" in a_unit.name && !("Enemy" in a_unit.name):
+			if a_unit.pickable!=null:
+				a_unit._collect_pickable(a_unit.pickable)
+				
+			if a_unit.is_warchief:
+				if a_unit.timer_count>3:
+					a_unit.can_heal_another=true
+				
+				if a_unit.health<a_unit.MAX_HEALTH && a_unit.heal_counter>0:
+					a_unit.heal_counter-=1
+					if a_unit.heal_counter<=0:
+						a_unit.can_heal_itself=true
+					
+				if a_unit.can_heal_itself:
+					a_unit.self_heal()
+				
+			if a_unit.body_entered!=null && is_instance_valid(a_unit.body_entered):
+				if "Tiger" in a_unit.body_entered.name || "Mammoth" in a_unit.body_entered.name:
+					a_unit._get_damage(a_unit.body_entered)
+					
+					
+				if a_unit.is_warchief:
+					if a_unit.can_heal_another:
+						if "Unit" in a_unit.body_entered.name || "Warrior" in a_unit.body_entered.name && !("Enemy" in a_unit.body_entered.name):
+							a_unit.heal(a_unit.body_entered)
+			
+			if "General" in a_unit.name:
+				if a_unit.timer_count>3:
+					a_unit.can_heal_another=true
+				if a_unit.body_entered!=null && is_instance_valid(a_unit.body_entered):
+					if a_unit.can_heal_another:
+						if "Unit" in a_unit.body_entered.name || "Warrior" in a_unit.body_entered.name && !("Enemy" in a_unit.body_entered.name):
+							a_unit.heal(a_unit.body_entered)
+
+
+func _on_CreateGeneral_pressed():
+	_create_general()

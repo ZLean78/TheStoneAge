@@ -1,7 +1,60 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Scenes/Unit/Unit.gd" type="Script" id=3]
+[ext_resource path="res://Scenes/Unit/selected.png" type="Texture" id=4]
+[ext_resource path="res://Scenes/Unit/UnitFrames.tres" type="SpriteFrames" id=6]
+
+[sub_resource type="CanvasItemMaterial" id=1]
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 7.5, 13 )
+
+[sub_resource type="CircleShape2D" id=4]
+radius = 31.6938
 
 [node name="Unit" type="KinematicBody2D" groups=["units"]]
 input_pickable = true
 script = ExtResource( 3 )
+
+[node name="Bar" type="ProgressBar" parent="."]
+margin_left = -10.0
+margin_top = -24.0
+margin_right = 26.0
+margin_bottom = -10.0
+rect_scale = Vector2( 0.6, 0.6 )
+
+[node name="Foot" type="Sprite" parent="."]
+visible = false
+material = SubResource( 1 )
+position = Vector2( 0, 11 )
+scale = Vector2( 0.63281, 0.49219 )
+texture = ExtResource( 4 )
+
+[node name="shootNode" type="Node2D" parent="."]
+
+[node name="shootPoint" type="Position2D" parent="shootNode"]
+position = Vector2( 12, 0 )
+
+[node name="scalable" type="Node2D" parent="."]
+
+[node name="sprite" type="AnimatedSprite" parent="scalable"]
+position = Vector2( 0, -1 )
+scale = Vector2( 1.58333, 1.25 )
+frames = ExtResource( 6 )
+animation = "male_idle3_d"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0.5, 0 )
+shape = SubResource( 3 )
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2( 0.5, -1.5 )
+shape = SubResource( 4 )
+
+[node name="Animation" type="Node2D" parent="."]
+
+[node name="Control" type="Node2D" parent="."]

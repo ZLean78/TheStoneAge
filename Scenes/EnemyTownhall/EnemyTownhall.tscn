@@ -7,7 +7,7 @@
 bg_color = Color( 1, 0.168627, 0, 1 )
 
 [sub_resource type="CircleShape2D" id=2]
-radius = 124.016
+radius = 81.0062
 
 [node name="EnemyTownhall" type="StaticBody2D"]
 script = ExtResource( 1 )

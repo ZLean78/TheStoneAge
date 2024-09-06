@@ -23,7 +23,7 @@ onready var citizens
 func _ready():
 	tree=Globals.current_scene
 	warriors=tree.get_node("Warriors")
-	citizens=tree.get_node("Units")
+	citizens=tree.get_node("Citizens")
 	start_position=position
 	progress_bar.value = life
 	if is_flipped==false:
@@ -113,12 +113,12 @@ func _on_Area2D_body_entered(body):
 		is_dead=true
 		queue_free()
 			
-	if "Unit" in body.name || "Warrior" in body.name:
+	if "Citizen" in body.name || "Warrior" in body.name:
 		body.is_enemy_touching=true
 	
 				
 func _on_Area2D_body_exited(body):
-	if "Unit" in body.name || "Warrior" in body.name:
+	if "Citizen" in body.name || "Warrior" in body.name:
 		body.is_enemy_touching=false
 
 func _on_Mammoth_mouse_entered():

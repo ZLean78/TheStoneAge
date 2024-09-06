@@ -44,21 +44,28 @@ onready var tree=Globals.current_scene
 
 #onready var rectd = tree.find_node("draw_rect")
 
-#onready var select_draw
+onready var select_draw
+
+
 
 var its_raining=false
+
+var camera_lock=false
 
 signal area_selected
 #signal start_move_selection
 
 func _ready():
-	#rectd.visible=true
+	
 	connect("area_selected",get_parent(),"_area_selected",[self])
 	#connect("start_move_selection",get_parent(),"start_move_selection",[self])
 	#select_draw = Globals.current_scene.select_draw
-	pass
+	#pass
 
 func _process(delta):
+	
+	
+	
 	#smooth movement
 	var inpx = (int(Input.is_action_pressed("ui_right"))
 				 - int(Input.is_action_pressed("ui_left")))
@@ -66,18 +73,24 @@ func _process(delta):
 				 - int(Input.is_action_pressed("ui_up")))
 	position.x=lerp(position.x,position.x+inpx*panSpeed*zoom.x,panSpeed*delta)
 	position.y=lerp(position.y,position.y+inpy*panSpeed*zoom.y,panSpeed*delta)
+	
 
 	#movimiento de cámara con mouse
-	#if Input.is_key_pressed(KEY_CONTROL):
-	#chequear posición del mouse
-	if mousePos.x < marginX:
-		position.x=lerp(position.x,position.x-abs(mousePos.x-marginX)/marginX*(panSpeed/10)*zoom.x,(panSpeed/10)*delta)
-	elif mousePos.x > ProjectSettings.get("display/window/size/width") - marginX:
-		position.x=lerp(position.x,position.x+abs(mousePos.x-ProjectSettings.get("display/window/size/width")+marginX)/marginX*(panSpeed/10)*zoom.x,(panSpeed/10)*delta)
-	if mousePos.y < marginY:
-		position.y=lerp(position.y,position.y-abs(mousePos.y-marginY)/marginY*(panSpeed/10)*zoom.y,(panSpeed/10)*delta)
-	elif mousePos.y > ProjectSettings.get("display/window/size/height") - marginY:
-		position.y=lerp(position.y,position.y+abs(mousePos.y-ProjectSettings.get("display/window/size/height")+marginY)/marginY*(panSpeed/10)*zoom.y,(panSpeed/10)*delta)
+	if Input.is_action_pressed("mouse_wheel_pressed"):
+		camera_lock=!camera_lock
+	
+	if !camera_lock:
+		#chequear posición del mouse
+		if mousePos.x < marginX:
+			position.x=lerp(position.x,position.x-abs(mousePos.x-marginX)/marginX*panSpeed*zoom.x,panSpeed*delta)
+		elif mousePos.x > ProjectSettings.get("display/window/size/width") - marginX:
+			position.x=lerp(position.x,position.x+abs(mousePos.x-ProjectSettings.get("display/window/size/width")+marginX)/marginX*panSpeed*zoom.x,panSpeed*delta)
+		if mousePos.y < marginY:
+			position.y=lerp(position.y,position.y-abs(mousePos.y-marginY)/marginY*panSpeed*zoom.y,panSpeed*delta)
+		elif mousePos.y > ProjectSettings.get("display/window/size/height") - marginY:
+			position.y=lerp(position.y,position.y+abs(mousePos.y-ProjectSettings.get("display/window/size/height")+marginY)/marginY*panSpeed*zoom.y,panSpeed*delta)
+
+	
 
 	if Input.is_action_just_pressed("ui_left_mouse_button"):
 		if get_parent().arrow_mode:
@@ -100,9 +113,6 @@ func _process(delta):
 		else:
 			end = start
 			is_dragging = false
-				
-			
-#		
 
 	#zoom in
 	zoom.x = lerp(zoom.x,zoom.x*zoomFactor,zoomSpeed*delta)
@@ -121,24 +131,7 @@ func _process(delta):
 
 
 
-#func draw_area(s = true):
-#	rectd.rect_size = endV-startV
-#
-#	var pos = Vector2()
-#	pos.x = min(startV.x,endV.x)
-#	pos.y = min(startV.y,endV.y)
-#
-#	pos.x = clamp(pos.x,0,OS.window_size.x - rectd.rect_size.x)
-#	pos.y = clamp(pos.y,0,OS.window_size.y - rectd.rect_size.y)
-#
-#	#pos.y = min(startV.y,endV.y) - OS.window_size.y/1.25 - 18
-#	pos.y = min(startV.y,endV.y) - OS.window_size.y/1.18	
-#
-#
-#	rectd.rect_position = pos
-#
-#	rectd.rect_size *= int(s) # true = 1, false = 0	
-	
+
 
 func _input(event):
 
@@ -157,7 +150,8 @@ func _input(event):
 		mousePos = event.position
 		mousePosGlobal = get_global_mouse_position()
 
-	#print(str(zoom.x)+" , "+str(zoom.y))	
+	
+					
 	
 func _set_its_raining(var _its_raining):
 	its_raining = _its_raining
@@ -170,143 +164,3 @@ func _set_its_raining(var _its_raining):
 		$AnimatedSprite.visible = false
 		$AnimatedSprite.stop()
 
-######################################
-
-
-######################################
-####Código original
-#####################################
-
-
-#extends Camera2D
-#
-#var its_raining = false
-#
-#const MAX_CAMERA_DISTANCE = 50.0
-#const MAX_CAMERA_PERCENT = 0.1
-#const CAMERA_SPEED = 0.01
-#
-#var mousepos=Vector2()
-#var mouseposGlobal=Vector2()
-#var move_to_point = Vector2()
-#
-#var dragging = false
-#var selected = []
-#var drag_start = Vector2.ZERO
-#var select_rectangle = RectangleShape2D.new()
-#
-#onready var tree = get_tree().root.get_child(0)
-#onready var select_draw = tree.find_node("SelectDraw")
-#
-#
-#signal area_selected
-#signal start_move_selection
-#signal start_move_tigers
-#
-#func _ready():
-#	connect("area_selected",get_parent(),"area_selected",[self])
-#	connect("start_move_selection",get_parent(),"start_move_selection",[self])
-#
-#func _process(delta):
-#
-#	#connect("area_selected",get_parent(),"area_selected",[self])
-#
-#
-#	var the_children = get_tree().root.get_child(0).get_children()
-#	var unit
-#
-#	var viewport = get_viewport()
-#	var viewport_center = Vector2(0,0)
-#	var direction = viewport.get_mouse_position() - viewport_center
-#	var percent = (direction / viewport.size * 2.0).length()
-#
-#	var camera_position = Vector2()
-#
-#	for a_node in the_children:
-#		if "Unit" in a_node.name && a_node.selected:
-#			unit = a_node			
-#
-#			if(unit.selected):				
-#				if percent < MAX_CAMERA_PERCENT:
-#					camera_position = unit.position + direction.normalized() * MAX_CAMERA_DISTANCE * (percent / MAX_CAMERA_PERCENT)
-#				else:
-#					camera_position = unit.position  + direction.normalized() * MAX_CAMERA_DISTANCE
-#		else:			
-#			if percent < MAX_CAMERA_PERCENT:
-#				camera_position = get_global_mouse_position()  + direction.normalized() * MAX_CAMERA_DISTANCE * (percent / MAX_CAMERA_PERCENT)
-#			else:
-#				camera_position = get_global_mouse_position()  + direction.normalized() * MAX_CAMERA_DISTANCE
-#
-#	global_position = lerp(global_position, camera_position, CAMERA_SPEED)
-#
-#	if(Input.is_action_just_pressed("ui_right_mouse_button")):
-#		position=get_global_mouse_position()
-#		position.x=lerp(position.x,position.x+CAMERA_SPEED*zoom.x,CAMERA_SPEED*delta)
-#		position.y=lerp(position.y,position.y+CAMERA_SPEED*zoom.y,CAMERA_SPEED*delta)	
-#
-#		move_to_point = position
-#		emit_signal("start_move_selection")		
-#
-#
-#func _set_its_raining(var _its_raining):
-#	its_raining = _its_raining
-#
-#	if(its_raining):
-#		$AnimatedSprite.visible = true
-#		if(!$AnimatedSprite.playing):
-#			$AnimatedSprite.play("default")
-#	else:
-#		$AnimatedSprite.visible = false
-#		$AnimatedSprite.stop()
-#
-#
-#func _input(event):
-#
-#	if event is InputEventMouseButton && event.button_index == BUTTON_LEFT:
-#		if event.pressed:	
-#			for unit in selected:
-#				if "Unit" in unit.collider.name:
-#					if(!unit.collider.is_erased):					
-#						unit.collider._set_selected(false)
-#					else:
-#						unit.collider.visible=false
-#						unit.collider.queue_free()
-#			selected = []
-#			dragging = true
-#			drag_start = get_global_mouse_position()
-#		elif dragging:
-#			dragging = false
-#			select_draw.update_status(drag_start,get_global_mouse_position(),dragging)
-#			var drag_end = get_global_mouse_position()
-#			select_rectangle.extents = (drag_end-drag_start)/2
-#			var space = get_world_2d().get_direct_space_state()
-#			var query = Physics2DShapeQueryParameters.new()
-#			query.set_shape(select_rectangle)
-#			query.transform = Transform2D(0,(drag_end+drag_start)/2)
-#			selected = space.intersect_shape(query)
-#			for unit in selected:
-#				if "Unit" in unit.collider.name:
-#					unit.collider._set_selected(true)
-#					emit_signal("area_selected")
-#
-#	if dragging:
-#		if event is InputEventMouseMotion:
-#			#var drag_end=get_global_mouse_position()
-#			select_draw.update_status(drag_start,get_global_mouse_position(),dragging)
-#
-#	if event is InputEventKey && event.scancode == KEY_C:
-#		var the_unit = get_tree().root.get_child(0).get_child(1)	
-#		the_unit.queue_free()
-
-######################################
-
-#	if event is InputEventMouseButton && event.button_index == BUTTON_RIGHT:
-#		if event.is_pressed():
-#			for unit in selected:
-#				if(unit.collider.selected):
-#					#unit.collider.get_node("Mouse_Control").can_move = true
-#					unit.collider.target_position = get_global_mouse_position()
-#					#print(str(unit.target_position.x))
-#					#unit.collider.device_number = 2
-#				#else:
-#					#unit.collider.get_node("Mouse_Control").can_move = false

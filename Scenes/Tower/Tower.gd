@@ -4,7 +4,7 @@ extends StaticBody2D
 export var condition=0
 export var condition_max=0
 onready var tree
-onready var units
+onready var citizens
 onready var timer=$Timer
 onready var polygon=$CollisionPolygon2D
 #onready var all_timer=get_tree().root.get_child(0).get_node("food_timer")
@@ -14,6 +14,8 @@ var mouse_entered=false
 var body_entered=null
 var target_position=Vector2.ZERO
 var can_shoot=false
+var can_make_attack=true
+
 
 export (int) var MIN_DISTANCE=0
 
@@ -24,7 +26,8 @@ export var spear_scene=preload("res://Scenes/Bullet/Bullet.tscn")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	tree=Globals.current_scene
-	units=tree.units
+	citizens=tree.get_node("Citizens")
+	timer.start()
 
 
 func _process(_delta):
@@ -36,7 +39,12 @@ func _process(_delta):
 func _tower_build():
 	if condition<condition_max:
 		condition+=3
-		
+	else:
+		Globals.is_first_tower_built=true
+		tree._check_victory()
+		if !tree.victory_obtained && can_make_attack:
+			tree._check_buildings()
+			can_make_attack=false
 
 
 func _get_damage(body):
@@ -46,7 +54,7 @@ func _get_damage(body):
 			if condition<0:
 				polygon.visible=false
 				if tree.tower_node.get_child_count()<=0:
-					tree.is_first_tower_built=false
+					Globals.is_first_tower_built=false
 				queue_free()
 				tree.emit_signal("remove_building")
 	else:
@@ -55,24 +63,25 @@ func _get_damage(body):
 
 func _on_Area2D_body_entered(body):
 	body_entered=body
-	if "Unit" in body.name:
+	if "Citizen" in body.name:
 		body.tower_entered=true
 	
 
 
 func _on_Area2D_body_exited(body):
-	if "Unit" in body.name:
+	if "Citizen" in body.name:
 		body_entered=null
 		body.tower_entered=false
 
 
 func _on_Timer_timeout():
-	for citizen in units.get_children():
-		if citizen.tower_entered && citizen.position.distance_to(self.position)<50:
+	for a_citizen in citizens.get_children():
+		if a_citizen.tower_entered && a_citizen.position.distance_to(self.position)<50:
 			_tower_build()
 	if can_shoot==false:
 		can_shoot=true
 	timer.start()
+	
 
 
 func _on_Tower_mouse_entered():
@@ -84,6 +93,12 @@ func _on_Tower_mouse_exited():
 	
 func _detect_enemies():
 	for an_enemy in tree.enemy_warriors_node.get_children():
+		if is_instance_valid(an_enemy):
+			if position.distance_to(an_enemy.position)<MIN_DISTANCE:
+				target_position=an_enemy.position
+				if can_shoot:
+					_shoot()
+	for an_enemy in tree.enemy_citizens_node.get_children():
 		if is_instance_valid(an_enemy):
 			if position.distance_to(an_enemy.position)<MIN_DISTANCE:
 				target_position=an_enemy.position
@@ -106,8 +121,8 @@ func _shoot():
 		spear.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
 		spear.set_dir(forward)
 		spear.rotation = angle
-		#spear.owner_name="Enemy_Warrior"
-		#target_position=spear_target		
+		spear.owner_name="Tower"
+			
 		the_tilemap[0].add_child(spear)		
 	can_shoot=false
 

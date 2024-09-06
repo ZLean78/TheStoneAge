@@ -1,37 +1,19 @@
 extends Node2D
 
-#var basket=load("res://Scenes/MouseIcons/basket.png")
-#var arrow=load("res://Scenes/MouseIcons/arrow.png")
-#var pick_mattock=load("res://Scenes/MouseIcons/pick_mattock.png")
-#var sword=load("res://Scenes/MouseIcons/sword.png")
-#var claypot=load("res://Scenes/MouseIcons/claypot.png")
-#var hand=load("res://Scenes/MouseIcons/hand.png")
-#var axe=load("res://Scenes/MouseIcons/axe.png")
-
 #Contador de unidades.
 var unit_count = 1
 
-#var food_points = 0
-#var leaves_points = 0
-#var stone_points = 0
-#var wood_points = 0
-#var clay_points = 0
-#var water_points = 0
 
 #Hitos anteriores ya cumplidos
 var group_dressed = false
 var group_has_bag = false
 
-#Variables de hitos
-var is_fire_discovered = false
-var is_wheel_invented = false
-var is_stone_weapons_developed = false
-var is_claypot_made = false
-var is_agriculture_developed = false
-
-
+#Variables Onready
+#Variable de escena en el árbol.
 onready var tree = Globals.current_scene
-onready var food_timer = tree.get_node("food_timer")
+
+#Elementos de UI
+
 onready var timer_label = tree.get_node("UI/Base/TimerLabel")
 onready var food_label = tree.get_node("UI/Base/Rectangle/FoodLabel")
 onready var prompts_label = tree.get_node("UI/Base/Rectangle/PromptsLabel")
@@ -40,69 +22,112 @@ onready var stone_label = tree.get_node("UI/Base/Rectangle/StoneLabel")
 onready var clay_label = tree.get_node("UI/Base/Rectangle/ClayLabel")
 onready var wood_label = tree.get_node("UI/Base/Rectangle/WoodLabel")
 onready var water_label = tree.get_node("UI/Base/Rectangle/WaterLabel")
-#onready var developments_label = tree.get_node("UI/Base/Rectangle/DevelopmentsLabel")
 onready var rectangle = tree.get_node("UI/Base/Rectangle")
 onready var develop_stone_weapons = tree.get_node("UI/Base/Rectangle/DevelopStoneWeapons")
 onready var invent_wheel = tree.get_node("UI/Base/Rectangle/InventWheel")
 onready var discover_fire = tree.get_node("UI/Base/Rectangle/DiscoverFire")
 onready var make_claypot = tree.get_node("UI/Base/Rectangle/MakeClaypot")
 onready var develop_agriculture = tree.get_node("UI/Base/Rectangle/DevelopAgriculture")
+
+#Cámara
 onready var camera = tree.get_node("Camera")
+
+#Temporizadores general y de ataque de tigres.
+onready var all_timer = tree.get_node("all_timer")
 onready var tiger_timer = tree.get_node("tiger_timer")
-onready var tile_map = tree.get_node("TileMap")
+
+#Ciudadanos
+onready var citizens=$Citizens
+
+#Fuentes de recursos recogibles (pickables)
 onready var lake = tree.get_node("Lake")
 onready var puddle = tree.get_node("Puddle")
 onready var quarries = $Quarries
-onready var units=$Units
-onready var nav2d=$nav
-onready var spawn_position=tree.get_node("SpawnPosition")
-onready var tiger_spawn=tree.get_node("TigerSpawn")
-onready var tiger_target=tree.get_node("TigerTarget")
-onready var tigers=$Tigers
-onready var tiger = preload("res://Scenes/Tiger/Tiger.tscn")
+
 onready var fruit_trees=$FruitTrees
 onready var pine_trees=$PineTrees
 onready var plants=$Plants
-onready var next_scene_confirmation=$UI/Base/NextSceneConfirmation
+
+#Agente de navegación
+onready var nav2d=$nav
+
+#Posición de creación de unidades
+onready var spawn_position=tree.get_node("SpawnPosition")
+
+#Posición de creación de tigres.
+onready var tiger_spawn=tree.get_node("TigerSpawn")
+
+#Objetivo de los tigres.
+onready var tiger_target=tree.get_node("TigerTarget")
+
+#Nodo padre de los tigres.
+onready var tigers=$Tigers
+
+#Escena para instanciar del tigre.
+onready var tiger = preload("res://Scenes/Tiger/Tiger.tscn")
+
+#Cajas de diálogo para pasar a la escena siguiente, salir o volver a jugar.
+onready var next_scene_confirmation=$UI/Base/Rectangle/NextSceneConfirmation
 onready var exit_confirmation=$UI/Base/ExitConfirmation
-onready var replay_confirmation=$UI/Base/ReplayConfirmation
+onready var replay_confirmation=$UI/Base/Rectangle/ReplayConfirmation
 
 #Nodo que dibuja el rectángulo de selección de la cámara.
 onready var select_draw=$SelectDraw
 
+#Arreglo que crea el path navegable por donde se desplazarán las unidades.
 var path=[]
 
+#Nodo de cueva.
 var cave
 
-export (PackedScene) var Unit2
+#Escena para instanciar un ciudadano.
+export (PackedScene) var Citizen
 
+
+#Arreglos para tener en cuenta...
+#...las unidades seleccionadas
 var selected_units=[]
+#...todas las unidades
 var all_units=[]
-var all_plants=[]
-var all_trees=[]
-var all_pine_trees=[]
-var all_quarries=[]
-var all_pickables=[]
+#...las unidades refugiadas de la lluvia
 var sheltered=[]
+
+#...las plantas
+var all_plants=[]
+#...los arboles frutales.
+var all_trees=[]
+#...los pinos
+var all_pine_trees=[]
+#...las canteras
+var all_quarries=[]
+#todas las fuentes de recursos recolectables
+var all_pickables=[]
+
+#...todos los tigres.
 var all_tigers=[]
 
 
+#Variables para dibujar el rectángulo y seleccionar unidades.
 var dragging = false
 var selected = []
 var drag_start = Vector2.ZERO
-#var select_rectangle = RectangleShape2D.new()
 
-
+#Nodo para dibujar como hijo del mismo el rectángulo.
 onready var draw_rect = get_tree().root.find_node("draw_rect")
 
+#Condición para saber si el rectángulo es invertido a la izquierda.
 var is_flipped = false
 
+#Vector 2 del tamaño de pantalla.
 var screensize = Vector2(ProjectSettings.get("display/window/size/width"),ProjectSettings.get("display/window/size/height"))
 
+#Para saber si hay tigres.
 var is_tiger=false
-var is_tiger_coundown=false
+#Para saber si ha iniciado o se debe iniciar el temporizador tiger_timer
+#en conteo restante antes que aparezcan los tigres.
+var is_tiger_countdown=false
 
-
+#Señales de modos del cursor.
 signal is_arrow
 signal is_basket
 signal is_pick_mattock
@@ -110,6 +135,8 @@ signal is_sword
 signal is_claypot
 signal is_hand
 signal is_axe
+
+#Variables de modos del cursor.
 var arrow_mode=false
 var basket_mode=false
 var mattock_mode=false
@@ -118,6 +145,7 @@ var claypot_mode=false
 var hand_mode=false
 var axe_mode=false
 
+#Cadena de texto que muestra las instrucciones iniciales en el área de prompts.
 var start_string = """Recoge lodo, agua, alimentos, madera, piedra y hojas
 para cumplir con cada uno de los hitos
 marcados al seleccionar la
@@ -128,62 +156,67 @@ clic derecho sobre ellos estandoa gran distancia."""
 #Si el cursor está en forma de espada tocando un tigre, lo guardamos en esta variable.
 var touching_enemy
 
+#Contador de instancias válidas de tigres.
+var valid_counter=0
+
 func _ready():
+	#El autoload AudioPlayer selecciona la melodía y la reproduce
+	#por el master de música.
+	AudioPlayer._select_music()
+	AudioPlayer.music.play()
 	
-	all_units=units.get_children()
+	#Llenar los arreglos con los hijos de cada uno de sus nodos correspondientes.
+	all_units=citizens.get_children()
 	all_plants=plants.get_children()
 	all_trees=fruit_trees.get_children()
 	all_pine_trees=pine_trees.get_children()
 	all_quarries=quarries.get_children()
 	
-	#tile_map=tree.find_node("TileMap")
+	#Nodo de la cueva.
 	cave=get_node("Cave/Cave")
-	all_trees.append(tree.find_node("fruit_tree"))
-	all_trees.append(tree.find_node("fruit_tree2"))
-	all_trees.append(tree.find_node("fruit_tree3"))
-	all_trees.append(tree.find_node("fruit_tree4"))
-	all_trees.append(tree.find_node("fruit_tree5"))
-	all_trees.append(tree.find_node("fruit_tree6"))
-	all_plants.append(tree.find_node("Plant"));
-	all_plants.append(tree.find_node("Plant2"));
-	#all_units.append(tree.find_node("Unit2"))
 	
 	
-	all_pine_trees.append(tree.find_node("PineTree1"))
-	all_pine_trees.append(tree.find_node("PineTree2"))
-	all_pine_trees.append(tree.find_node("PineTree3"))
-	all_pine_trees.append(tree.find_node("PineTree4"))
-	all_pine_trees.append(tree.find_node("PineTree5"))
-	all_pine_trees.append(tree.find_node("PineTree6"))
-	all_pine_trees.append(tree.find_node("PineTree7"))
-	all_pine_trees.append(tree.find_node("PineTree8"))
-	
-	
-	#all_tigers.append(tree.find_node("Tiger1"))
-	#all_tigers.append(tree.find_node("Tiger2"))
-	#all_tigers.append(tree.find_node("Tiger3"))
-
-#	all_quarries.append(quarry1)
-#	all_quarries.append(quarry2)
-
+	#Agregar los settings del autoload Globals como nodo hijo del nodo UI
 	$UI.add_child(Globals.settings)
 	
-	_create_unit();
+	#Crear once unidades aparte de la que ya está.
+	for i in range(0,11):
+		_create_citizen();
 	
-		
+	#Poner en formación las 12 unidades.
+	for i in range(0,12):
+		if i==0:
+			all_units[i].position = Vector2(camera.position.x+50,camera.position.y+50)
+		else:
+			if i<4:
+				all_units[i].position =	Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
+			elif i>=4 && i<8:
+				if i==4:
+					all_units[i].position =	Vector2(all_units[0].position.x,all_units[0].position.y+20)
+				else:
+					all_units[i].position = Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
+			elif i>=8:
+				if i==8:
+					all_units[i].position = Vector2(all_units[0].position.x,all_units[0].position.y+40)
+				else:
+					all_units[i].position = Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
 	
-	
-	
+	#Reconstruir la navegación.
+	_rebake_navigation()
 	
 	#Agregar ropa y bolso a todas las unidades
 	for a_unit in all_units:
 		a_unit.is_dressed=true
 		a_unit.has_bag=true
-		group_dressed=true
-		group_has_bag=true
-	
-	_rebake_navigation()
+		a_unit.bag_sprite.visible=true
+		if a_unit.is_girl:
+			a_unit.sprite.animation="female_idle1_d"
+		else:
+			a_unit.sprite.animation="male_idle1_d"
+		Globals.group_dressed=true
+		Globals.group_has_bag=true
 
+	#Establecer el cursor en modo flecha, el modo por defecto.
 	emit_signal("is_arrow")
 	arrow_mode=true
 	basket_mode=false
@@ -195,7 +228,8 @@ func _ready():
 	
 
 func _process(_delta):
-	var valid_counter=0
+	#Poner en cero el contador de instancias válidas de tigres y volverlos a contar.
+	valid_counter=0
 	for a_tiger in all_tigers:
 		if is_instance_valid(a_tiger):
 			valid_counter+=1
@@ -205,7 +239,8 @@ func _process(_delta):
 	else:
 		timer_label.text = "¡CUIDADO, HAY TIGRES!"
 	
-	
+	#Mostrar los valores de las variables globales del autoload Globals
+	#en las etiquetas de la UI.
 	food_label.text = str(int(Globals.food_points))
 	leaves_label.text = str(int(Globals.leaves_points))	
 	stone_label.text = str(int(Globals.stone_points))	
@@ -213,40 +248,44 @@ func _process(_delta):
 	wood_label.text = str(int(Globals.wood_points))
 	water_label.text = str(int(Globals.water_points))
 	
+	#Revisar si quedan unidades y si hay condición de victoria.
 	_check_units()	
 	_check_victory()
 			
-		
+	#Si no hay tigres y no se ha iniciado la cuenta regresiva,
+	#iniciar el temporizador para ataque de tigres y poner en verdadero
+	#la condición de cuenta regresiva iniciada.
 	if !is_tiger:
-		if !is_tiger_coundown:
+		if !is_tiger_countdown:
 			tiger_timer.start()
-			is_tiger_coundown=true	
+			is_tiger_countdown=true	
 	
 	
 			
-		
+#Seleccionar unidades y agregarlas al arreglo selected_units.		
 func _select_unit(unit):
 	if not selected_units.has(unit):
 		selected_units.append(unit)
-	#print("selected %s" % unit.name)
-	#create_buttons()
-
+	
+#Desseleccionar unidades y quitarlas del arreglo selected_units.
 func _deselect_unit(unit):
 	if selected_units.has(unit):
 		selected_units.erase(unit)			
 
-		
+#Desseleccionar todas las unidades.		
 func _deselect_all():
 	while selected_units.size()>0:
 		selected_units[0]._set_selected(false)
-		
+
+#Seleccionar sólo la última unidad.
 func _select_last():
 	for unit in selected_units:
 		if selected_units[selected_units.size()-1] == unit:
 			unit._set_selected(true)
 		else:
 			unit._set_selected(false)
-		
+
+#Control correspondiente a las acciones de las unidades.
 func _unhandled_input(event):
 	if event.is_action_pressed("RightClick"):
 		if arrow_mode:
@@ -258,48 +297,47 @@ func _unhandled_input(event):
 						selected_units[i].target_position=Vector2(selected_units[0].target_position.x,selected_units[i-1].target_position.y+20)
 					else:
 						selected_units[i].target_position=Vector2(selected_units[i-1].target_position.x+20,selected_units[i-1].target_position.y)
-		if basket_mode || axe_mode || mattock_mode:
+		if basket_mode || axe_mode || mattock_mode || hand_mode || claypot_mode:
 			for i in range(0,selected_units.size()):
 				selected_units[i].target_position=get_global_mouse_position()
+		
+			
 	if event.is_action_pressed("EscapeKey"):
 		#Si el cursor está en modo flecha.
 		if arrow_mode:
 			if(all_units.size()==0 && Globals.food_points<15):
 				replay_confirmation.visible=true
 			else:
-				exit_confirmation.popup()
-				exit_confirmation.get_ok().text="Aceptar"
-				exit_confirmation.get_cancel().text="cancelar"
+				$UI/Base/Rectangle/OptionsMenu.visible=!$UI/Base/Rectangle/OptionsMenu.visible
 		else:
 			_on_Game2_is_arrow()
-	if event.is_action_pressed("Settings"):
-		Globals.settings.visible=!Globals.settings.visible
-			
-	
-func _create_unit(cost = 0):
-	var new_Unit = Unit2.instance()
-	unit_count+=1	
-	if(unit_count%2==0):
-		new_Unit.is_girl=true
-	else:
-		new_Unit.is_girl=false
-	if(group_dressed):
-		new_Unit.is_dressed=true	
-	if(group_has_bag):
-		new_Unit.has_bag=true	
-		new_Unit.get_child(3).visible = true
-	Globals.food_points -= cost
-	new_Unit.position = spawn_position.position
-	for unit in units.get_children():
-		if new_Unit.position==unit.position:
-			new_Unit.position+=Vector2(20,20)
-	units.add_child(new_Unit)
-	all_units.append(new_Unit)
-		
 
 			
+#Crear unidad (botón de la UI).	
+func _create_citizen(cost = 0):
+	var new_citizen = Citizen.instance()
+	unit_count+=1	
+	if(unit_count%2==0):
+		new_citizen.is_girl=true
+	else:
+		new_citizen.is_girl=false
+	if(group_dressed):
+		new_citizen.is_dressed=true	
+	if(group_has_bag):
+		new_citizen.has_bag=true	
+		new_citizen.get_child(3).visible = true
+	Globals.food_points -= cost
+	new_citizen.position = spawn_position.position
+	for citizen in citizens.get_children():
+		if new_citizen.position==citizen.position:
+			new_citizen.position+=Vector2(20,20)
+	citizens.add_child(new_citizen)
+	all_units.append(new_citizen)
+		
+
+#Verificar si ha habido victoria o derrota.		
 func _check_victory():
-	if is_fire_discovered && is_wheel_invented && is_stone_weapons_developed && is_claypot_made && is_agriculture_developed:
+	if Globals.is_fire_discovered && Globals.is_wheel_invented && Globals.is_stone_weapons_developed && Globals.is_claypot_made && Globals.is_agriculture_developed:
 		prompts_label.text = "¡Has ganado!"
 		next_scene_confirmation.visible=true
 			
@@ -309,156 +347,29 @@ func _check_victory():
 		replay_confirmation.visible=true
 		
 		
-#func collect_pickable(var _pickable):
-#	for a_unit in all_units:
-#		if _pickable.type == "fruit_tree" or _pickable.type == "pine_tree" or _pickable.type == "plant" or _pickable.type == "quarry":
-#			if _pickable.touching && !_pickable.empty && a_unit.pickable_touching:
-#				var the_unit = all_units[all_units.find(a_unit,0)]
-#				if((abs(the_unit.position.x-_pickable.position.x)<50)&&
-#				(abs(the_unit.position.y-_pickable.position.y)<50)):
-#					if _pickable.type=="fruit_tree":
-#						if(the_unit.has_bag):
-#							if(_pickable.points>=4):
-#								food_points +=4
-#								_pickable.points-=4
-#							else:
-#								food_points += _pickable.points
-#								_pickable.points = 0
-#						else:					
-#							food_points +=1
-#							_pickable.points-=1
-#						#if _pickable.points <= 0:
-#						#_pickable.empty = true
-#					elif _pickable.type == "pine_tree":
-#						if(is_stone_weapons_developed):
-#							if(_pickable.points>=4):
-#								wood_points +=4
-#								_pickable.points-=4
-#							else:
-#								wood_points += _pickable.points
-#								_pickable.points = 0
-#						else:					
-#							wood_points +=1
-#							_pickable.points-=1
-#					elif _pickable.type == "plant":
-#						if(the_unit.has_bag):
-#							if(_pickable.points>=4):
-#								leaves_points +=4
-#								_pickable.points-=4
-#							else:
-#								leaves_points+=_pickable.points
-#								_pickable.points=0
-#						else:
-#							leaves_points+=1
-#							_pickable.points-=1
-#					elif _pickable.type == "quarry":
-#						if(is_stone_weapons_developed):
-#							if(_pickable.points>=4):
-#								stone_points+=4
-#								_pickable.points-=4
-#							else:
-#								stone_points+=_pickable.points
-#								_pickable.points=0
-#						else:
-#							stone_points+=1
-#							_pickable.points-=1
-#				if _pickable.points <= 0:
-#					_pickable.empty = true	
-#		else:
-#			if _pickable.touching && a_unit.pickable_touching:
-#				var the_unit = all_units[all_units.find(a_unit,0)]	
-#				var the_pickable = _pickable
-#				if the_pickable.touching:
-#					if the_pickable.type == "puddle" && the_unit.puddle_touching:
-#						clay_points+=4
-#					elif the_pickable.type == "lake" && the_unit.lake_touching:
-#						if is_claypot_made:
-#							water_points+=4
-#						else:
-#							prompts_label.text="Debes desarrollar el cuenco de barro \n para poder transportar agua."
-#
 
-#
-#func _get_damage():
-#	for a_unit in all_units:		
-#		for a_tiger in all_tigers:			
-#			if(a_unit.is_chased && a_unit.is_tiger_touching && !all_units.size()==0):
-#				var the_unit = all_units[all_units.find(a_unit,0)]
-#				var the_tiger = all_tigers[all_tigers.find(a_tiger,0)]
-#				if(the_unit.energy_points>0):
-#					if(!the_unit.is_dressed):
-#						the_unit.energy_points-=15
-#					else:
-#						the_unit.energy_points-=10
-#					#the_unit.get_child(4)._decrease_energy()
-#					the_unit.bar._set_energy_points(the_unit.energy_points)
-#					the_unit.bar._update_energy()
-#				else:
-#					the_tiger.unit = null
-#					the_unit._set_selected(false)			
-#					all_units.erase(the_unit)	
-#					the_unit.queue_free()
-##								
-#
-#
-#	if(all_units.size()==0 && food_points<15):
-#		prompts_label.text = "Has sido derrotado."	
 		
-	
+#Señal de que se ha presionado el botón de crear unidad de la UI.	
 func _on_CreateCitizen_pressed():
 	if Globals.food_points>=15:
-		_create_unit(15)
+		_create_citizen(15)
 		
 
 
-		
-#		for a_tree in all_trees:
-#			collect_pickable(a_tree)
-#
-#		for a_plant in all_plants:
-#			collect_pickable(a_plant)
-#
-#		for a_quarry in all_quarries:
-#			collect_pickable(a_quarry)		
-#
-#		for a_pine_tree in all_pine_trees:
-#			collect_pickable(a_pine_tree)
-#
-#		collect_pickable(puddle)
-#
-#		collect_pickable(lake)
-		
-		
-		
-	
-	
-
-#func _tiger_attack():
-#	for i in range(all_tigers.size()):
-#		for j in range(all_units.size()):
-#			if all_tigers[i].is_chasing && all_tigers[i].visible && !all_tigers[i].is_dead:
-#					var the_unit=all_units[j]
-#					var the_tiger=all_tigers[i]
-#					if !the_unit.is_chased && abs(the_unit.position.distance_to(the_tiger.position))<400:
-#						the_tiger.unit=the_unit
-#						the_unit.is_chased=true
-#						the_tiger.is_chasing=true
-#			elif all_tigers[i].is_dead:
-#				var the_tiger=all_tigers[i]
-#				all_tigers.remove(the_tiger)
-#				the_tiger.queue_free()
 
 
 
 				
-
+#Señal timeout del contador de ataque de tigres.
 func _on_tiger_timer_timeout():
-	var valid_counter=0
+	#Poner en cero el contador de instancias válidas de tigres y volverlos a contar.
+	valid_counter=0
 	for a_tiger in all_tigers:
 		if is_instance_valid(a_tiger):
 			valid_counter+=1
 	
 	
+	#Crear instancias de tigres donde no haya instancias válidas.	
 	if valid_counter==0:	
 		for tiger_counter in range(0,2):
 			var new_tiger = tiger.instance()
@@ -471,12 +382,14 @@ func _on_tiger_timer_timeout():
 			new_tiger.position = tiger_spawn.position
 			tigers.add_child(new_tiger)
 			all_tigers.append(new_tiger)
-			
+	#Si ya hay tigres, iniciar el conteo para que ataquen.		
 	else:
 		tiger_timer.start()
 		
 		
-		
+	#Si hay instancias válidas de tigres, hacerlas visibles y determinar
+	#por medio de un número aleatorio par o impar en cuál de las dos posiciones
+	#posibles va a aparecer.	
 	for a_tiger in all_tigers:
 		if is_instance_valid(a_tiger):
 			a_tiger.visible=true
@@ -489,7 +402,9 @@ func _on_tiger_timer_timeout():
 
 		
 
-		
+#Identificar y agregar a un arreglo provisorio
+#las unidades marcadas por el rectángulo.
+#Esta función es invocada por la función area_selected.		
 func get_units_in_area(area):
 	var u=[]
 	for unit in all_units:
@@ -498,6 +413,8 @@ func get_units_in_area(area):
 				u.append(unit)
 	return u
 
+#Función area_selected que selecciona o desselecciona las unidades enmarcadas,
+#según el caso
 func _area_selected(obj):
 	var start=obj.start
 	var end=obj.end
@@ -511,14 +428,14 @@ func _area_selected(obj):
 		u.selected = not u.selected
 		
 
-		
+#Mover una sola unidad en particular.		
 func start_move_selection(obj):
 	for un in all_units:
 		if un.selected:
 			un.move_unit(obj.move_to_point)
 		
 
-
+#Mover el grupo de unidades.
 func move_group():
 	var pos_minus_one=0
 	for i in range (0,selected_units.size()):
@@ -532,53 +449,55 @@ func move_group():
 		pos_minus_one=selected_units[i].target_position
 
 
+#####AVANCES DE LA UI#####
 
-#func _on_damage_timer_timeout():
-#	_get_damage()
-
-	
-
+#Desarrollar armas y herramientas de piedra.
 func _on_DevelopStoneWeapons_pressed():
 	if Globals.stone_points>=70 && Globals.wood_points>=70 && Globals.leaves_points >=50:
 		Globals.stone_points-=70
 		Globals.wood_points-=70
 		Globals.leaves_points-=50
-		is_stone_weapons_developed=true	
+		Globals.is_stone_weapons_developed=true	
 		develop_stone_weapons.visible = false	
 		
 		
 
-
+#Inventar la rueda.
 func _on_InventWheel_pressed():
 	if Globals.stone_points >=70 && Globals.wood_points>=40:
 		Globals.stone_points-=70
 		Globals.wood_points-=40
-		is_wheel_invented=true
+		Globals.is_wheel_invented=true
 		invent_wheel.visible = false
 
+#Descubrir el fuego.
 func _on_DiscoverFire_pressed():
 	if Globals.wood_points >=60 && Globals.stone_points>=40:
 		Globals.wood_points-=60
 		Globals.stone_points-=40
-		is_fire_discovered=true
+		Globals.is_fire_discovered=true
 		discover_fire.visible = false
-		
+	
+#Crear cuenco de barro (necesario para poder recoger agua y transportarla).	
 func _on_MakeClaypot_pressed():
 	if Globals.clay_points>=85:
 		Globals.clay_points-=85
-		is_claypot_made=true
+		Globals.is_claypot_made=true
 		make_claypot.visible=false
 
-
+#Desarrollar la agricultuar.
 func _on_DevelopAgriculture_pressed():
 	if Globals.food_points>=70 && Globals.leaves_points>=70 && Globals.water_points>=70:
 		Globals.food_points-=70
 		Globals.leaves_points-=70
 		Globals.water_points-=70
-		is_agriculture_developed=true
+		Globals.is_agriculture_developed=true
 		develop_agriculture.visible=false
+		
+		
+########CAMBIOS DE MODOS DEL MOUSE#######
 
-
+#Modo Flecha
 func _on_Game2_is_arrow():
 	Input.set_custom_mouse_cursor(Globals.arrow)
 	arrow_mode=true
@@ -589,7 +508,7 @@ func _on_Game2_is_arrow():
 	hand_mode=false
 	axe_mode=false
 
-
+#Modo Canasta
 func _on_Game2_is_basket():
 	Input.set_custom_mouse_cursor(Globals.basket)
 	basket_mode=true
@@ -599,7 +518,8 @@ func _on_Game2_is_basket():
 	claypot_mode=false
 	hand_mode=false
 	axe_mode=false
-	
+
+#Modo Pico	
 func _on_Game2_is_pick_mattock():
 	Input.set_custom_mouse_cursor(Globals.pick_mattock)
 	mattock_mode=true
@@ -610,7 +530,7 @@ func _on_Game2_is_pick_mattock():
 	hand_mode=false
 	axe_mode=false
 
-
+#Modo Espada
 func _on_Game2_is_sword():
 	Input.set_custom_mouse_cursor(Globals.sword)
 	sword_mode=true
@@ -622,7 +542,7 @@ func _on_Game2_is_sword():
 	axe_mode=false
 	
 
-
+#Modo Mano
 func _on_Game2_is_hand():
 	Input.set_custom_mouse_cursor(Globals.hand)
 	hand_mode=true
@@ -634,7 +554,7 @@ func _on_Game2_is_hand():
 	axe_mode=false
 	
 
-
+#Modo Cuenco de Barro
 func _on_Game2_is_claypot():
 	Input.set_custom_mouse_cursor(Globals.claypot)
 	claypot_mode=true
@@ -645,7 +565,7 @@ func _on_Game2_is_claypot():
 	hand_mode=false
 	axe_mode=false
 
-
+#Modo Hacha
 func _on_Game2_is_axe():
 	Input.set_custom_mouse_cursor(Globals.axe)
 	axe_mode=true
@@ -657,7 +577,7 @@ func _on_Game2_is_axe():
 	hand_mode=false
 
 
-
+#Controlar si hay unidades marcadas para morir.
 func _check_units():
 	for a_unit in all_units:
 		if a_unit.is_deleted:
@@ -665,9 +585,10 @@ func _check_units():
 			all_units.remove(all_units.find(a_unit,0))
 			the_unit._die()
 	
-	
+
+#Actualizar el path de navegación de cada unidad ciudadano seleccionada.	
 func _update_path(new_obstacle):	
-	var citizens=units.get_children()
+	var all_citizens=citizens.get_children()
 	var the_citizen=null
 	var new_polygon=PoolVector2Array()
 	var col_polygon=new_obstacle.get_node("CollisionPolygon2D").get_polygon()
@@ -679,7 +600,7 @@ func _update_path(new_obstacle):
 	navi_polygon.add_outline(new_polygon)
 	navi_polygon.make_polygons_from_outlines()	
 	
-	for citizen in citizens:
+	for citizen in all_citizens:
 		if citizen.selected:
 			the_citizen=citizen
 			break
@@ -689,6 +610,7 @@ func _update_path(new_obstacle):
 		path = Array(p)
 		path.invert()
 
+#Reconstruir el mapa de navegación.
 func _rebake_navigation():
 	nav2d.get_node("polygon").enabled=false
 	var navi_polygon=nav2d.get_node("polygon").get_navigation_polygon()
@@ -716,24 +638,53 @@ func _rebake_navigation():
 	nav2d.get_node("polygon").enabled=true
 	
 
+#####SEÑALES DE CAJAS DE DIÁLOGO DE FASE#######
 
+#Señal del botón de salir.
 func _on_ExitConfirmation_confirmed():
 	$UI.remove_child(Globals.settings)
 	Globals.go_to_scene("res://Scenes/Menu/Menu.tscn")
 
 
-
+#Señal del botón de volver a jugar (cuando se pierde).
 func _on_ReplayOk_pressed():
 	$UI.remove_child(Globals.settings)
 	get_tree().reload_current_scene()
 
-
+#Señal del botón de no volver a jugar.
 func _on_ReplayCancel_pressed():
 	exit_confirmation.popup()
 	exit_confirmation.get_ok().text="Aceptar"
 	exit_confirmation.get_cancel().text="Cancelar"
 
-
+#Señal del botón de pasar a la siguente fase.
 func _on_NextSceneOk_pressed():
 	$UI.remove_child(Globals.settings)
-	Globals.go_to_scene("res://Scenes/Game3/Game3.tscn")
+	Globals.go_to_scene("res://Scenes/Intermissions/Intermission2.tscn")
+
+#Señal del botón de ir a los ajustes.
+func _on_Settings_pressed():
+	Globals.settings.visible=true
+
+#Botón de salir del menú de opciones.
+func _on_Quit_pressed():
+	exit_confirmation.popup()
+	exit_confirmation.get_ok().text="Aceptar"
+	exit_confirmation.get_cancel().text="cancelar"
+
+#Botón de volver del menú de opciones.
+func _on_Back_pressed():
+	$UI/Base/Rectangle/OptionsMenu.visible=false
+
+#Señal timeout del temporizador all_timer.
+func _on_all_timer_timeout():
+	#Interacción de cada unidad con las fuentes de recursos
+	#y los animales enemigos.
+	for a_unit in all_units:
+		if is_instance_valid(a_unit):
+			if a_unit.pickable!=null:
+				a_unit._collect_pickable(a_unit.pickable)
+				
+			if a_unit.body_entered!=null && is_instance_valid(a_unit.body_entered):
+				if "Tiger" in a_unit.body_entered.name || "Mammoth" in a_unit.body_entered.name:
+					a_unit._get_damage(a_unit.body_entered)

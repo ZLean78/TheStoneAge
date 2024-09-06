@@ -27,20 +27,14 @@ func _move_spears(var _to_delta):
 		|| "EnemyWarrior" in collision.collider.name
 		|| "EnemyCitizen" in collision.collider.name
 		|| "EnemyHouse" in collision.collider.name
-		|| "EnemyTownhall" in collision.collider.name):
+		|| "EnemyVehicle" in collision.collider.name
+		|| "EnemyFort" in collision.collider.name):
 			collision.collider._get_damage(self)
 		queue_free()
 			
 		
 	
-#	if collision != null:
-#		if "Tiger" in collision.collider.name || "Mammoth" in collision.collider.name:
-#			if "Tiger" in collision.collider.name:
-#				collision.collider.unit.is_tiger_touching=false
-#				collision.collider.unit=null
-#			#collision.collider.queue_free()
-#		queue_free()
-	
+
 	if position.distance_to(start_position) > 400:
 		queue_free()
 	

@@ -1,54 +1,32 @@
-extends KinematicBody2D
+extends "res://Scenes/Unit/Unit.gd"
 
 #Proyectil, piedra para lanzar al enemigo.
 var bullet
 export var bullet_scene=preload("res://Scenes/Bullet/Bullet.tscn")
 
-#Velocidad
-export (float) var SPEED = 100.0
-#Máximo de Salud
-export (float) var MAX_HEALTH = 100.0
 
-#variable que indica el nodo principal de la escena.
-var tree
 
-#Temporizador de comida, agrega un punto de comida por segundo cuando la unidad toca un árbol frutal.
-
-#Salud
-#onready var health = MAX_HEALTH
-
-#Variable que indica si está seleccionada la unidad.
-var selected = false setget _set_selected
-#Marca de selección
-onready var box = $Selected
-#onready var label = $label
-#Barra de Energía
-onready var bar = $Bar
 onready var all_timer = $all_timer
-onready var sprite = get_node("scalable/sprite")
 
-onready var shoot_node = $shootNode
-onready var shoot_point = $shootNode/shootPoint
+
+
 
 
 #Variable que indica si el jugador debe moverse.
 var move_p = false
 #Vector2 que indica cuánto debe moverse el jugador.
 var to_move = Vector2()
-#PoolVector2Array que indica el camino variable teniendo en cuenta el Polígono de navegación.
-var path = PoolVector2Array()
+
 #Posición inicial, se actualiza cada vez que hacemos click con el botón derecho.
 var initialPosition = Vector2()
 
 #Puntos de comida de la unidad.
 var food_points = 0
-#Puntos de energía.
-var energy_points = MAX_HEALTH
+
 #Variable que indica si se está arrastrando el mouse sobre la unidad.
 var dragging = true
 
-#Indica si la animación de la unidad debe estar flipeada en x.
-var is_flipped = false
+
 var is_chased = false
 #var click_relative = 16
 #Indica si la unidad ha muerto.
@@ -59,12 +37,10 @@ var collision
 
 #Variables agregadas
 #var device_number = 0
-#!!!!
-var motion = Vector2()
-#Vector2 que indica la velocidad en x e y para las animaciones.
-var velocity = Vector2()
-#!!!!!
-var touch_enabled = false
+##!!!!
+#var motion = Vector2()
+#
+
 #Indica si la unidad se encuentra bajo refugio.
 var is_sheltered = false
 #Indica si la unidad es o no mujer.
@@ -77,8 +53,6 @@ var is_dressed = false
 var is_erased = false
 
 
-#Posición adonde la unidad debe moverse.
-var target_position = Vector2.ZERO
 
 #Indica si la unidad puede agregar puntos de comida o no.
 var can_add = false
@@ -100,20 +74,14 @@ var is_enemy_touching=false
 var tiger = null
 
 
-#!!!!
 
-#Variable contador para diferenciar cuándo ha acabado el timer "all_timer".
-var timer_count=1
 
 #Para saber si la unidad ha sido eliminada.
 var is_deleted=false
 
-#Para detección de daño. Cuerpo que ingresa al área 2D
-var body_entered
 
-#var can_shoot = true
 
-var to_delta = 0.0
+
 
 var direction = Vector2.ZERO
 
@@ -125,29 +93,38 @@ var index = 0
 #Polígono de navegación.
 onready var nav2d
 
-#var colliding_body: KinematicBody2D
-
-#var body_velocity=Vector2.ZERO
 
 
 
-#Señal de cambio de salud (incremento o decremento).
-signal health_change
-#Señal de que la unidad ha muerto.
-signal im_dead
-#signal food_points_change
 
-#Señales de que la unidad fue seleccionada y desseleccionada.
-signal was_selected
-signal was_deselected
+##Señal de cambio de salud (incremento o decremento).
+#signal health_change
+##Señal de que la unidad ha muerto.
+#signal im_dead
+##signal food_points_change
+
+
 
 
 func _ready():
 	tree=Globals.current_scene
+	SPEED=100.0
+	MAX_HEALTH=100.0
+	health=MAX_HEALTH
+	velocity=Vector2()
+	target_position=Vector2()
+	bar=$Bar
+	foot=$Foot
+	path=PoolVector2Array()
+	sprite=get_node("scalable/sprite")
+	shoot_node=$shootNode
+	shoot_point=$shootNode/shootPoint
+	is_flipped=false
+	timer_count=1
 	nav2d=tree.get_node("nav")
-	connect("was_selected",tree,"_select_unit")
-	connect("was_deselected",tree,"_deselect_unit")
-	emit_signal("health_change",energy_points)
+#	connect("was_selected",tree,"_select_unit")
+#	connect("was_deselected",tree,"_deselect_unit")
+
 	
 	tree=Globals.current_scene
 	nav2d=tree.get_node("nav")
@@ -164,17 +141,18 @@ func _ready():
 		if is_girl:
 			sprite.animation = "female_idle1_d"
 	
+	bar.value=MAX_HEALTH
+	bar.visible = true
+	foot.visible = false
 	
-	box.visible = false
 	
-	bar.visible = false
 
 	
 
 func _set_selected(value):
 	if selected != value:
 		selected = value
-		box.visible = value
+		foot.visible = value
 		#label.visible = value
 		bar.visible = value
 		if selected:
@@ -192,11 +170,11 @@ func _physics_process(delta):
 	position.y = clamp(position.y,-608,screensize.y)	
 	
 	if selected:
-		if box.visible == false:
-			box.visible = true
+		if foot.visible == false:
+			foot.visible = true
 	else:
-		if box.visible == true:
-			box.visible = false
+		if foot.visible == true:
+			foot.visible = false
 	
 	if target_position!=Vector2.ZERO:
 		if position.distance_to(target_position) > 10:
@@ -206,15 +184,7 @@ func _physics_process(delta):
 			velocity=Vector2.ZERO
 	
 	
-	"""if move_p:
-		path = get_tree().root.get_child(0).get_node("nav").get_simple_path(position,target_position)
-		velocity=(target_position-position)
-		initialPosition = position
-		move_p = false
-	if path.size()>0:
-		move_towards(initialPosition,path[0],delta)
-	else:
-		velocity=Vector2(0,0)"""	
+		
 	
 	# Orientar al warrior.
 	if velocity.x<0:
@@ -249,30 +219,28 @@ func _physics_process(delta):
 
 
 		
-func _get_damage(var the_beast):
-	if "Tiger" in the_beast.name && the_beast.visible:
-		if(energy_points>0):
-			energy_points-=5
-			bar._set_energy_points(energy_points)
+func _get_damage(var body):
+	if "Tiger" in body.name && body.visible:
+		if(health>0):
+			health-=5
+			bar.value=health
 			
 		else:
-			#the_beast.unit = null
-			#the_beast.is_chasing = false
 			_set_selected(false)			
 			is_deleted=true
-	if "Mammoth" in the_beast.name && is_enemy_touching:
-		if energy_points>0:
-			energy_points-=30
-			bar._set_energy_points(energy_points)
+	if "Mammoth" in body.name && is_enemy_touching:
+		if health>0:
+			health-=30
+			bar.value=health
 			
 		else:
 			_set_selected(false)			
 			is_deleted=true	
-	if "EnemySpear" in the_beast.name:
-		the_beast.queue_free()
-		if energy_points>0:
-			energy_points-=20
-			bar._set_energy_points(energy_points)
+	if "EnemySpear" in body.name:
+		body.queue_free()
+		if health>0:
+			health-=20
+			bar.value=health
 			
 		else:
 			_set_selected(false)			
@@ -344,24 +312,11 @@ func _on_Unit_input_event(_viewport, event, _shape_idx):
 				_set_selected(not selected)
 				tree._select_last()
 				
-#func hurt(amount):
-#	health-=amount
-#	#esto podría ir en un setter
-#	if health <= 0:
-#		if !dead:
-#			emit_signal("im_dead")
-#			dead = true
-#			set_physics_process(false) 
-#		health = 0
-#		return
-#	elif health > 100:
-#		health = 100
-#	emit_signal("health_change",health)
 
 
 func _on_Target_Position_body_entered(_body):
 	velocity = Vector2(0,0)
-	touch_enabled = false
+	
 	if !is_girl:
 		sprite.animation = "male_idle1"
 	if is_girl:
@@ -516,11 +471,6 @@ func _animate():
 
 
 
-#func _on_tiger_tiger_entered():
-#	is_tiger_touching=true
-
-#func _on_tiger_tiger_exited():
-#	is_tiger_touching=false
 
 func _on_player_mouse_entered():
 	selected = true
