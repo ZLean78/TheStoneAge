@@ -997,11 +997,13 @@ func _area_selected(obj):
 	area.append(Vector2(max(start.x,end.x),max(start.y,end.y)))
 	var ut = _get_units_in_area(area)
 	if not Input.is_key_pressed(KEY_SHIFT):
-		_deselect_all()
+		_deselect_all()		
 	for u in ut:
-		u.selected = !u.selected
-#		if "Vehicle" in u.name || "General" in u.name:
-#			_select_unit(u)
+		if !("Vehicle" in u.name):
+			u.selected = !u.selected
+		else:		
+			u._set_selected(not u.selected)
+			
 		
 
 

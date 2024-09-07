@@ -58,9 +58,7 @@ signal area_selected
 func _ready():
 	
 	connect("area_selected",get_parent(),"_area_selected",[self])
-	#connect("start_move_selection",get_parent(),"start_move_selection",[self])
-	#select_draw = Globals.current_scene.select_draw
-	#pass
+	
 
 func _process(delta):
 	

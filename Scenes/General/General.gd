@@ -11,4 +11,5 @@ func _ready():
 	has_bag=true
 	bar=$Bar
 	bar.value=health
+	selected=false
 	
