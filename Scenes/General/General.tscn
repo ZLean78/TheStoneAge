@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://Scenes/General/Animation.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/General/Control.gd" type="Script" id=2]
@@ -11,6 +11,11 @@
 [ext_resource path="res://Scenes/Warrior/WarriorMark.png" type="Texture" id=9]
 [ext_resource path="res://Scenes/General/General.gd" type="Script" id=10]
 [ext_resource path="res://Scenes/Stone/stone.tscn" type="PackedScene" id=11]
+
+[sub_resource type="Theme" id=11]
+
+[sub_resource type="StyleBoxFlat" id=12]
+bg_color = Color( 0, 0, 1, 1 )
 
 [sub_resource type="CanvasItemMaterial" id=6]
 
@@ -65,8 +70,13 @@ spear_scene = ExtResource( 4 )
 stone_scene = ExtResource( 11 )
 
 [node name="Bar" type="ProgressBar" parent="."]
-margin_right = 4.0
-margin_bottom = 14.0
+margin_left = -10.0
+margin_top = -24.0
+margin_right = 26.0
+margin_bottom = -10.0
+rect_scale = Vector2( 0.6, 0.6 )
+theme = SubResource( 11 )
+custom_styles/fg = SubResource( 12 )
 
 [node name="Foot" type="Sprite" parent="."]
 visible = false
@@ -77,7 +87,7 @@ texture = ExtResource( 5 )
 
 [node name="WarchiefMark" type="Sprite" parent="."]
 material = SubResource( 7 )
-position = Vector2( 1, -18 )
+position = Vector2( 0, -34 )
 scale = Vector2( 0.63281, 0.49219 )
 texture = ExtResource( 9 )
 

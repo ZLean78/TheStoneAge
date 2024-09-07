@@ -7,13 +7,13 @@ var to_delta=0.0
 #Velocidad
 export (float) var SPEED = 100.0
 #Máximo de Salud
-export (float) var MAX_HEALTH = 100.0
+export (int) var MAX_HEALTH = 100
 #Salud de la unidad.
-export (float) var health = 100.0
+export (int) var health = 100
 
 #MÁXIMO Y MÍNIMO DE ENEGÍA QUE LA UNIDAD PUEDE PERDER.
-export (float) var MAX_ENERGY_LOSS
-export (float) var MIN_ENERGY_LOSS
+export (int) var MAX_ENERGY_LOSS
+export (int) var MIN_ENERGY_LOSS
 
 #Nodo raíz del nivel.
 onready var tree=Globals.current_scene

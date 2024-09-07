@@ -1614,11 +1614,11 @@ func _on_all_timer_timeout():
 		#Incrementar contador para activar ciertas propiedades en la unidad.
 		if not "Vehicle" in a_unit.name:
 			a_unit.timer_count+=1
-		if is_instance_valid(a_unit) && "Unit" in a_unit.name || "General" in a_unit.name && !("Enemy" in a_unit.name):
+		if is_instance_valid(a_unit) && "Citizen" in a_unit.name || "General" in a_unit.name && !("Enemy" in a_unit.name):
 			if a_unit.pickable!=null:
 				a_unit._collect_pickable(a_unit.pickable)
 				
-			if a_unit.is_warchief:
+			if a_unit.is_warchief || a_unit.is_general:
 				if a_unit.timer_count>3:
 					a_unit.can_heal_another=true
 				
@@ -1635,18 +1635,18 @@ func _on_all_timer_timeout():
 					a_unit._get_damage(a_unit.body_entered)
 					
 					
-				if a_unit.is_warchief:
+				if a_unit.is_warchief || a_unit.is_general:
 					if a_unit.can_heal_another:
-						if "Unit" in a_unit.body_entered.name || "Warrior" in a_unit.body_entered.name && !("Enemy" in a_unit.body_entered.name):
+						if "Citizen" in a_unit.body_entered.name || "Warrior" in a_unit.body_entered.name && !("Enemy" in a_unit.body_entered.name):
 							a_unit.heal(a_unit.body_entered)
 			
-			if "General" in a_unit.name:
-				if a_unit.timer_count>3:
-					a_unit.can_heal_another=true
-				if a_unit.body_entered!=null && is_instance_valid(a_unit.body_entered):
-					if a_unit.can_heal_another:
-						if "Unit" in a_unit.body_entered.name || "Warrior" in a_unit.body_entered.name && !("Enemy" in a_unit.body_entered.name):
-							a_unit.heal(a_unit.body_entered)
+#			if "General" in a_unit.name:
+#				if a_unit.timer_count>3:
+#					a_unit.can_heal_another=true
+#				if a_unit.body_entered!=null && is_instance_valid(a_unit.body_entered):
+#					if a_unit.can_heal_another:
+#						if "Citizen" in a_unit.body_entered.name || "Warrior" in a_unit.body_entered.name && !("Enemy" in a_unit.body_entered.name):
+#							a_unit.heal(a_unit.body_entered)
 
 
 func _on_CreateGeneral_pressed():
