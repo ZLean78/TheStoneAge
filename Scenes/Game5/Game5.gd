@@ -183,6 +183,9 @@ var attack_counter=50
 
 var victory_obtained=false
 
+
+
+
 func _ready():
 	
 	Globals.is_townhall_down=false
@@ -421,6 +424,8 @@ func _process(delta):
 			$UI/Base/Rectangle/BuildCatapult.visible=true
 		else:
 			$UI/Base/Rectangle/BuildCatapult.visible=false
+			
+		
 
 #Seleccionar una unidad.
 func _select_unit(unit):
@@ -1316,7 +1321,21 @@ func _manage_enemy_units():
 		new_enemy_citizen.position=enemy_spawn.position
 		enemy_citizens_node.add_child(new_enemy_citizen)
 		new_enemy_citizen.AI_state=1
-		Globals.e_food_points-=15		
+		Globals.e_food_points-=15
+		var target_number=randi()%4+1	
+		
+		match target_number:
+			1:
+				new_enemy_citizen.target_t=new_enemy_citizen.target_type.FRUIT_TREE
+			2:
+				new_enemy_citizen.target_t=new_enemy_citizen.target_type.PINE_TREE
+			3:
+				new_enemy_citizen.target_t=new_enemy_citizen.target_type.PLANT
+			4:
+				new_enemy_citizen.target_t=new_enemy_citizen.target_type.STONE
+			
+		new_enemy_citizen.AI_state=0
+			
 	else:
 		if (Globals.e_food_points>=500 && Globals.e_wood_points>=400 && 
 		Globals.stone_points>=400 && enemy_warriors_node.get_child_count()<6):

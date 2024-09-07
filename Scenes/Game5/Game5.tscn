@@ -279,50 +279,40 @@ z_as_relative = false
 [node name="EnemyCitizens" type="YSort" parent="."]
 
 [node name="EnemyCitizen" parent="EnemyCitizens" instance=ExtResource( 4 )]
-position = Vector2( -609, -455.39 )
-SPEED = 100.0
+position = Vector2( -615, -244 )
 
 [node name="EnemyCitizen2" parent="EnemyCitizens" instance=ExtResource( 4 )]
-position = Vector2( -509, -423.39 )
-SPEED = 100.0
+position = Vector2( -623, -238 )
 
 [node name="EnemyCitizen3" parent="EnemyCitizens" instance=ExtResource( 4 )]
-position = Vector2( -459, -466.39 )
-target_t = 1
+position = Vector2( -623, -236 )
 
 [node name="EnemyCitizen4" parent="EnemyCitizens" instance=ExtResource( 4 )]
-position = Vector2( -555, -352.39 )
-SPEED = 100.0
+position = Vector2( -620, -242 )
 target_t = 1
 
 [node name="EnemyCitizen5" parent="EnemyCitizens" instance=ExtResource( 4 )]
-position = Vector2( -612, -287.39 )
-SPEED = 100.0
+position = Vector2( -617, -243 )
 target_t = 1
 
 [node name="EnemyCitizen6" parent="EnemyCitizens" instance=ExtResource( 4 )]
-position = Vector2( -488, -302.39 )
-SPEED = 100.0
-target_t = 1
+position = Vector2( -620, -242 )
+target_t = 2
 
 [node name="EnemyCitizen7" parent="EnemyCitizens" instance=ExtResource( 4 )]
-position = Vector2( -473, -248.39 )
-SPEED = 100.0
-target_t = 1
+position = Vector2( -617, -242 )
+target_t = 2
 
 [node name="EnemyCitizen8" parent="EnemyCitizens" instance=ExtResource( 4 )]
-position = Vector2( -334, -448 )
-SPEED = 100.0
+position = Vector2( -617, -240 )
 target_t = 3
 
 [node name="EnemyCitizen9" parent="EnemyCitizens" instance=ExtResource( 4 )]
-position = Vector2( -237, -210 )
-SPEED = 100.0
+position = Vector2( -623, -243 )
 target_t = 3
 
 [node name="EnemyCitizen10" parent="EnemyCitizens" instance=ExtResource( 4 )]
-position = Vector2( -259, -405 )
-SPEED = 100.0
+position = Vector2( -619, -243 )
 target_t = 3
 
 [node name="Tigers" type="Node2D" parent="."]
@@ -392,7 +382,7 @@ position = Vector2( 298, 492 )
 position = Vector2( 199, 173 )
 
 [node name="Plant4" parent="Plants" instance=ExtResource( 9 )]
-position = Vector2( -676, -154 )
+position = Vector2( -617, -150 )
 
 [node name="Plant5" parent="Plants" instance=ExtResource( 9 )]
 position = Vector2( -657, 397 )

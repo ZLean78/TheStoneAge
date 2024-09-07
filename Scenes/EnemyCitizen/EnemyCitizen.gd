@@ -160,7 +160,7 @@ func _ready():
 	lake_node=tree.get_node("Lake")
 	puddle_node=tree.get_node("Puddle")
 	nav2d=tree.get_node("nav")
-
+	SPEED=150
 	
 	
 	has_bag=true
@@ -208,10 +208,7 @@ func _physics_process(delta):
 	
 	if AI_state==1 || AI_state==2:
 		
-		if(AI_state==2):
-			_move_along_path((SPEED/2)*delta)
-		else:
-			_move_along_path(SPEED*delta)
+		_move_along_path(SPEED*delta)
 		
 		if target_position!=null:
 			if position.distance_to(target_position) > MAX_DISTANCE:
@@ -250,6 +247,7 @@ func _physics_process(delta):
 		sprite.stop()
 	else:
 		sprite.play()
+	
 
 		
 	if(all_timer.is_stopped()):
@@ -371,7 +369,7 @@ func _get_damage(var collider):
 		else:
 			_set_selected(false)			
 			is_deleted=true
-	if "Bullet" in collider.name:
+	if "Spear" in collider.name:
 		
 		if health>0:			
 			health-=20
@@ -387,7 +385,7 @@ func _get_damage(var collider):
 		else:
 			_set_selected(false)			
 			is_deleted=true
-	if "Unit2" in collider.name && is_enemy_touching:
+	if "Citizen" in collider.name && is_enemy_touching:
 		if health>0:
 			health-=10
 			bar._set_health(health)
@@ -461,11 +459,12 @@ func _on_Target_Position1_body_entered(_body):
 		sprite.animation = "female_idle1"
 		
 
-
+func _set_puddle_touching(var _puddle):
+	puddle_touching=_puddle
 
 func _set_pickable_touching(var _pickable):
 	pickable_touching=_pickable
-	
+
 func _set_pickable(_pickable):
 	pickable=_pickable	
 
@@ -477,8 +476,7 @@ func _set_erased(var _is_dead):
 
 #	
 func _on_all_timer_timeout():
-#	if body_entered!=null:
-#		heal(body_entered)
+
 	timer_count+=1	
 	
 
@@ -507,7 +505,8 @@ func _on_Area2D_body_entered(body):
 		if is_instance_valid(body_entered):
 			if "Warrior" in body.name || "Citizen" in body.name || "Vehicle" in body.name || "General" in body.name:
 				body.is_enemy_touching=true
-			
+#	if "Plant" in body.name:
+#		pickable=body		
 	
 	
 func heal(_body):
@@ -571,7 +570,11 @@ func _walk():
 func _on_Area2D_body_exited(body):
 	if "Warrior" in body.name || "Citizen" in body.name || "General" in body.name :
 		body.is_enemy_touching=false
-		body_entered=null	
+		body_entered=null
+		target=null
+		AI_state=0	
+		
+	
 	
 	
 func _choose_target():
@@ -581,57 +584,50 @@ func _choose_target():
 	else:
 		match target_t:
 			target_type.PLANT:
-				if !(AI_state==2):
-					if plants_node.get_child_count()>0:
-						for i in range(0,plants_node.get_child_count()):
-							if !plants_node.get_child(i).empty:
-								target_position=plants_node.get_child(i).position
-								break
-							else:
-								target_position=plants_node.get_child(i+1).position
+				if plants_node.get_child_count()>0:
+					for i in range(0,plants_node.get_child_count()):
+						if !plants_node.get_child(i).empty:
+							target_position=plants_node.get_child(i).position
+							break
+						else:
+							target_position=plants_node.get_child(i+1).position
 	
 	
 			target_type.FRUIT_TREE:
-				if !(AI_state==2):
-					if fruit_trees_node.get_child_count()>0:
-						for i in range(0,fruit_trees_node.get_child_count()):
-							if !fruit_trees_node.get_child(i).empty:
-								target_position=fruit_trees_node.get_child(i).position
-								break
-							else:
-								target_position=fruit_trees_node.get_child(i+1).position
+				if fruit_trees_node.get_child_count()>0:
+					for i in range(0,fruit_trees_node.get_child_count()):
+						if !fruit_trees_node.get_child(i).empty:
+							target_position=fruit_trees_node.get_child(i).position
+							break
+						else:
+							target_position=fruit_trees_node.get_child(i+1).position
 			target_type.PINE_TREE:
-				if !(AI_state==2):
-					if pine_trees_node.get_child_count()>0:				
-						for i in range(0,pine_trees_node.get_child_count()):
-							if !pine_trees_node.get_child(i).empty:
-								target_position=pine_trees_node.get_child(i).position
-								break
-							else:
-								target_position=pine_trees_node.get_child(i+1).position		
+				if pine_trees_node.get_child_count()>0:				
+					for i in range(0,pine_trees_node.get_child_count()):
+						if !pine_trees_node.get_child(i).empty:
+							target_position=pine_trees_node.get_child(i).position
+							break
+						else:
+							target_position=pine_trees_node.get_child(i+1).position		
 			target_type.COPPER:
-				if !(AI_state==2):
-					if copper_node.get_child_count()>0:				
-						for i in range(0,copper_node.get_child_count()):
-							if !copper_node.get_child(i).empty:
-								target_position=copper_node.get_child(i).position
-								break
-							else:
-								target_position=copper_node.get_child(i+1).position
+				if copper_node.get_child_count()>0:				
+					for i in range(0,copper_node.get_child_count()):
+						if !copper_node.get_child(i).empty:
+							target_position=copper_node.get_child(i).position
+							break
+						else:
+							target_position=copper_node.get_child(i+1).position
 			target_type.STONE:
-				if !(AI_state==2):
-					if quarries_node.get_child_count()>0:				
-						for i in range(0,quarries_node.get_child_count()):
-							if !quarries_node.get_child(i).empty:
-								target_position=quarries_node.get_child(i).position
-								break
-							else:
-								target_position=quarries_node.get_child(i+1).position
+				if quarries_node.get_child_count()>0:				
+					for i in range(0,quarries_node.get_child_count()):
+						if !quarries_node.get_child(i).empty:
+							target_position=quarries_node.get_child(i).position
+							break
+						else:
+							target_position=quarries_node.get_child(i+1).position
 	
 
 	
-	
-
 func _state_machine():
 	match AI_state:
 		0:
@@ -678,7 +674,7 @@ func _state_machine():
 			target_position=tree.enemy_townhall.position
 
 
-	
+
 	
 	
 
