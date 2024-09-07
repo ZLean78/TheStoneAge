@@ -30,7 +30,7 @@ func _fort_build():
 	else:
 		Globals.is_fort_built=true
 		tree._check_victory()
-		if !tree.victory_obtained && can_make_attack:
+		if tree.name=="Game4" && !tree.victory_obtained && can_make_attack:
 			tree._check_buildings()
 			can_make_attack=false
 

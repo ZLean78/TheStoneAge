@@ -184,7 +184,7 @@ var attack_counter=50
 var victory_obtained=false
 
 func _ready():
-	Globals._clear_enemy_globals()
+	
 	Globals.is_townhall_down=false
 	#Seleccionar y reproducir música de la fase.
 	AudioPlayer._select_music()
@@ -255,30 +255,30 @@ func _ready():
 	
 	#Creamos las 11 unidades restantes aparte de la que agregamos
 	#en la línea 176. 
-#	for i in range(0,11):
-#		_create_citizen();
-#	for a_general in generals.get_children(): 
-#		all_units.append(a_general)
+	for i in range(0,11):
+		_create_citizen();
+	for a_general in generals.get_children(): 
+		all_units.append(a_general)
 	
 	
-#	#Formación de las unidades.
-#	for i in range(0,12):
-#		if i==0:
-#			all_units[i].position = Vector2(camera.position.x+50,camera.position.y+50)
-#			#all_units[i].position = Vector2(camera.get_viewport().size.x/6,camera.get_viewport().size.y/4)
-#		else:
-#			if i<4:
-#				all_units[i].position =	Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
-#			elif i>=4 && i<8:
-#				if i==4:
-#					all_units[i].position =	Vector2(all_units[0].position.x,all_units[0].position.y+20)
-#				else:
-#					all_units[i].position = Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
-#			elif i>=8:
-#				if i==8:
-#					all_units[i].position = Vector2(all_units[0].position.x,all_units[0].position.y+40)
-#				else:
-#					all_units[i].position = Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
+	#Formación de las unidades.
+	for i in range(0,12):
+		if i==0:
+			all_units[i].position = Vector2(camera.position.x+50,camera.position.y+50)
+			#all_units[i].position = Vector2(camera.get_viewport().size.x/6,camera.get_viewport().size.y/4)
+		else:
+			if i<4:
+				all_units[i].position =	Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
+			elif i>=4 && i<8:
+				if i==4:
+					all_units[i].position =	Vector2(all_units[0].position.x,all_units[0].position.y+20)
+				else:
+					all_units[i].position = Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
+			elif i>=8:
+				if i==8:
+					all_units[i].position = Vector2(all_units[0].position.x,all_units[0].position.y+40)
+				else:
+					all_units[i].position = Vector2(all_units[i-1].position.x+20,all_units[i-1].position.y)
 
 	
 	
@@ -999,9 +999,9 @@ func _area_selected(obj):
 	if not Input.is_key_pressed(KEY_SHIFT):
 		_deselect_all()
 	for u in ut:
-		u.selected = not u.selected
-		if "Vehicle" in u.name:
-			_select_unit(u)
+		u.selected = !u.selected
+#		if "Vehicle" in u.name || "General" in u.name:
+#			_select_unit(u)
 		
 
 
@@ -1220,20 +1220,7 @@ func _check_enemy_citizens():
 			
 			
 
-func _on_MakeWarchief_pressed():
-	#La unidad seleccionada se convierte en jefe si es que se selecciona sólo una.
-	if selected_units.size()==1:
-		selected_units[0].is_warchief=true
-		selected_units[0].warchief_mark.visible=true
-		create_warrior.visible=true
-		
-		prompts_label.text = "¡Ya tienes a tu jefe! Utilízalo para entrenar unidades militares\ncon el botón de crear unidad militar."
-	#Mensaje que se muestra si se selecciona más de una.
-	elif selected_units.size()>1:
-		prompts_label.text = "Debes seleccionar una sola unidad."
-	#Mensaje que se muestra si no se selecciona ninguna.
-	elif selected_units.size()==0:
-		prompts_label.text = "Selecciona una unidad."
+
 		
 
 func _check_pine_trees():
@@ -1459,22 +1446,7 @@ func _check_mouse_modes():
 	if fort_mode:
 		_on_Game5_is_fort()
 	
-		
-
-
-
-
-
-func _on_DevelopMetals_pressed():
-	if Globals.stone_points>=250 && Globals.copper_points>=150:
-		Globals.stone_points-=250
-		Globals.copper_points-=150
-		Globals.is_metals_developed=true
-		#develop_metals.visible=false
-		#Ataque enemigo por mejora.
-		if tree.name=="Game5" && !victory_obtained:
-			_make_attack()
-		
+	
 		
 func _check_enemies():
 	for an_enemy in enemy_warriors_node.get_children():
@@ -1540,11 +1512,6 @@ func _rebake_navigation():
 	
 	nav2d.get_node("polygon").enabled=true
 	
-
-
-
-
-
 
 
 
