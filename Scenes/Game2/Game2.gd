@@ -688,3 +688,5 @@ func _on_all_timer_timeout():
 			if a_unit.body_entered!=null && is_instance_valid(a_unit.body_entered):
 				if "Tiger" in a_unit.body_entered.name || "Mammoth" in a_unit.body_entered.name:
 					a_unit._get_damage(a_unit.body_entered)
+			
+			

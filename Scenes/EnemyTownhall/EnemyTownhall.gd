@@ -59,11 +59,12 @@ func _on_Area2D_mouse_exited():
 	
 func _get_damage(body):
 	if is_instance_valid(body):
-		if "Stone" in body.name && body.owner_name=="Catapult":
+		if "Stone" in body.name && body.owner_name=="Vehicle":
 			condition-=10
-	if condition<=0:
-		Globals.is_enemy_townhall_down=true
-		queue_free()
+			bar.value=condition
+			if condition<=0:
+				Globals.is_enemy_townhall_down=true
+				queue_free()
 		
 
 

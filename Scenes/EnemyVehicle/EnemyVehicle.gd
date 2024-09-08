@@ -151,7 +151,7 @@ func _shoot():
 		vx*=7.05
 		vy*=5	
 		var new_stone = stone_scene.instance()
-		new_stone.owner_name="Catapult"
+		new_stone.owner_name="EnemyVehicle"
 		new_stone.position = Vector2(shootPoint.global_position.x,shootPoint.global_position.y)
 		if target_position.x<position.x:
 			new_stone.set_velocity(Vector2(-vx,-vy))

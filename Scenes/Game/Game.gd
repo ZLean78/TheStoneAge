@@ -307,11 +307,11 @@ func _rain_pour():
 				
 
 #SEÑAL DE TIEMPO TRANSCURRIDO PARA TEMPORIZADOR 'RAIN TIMER',
-#EL CUAL ESPERA 100 SEGUNDOS CUANDO NO LLUEVE Y TREINTA CUANDO ESTÄ LLOVIENDO.
+#EL CUAL ESPERA 90 SEGUNDOS CUANDO NO LLUEVE Y TREINTA CUANDO ESTÄ LLOVIENDO.
 func _on_Rain_Timer_timeout():	
 	_rain_pour()
 	if(its_raining):
-		rain_timer.wait_time = 90		
+		rain_timer.wait_time = 90
 	else:
 		rain_timer.wait_time = 30
 

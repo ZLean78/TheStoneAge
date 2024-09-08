@@ -248,7 +248,7 @@ func _physics_process(delta):
 	
 	if is_warchief && can_heal_another:
 		if body_entered!=null && is_instance_valid(body_entered):
-			if "Citizen" in body_entered.name || "Warrior" in body_entered.name || "General" in body_entered.name && !("Enemy" in body_entered.name):
+			if "Citizen" in body_entered.name || "Warrior" in body_entered.name && !("Enemy" in body_entered.name):
 				heal(body_entered)
 	
 	heal_timer.start()
@@ -476,7 +476,7 @@ func enable_pickable():
 func heal(_body):
 	if _body.health<_body.MAX_HEALTH:
 		_body.health+=5
-		_body.bar.value=float(_body.health)
+		_body.bar.value=_body.health
 		can_heal_another=false
 		return
 				
@@ -505,14 +505,14 @@ func self_heal():
 func _shoot():
 	
 	if is_warchief || is_general:
-		var spear_target = tree.touching_enemy.position
-		shoot_node.look_at(spear_target)				
+		var bullet_target = tree.touching_enemy.position
+		shoot_node.look_at(bullet_target)				
 		var angle = shoot_node.rotation
 		var forward = Vector2(cos(angle),sin(angle))
 		var the_tilemap=get_tree().get_nodes_in_group("tilemap")
 		var spear_count=0
 		for tilemap_child in the_tilemap[0].get_children():
-			if "Spear" in tilemap_child.name:
+			if "Bullet" in tilemap_child.name:
 				spear_count+=1
 		if spear_count<2:
 			spear = spear_scene.instance()

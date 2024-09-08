@@ -1196,7 +1196,7 @@ func _check_units():
 		#Si la unidad ha sido marcada para borrar y todavía es una instancia válida,
 		#es decir, no ha sido eliminada con queue_free().
 		if a_unit.is_deleted && is_instance_valid(a_unit):
-			#Si el nombre incluye la palabra "Unit", es un ciudadano. 
+			#Si el nombre incluye la palabra "Citizen", es un ciudadano. 
 			if "Citizen" in a_unit.name:
 				#Si la unidad no es el jefe guerrero.
 				if !a_unit.is_warchief:
@@ -1221,7 +1221,7 @@ func _check_enemy_citizens():
 		#Si la unidad ha sido marcada para borrar y todavía es una instancia válida,
 		#es decir, no ha sido eliminada con queue_free().
 		if an_enemy_citizen.is_deleted && is_instance_valid(an_enemy_citizen):
-			#Si el nombre incluye la palabra "Unit", es un ciudadano. 
+			#Si el nombre incluye la palabra "Citizen", es un ciudadano. 
 			if "EnemyCitizen" in an_enemy_citizen.name:
 				an_enemy_citizen._die()
 			

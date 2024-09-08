@@ -7,9 +7,9 @@ extends "res://Scenes/Building/Building.gd"
 func _get_townhall_damage(body):
 	if "Citizen" in body.name:
 		body.house_entered=true
-	if "Stone" in body.name && "Catapult" in body.owner_name:
-		body.queue_free()
+	if "Stone" in body.name && body.owner_name=="EnemyVehicle":
 		condition-=10
+		bar.value=condition
 		if condition<=0:
 			polygon.visible=false
 			Globals.is_townhall_down=true

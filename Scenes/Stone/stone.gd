@@ -22,17 +22,44 @@ func move_projectile():
 	
 	
 	if collision != null:
-		if("Citizen" in collision.collider.name || "Warrior" in collision.collider.name || "Vehicle" in collision.collider.name 
-		|| "EnemyCitizen" in collision.collider.name || "EnemyWarrior" in collision.collider.name || "EnemyVehicle" in collision.collider.name
-		|| "House" in collision.collider.name || "EnemyHouse" in collision.collider.name 
-		|| "EnemyTownhall" in collision.collider.name || "EnemyFort" in collision.collider.name):
-			collision.collider._get_damage(self)
+		if owner_name=="EnemyCitizen":
+			if("Citizen" in collision.collider.name || "Warrior" in collision.collider.name || "Vehicle" in collision.collider.name 
+			|| "House" in collision.collider.name  || "Fort" in collision.collider.name || "Barn" in collision.collider.name
+			&& !("Enemy in collision.collider.name")):
+				collision.collider._get_damage(self)
+				
+		elif owner_name=="EnemyVehicle":
+			if("Citizen" in collision.collider.name || "Warrior" in collision.collider.name || "Vehicle" in collision.collider.name 
+			|| "House" in collision.collider.name  || "Fort" in collision.collider.name || "Barn" in collision.collider.name
+			&& !("Enemy in collision.collider.name")):
+				collision.collider._get_damage(self)
+			
+			elif "TownHall" in collision.collider.name:
+				collision.collider._get_townhall_damage(self)
+				
+		elif owner_name=="Citizen":
+			if ("EnemyCitizen" in collision.collider.name || "EnemyWarrior" in collision.collider.name || "EnemyVehicle" in collision.collider.name
+			 ||  "EnemyHouse" in collision.collider.name || "EnemyFort" in collision.collider.name):
+				collision.collider._get_damage(self)
+				
+		elif owner_name=="Vehicle":
+			if ("EnemyCitizen" in collision.collider.name || "EnemyWarrior" in collision.collider.name || "EnemyVehicle" in collision.collider.name
+			 ||  "EnemyHouse" in collision.collider.name || "EnemyFort" in collision.collider.name):
+				collision.collider._get_damage(self)
+				
+			elif "EnemyTownhall" in collision.collider.name:
+				collision.collider._get_damage(self)
+			
 		queue_free()
+			
+			
+		
+			
 
 	
 
-#	if position.distance_to(start_position)>250:
-#		queue_free()
+	if position.distance_to(start_position)>250:
+		queue_free()
 
 func set_velocity(_velocity):
 	velocity_x=_velocity.x

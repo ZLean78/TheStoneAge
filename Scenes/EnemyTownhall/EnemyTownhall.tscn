@@ -10,6 +10,7 @@ bg_color = Color( 1, 0.168627, 0, 1 )
 radius = 81.0062
 
 [node name="EnemyTownhall" type="StaticBody2D"]
+collision_mask = 5
 script = ExtResource( 1 )
 
 [node name="Sprite" type="Sprite" parent="."]
