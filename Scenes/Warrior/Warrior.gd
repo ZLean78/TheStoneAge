@@ -279,7 +279,7 @@ func _move_to_target(target):
 	collision = move_and_collide(velocity)
 	
 	if collision != null:
-		if "Tiger" in collision.collider.name || "Mammoth" in collision.collider.name || "EnemySpear" in collision.collider.name:
+		if "Tiger" in collision.collider.name || "Mammoth" in collision.collider.name || "EnemySpear" in collision.collider.name || ("Stone" in collision.collider.name && collision.collider.owner_name=="EnemyCitizen"):
 			is_enemy_touching=true
 			
 	

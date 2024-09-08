@@ -166,7 +166,7 @@ func _ready():
 	has_bag=true
 	bar=$Bar
 	all_timer=$all_timer
-	foot=$Selected
+	foot=$Foot
 	
 	sprite = $scalable/sprite
 	bag_sprite = $scalable/bag_sprite
@@ -175,6 +175,7 @@ func _ready():
 	
 	#Salud.
 	health = MAX_HEALTH
+	bar.value=health
 	
 	is_dressed=true
 	has_bag=true
@@ -373,14 +374,14 @@ func _get_damage(var collider):
 		
 		if health>0:			
 			health-=20
-			bar._set_health(health)			
+			bar.value=health			
 		else:
 			is_deleted=true
 
 	if "Warrior" in collider.name && is_enemy_touching:
 		if health>0:
 			health-=20
-			bar._set_health(health)
+			bar.value=health
 			
 		else:
 			_set_selected(false)			
@@ -388,7 +389,7 @@ func _get_damage(var collider):
 	if "Citizen" in collider.name && is_enemy_touching:
 		if health>0:
 			health-=10
-			bar._set_health(health)
+			bar.value=health
 			
 		else:
 			_set_selected(false)			
@@ -396,7 +397,7 @@ func _get_damage(var collider):
 	if "Stone" in collider.name && collider.owner_name=="Citizen":
 		if health>0:
 			health-=15
-			bar._set_health(health)			
+			bar.value=health	
 		else:
 			_set_selected(false)			
 			is_deleted=true
@@ -509,29 +510,29 @@ func _on_Area2D_body_entered(body):
 #		pickable=body		
 	
 	
-func heal(_body):
-	if is_warchief:
-		if _body.health<_body.MAX_HEALTH:
-			_body.health+=5
-			_body.bar._set_health(_body.health)
-			
-	
-			if _body.health>_body.MAX_HEALTH:
-				_body.health=_body.MAX_HEALTH
-		
-		_body.bar.visible=true
-		
-			
-func self_heal():	
-	if health<MAX_HEALTH:
-		health+=5
-		bar._set_health(health)
-		
-		
-		if health>MAX_HEALTH:
-			health=MAX_HEALTH
-			can_heal_itself=false
-			heal_counter=60
+#func heal(_body):
+#	if is_warchief:
+#		if _body.health<_body.MAX_HEALTH:
+#			_body.health+=5
+#			_body.bar.
+#
+#
+#			if _body.health>_body.MAX_HEALTH:
+#				_body.health=_body.MAX_HEALTH
+#
+#		_body.bar.visible=true
+#
+#
+#func self_heal():	
+#	if health<MAX_HEALTH:
+#		health+=5
+#		bar._set_health(health)
+#
+#
+#		if health>MAX_HEALTH:
+#			health=MAX_HEALTH
+#			can_heal_itself=false
+#			heal_counter=60
 
 
 

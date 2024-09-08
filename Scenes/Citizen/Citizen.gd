@@ -248,7 +248,7 @@ func _physics_process(delta):
 	
 	if is_warchief && can_heal_another:
 		if body_entered!=null && is_instance_valid(body_entered):
-			if "Citizen" in body_entered.name || "Warrior" in body_entered.name && !("Enemy" in body_entered.name):
+			if "Citizen" in body_entered.name || "Warrior" in body_entered.name || "General" in body_entered.name && !("Enemy" in body_entered.name):
 				heal(body_entered)
 	
 	heal_timer.start()
@@ -476,7 +476,7 @@ func enable_pickable():
 func heal(_body):
 	if _body.health<_body.MAX_HEALTH:
 		_body.health+=5
-		_body.bar.value=_body.health
+		_body.bar.value=float(_body.health)
 		can_heal_another=false
 		return
 				
