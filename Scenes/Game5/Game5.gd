@@ -193,7 +193,7 @@ func _ready():
 	AudioPlayer._select_music()
 	AudioPlayer.music.play()
 	
-	$UI/Base/Rectangle/BuildCatapult.visible=false
+	
 	
 	#Asignamos el arreglo all_units a los nodos del grupo
 	#de unidades civiles con las que empezamos la fase.	
@@ -962,7 +962,7 @@ func _check_victory():
 		replay_confirmation.visible=true
 	else:
 		for a_unit in all_units:
-			if "Unit" in a_unit.name && a_unit.is_warchief && a_unit.is_deleted:
+			if "Citizen" in a_unit.name && a_unit.is_warchief && a_unit.is_deleted:
 				is_warchief_dead=true
 				prompts_label.text = "Has sido derrotado. Tu jefe ha muerto."	
 				replay_confirmation.visible=true
@@ -1197,7 +1197,7 @@ func _check_units():
 		#es decir, no ha sido eliminada con queue_free().
 		if a_unit.is_deleted && is_instance_valid(a_unit):
 			#Si el nombre incluye la palabra "Unit", es un ciudadano. 
-			if "Unit" in a_unit.name:
+			if "Citizen" in a_unit.name:
 				#Si la unidad no es el jefe guerrero.
 				if !a_unit.is_warchief:
 					#Buscamos la unidad en all_units y la removemos del arreglo.
@@ -1337,8 +1337,8 @@ func _manage_enemy_units():
 		new_enemy_citizen.AI_state=0
 			
 	else:
-		if (Globals.e_food_points>=500 && Globals.e_wood_points>=400 && 
-		Globals.stone_points>=400 && enemy_warriors_node.get_child_count()<6):
+		if (Globals.e_food_points>=200 && Globals.e_wood_points>=300 && 
+		Globals.stone_points>=200 && enemy_warriors_node.get_child_count()<6):
 			var new_enemy_warrior=EnemyWarrior.instance()
 			new_enemy_warrior.position=enemy_spawn.position
 			enemy_warriors_node.add_child(new_enemy_warrior)

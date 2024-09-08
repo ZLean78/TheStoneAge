@@ -21,7 +21,7 @@ export (int) var MIN_DISTANCE=0
 
 #Proyectil, piedra para lanzar al enemigo.
 var spear
-export var spear_scene=preload("res://Scenes/Bullet/Bullet.tscn")
+export var spear_scene=preload("res://Scenes/Spear/Spear.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -113,7 +113,7 @@ func _shoot():
 	var forward = Vector2(cos(angle),sin(angle))
 	var spear_count=0
 	for tilemap_child in the_tilemap[0].get_children():
-		if "Bullet" in tilemap_child.name:
+		if "Spear" in tilemap_child.name:
 			spear_count+=1
 	if spear_count==0:		
 		spear = spear_scene.instance()

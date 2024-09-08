@@ -219,7 +219,7 @@ func _on_Area2D_mouse_exited():
 
 
 func _on_Area2D_body_entered(body):
-	if "Bullet" in body.name || ("Stone" in body.name && body.owner_name=="Citizen"):
+	if "Spear" in body.name || ("Stone" in body.name && body.owner_name=="Citizen"):
 		_get_damage(body)
 
 

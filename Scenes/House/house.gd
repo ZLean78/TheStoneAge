@@ -43,7 +43,7 @@ func _on_Timer_timeout():
 
 func _get_damage(body):
 	if is_instance_valid(body):
-		if "Bullet" in body.name:
+		if "Spear" in body.name:
 			condition-=3
 		if "Stone" in body.name && body.owner_name=="EnemyCitizen":
 			condition-=3

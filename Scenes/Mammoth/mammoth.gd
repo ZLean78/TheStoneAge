@@ -67,16 +67,16 @@ func _physics_process(delta):
 			is_flipped = false
 			
 			
-func _get_damage(var the_beast):
-	if "Stone" in the_beast.name:
-		the_beast.queue_free()
+func _get_damage(var _body):
+	if "Stone" in _body.name:
+		_body.queue_free()
 		if life>0:
 			life-=10
 	else:
 		queue_free()
 	
-	if "Bullet" in the_beast.name:
-		the_beast.queue_free()
+	if "Spear" in _body.name:
+		_body.queue_free()
 		if life>0:
 			life-=20
 	else:
@@ -102,7 +102,7 @@ func _on_Area2D_body_entered(body):
 		life-=3
 		body.queue_free()
 	
-	if "Bullet" in body.name:
+	if "Spear" in body.name:
 		life-=10
 		body.queue_free()	
 	

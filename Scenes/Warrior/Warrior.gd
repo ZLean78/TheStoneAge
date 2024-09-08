@@ -1,8 +1,8 @@
 extends "res://Scenes/Unit/Unit.gd"
 
 #Proyectil, piedra para lanzar al enemigo.
-var bullet
-export var bullet_scene=preload("res://Scenes/Bullet/Bullet.tscn")
+var spear
+export var spear_scene=preload("res://Scenes/Spear/Spear.tscn")
 
 
 
@@ -509,24 +509,24 @@ func _on_Area2D_body_entered(body):
 	
 
 func _shoot():
-	var bullet_target = tree.touching_enemy.position
-	shoot_node.look_at(bullet_target)				
+	var spear_target = tree.touching_enemy.position
+	shoot_node.look_at(spear_target)				
 	var angle = shoot_node.rotation
 	var forward = Vector2(cos(angle),sin(angle))
 	var the_tilemap=get_tree().get_nodes_in_group("tilemap")
 	var spear_count=0
 	for tilemap_child in the_tilemap[0].get_children():
-		if "Bullet" in tilemap_child.name:
+		if "Spear" in tilemap_child.name:
 			spear_count+=1
 	if spear_count<2:
-		bullet = bullet_scene.instance()
+		spear = spear_scene.instance()
 		shoot_point.rotation = angle				
-		bullet.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
-		bullet.set_dir(forward)
-		bullet.rotation = angle
-		bullet.owner_name="Warrior"
+		spear.position = Vector2(shoot_point.global_position.x,shoot_point.global_position.y)
+		spear.set_dir(forward)
+		spear.rotation = angle
+		spear.owner_name="Warrior"
 		#target_position=bullet_target		
-		the_tilemap[0].add_child(bullet)
+		the_tilemap[0].add_child(spear)
 	
 	
 func _walk():

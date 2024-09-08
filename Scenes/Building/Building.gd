@@ -28,7 +28,7 @@ func _build():
 func _on_Area2D_body_entered(body):
 	if "Citizen" in body.name:
 		body.house_entered=true
-	if ("Citizen" in body.name || "Bullet" in body.name) && "Enemy" in body.owner_name && !("Townhall" in self.name):
+	if ("Citizen" in body.name || "Spear" in body.name) && "Enemy" in body.owner_name && !("Townhall" in self.name):
 		_get_damage(body)
 
 func _on_Area2D_body_exited(body):
@@ -44,7 +44,7 @@ func _on_Timer_timeout():
 
 func _get_damage(body):
 	if is_instance_valid(body):
-		if "Bullet" in body.name:
+		if "Spear" in body.name:
 			condition-=3
 		if "Stone" in body.name && body.owner_name=="EnemyCitizen":
 			condition-=3

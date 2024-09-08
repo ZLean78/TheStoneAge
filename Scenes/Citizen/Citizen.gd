@@ -505,14 +505,14 @@ func self_heal():
 func _shoot():
 	
 	if is_warchief || is_general:
-		var bullet_target = tree.touching_enemy.position
-		shoot_node.look_at(bullet_target)				
+		var spear_target = tree.touching_enemy.position
+		shoot_node.look_at(spear_target)				
 		var angle = shoot_node.rotation
 		var forward = Vector2(cos(angle),sin(angle))
 		var the_tilemap=get_tree().get_nodes_in_group("tilemap")
 		var spear_count=0
 		for tilemap_child in the_tilemap[0].get_children():
-			if "Bullet" in tilemap_child.name:
+			if "Spear" in tilemap_child.name:
 				spear_count+=1
 		if spear_count<2:
 			spear = spear_scene.instance()

@@ -61,7 +61,7 @@ func _on_Area2D_mouse_exited():
 
 func _get_damage(body):
 	if is_instance_valid(body):
-		if "Bullet" in body.name:
+		if "Spear" in body.name:
 			condition-=3
 		if "Stone" in body.name && body.owner_name=="Citizen":
 			condition-=3

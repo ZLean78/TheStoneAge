@@ -1178,7 +1178,7 @@ func _check_units():
 		#es decir, no ha sido eliminada con queue_free().
 		if a_unit.is_deleted && is_instance_valid(a_unit):
 			#Si el nombre incluye la palabra "Citizen", es un ciudadano. 
-			if "Unit" in a_unit.name:
+			if "Citizen" in a_unit.name:
 				#Si la unidad no es el jefe guerrero.
 				if !a_unit.is_warchief:
 					#Buscamos la unidad en all_units y la removemos del arreglo.

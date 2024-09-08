@@ -1,34 +1,23 @@
-extends KinematicBody2D
+extends "res://Scenes/Unit/Unit.gd"
 
 #Proyectil, piedra para lanzar al enemigo.
 var spear
 export var spear_scene=preload("res://Scenes/EnemySpear/EnemySpear.tscn")
 
-#Velocidad
-export (float) var SPEED = 50.0
-#Máximo de Salud
-export (float) var MAX_HEALTH = 100.0
-
-#variable que indica el nodo principal de la escena.
-onready var tree
 
 #Temporizador de comida, agrega un punto de comida por segundo cuando la unidad toca un árbol frutal.
 
 #Salud
 #onready var health = MAX_HEALTH
 
-#Variable que indica si está seleccionada la unidad.
-var selected = true
-#Marca de selección
-onready var box = $Selected
-#onready var label = $label
-#Barra de Energía
-onready var bar = $Bar
-onready var all_timer = $all_timer
-onready var sprite = get_node("scalable/sprite")
 
-onready var shoot_node = $shootNode
-onready var shoot_point = $shootNode/shootPoint
+
+
+onready var all_timer = $all_timer
+
+
+
+
 
 onready var line = $Line2D
 
@@ -38,20 +27,17 @@ var move_p = false
 #Vector2 que indica cuánto debe moverse el jugador.
 var to_move = Vector2()
 #PoolVector2Array que indica el camino variable teniendo en cuenta el Polígono de navegación.
-var path = PoolVector2Array()
+
 #Posición inicial, se actualiza cada vez que hacemos click con el botón derecho.
 var initialPosition = Vector2()
 
 #Puntos de comida de la unidad.
 var food_points = 0
-#Puntos de energía.
-var energy_points = MAX_HEALTH
+
 #Variable que indica si se está arrastrando el mouse sobre la unidad.
 var dragging = true
 
-#Indica si la animación de la unidad debe estar flipeada en x.
-var is_flipped = false
-var is_chased = false
+
 #var click_relative = 16
 #Indica si la unidad ha muerto.
 var dead = false
@@ -64,7 +50,7 @@ var collision
 #!!!!
 var motion = Vector2()
 #Vector2 que indica la velocidad en x e y para las animaciones.
-var velocity = Vector2()
+
 #!!!!!
 var touch_enabled = false
 #Indica si la unidad se encuentra bajo refugio.
@@ -80,7 +66,7 @@ var is_erased = false
 
 
 #Posición adonde la unidad debe moverse.
-var target_position = Vector2.ZERO
+
 
 #Indica si la unidad puede agregar puntos de comida o no.
 var can_add = false
@@ -101,21 +87,17 @@ var is_enemy_touching=false
 #Tigre que la unidad está tocando
 var tiger = null
 
+#Indica si la unidad está siendo perseguida.
+var is_chased = false
 
-#!!!!
 
-#Variable contador para diferenciar cuándo ha acabado el timer "all_timer".
-var timer_count=1
 
 #Para saber si la unidad ha sido eliminada.
 var is_deleted=false
 
-#Para detección de daño. Cuerpo que ingresa al área 2D
-var body_entered
-
 var can_shoot = true
 
-var to_delta = 0.0
+
 
 var direction = Vector2.ZERO
 
@@ -158,11 +140,26 @@ signal im_dead
 
 
 func _ready():
+	SPEED=50.0
+	MAX_HEALTH=100.0
+	health=MAX_HEALTH
+	foot=$Foot
+	bar=$Bar
+	sprite = get_node("scalable/sprite")
+	shoot_node = $shootNode
+	shoot_point = $shootNode/shootPoint
+	#Indica si la animación de la unidad debe estar flipeada en x.
+	is_flipped = false
+	to_delta = 0.0
+	
+	timer_count=1
+	body_entered=null
+	velocity = Vector2()
+	path = PoolVector2Array()
+	target_position = Vector2.ZERO
 	tree=Globals.current_scene
 	nav2d=tree.get_node("nav")
-	#connect("was_selected",get_tree().root.get_child(0),"select_unit")
-	#connect("was_deselected",get_tree().root.get_child(0),"deselect_unit")
-	emit_signal("health_change",energy_points)
+	
 	
 	AI_state=3
 	
@@ -246,24 +243,24 @@ func _physics_process(delta):
 		
 func _get_damage(var collider):
 	if "Tiger" in collider.name && is_enemy_touching && collider.visible:
-		if(energy_points>0):
-			energy_points-=5
-			bar._set_health(energy_points)		
+		if(health>0):
+			health-=5
+			bar.value=health		
 	if "Mammoth" in collider.name && is_enemy_touching:
-		if energy_points>0:
-			energy_points-=30
-			bar._set_health(energy_points)
-	if "Bullet" in collider.name:
+		if health>0:
+			health-=30
+			bar.value=health
+	if "Spear" in collider.name:
 		if collider.owner_name=="Tower":
-			if energy_points>0:
-				energy_points-=50
-				bar._set_health(energy_points)			
+			if health>0:
+				health-=50
+				bar.value=health		
 		else:
-			if energy_points>0:
-				energy_points-=20
-				bar._set_health(energy_points)
+			if health>0:
+				health-=20
+				bar.value=health
 			
-	if energy_points<=0:
+	if health<=0:
 		is_deleted=true			
 	
 func move_towards(pos,point,delta):
@@ -301,7 +298,7 @@ func _move_to_target(target):
 	if collision != null:
 		if "Tiger" in collision.collider.name || "Mammoth" in collision.collider.name:
 			is_enemy_touching=true
-		if "Bullet" in collision.collider.name:
+		if "Spear" in collision.collider.name:
 			is_enemy_touching=true
 			body_entered=collision.collider
 			

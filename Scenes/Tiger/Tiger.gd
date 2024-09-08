@@ -68,10 +68,10 @@ func _get_damage(var body):
 	else:
 		queue_free()
 	
-	if "Bullet" in body.name:
+	if "Spear" in body.name:
 		body.queue_free()
 		if life>0:
-			life-=30
+			life-=15
 	else:
 		queue_free()
 		
@@ -108,7 +108,7 @@ func _on_Area2D_body_entered(body):
 		life-=3
 		body.queue_free()
 	
-	if "Bullet" in body.name:
+	if "Spear" in body.name:
 		life-=10
 		body.queue_free()	
 	
@@ -119,8 +119,7 @@ func _on_Area2D_body_entered(body):
 		is_dead=true
 		queue_free()
 	
-#	if "Unit" in body.name || "Warrior" in body.name:
-#		body.is_enemy_touching=true
+
 	
 				
 func _on_Area2D_body_exited(body):

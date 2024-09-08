@@ -260,6 +260,8 @@ z_as_relative = false
 
 [node name="Citizen" parent="Citizens" instance=ExtResource( 1 )]
 position = Vector2( 698, 331 )
+MAX_ENERGY_LOSS = 0
+MIN_ENERGY_LOSS = 0
 
 [node name="Generals" type="Node2D" parent="."]
 
